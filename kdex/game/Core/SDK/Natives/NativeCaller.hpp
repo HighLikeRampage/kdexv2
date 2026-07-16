@@ -23,6 +23,7 @@
 #include <utility>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <Windows.h>
 
 using namespace Core;
@@ -69,7 +70,9 @@ namespace NativeCaller {
 
 		CitizenNativeCore::SCitizenCore m_core{};
 		std::vector<CitizenEntry> m_citizen;
+		std::unordered_map<uint64_t, uint64_t> m_citizenIndex;
 		std::unordered_map<uint64_t, uint64_t> m_handlerCache;
+		std::unordered_set<uint64_t> m_deadHash;
 		std::vector<uint8_t> m_gameImage;
 		bool m_gameImageTried = false;
 
@@ -100,7 +103,9 @@ namespace NativeCaller {
 			m_slotVA = m_origFn = 0;
 			m_core = {};
 			m_citizen.clear();
+			m_citizenIndex.clear();
 			m_handlerCache.clear();
+			m_deadHash.clear();
 			m_gameImage.clear();
 			m_gameImage.shrink_to_fit();
 			m_gameImageTried = false;
@@ -108,14 +113,13 @@ namespace NativeCaller {
 		}
 
 		uint64_t CitizenLookup(uint64_t hash) const {
+			auto it = m_citizenIndex.find(hash);
+			if (it != m_citizenIndex.end()) return it->second;
+
 			const uint32_t low32 = static_cast<uint32_t>(hash & 0xFFFFFFFFULL);
-			for (const auto& e : m_citizen) {
-				if (e.handler < 0x10000ULL) continue;
-				if (e.hash0 == hash || e.hash1 == hash ||
-					static_cast<uint32_t>(e.hash0 & 0xFFFFFFFFULL) == low32 ||
-					static_cast<uint32_t>(e.hash1 & 0xFFFFFFFFULL) == low32)
-					return e.handler;
-			}
+			const uint64_t low64 = static_cast<uint64_t>(low32);
+			it = m_citizenIndex.find(low64);
+			if (it != m_citizenIndex.end()) return it->second;
 			return 0;
 		}
 
@@ -362,14 +366,10 @@ namespace NativeCaller {
 						   const std::vector<uint64_t>& args, int timeoutMs) {
 			const char* name = NameOf(hash);
 
-			if (!queue) {
-				if (g_TraceInvoke) DebugLog(xorstr("[NC] %s(0x%llX) DROP no queue\n"), name, (unsigned long long)hash);
-				return 0;
-			}
-			if (args.size() > 8) {
-				if (g_TraceInvoke) DebugLog(xorstr("[NC] %s(0x%llX) DROP too many args=%zu\n"), name, (unsigned long long)hash, args.size());
-				return 0;
-			}
+			if (!queue) return 0;
+			if (args.size() > 8) return 0;
+
+			if (m_deadHash.count(hash)) return 0;
 
 			const char* src = "citizen";
 			uint64_t handler = CitizenLookup(hash);
@@ -379,6 +379,7 @@ namespace NativeCaller {
 			}
 			if (!handler) {
 				if (g_TraceInvoke) DebugLog(xorstr("[NC] %s(0x%llX) UNRESOLVED\n"), name, (unsigned long long)hash);
+				m_deadHash.insert(hash);
 				return 0;
 			}
 
@@ -425,16 +426,18 @@ namespace NativeCaller {
 			}
 
 			if (g_TraceInvoke) {
-				DebugLog(xorstr("[NC] !! %s TIMEOUT (%dms)%s\n"),
-					name, timeoutMs, IsNetworkNative(hash) ? " [net-skip]" : "");
+				DebugLog(xorstr("[NC] !! %s TIMEOUT (%dms) - marking dead\n"),
+					name, timeoutMs);
 			}
+			m_deadHash.insert(hash);
 			return 0;
 		}
 
 		uint64_t Invoke(uint64_t hash, std::initializer_list<uint64_t> args = {},
-						int timeoutMs = 3000) {
+						int timeoutMs = 400) {
 			std::lock_guard<std::mutex> lk(m_mtx);
 			if (!m_ready) return 0;
+			if (m_deadHash.count(hash)) return 0;
 			const std::vector<uint64_t> v(args.begin(), args.end());
 			return InvokeRaw(m_queueVA, hash, v, timeoutMs);
 		}
@@ -444,12 +447,13 @@ namespace NativeCaller {
 		Invoke(uint64_t hash, First first, Rest... rest) {
 			std::lock_guard<std::mutex> lk(m_mtx);
 			if (!m_ready) return 0;
+			if (m_deadHash.count(hash)) return 0;
 
 			std::vector<uint64_t> packed;
 			packed.reserve(1 + sizeof...(Rest));
 			packed.push_back(PackArg(first));
 			(packed.push_back(PackArg(rest)), ...);
-			return InvokeRaw(m_queueVA, hash, packed, 3000);
+			return InvokeRaw(m_queueVA, hash, packed, 400);
 		}
 
 		bool Probe(int timeoutMs = 2500) {
@@ -484,6 +488,8 @@ namespace NativeCaller {
 
 			m_citizen.clear();
 			m_citizen.reserve(entryCount);
+			m_citizenIndex.clear();
+			m_citizenIndex.reserve(entryCount * 2);
 
 			const uintptr_t base = Mem.ModBase;
 			const uintptr_t end  = base + Mem.ModBaseSize;
@@ -500,6 +506,13 @@ namespace NativeCaller {
 				ce.handler = Mem.Read<uint64_t>(ent + E_HANDLER);
 				ce.slot    = ent + E_HANDLER;
 				m_citizen.push_back(ce);
+
+				if (ce.handler > 0x10000ULL) {
+					m_citizenIndex.emplace(ce.hash0, ce.handler);
+					m_citizenIndex.emplace(ce.hash1, ce.handler);
+					m_citizenIndex.emplace(ce.hash0 & 0xFFFFFFFFULL, ce.handler);
+					m_citizenIndex.emplace(ce.hash1 & 0xFFFFFFFFULL, ce.handler);
+				}
 
 				if (ce.handler >= base && ce.handler < end)
 					anchors.emplace_back(ce.slot, static_cast<uintptr_t>(ce.handler));
