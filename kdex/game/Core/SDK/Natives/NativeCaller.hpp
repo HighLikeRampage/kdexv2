@@ -28,6 +28,14 @@ using namespace Core;
 
 namespace NativeCaller {
 
+	inline bool g_TraceInvoke = true;
+
+	inline const char* NameOf(uint64_t hash) {
+		const auto& m = Natives::HashToName();
+		auto it = m.find(hash);
+		return it == m.end() ? "?" : it->second.data();
+	}
+
 	constexpr size_t Q_TRIGGER   = 0x00;
 	constexpr size_t Q_DONE      = 0x01;
 	constexpr size_t Q_HANDLER   = 0x08;
@@ -206,17 +214,32 @@ namespace NativeCaller {
 
 			const auto& hashMap = Natives::HashToName();
 			const auto n = hashMap.find(hash);
-			if (n == hashMap.end()) { m_handlerCache[hash] = 0; return 0; }
+			if (n == hashMap.end()) {
+				if (g_TraceInvoke) DebugLog(xorstr("[NC] pattern: 0x%llX unknown hash\n"), (unsigned long long)hash);
+				m_handlerCache[hash] = 0; return 0;
+			}
 
 			const std::string_view* pat = Natives::findPatternForBuild(n->second, m_build);
-			if (!pat || pat->empty()) { m_handlerCache[hash] = 0; return 0; }
+			if (!pat || pat->empty()) {
+				if (g_TraceInvoke) DebugLog(xorstr("[NC] pattern: %s no signature for build %d\n"), n->second.data(), m_build);
+				m_handlerCache[hash] = 0; return 0;
+			}
 
 			const std::string patternStr(pat->data(), pat->size());
 			const uintptr_t hit = Mem.FindSignatureStr(patternStr);
-			if (!hit) { m_handlerCache[hash] = 0; return 0; }
+			if (!hit) {
+				if (g_TraceInvoke) DebugLog(xorstr("[NC] pattern: %s signature miss\n"), n->second.data());
+				m_handlerCache[hash] = 0; return 0;
+			}
 
 			const uint64_t handler = FollowStub(hit);
 			m_handlerCache[hash] = (handler > 0x10000ULL) ? handler : 0;
+			if (g_TraceInvoke) {
+				if (m_handlerCache[hash])
+					DebugLog(xorstr("[NC] pattern: %s -> handler=0x%llX (hit=0x%llX)\n"), n->second.data(), (unsigned long long)m_handlerCache[hash], (unsigned long long)hit);
+				else
+					DebugLog(xorstr("[NC] pattern: %s FollowStub failed (hit=0x%llX)\n"), n->second.data(), (unsigned long long)hit);
+			}
 			return m_handlerCache[hash];
 		}
 
@@ -254,11 +277,40 @@ namespace NativeCaller {
 
 		uint64_t InvokeRaw(uintptr_t queue, uint64_t hash,
 						   const std::vector<uint64_t>& args, int timeoutMs) {
-			if (!queue || args.size() > 8) return 0;
+			const char* name = NameOf(hash);
 
+			if (!queue) {
+				if (g_TraceInvoke) DebugLog(xorstr("[NC] %s(0x%llX) DROP no queue\n"), name, (unsigned long long)hash);
+				return 0;
+			}
+			if (args.size() > 8) {
+				if (g_TraceInvoke) DebugLog(xorstr("[NC] %s(0x%llX) DROP too many args=%zu\n"), name, (unsigned long long)hash, args.size());
+				return 0;
+			}
+
+			const char* src = "citizen";
 			uint64_t handler = CitizenLookup(hash);
-			if (!handler) handler = PatternResolve(hash);
-			if (!handler) return 0;
+			if (!handler) {
+				handler = PatternResolve(hash);
+				src = "pattern";
+			}
+			if (!handler) {
+				if (g_TraceInvoke) DebugLog(xorstr("[NC] %s(0x%llX) UNRESOLVED\n"), name, (unsigned long long)hash);
+				return 0;
+			}
+
+			if (g_TraceInvoke) {
+				char argStr[192] = "";
+				size_t off = 0;
+				for (size_t i = 0; i < args.size() && off + 20 < sizeof(argStr); ++i) {
+					int w = _snprintf_s(argStr + off, sizeof(argStr) - off, _TRUNCATE,
+						i ? ", 0x%llX" : "0x%llX", (unsigned long long)args[i]);
+					if (w <= 0) break;
+					off += w;
+				}
+				DebugLog(xorstr("[NC] -> %s [%s] handler=0x%llX args=[%s]\n"),
+					name, src, (unsigned long long)handler, argStr);
+			}
 
 			uint64_t argBuf[8]{};
 			for (size_t i = 0; i < args.size(); ++i) argBuf[i] = args[i];
@@ -272,16 +324,27 @@ namespace NativeCaller {
 			Mem.Write<uint32_t>(queue + Q_ARGCOUNT, static_cast<uint32_t>(args.size()));
 			Mem.Write<uint8_t>(queue + Q_TRIGGER, 1);
 
-			const auto deadline = std::chrono::steady_clock::now() +
-								  std::chrono::milliseconds(timeoutMs);
+			const auto start    = std::chrono::steady_clock::now();
+			const auto deadline = start + std::chrono::milliseconds(timeoutMs);
 
 			while (std::chrono::steady_clock::now() < deadline) {
-				if (Mem.Read<uint8_t>(queue + Q_DONE))
-					return Mem.Read<uint64_t>(queue + Q_RESULT);
+				if (Mem.Read<uint8_t>(queue + Q_DONE)) {
+					const uint64_t r = Mem.Read<uint64_t>(queue + Q_RESULT);
+					if (g_TraceInvoke) {
+						const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+							std::chrono::steady_clock::now() - start).count();
+						DebugLog(xorstr("[NC] <- %s = 0x%llX (%lldms)\n"),
+							name, (unsigned long long)r, (long long)ms);
+					}
+					return r;
+				}
 				std::this_thread::sleep_for(std::chrono::microseconds(500));
 			}
 
-			if (IsNetworkNative(hash)) return 0;
+			if (g_TraceInvoke) {
+				DebugLog(xorstr("[NC] !! %s TIMEOUT (%dms)%s\n"),
+					name, timeoutMs, IsNetworkNative(hash) ? " [net-skip]" : "");
+			}
 			return 0;
 		}
 
