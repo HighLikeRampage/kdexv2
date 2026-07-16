@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{C0D2B1A3-F6E5-4A1B-8D5C-9E6F3A2B1C0D}</ProjectGuid>
+    <RootNamespace>kdex</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>kdex</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)output</OutDir>
+    <IntDir>$(SolutionDir)output\obj\kdex</IntDir>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Includes;$(ProjectDir)framework;$(ProjectDir)game;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\dxsdk\Include;$(ProjectDir)thirdparty\freetype\include;$(ProjectDir)game\Security\Api\curl;$(ProjectDir)game\Core\SDK;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)thirdparty\dxsdk\Lib\x64;$(ProjectDir)thirdparty\freetype\win64;$(ProjectDir)game\Security\Api\curl;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)output</OutDir>
+    <IntDir>$(SolutionDir)output\obj\kdex</IntDir>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Includes;$(ProjectDir)framework;$(ProjectDir)game;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\dxsdk\Include;$(ProjectDir)thirdparty\freetype\include;$(ProjectDir)game\Security\Api\curl;$(ProjectDir)game\Core\SDK;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)thirdparty\dxsdk\Lib\x64;$(ProjectDir)thirdparty\freetype\win64;$(ProjectDir)game\Security\Api\curl;$(LibraryPath)</LibraryPath>
+    <TargetName>test</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;CURL_STATICLIB</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <ExceptionHandling>Async</ExceptionHandling>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;freetype.lib;ws2_32.lib;libcurl.lib;delayimp.lib;kernel32.lib;user32.lib;gdi32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>Wldap32.dll;Normaliz.dll;Crypt32.dll</DelayLoadDLLs>
+      <AdditionalManifestFiles>app.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;CURL_STATICLIB</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Async</ExceptionHandling>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;freetype.lib;ws2_32.lib;libcurl.lib;delayimp.lib;kernel32.lib;user32.lib;gdi32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DelayLoadDLLs>Wldap32.dll;Normaliz.dll;Crypt32.dll</DelayLoadDLLs>
+      <AdditionalManifestFiles>app.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <GenerateMapFile>false</GenerateMapFile>
+      <SetChecksum>false</SetChecksum>
+      <StripPrivateSymbols>
+      </StripPrivateSymbols>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="framework\gui.cpp" />
+    <ClCompile Include="framework\gui\gui_auth.cpp" />
+    <ClCompile Include="framework\gui\gui_launch.cpp" />
+    <ClCompile Include="framework\gui\gui_menu.cpp" />
+    <ClCompile Include="framework\gui\gui_spinner.cpp" />
+    <ClCompile Include="framework\elements\begin_child.cpp" />
+    <ClCompile Include="framework\elements\button.cpp" />
+    <ClCompile Include="framework\elements\checkbox.cpp" />
+    <ClCompile Include="framework\elements\coloredit.cpp" />
+    <ClCompile Include="framework\elements\draw.cpp" />
+    <ClCompile Include="framework\elements\dropdown.cpp" />
+    <ClCompile Include="framework\elements\helpers.cpp" />
+    <ClCompile Include="framework\elements\hud_navigation.cpp" />
+    <ClCompile Include="framework\elements\keybind.cpp" />
+    <ClCompile Include="framework\elements\listbox.cpp" />
+    <ClCompile Include="framework\elements\lua.cpp" />
+    <ClCompile Include="framework\elements\notify.cpp" />
+    <ClCompile Include="framework\elements\range_slider.cpp" />
+    <ClCompile Include="framework\elements\search.cpp" />
+    <ClCompile Include="framework\elements\section.cpp" />
+    <ClCompile Include="framework\elements\slider.cpp" />
+    <ClCompile Include="framework\elements\text_field.cpp" />
+    <ClCompile Include="framework\elements\watermark.cpp" />
+    <ClCompile Include="framework\elements\window.cpp" />
+    <ClCompile Include="game\Core\Features\Aimbot.cpp" />
+    <ClCompile Include="game\Core\Features\Esp.cpp" />
+    <ClCompile Include="game\Core\Features\ObjectNames.cpp" />
+    <ClCompile Include="game\Core\Features\MagicBullets.cpp" />
+    <ClCompile Include="game\Core\Features\SilentAim.cpp" />
+    <ClCompile Include="game\Core\Features\Triggerbot.cpp" />
+    <ClCompile Include="game\Core\SDK\Memory.cpp" />
+    <ClCompile Include="game\Core\SDK\d3dx_impl.cpp" />
+    <ClCompile Include="game\Core\SDK\Natives\CrossmapNatives.cpp" />
+    <ClCompile Include="game\Core\SDK\Natives\NativeCaller.cpp" />
+    <ClCompile Include="game\Gui\Overlay\Overlay.cpp" />
+    <ClCompile Include="game\nvidia\nvidia_patch.cpp" />
+    <ClCompile Include="game\Security\CrashHandler.cpp" />
+
+    <ClCompile Include="thirdparty\dxsdk\Include\detours.cpp" />
+    <ClCompile Include="thirdparty\imgui\imgui.cpp" />
+    <ClCompile Include="thirdparty\imgui\imgui_draw.cpp" />
+    <ClCompile Include="thirdparty\imgui\imgui_freetype.cpp" />
+    <ClCompile Include="thirdparty\imgui\imgui_tables.cpp" />
+    <ClCompile Include="thirdparty\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx9.cpp" />
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx10.cpp" />
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx12.cpp" />
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_win32.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Globals.hpp" />
+    <ClInclude Include="game\Core\ProcessUtils.hpp" />
+    <ClInclude Include="game\Core\SetupOffsets.hpp" />
+    <ClInclude Include="game\Core\Attach.hpp" />
+    <ClInclude Include="framework\gui\gui_internal.hpp" />
+    <ClInclude Include="Includes\Includes.hpp" />
+    <ClInclude Include="Includes\Utils.hpp" />
+    <ClInclude Include="framework\settings\colors.h" />
+    <ClInclude Include="framework\settings\elements.h" />
+    <ClInclude Include="framework\settings\functions.h" />
+    <ClInclude Include="framework\settings\search.h" />
+    <ClInclude Include="framework\settings\variables.h" />
+    <ClInclude Include="framework\settings\options_config.h" />
+    <ClInclude Include="framework\settings\config_theme.h" />
+    <ClInclude Include="framework\elements\text_editor.h" />
+    <ClInclude Include="framework\data\fonts.h" />
+    <ClInclude Include="framework\data\images.h" />
+    <ClInclude Include="game\Auth\lazyimporter.hpp" />
+    <ClInclude Include="game\Core\Config.hpp" />
+    <ClInclude Include="game\Core\Core.hpp" />
+    <ClInclude Include="game\Core\Offsets.hpp" />
+    <ClInclude Include="game\Core\Variables.hpp" />
+    <ClInclude Include="game\Core\Features\Aimbot.hpp" />
+    <ClInclude Include="game\Core\Features\ESP.hpp" />
+    <ClInclude Include="game\Core\Features\ObjectNames.hpp" />
+    <ClInclude Include="game\Core\Features\MagicBullets.hpp" />
+    <ClInclude Include="game\Core\Features\SilentAim.hpp" />
+    <ClInclude Include="game\Core\Features\Triggerbot.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Exploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\ExploitsCommon.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\MovementExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\CameraExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\CombatExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\VehicleExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\PlayerExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\VisualExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\RestoreExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\RemoteEntityOps.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\AnimationExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\SessionExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\NetSyncExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\ExploitThread.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\HandlingEditor.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\VehicleSpawner.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\VehicleWarp.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\TimeCycle.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\RunBoosting.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\OutfitChanger.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Attachments.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\WeaponAttachments.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\ExploitTest.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\OutfitCopy.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp" />
+    <ClInclude Include="game\Core\SDK\SDK.hpp" />
+    <ClInclude Include="game\Core\SDK\Memory.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\CitizenNativeCore.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\CrossmapNatives.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\NativeCaller.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\NativeHashNames.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\NativeHooker.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\Natives.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\PatternResolver.hpp" />
+    <ClInclude Include="game\Core\SDK\Structs\GameClasses.hpp" />
+    <ClInclude Include="game\Core\SDK\Structs\Structs.hpp" />
+    <ClInclude Include="game\Core\Threads\EntityList.hpp" />
+    <ClInclude Include="game\Core\Threads\ScreenResolution.hpp" />
+    <ClInclude Include="game\Core\Threads\UpdateNames.hpp" />
+    <ClInclude Include="game\Core\Threads\UpdatePointers.hpp" />
+    <ClInclude Include="game\Core\Threads\VehicleList.hpp" />
+    <ClInclude Include="game\Gui\gui.hpp" />
+    <ClInclude Include="game\Gui\Overlay\Overlay.hpp" />
+    <ClInclude Include="game\nvidia\nvidia_patch.hpp" />
+    <ClInclude Include="game\Security\AntiCrack.hpp" />
+    <ClInclude Include="game\Security\CrashHandler.hpp" />
+    <ClInclude Include="game\Security\JunkCode.hpp" />
+    <ClInclude Include="game\Security\UIAccess.hpp" />
+    <ClInclude Include="game\Security\anticrack\AntiVM.hpp" />
+    <ClInclude Include="game\Security\anticrack\AntiTamper.hpp" />
+    <ClInclude Include="game\Security\anticrack\AntiDebug.hpp" />
+    <ClInclude Include="game\Security\anticrack\WindowCheck.hpp" />
+    <ClInclude Include="game\Security\LazyImporter.hpp" />
+    <ClInclude Include="game\Security\xorstr.hpp" />
+
+    <ClInclude Include="game\Security\Api\api.hpp" />
+    <ClInclude Include="game\Security\Api\json.hpp" />
+    <ClInclude Include="game\Security\Api\structs\structs.hpp" />
+    <ClInclude Include="game\Security\Api\curl\curl.h" />
+    <ClInclude Include="game\Security\Api\curl\curlver.h" />
+    <ClInclude Include="game\Security\Api\curl\easy.h" />
+    <ClInclude Include="game\Security\Api\curl\mprintf.h" />
+    <ClInclude Include="game\Security\Api\curl\multi.h" />
+    <ClInclude Include="game\Security\Api\curl\options.h" />
+    <ClInclude Include="game\Security\Api\curl\stdcheaders.h" />
+    <ClInclude Include="game\Security\Api\curl\system.h" />
+    <ClInclude Include="game\Security\Api\curl\typecheck-gcc.h" />
+    <ClInclude Include="game\Security\Api\curl\urlapi.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\detours.h" />
+    <ClInclude Include="thirdparty\imgui\imconfig.h" />
+    <ClInclude Include="thirdparty\imgui\imgui.h" />
+    <ClInclude Include="thirdparty\imgui\imgui_freetype.h" />
+    <ClInclude Include="thirdparty\imgui\imgui_internal.h" />
+    <ClInclude Include="thirdparty\imgui\imstb_rectpack.h" />
+    <ClInclude Include="thirdparty\imgui\imstb_textedit.h" />
+    <ClInclude Include="thirdparty\imgui\imstb_truetype.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx9.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx10.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx12.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_win32.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.manifest" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

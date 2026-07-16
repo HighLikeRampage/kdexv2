@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework">
+      <UniqueIdentifier>{2276949a-e89a-4712-8736-22485526019b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\elements">
+      <UniqueIdentifier>{95526f04-f58c-4a39-9d62-1200f68f5686}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\settings">
+      <UniqueIdentifier>{f9f4b9f2-282c-473d-82d2-8877119e0721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="framework\data">
+      <UniqueIdentifier>{89753174-88f2-4467-932b-31d044265462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game">
+      <UniqueIdentifier>{83072f8a-9a99-4720-96f3-424a9193630d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Auth">
+      <UniqueIdentifier>{5716911a-6379-4505-9686-e3d833947c9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core">
+      <UniqueIdentifier>{57235a94-432a-4638-899f-72412030e698}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features">
+      <UniqueIdentifier>{18321287-6e47-4933-90d9-7e18105085e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features\Exploits">
+      <UniqueIdentifier>{53982467-3343-4250-891d-55734d318991}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\SDK">
+      <UniqueIdentifier>{f410d556-9f1e-4509-906f-6c700388725a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\SDK\Structs">
+      <UniqueIdentifier>{f5947702-8350-4886-9f89-9a74288b2298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Threads">
+      <UniqueIdentifier>{a983818e-6705-4f36-a67b-232187748834}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Gui">
+      <UniqueIdentifier>{e6f0462e-3605-4f11-8848-18e001712a7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Gui\Overlay">
+      <UniqueIdentifier>{82747169-77a8-444c-9a3d-426a87796033}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\nvidia">
+      <UniqueIdentifier>{9b3fa87c-4d1e-4b02-9d5a-1a6c3d9f8e77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Security">
+      <UniqueIdentifier>{45a40995-189d-4876-8051-7892706e2326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Security\anticrack">
+      <UniqueIdentifier>{014a4087-73d8-4d6d-898a-78809e6f3041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Security\Api">
+      <UniqueIdentifier>{9530462f-0428-44f2-9860-84521404092d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Security\Api\structs">
+      <UniqueIdentifier>{140f7f32-3f14-41d3-9828-56492982d645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Security\Api\curl">
+      <UniqueIdentifier>{3a93f77b-6893-4a0b-8898-323869279093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty">
+      <UniqueIdentifier>{9e03d35c-297c-474c-8f4b-70c80e90c410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\imgui">
+      <UniqueIdentifier>{54e7d530-977a-422f-870a-20d04690184c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\imgui\backends">
+      <UniqueIdentifier>{1864e43b-3130-4e58-9418-508006f89078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\dxsdk">
+      <UniqueIdentifier>{7d49b5c3-305d-4536-a14a-73d611f75429}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\SDK\Natives">
+      <UniqueIdentifier>{9665d6c7-5a10-4262-a317-14155ad93fdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Gui\Components">
+      <UniqueIdentifier>{eee5af60-b6d7-41f7-873b-df759fc1e8d9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="framework\gui.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\begin_child.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\button.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\checkbox.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\coloredit.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\draw.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\dropdown.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\helpers.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\hud_navigation.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\keybind.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\listbox.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\lua.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\notify.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\range_slider.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\search.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\section.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\slider.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\text_field.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\watermark.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\elements\window.cpp">
+      <Filter>framework\elements</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\Features\Aimbot.cpp">
+      <Filter>game\Core\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\Features\Esp.cpp">
+      <Filter>game\Core\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\Features\ObjectNames.cpp">
+      <Filter>game\Core\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\Features\MagicBullets.cpp">
+      <Filter>game\Core\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\Features\SilentAim.cpp">
+      <Filter>game\Core\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\Features\Triggerbot.cpp">
+      <Filter>game\Core\Features</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\SDK\Memory.cpp">
+      <Filter>game\Core\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\SDK\Natives\CrossmapNatives.cpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\SDK\Natives\NativeCaller.cpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Gui\Overlay\Overlay.cpp">
+      <Filter>game\Gui\Overlay</Filter>
+    </ClCompile>
+    <ClCompile Include="game\nvidia\nvidia_patch.cpp">
+      <Filter>game\nvidia</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Security\CrashHandler.cpp">
+      <Filter>game\Security</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\dxsdk\Include\detours.cpp">
+      <Filter>thirdparty\dxsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\imgui.cpp">
+      <Filter>thirdparty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\imgui_draw.cpp">
+      <Filter>thirdparty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\imgui_freetype.cpp">
+      <Filter>thirdparty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\imgui_tables.cpp">
+      <Filter>thirdparty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\imgui_widgets.cpp">
+      <Filter>thirdparty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx9.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx10.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx12.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\SDK\d3dx_impl.cpp">
+      <Filter>Includes</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\gui\gui_auth.cpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\gui\gui_launch.cpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\gui\gui_menu.cpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\gui\gui_spinner.cpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Includes\Includes.hpp">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes\Utils.hpp">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\colors.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\elements.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\functions.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\search.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\variables.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\options_config.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\config_theme.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\elements\text_editor.h">
+      <Filter>framework\elements</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\data\fonts.h">
+      <Filter>framework\data</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\data\images.h">
+      <Filter>framework\data</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Auth\lazyimporter.hpp">
+      <Filter>game\Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Config.hpp">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Core.hpp">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Offsets.hpp">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Variables.hpp">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Aimbot.hpp">
+      <Filter>game\Core\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\ESP.hpp">
+      <Filter>game\Core\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\ObjectNames.hpp">
+      <Filter>game\Core\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\MagicBullets.hpp">
+      <Filter>game\Core\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\SilentAim.hpp">
+      <Filter>game\Core\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Triggerbot.hpp">
+      <Filter>game\Core\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\Exploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\ExploitsCommon.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\MovementExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\CameraExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\CombatExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\VehicleExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\PlayerExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\VisualExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\RestoreExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\RemoteEntityOps.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\AnimationExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\SessionExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\NetSyncExploits.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\ExploitThread.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\HandlingEditor.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\VehicleSpawner.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\VehicleWarp.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\SDK.hpp">
+      <Filter>game\Core\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Memory.hpp">
+      <Filter>game\Core\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Structs\GameClasses.hpp">
+      <Filter>game\Core\SDK\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Structs\Structs.hpp">
+      <Filter>game\Core\SDK\Structs</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Threads\EntityList.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Threads\ScreenResolution.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Threads\UpdateNames.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Threads\UpdatePointers.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Threads\VehicleList.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Gui\gui.hpp">
+      <Filter>game\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Gui\Overlay\Overlay.hpp">
+      <Filter>game\Gui\Overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="game\nvidia\nvidia_patch.hpp">
+      <Filter>game\nvidia</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\AntiCrack.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\CrashHandler.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\JunkCode.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\UIAccess.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\anticrack\AntiVM.hpp">
+      <Filter>game\Security\anticrack</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\anticrack\AntiTamper.hpp">
+      <Filter>game\Security\anticrack</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\anticrack\AntiDebug.hpp">
+      <Filter>game\Security\anticrack</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\anticrack\WindowCheck.hpp">
+      <Filter>game\Security\anticrack</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\LazyImporter.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\xorstr.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\api.hpp">
+      <Filter>game\Security\Api</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\json.hpp">
+      <Filter>game\Security\Api</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\structs\structs.hpp">
+      <Filter>game\Security\Api\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\curl.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\curlver.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\easy.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\mprintf.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\multi.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\options.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\stdcheaders.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\system.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\typecheck-gcc.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\curl\urlapi.h">
+      <Filter>game\Security\Api\curl</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\detours.h">
+      <Filter>thirdparty\dxsdk</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\imconfig.h">
+      <Filter>thirdparty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\imgui.h">
+      <Filter>thirdparty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\imgui_freetype.h">
+      <Filter>thirdparty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\imgui_internal.h">
+      <Filter>thirdparty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\imstb_rectpack.h">
+      <Filter>thirdparty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\imstb_textedit.h">
+      <Filter>thirdparty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\imstb_truetype.h">
+      <Filter>thirdparty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx9.h">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx10.h">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx11.h">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx12.h">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_win32.h">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\NativeHooker.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\NativeCaller.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\CrossmapNatives.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\NativeHashNames.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\PatternResolver.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\Natives.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\CitizenNativeCore.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="Globals.hpp">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\gui\gui_internal.hpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Attach.hpp">
+      <Filter>game\Core\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SetupOffsets.hpp">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\ProcessUtils.hpp">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\TimeCycle.hpp">
+      <Filter>game\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\RunBoosting.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\OutfitChanger.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\OutfitCopy.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\Attachments.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\WeaponAttachments.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\ExploitTest.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.manifest">
+      <Filter>thirdparty\dxsdk</Filter>
+    </None>
+  </ItemGroup>
+</Project>
