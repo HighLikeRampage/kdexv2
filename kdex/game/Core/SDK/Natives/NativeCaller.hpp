@@ -10,6 +10,7 @@
 #include <Security/xorstr.hpp>
 
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <chrono>
 #include <initializer_list>
@@ -69,6 +70,8 @@ namespace NativeCaller {
 		CitizenNativeCore::SCitizenCore m_core{};
 		std::vector<CitizenEntry> m_citizen;
 		std::unordered_map<uint64_t, uint64_t> m_handlerCache;
+		std::vector<uint8_t> m_gameImage;
+		bool m_gameImageTried = false;
 
 	public:
 		bool IsReady() const { return m_ready; }
@@ -98,6 +101,9 @@ namespace NativeCaller {
 			m_core = {};
 			m_citizen.clear();
 			m_handlerCache.clear();
+			m_gameImage.clear();
+			m_gameImage.shrink_to_fit();
+			m_gameImageTried = false;
 			m_ready = false;
 		}
 
@@ -206,6 +212,77 @@ namespace NativeCaller {
 			return 0;
 		}
 
+		struct CompiledPattern {
+			std::vector<uint8_t> bytes;
+			std::vector<uint8_t> mask;
+		};
+
+		static CompiledPattern CompilePattern(std::string_view src) {
+			CompiledPattern out;
+			size_t i = 0;
+			while (i < src.size()) {
+				while (i < src.size() && (src[i] == ' ' || src[i] == '\t')) ++i;
+				if (i >= src.size()) break;
+
+				if (src[i] == '?') {
+					out.bytes.push_back(0);
+					out.mask.push_back(0);
+					while (i < src.size() && src[i] == '?') ++i;
+					continue;
+				}
+
+				char buf[3] = { 0, 0, 0 };
+				buf[0] = src[i++];
+				if (i < src.size() && src[i] != ' ' && src[i] != '\t') buf[1] = src[i++];
+				out.bytes.push_back(static_cast<uint8_t>(std::strtoul(buf, nullptr, 16)));
+				out.mask.push_back(1);
+			}
+			return out;
+		}
+
+		bool EnsureGameImage() {
+			if (m_gameImageTried) return !m_gameImage.empty();
+			m_gameImageTried = true;
+			if (!Mem.ProcHandle || !Mem.ModBase || !Mem.ModBaseSize) return false;
+
+			m_gameImage.assign(Mem.ModBaseSize, 0);
+			const size_t CHUNK = 4 * 1024 * 1024;
+			size_t off = 0, readTotal = 0;
+			while (off < Mem.ModBaseSize) {
+				const size_t want = (Mem.ModBaseSize - off < CHUNK) ? (Mem.ModBaseSize - off) : CHUNK;
+				SIZE_T got = 0;
+				if (ReadProcessMemory(Mem.ProcHandle, reinterpret_cast<LPCVOID>(Mem.ModBase + off),
+									  m_gameImage.data() + off, want, &got) && got > 0) {
+					readTotal += got;
+					off += got;
+				} else {
+					off += want;
+				}
+			}
+			if (g_TraceInvoke)
+				DebugLog(xorstr("[NC] game image: %.2f MB usable (of %.2f MB)\n"),
+					readTotal / (1024.0 * 1024.0), Mem.ModBaseSize / (1024.0 * 1024.0));
+			return readTotal > 0;
+		}
+
+		int64_t FindInGameImage(const CompiledPattern& p) const {
+			const size_t n = p.bytes.size();
+			if (!n || m_gameImage.size() < n) return -1;
+			const uint8_t* img = m_gameImage.data();
+			const size_t end = m_gameImage.size() - n;
+			const uint8_t first = p.bytes[0];
+			const bool firstMasked = p.mask[0] != 0;
+			for (size_t i = 0; i <= end; ++i) {
+				if (firstMasked && img[i] != first) continue;
+				size_t j = 1;
+				for (; j < n; ++j) {
+					if (p.mask[j] && img[i + j] != p.bytes[j]) break;
+				}
+				if (j == n) return static_cast<int64_t>(i);
+			}
+			return -1;
+		}
+
 		uint64_t PatternResolve(uint64_t hash) {
 			auto c = m_handlerCache.find(hash);
 			if (c != m_handlerCache.end()) return c->second;
@@ -225,20 +302,26 @@ namespace NativeCaller {
 				m_handlerCache[hash] = 0; return 0;
 			}
 
-			const std::string patternStr(pat->data(), pat->size());
-			const uintptr_t hit = Mem.FindSignatureStr(patternStr);
-			if (!hit) {
-				if (g_TraceInvoke) DebugLog(xorstr("[NC] pattern: %s signature miss\n"), n->second.data());
+			if (!EnsureGameImage()) {
+				if (g_TraceInvoke) DebugLog(xorstr("[NC] pattern: %s game image unavailable\n"), n->second.data());
 				m_handlerCache[hash] = 0; return 0;
 			}
 
-			const uint64_t handler = FollowStub(hit);
+			const CompiledPattern compiled = CompilePattern(*pat);
+			const int64_t off = FindInGameImage(compiled);
+			if (off < 0) {
+				if (g_TraceInvoke) DebugLog(xorstr("[NC] pattern: %s signature miss (len=%zu)\n"), n->second.data(), compiled.bytes.size());
+				m_handlerCache[hash] = 0; return 0;
+			}
+
+			const uintptr_t hitVA = Mem.ModBase + static_cast<uintptr_t>(off);
+			const uint64_t handler = FollowStub(hitVA);
 			m_handlerCache[hash] = (handler > 0x10000ULL) ? handler : 0;
 			if (g_TraceInvoke) {
 				if (m_handlerCache[hash])
-					DebugLog(xorstr("[NC] pattern: %s -> handler=0x%llX (hit=0x%llX)\n"), n->second.data(), (unsigned long long)m_handlerCache[hash], (unsigned long long)hit);
+					DebugLog(xorstr("[NC] pattern: %s -> handler=0x%llX (hit=0x%llX)\n"), n->second.data(), (unsigned long long)m_handlerCache[hash], (unsigned long long)hitVA);
 				else
-					DebugLog(xorstr("[NC] pattern: %s FollowStub failed (hit=0x%llX)\n"), n->second.data(), (unsigned long long)hit);
+					DebugLog(xorstr("[NC] pattern: %s FollowStub failed (hit=0x%llX)\n"), n->second.data(), (unsigned long long)hitVA);
 			}
 			return m_handlerCache[hash];
 		}
