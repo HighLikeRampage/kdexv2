@@ -221,6 +221,7 @@
     <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp" />
     <ClInclude Include="game\Core\SDK\SDK.hpp" />
     <ClInclude Include="game\Core\SDK\Memory.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\CitizenNativeCore.hpp" />
     <ClInclude Include="game\Core\SDK\Natives\CrossmapNatives.hpp" />
     <ClInclude Include="game\Core\SDK\Natives\NativeCaller.hpp" />
     <ClInclude Include="game\Core\SDK\Natives\NativeHashNames.hpp" />

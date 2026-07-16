@@ -26,6 +26,7 @@
 
 #include "SDK/Natives/NativeCaller.hpp"
 
+#include "SDK/Natives/CitizenNativeCore.hpp"
 #include "SDK/Natives/Natives.hpp"
 
 #include <Windows.h>
