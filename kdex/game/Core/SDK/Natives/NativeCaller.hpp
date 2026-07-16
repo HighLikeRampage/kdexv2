@@ -72,9 +72,12 @@ namespace NativeCaller {
 		std::vector<CitizenEntry> m_citizen;
 		std::unordered_map<uint64_t, uint64_t> m_citizenIndex;
 		std::unordered_map<uint64_t, uint64_t> m_handlerCache;
-		std::unordered_set<uint64_t> m_deadHash;
+		std::unordered_set<uint64_t> m_unresolvedHash;
+		std::unordered_map<uint64_t, std::chrono::steady_clock::time_point> m_coolDownUntil;
 		std::vector<uint8_t> m_gameImage;
 		bool m_gameImageTried = false;
+
+		static constexpr std::chrono::milliseconds kCooldownAfterTimeout{1500};
 
 	public:
 		bool IsReady() const { return m_ready; }
@@ -105,7 +108,8 @@ namespace NativeCaller {
 			m_citizen.clear();
 			m_citizenIndex.clear();
 			m_handlerCache.clear();
-			m_deadHash.clear();
+			m_unresolvedHash.clear();
+			m_coolDownUntil.clear();
 			m_gameImage.clear();
 			m_gameImage.shrink_to_fit();
 			m_gameImageTried = false;
@@ -369,7 +373,15 @@ namespace NativeCaller {
 			if (!queue) return 0;
 			if (args.size() > 8) return 0;
 
-			if (m_deadHash.count(hash)) return 0;
+			if (m_unresolvedHash.count(hash)) return 0;
+
+			{
+				auto cd = m_coolDownUntil.find(hash);
+				if (cd != m_coolDownUntil.end()) {
+					if (std::chrono::steady_clock::now() < cd->second) return 0;
+					m_coolDownUntil.erase(cd);
+				}
+			}
 
 			const char* src = "citizen";
 			uint64_t handler = CitizenLookup(hash);
@@ -379,7 +391,7 @@ namespace NativeCaller {
 			}
 			if (!handler) {
 				if (g_TraceInvoke) DebugLog(xorstr("[NC] %s(0x%llX) UNRESOLVED\n"), name, (unsigned long long)hash);
-				m_deadHash.insert(hash);
+				m_unresolvedHash.insert(hash);
 				return 0;
 			}
 
@@ -426,10 +438,10 @@ namespace NativeCaller {
 			}
 
 			if (g_TraceInvoke) {
-				DebugLog(xorstr("[NC] !! %s TIMEOUT (%dms) - marking dead\n"),
-					name, timeoutMs);
+				DebugLog(xorstr("[NC] !! %s TIMEOUT (%dms) - cooldown %dms\n"),
+					name, timeoutMs, (int)kCooldownAfterTimeout.count());
 			}
-			m_deadHash.insert(hash);
+			m_coolDownUntil[hash] = std::chrono::steady_clock::now() + kCooldownAfterTimeout;
 			return 0;
 		}
 
@@ -437,7 +449,6 @@ namespace NativeCaller {
 						int timeoutMs = 400) {
 			std::lock_guard<std::mutex> lk(m_mtx);
 			if (!m_ready) return 0;
-			if (m_deadHash.count(hash)) return 0;
 			const std::vector<uint64_t> v(args.begin(), args.end());
 			return InvokeRaw(m_queueVA, hash, v, timeoutMs);
 		}
@@ -447,7 +458,6 @@ namespace NativeCaller {
 		Invoke(uint64_t hash, First first, Rest... rest) {
 			std::lock_guard<std::mutex> lk(m_mtx);
 			if (!m_ready) return 0;
-			if (m_deadHash.count(hash)) return 0;
 
 			std::vector<uint64_t> packed;
 			packed.reserve(1 + sizeof...(Rest));
