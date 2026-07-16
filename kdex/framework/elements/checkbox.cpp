@@ -39,7 +39,7 @@ bool c_widgets::checkbox(std::string_view label, bool* callback, bool warning, i
     const ImRect rect(pos + ImVec2(content_width - SCALE(38.f), SCALE(7.f)), pos + ImVec2(content_width, SCALE(28.f)));
     const ImRect clickable(pos, pos + ImVec2(content_width, SCALE(elements->checkbox.height_size)));
 
-    const ImRect keybind(pos + ImVec2(content_width - SCALE(60.f), SCALE(10.f)), pos + ImVec2(content_width - SCALE(45.f), SCALE(25.f)));
+    const ImRect keybind(pos + ImVec2(content_width - SCALE(72.f), SCALE(8.f)), pos + ImVec2(content_width - SCALE(48.f), SCALE(27.f)));
 
     ItemSize(clickable, 0);
     if (!ItemAdd(clickable, id)) return false;
