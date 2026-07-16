@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Core/SDK/Natives/CitizenNativeCore.hpp>
 #include <Core/SDK/Natives/CrossmapNatives.hpp>
 #include <Core/SDK/Natives/NativeHashNames.hpp>
 #include <Core/SDK/Natives/Natives.hpp>
@@ -39,13 +38,6 @@ namespace NativeCaller {
 	constexpr size_t E_HASH1     = 0x08;
 	constexpr size_t E_HANDLER   = 0x18;
 
-	struct CitizenEntry {
-		uint64_t hash0;
-		uint64_t hash1;
-		uint64_t handler;
-		uintptr_t slot;
-	};
-
 	class CNativeCaller {
 		uintptr_t m_queueVA = 0;
 		uintptr_t m_caveVA  = 0;
@@ -58,13 +50,10 @@ namespace NativeCaller {
 
 		mutable std::mutex m_mtx;
 
-		CitizenNativeCore::SCitizenCore m_core{};
-		std::vector<CitizenEntry> m_citizen;
 		std::unordered_map<uint64_t, uint64_t> m_handlerCache;
 
 	public:
 		bool IsReady() const { return m_ready; }
-		const CitizenNativeCore::SCitizenCore& GetCitizenCore() const { return m_core; }
 		HANDLE   GetHookProc()        const { return Mem.ProcHandle; }
 		DWORD    GetHookPid()         const { return Mem.ProcId; }
 		uintptr_t GetQueueBase()      const { return m_queueVA; }
@@ -87,22 +76,8 @@ namespace NativeCaller {
 				if (m_queueVA) { VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_queueVA), 0, MEM_RELEASE); m_queueVA = 0; }
 			}
 			m_slotVA = m_origFn = 0;
-			m_core = {};
-			m_citizen.clear();
 			m_handlerCache.clear();
 			m_ready = false;
-		}
-
-		uint64_t CitizenLookup(uint64_t hash) const {
-			const uint32_t low32 = static_cast<uint32_t>(hash & 0xFFFFFFFFULL);
-			for (const auto& e : m_citizen) {
-				if (e.handler < 0x10000ULL) continue;
-				if (e.hash0 == hash || e.hash1 == hash ||
-					static_cast<uint32_t>(e.hash0 & 0xFFFFFFFFULL) == low32 ||
-					static_cast<uint32_t>(e.hash1 & 0xFFFFFFFFULL) == low32)
-					return e.handler;
-			}
-			return 0;
 		}
 
 		uint64_t FollowStub(uintptr_t va) const {
@@ -256,8 +231,7 @@ namespace NativeCaller {
 						   const std::vector<uint64_t>& args, int timeoutMs) {
 			if (!queue || args.size() > 8) return 0;
 
-			uint64_t handler = CitizenLookup(hash);
-			if (!handler) handler = PatternResolve(hash);
+			uint64_t handler = PatternResolve(hash);
 			if (!handler) return 0;
 
 			uint64_t argBuf[8]{};
@@ -321,122 +295,7 @@ namespace NativeCaller {
 				return;
 			}
 
-			m_core = CitizenNativeCore::Resolve(Mem.ProcHandle, Mem.ProcId);
-			if (!m_core.valid) {
-				DebugLog(xorstr("NativeCaller: citizen core resolve failed\n"));
-				return;
-			}
-
-			const uintptr_t entriesBegin = Mem.Read<uintptr_t>(m_core.nativeTable);
-			const uintptr_t entriesEnd   = Mem.Read<uintptr_t>(m_core.nativeTable + 8);
-			if (entriesEnd <= entriesBegin) return;
-			const size_t entryCount = (entriesEnd - entriesBegin) / 8;
-			if (entryCount < 64) {
-				DebugLog(xorstr("NativeCaller: entry count too small (%zu)\n"), entryCount);
-				return;
-			}
-
-			m_citizen.clear();
-			m_citizen.reserve(entryCount);
-
-			const uintptr_t base = Mem.ModBase;
-			const uintptr_t end  = base + Mem.ModBaseSize;
-
-			std::vector<std::pair<uintptr_t, uintptr_t>> anchors;
-			for (size_t i = 0; i < entryCount; ++i) {
-				const uintptr_t ent = Mem.Read<uintptr_t>(entriesBegin + i * 8);
-				if (!ent || ent < 0x10000ULL) continue;
-				if (!CitizenNativeCore::IsPlausibleNativeEntry(Mem.ProcHandle, ent)) continue;
-
-				CitizenEntry ce{};
-				ce.hash0   = Mem.Read<uint64_t>(ent + E_HASH0);
-				ce.hash1   = Mem.Read<uint64_t>(ent + E_HASH1);
-				ce.handler = Mem.Read<uint64_t>(ent + E_HANDLER);
-				ce.slot    = ent + E_HANDLER;
-				m_citizen.push_back(ce);
-
-				if (ce.handler >= base && ce.handler < end)
-					anchors.emplace_back(ce.slot, static_cast<uintptr_t>(ce.handler));
-			}
-
-			const uint64_t ggtHandler = CitizenLookup(Natives::GET_GAME_TIMER);
-			if (!ggtHandler) {
-				DebugLog(xorstr("NativeCaller: GET_GAME_TIMER not in citizen table\n"));
-				return;
-			}
-			if (anchors.empty()) {
-				DebugLog(xorstr("NativeCaller: no anchor candidates\n"));
-				return;
-			}
-
-			const auto sc = ShellcodeBuilder::buildCitizenShellcode();
-			const size_t scLen = sc.buffer.size();
-
-			uintptr_t queueVA = 0, caveVA = 0, foundSlot = 0, foundOrig = 0;
-
-			for (const auto& [slot, orig] : anchors) {
-				if (queueVA) { VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(queueVA), 0, MEM_RELEASE); queueVA = 0; }
-				if (caveVA)  { VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(caveVA),  0, MEM_RELEASE); caveVA  = 0; }
-
-				queueVA = reinterpret_cast<uintptr_t>(
-					VirtualAllocEx(Mem.ProcHandle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
-				caveVA = reinterpret_cast<uintptr_t>(
-					VirtualAllocEx(Mem.ProcHandle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
-				if (!queueVA || !caveVA) continue;
-
-				std::vector<uint8_t> code = sc.buffer;
-				std::memcpy(code.data() + sc.PATCH_QUEUE,    &queueVA, 8);
-				std::memcpy(code.data() + sc.PATCH_ORIGFUNC, &orig,    8);
-
-				if (!Mem.WriteRaw(caveVA, code.data(), scLen)) continue;
-				if (!Mem.WriteProtected<uintptr_t>(slot, caveVA)) continue;
-
-				Mem.Write<uint8_t>(queueVA + Q_TRIGGER, 0);
-				Mem.Write<uint8_t>(queueVA + Q_DONE,    0);
-				Mem.Write<uint64_t>(queueVA + Q_HANDLER,  ggtHandler);
-				Mem.Write<uint32_t>(queueVA + Q_ARGCOUNT, 0);
-				Mem.Write<uint8_t>(queueVA + Q_TRIGGER, 1);
-
-				bool ok = false;
-				for (int w = 0; w < 10; ++w) {
-					Sleep(10);
-					if (Mem.Read<uint8_t>(queueVA + Q_DONE)) {
-						ok = Mem.Read<uint64_t>(queueVA + Q_RESULT) != 0;
-						break;
-					}
-				}
-
-				Mem.WriteProtected<uintptr_t>(slot, orig);
-
-				if (ok) {
-					foundSlot = slot;
-					foundOrig = orig;
-					DebugLog(xorstr("NativeCaller: anchor OK @ slot 0x%p\n"), (void*)slot);
-					break;
-				}
-			}
-
-			if (!foundSlot) {
-				if (queueVA) VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(queueVA), 0, MEM_RELEASE);
-				if (caveVA)  VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(caveVA),  0, MEM_RELEASE);
-				DebugLog(xorstr("NativeCaller: no working anchor\n"));
-				return;
-			}
-
-			std::vector<uint8_t> finalCode = sc.buffer;
-			std::memcpy(finalCode.data() + sc.PATCH_QUEUE,    &queueVA,   8);
-			std::memcpy(finalCode.data() + sc.PATCH_ORIGFUNC, &foundOrig, 8);
-			Mem.WriteRaw(caveVA, finalCode.data(), scLen);
-			Mem.WriteProtected<uintptr_t>(foundSlot, caveVA);
-
-			m_queueVA = queueVA;
-			m_caveVA  = caveVA;
-			m_slotVA  = foundSlot;
-			m_origFn  = foundOrig;
-			m_build   = DetectBuild();
-			m_ready   = true;
-
-			DebugLog(xorstr("NativeCaller: active build=%d\n"), m_build);
+			DebugLog(xorstr("NativeCaller: init disabled (citizen resolver removed)\n"));
 		}
 	};
 

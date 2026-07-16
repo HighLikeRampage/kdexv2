@@ -201,12 +201,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 {
 	g_hInstance = hInst;
 	CreateDebugConsole();
-	printf("[main] WinMain enter, pid=%lu\n", GetCurrentProcessId());
-	fflush(stdout);
 	if (UIAccess::RelaunchElevated()) return 0;
 	if (UIAccess::RelaunchWithUIAccess()) return 0;
-	printf("[main] continuing without relaunch, uiAccess=%d\n", (int)UIAccess::HasUIAccess());
-	fflush(stdout);
 	atexit(ClearLoggedState);
 
 	CheatThread(NULL);

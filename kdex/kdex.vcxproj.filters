@@ -516,9 +516,6 @@
     <ClInclude Include="game\Core\SDK\Natives\Natives.hpp">
       <Filter>game\Core\SDK\Natives</Filter>
     </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\CitizenNativeCore.hpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClInclude>
     <ClInclude Include="Globals.hpp">
       <Filter>framework</Filter>
     </ClInclude>
