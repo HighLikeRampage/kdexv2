@@ -137,7 +137,10 @@ namespace NativeCaller {
 			auto isHandler = [&](uint64_t a) {
 				if (!isCode(a)) return false;
 				const uint8_t b = Mem.Read<uint8_t>(a);
-				return b == 0x55 || b == 0x48 || b == 0x4C || b == 0x49 || b == 0xE9 || b == 0xEB;
+				return b == 0x55 || b == 0x48 || b == 0x4C || b == 0x49 ||
+					   b == 0xE9 || b == 0xEB ||
+					   b == 0x40 || b == 0x53 || b == 0x56 || b == 0x57 ||
+					   b == 0x41;
 			};
 
 			uint64_t cur = va;
@@ -196,7 +199,9 @@ namespace NativeCaller {
 					if (isCode(n)) { cur = n; continue; }
 				}
 
-				return isHandler(cur) ? cur : 0;
+				if (isHandler(cur)) return cur;
+				if (isCode(cur)) return cur;
+				return 0;
 			}
 			return 0;
 		}
