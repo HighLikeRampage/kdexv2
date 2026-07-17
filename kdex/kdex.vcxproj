@@ -80,7 +80,15 @@
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;freetype.lib;ws2_32.lib;libcurl.lib;delayimp.lib;kernel32.lib;user32.lib;gdi32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;Crypt32.lib;Wldap32.lib;Normaliz.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DelayLoadDLLs>Wldap32.dll;Normaliz.dll;Crypt32.dll</DelayLoadDLLs>
       <AdditionalManifestFiles>app.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <AdditionalOptions>/EMITTOOLVERSIONINFO:NO /EMITPOGOPHASEINFO /Brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <PostBuildEvent>
+      <Command>del /q "$(OutDir)$(TargetName).lib" "$(OutDir)$(TargetName).exp" "$(OutDir)$(TargetName).pdb" 2&gt;nul
+powershell -NoProfile -ExecutionPolicy Bypass -File "$(ProjectDir)scripts\mangle_pe.ps1" -Path "$(OutDir)$(TargetName).exe"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -111,7 +119,15 @@
       <SetChecksum>false</SetChecksum>
       <StripPrivateSymbols>
       </StripPrivateSymbols>
+      <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <AdditionalOptions>/EMITTOOLVERSIONINFO:NO /EMITPOGOPHASEINFO /Brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <PostBuildEvent>
+      <Command>del /q "$(OutDir)$(TargetName).lib" "$(OutDir)$(TargetName).exp" "$(OutDir)$(TargetName).pdb" 2&gt;nul
+powershell -NoProfile -ExecutionPolicy Bypass -File "$(ProjectDir)scripts\mangle_pe.ps1" -Path "$(OutDir)$(TargetName).exe"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
