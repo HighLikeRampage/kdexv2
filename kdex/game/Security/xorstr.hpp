@@ -11,11 +11,17 @@
 #define JM_XORSTR_DISABLE_AVX_INTRINSICS
 
 #if !defined(JM_XORSTR_CIPHER)
+// Cipher 0 is the only mode with a constexpr string_storage constructor,
+// so it is the only mode that keeps the plaintext literal out of .rdata.
+// The salt + second-layer key added below make its XOR much harder to peel
+// back statically without switching to a runtime-only cipher.
 #define JM_XORSTR_CIPHER 0
 #endif
 
+#define JM_XORSTR_SALT_ (static_cast<std::uint32_t>((__COUNTER__ + 1u) * 2654435761u) ^ static_cast<std::uint32_t>(__LINE__ * 40503u) ^ 0x9E3779B9u)
+
 #define xorstr_(str)                                             \
-    ::jm::make_xorstr(                                           \
+    ::jm::make_xorstr<JM_XORSTR_SALT_>(                          \
         []() { return str; },                                    \
         std::make_index_sequence<sizeof(str) / sizeof(*str)>{},  \
         std::make_index_sequence<::jm::detail::_cipher_key_count<JM_XORSTR_CIPHER, ::jm::detail::_buffer_size<sizeof(str)>()>::value>{})
@@ -261,18 +267,38 @@ namespace jm
 			std::uint32_t value = Seed;
 			for ( char c : __TIME__ )
 				value = static_cast< std::uint32_t >( ( value ^ c ) * 16777619ull );
+			for ( char c : __DATE__ )
+				value = static_cast< std::uint32_t >( ( value ^ static_cast<std::uint32_t>( c ) ) * 2246822519ull );
+			value ^= ( value >> 13 );
+			value = static_cast< std::uint32_t >( value * 3266489917ull );
+			value ^= ( value >> 15 );
 			return value;
 		}
 
-		template<std::size_t S>
+		template<std::size_t S, std::uint32_t Salt>
 		constexpr std::uint64_t key8( )
 		{
-			constexpr auto first_part = key4<2166136261 + S>( );
-			constexpr auto second_part = key4<first_part>( );
-			return ( static_cast< std::uint64_t >( first_part ) << 32 ) | second_part;
+			constexpr auto first_part = key4<2166136261u + static_cast<std::uint32_t>( S ) + Salt>( );
+			constexpr auto second_part = key4<first_part ^ ( Salt * 0x85EBCA6Bu )>( );
+			constexpr auto third_part = key4<second_part ^ static_cast<std::uint32_t>( S * 0xC2B2AE35u )>( );
+			return ( static_cast< std::uint64_t >( first_part ^ third_part ) << 32 ) | ( second_part ^ ( third_part * 0x27D4EB2Fu ) );
 		}
 
-		template<class T, int Cipher, class... KeyTypes>
+		template<std::uint32_t Salt>
+		constexpr std::uint64_t second_layer_key( std::size_t idx )
+		{
+			std::uint64_t v = 0xCBF29CE484222325ull ^ ( static_cast<std::uint64_t>( Salt ) * 0x100000001B3ull );
+			v ^= static_cast<std::uint64_t>( idx + 1 );
+			v *= 0x100000001B3ull;
+			v ^= ( v >> 33 );
+			v *= 0xFF51AFD7ED558CCDull;
+			v ^= ( v >> 33 );
+			v *= 0xC4CEB9FE1A85EC53ull;
+			v ^= ( v >> 33 );
+			return v;
+		}
+
+		template<class T, int Cipher, std::uint32_t Salt, class... KeyTypes>
 		struct string_storage
 		{
 			std::uint64_t storage[ T::buffer_size ];
@@ -287,6 +313,8 @@ namespace jm
 						storage[ i / ( 8 / value_size ) ] ^=
 							( std::uint64_t { static_cast< cast_type >( T::str[ i ] ) }
 							  << ( ( i % ( 8 / value_size ) ) * 8 * value_size ) );
+					for ( std::size_t i = 0; i < T::buffer_size; ++i )
+						storage[ i ] ^= second_layer_key<Salt>( i );
 				} else if constexpr ( Cipher == 1 ) {
 					constexpr std::uint64_t key_arr[ sizeof...( KeyTypes ) ] = { KeyTypes::key... };
 					std::uint8_t key[16];
@@ -300,6 +328,8 @@ namespace jm
 						storage[ b * 2 ] = static_cast<std::uint64_t>( out[0] ) | ( static_cast<std::uint64_t>( out[1] ) << 8 ) | ( static_cast<std::uint64_t>( out[2] ) << 16 ) | ( static_cast<std::uint64_t>( out[3] ) << 24 ) | ( static_cast<std::uint64_t>( out[4] ) << 32 ) | ( static_cast<std::uint64_t>( out[5] ) << 40 ) | ( static_cast<std::uint64_t>( out[6] ) << 48 ) | ( static_cast<std::uint64_t>( out[7] ) << 56 );
 						storage[ b * 2 + 1 ] = static_cast<std::uint64_t>( out[8] ) | ( static_cast<std::uint64_t>( out[9] ) << 8 ) | ( static_cast<std::uint64_t>( out[10] ) << 16 ) | ( static_cast<std::uint64_t>( out[11] ) << 24 ) | ( static_cast<std::uint64_t>( out[12] ) << 32 ) | ( static_cast<std::uint64_t>( out[13] ) << 40 ) | ( static_cast<std::uint64_t>( out[14] ) << 48 ) | ( static_cast<std::uint64_t>( out[15] ) << 56 );
 					}
+					for ( std::size_t i = 0; i < T::buffer_size; ++i )
+						storage[ i ] ^= second_layer_key<Salt>( i );
 				} else if constexpr ( Cipher == 2 || Cipher == 3 ) {
 					constexpr std::uint64_t key_arr[ sizeof...( KeyTypes ) ] = { KeyTypes::key... };
 					std::uint32_t key32[8], nonce[6] = {};
@@ -326,12 +356,14 @@ namespace jm
 							if ( off % 8 == 0 ) st = ( st & 0xffffffff00000000ull ) | val; else st = ( st & 0xffffffffull ) | ( val << 32 );
 						}
 					}
+					for ( std::size_t i = 0; i < T::buffer_size; ++i )
+						storage[ i ] ^= second_layer_key<Salt>( i );
 				}
 			}
 		};
 
-		template<class T, class... KeyTypes>
-		struct string_storage<T, 0, KeyTypes...>
+		template<class T, std::uint32_t Salt, class... KeyTypes>
+		struct string_storage<T, 0, Salt, KeyTypes...>
 		{
 			std::uint64_t storage[ T::buffer_size ];
 
@@ -343,12 +375,14 @@ namespace jm
 					storage[ i / ( 8 / value_size ) ] ^=
 						( std::uint64_t { static_cast< cast_type >( T::str[ i ] ) }
 						  << ( ( i % ( 8 / value_size ) ) * 8 * value_size ) );
+				for ( std::size_t i = 0; i < T::buffer_size; ++i )
+					storage[ i ] ^= second_layer_key<Salt>( i );
 			}
 		};
 
 	}
 
-	template<class T, int Cipher, class... Keys>
+	template<class T, int Cipher, std::uint32_t Salt, class... Keys>
 	class xor_string
 	{
 		alignas( T::buffer_align ) std::uint64_t _storage[ T::buffer_size ];
@@ -389,14 +423,20 @@ namespace jm
 		XORSTR_FORCEINLINE void _copy( ) noexcept
 		{
 			if constexpr ( Cipher == 0 ) {
-				constexpr detail::string_storage<T, Cipher, Keys...> st;
+				constexpr detail::string_storage<T, Cipher, Salt, Keys...> st;
 				for ( std::size_t i = 0; i < T::buffer_size; ++i )
 					( const_cast< XORSTR_VOLATILE std::uint64_t * >( _storage ) )[ i ] = st.storage[ i ];
 			} else {
-				detail::string_storage<T, Cipher, Keys...> st;
+				detail::string_storage<T, Cipher, Salt, Keys...> st;
 				for ( std::size_t i = 0; i < T::buffer_size; ++i )
 					( const_cast< XORSTR_VOLATILE std::uint64_t * >( _storage ) )[ i ] = st.storage[ i ];
 			}
+		}
+
+		XORSTR_FORCEINLINE void _strip_second_layer( ) noexcept
+		{
+			for ( std::size_t i = 0; i < T::buffer_size; ++i )
+				( const_cast< XORSTR_VOLATILE std::uint64_t * >( _storage ) )[ i ] ^= detail::second_layer_key<Salt>( i );
 		}
 
 		XORSTR_FORCEINLINE void _decrypt_aes( ) noexcept
@@ -473,9 +513,12 @@ namespace jm
 #else
 				_crypt_128( keys, std::make_index_sequence<T::buffer_size / 2>{} );
 #endif
+				_strip_second_layer( );
 			} else if constexpr ( Cipher == 1 ) {
+				_strip_second_layer( );
 				_decrypt_aes( );
 			} else if constexpr ( Cipher == 2 || Cipher == 3 ) {
+				_strip_second_layer( );
 				_decrypt_chacha( );
 			}
 		}
@@ -497,7 +540,7 @@ namespace jm
 		}
 	};
 
-	template<class Tstr, std::size_t... StringIndices, std::size_t... KeyIndices>
+	template<std::uint32_t Salt, class Tstr, std::size_t... StringIndices, std::size_t... KeyIndices>
 	XORSTR_FORCEINLINE constexpr auto
 		make_xorstr( Tstr str_lambda,
 			std::index_sequence<StringIndices...>,
@@ -505,7 +548,8 @@ namespace jm
 	{
 		return xor_string<detail::tstring_<str_lambda( )[ StringIndices ]...>,
 			JM_XORSTR_CIPHER,
-			detail::_ki<KeyIndices, detail::key8<KeyIndices>( )>...>{};
+			Salt,
+			detail::_ki<KeyIndices, detail::key8<KeyIndices, Salt>( )>...>{};
 	}
 
 }
