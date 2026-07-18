@@ -552,6 +552,59 @@ namespace jm
 			detail::_ki<KeyIndices, detail::key8<KeyIndices, Salt>( )>...>{};
 	}
 
+	namespace lite {
+
+		template<std::size_t N>
+		struct encrypted
+		{
+			char data[N];
+
+			XORSTR_FORCEINLINE void decrypt( char* out, std::uint32_t salt ) const noexcept
+			{
+				std::uint32_t k = salt ^ 0x9E3779B9u;
+				for ( std::size_t i = 0; i < N; ++i ) {
+					k = k * 1103515245u + 12345u;
+					k ^= ( k >> 13 );
+					out[i] = static_cast<char>( static_cast<std::uint8_t>( data[i] ) ^ static_cast<std::uint8_t>( ( k >> 16 ) & 0xffu ) );
+				}
+			}
+		};
+
+		template<std::size_t N>
+		constexpr encrypted<N> encrypt( const char ( &s )[N], std::uint32_t salt ) noexcept
+		{
+			encrypted<N> r{};
+			std::uint32_t k = salt ^ 0x9E3779B9u;
+			for ( std::size_t i = 0; i < N; ++i ) {
+				k = k * 1103515245u + 12345u;
+				k ^= ( k >> 13 );
+				r.data[i] = static_cast<char>( static_cast<std::uint8_t>( s[i] ) ^ static_cast<std::uint8_t>( ( k >> 16 ) & 0xffu ) );
+			}
+			return r;
+		}
+
+	}
+
 }
+
+// Lightweight xorstr variant. Same compile-time-encrypt / runtime-decrypt
+// principle as xorstr(), but the template only depends on the string LENGTH,
+// not the content. That collapses N unique instantiations to O(distinct
+// lengths), so a header with tens of thousands of entries (native patterns,
+// hash names) compiles in seconds instead of hours.
+//
+// Each call site gets a distinct salt via __COUNTER__ + __LINE__, so identical
+// strings at different sites still encrypt to different bytes. The decrypt
+// buffer is thread_local so returned pointers stay valid until the next
+// xorstr_lite call in the same thread.
+#define JM_XORSTR_LITE_SALT_ (static_cast<std::uint32_t>((__COUNTER__ + 1u) * 2246822519u) ^ static_cast<std::uint32_t>(__LINE__ * 40503u) ^ 0xBF58476Du)
+
+#define xorstr_lite(str) ([]() -> const char* {                            \
+        constexpr std::uint32_t _xls_salt = JM_XORSTR_LITE_SALT_;          \
+        static constexpr auto _xls_enc = ::jm::lite::encrypt( str, _xls_salt ); \
+        thread_local char _xls_dec[sizeof(str)];                           \
+        _xls_enc.decrypt( _xls_dec, _xls_salt );                           \
+        return _xls_dec;                                                   \
+    }())
 
 #endif

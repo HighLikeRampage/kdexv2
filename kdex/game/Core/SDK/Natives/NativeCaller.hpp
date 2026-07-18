@@ -309,7 +309,7 @@ namespace NativeCaller {
 				m_handlerCache[hash] = 0; return 0;
 			}
 
-			const std::string_view* pat = Natives::findPatternForBuild(n->second, m_build);
+			const std::string* pat = Natives::findPatternForBuild(n->second, m_build);
 			if (!pat || pat->empty()) {
 				if (g_TraceInvoke) DebugLog(xorstr("[NC] pattern: %s no signature for build %d\n"), n->second.data(), m_build);
 				m_handlerCache[hash] = 0; return 0;

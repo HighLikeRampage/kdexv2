@@ -1,20 +1,22 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 #include <string_view>
 #include <unordered_map>
+#include <Security/xorstr.hpp>
 
 namespace Natives {
 
     struct NativePattern {
-        std::string_view canonical;
-        std::unordered_map<int, std::string_view> variants;
+        std::string canonical;
+        std::unordered_map<int, std::string> variants;
     };
 
-    extern const std::unordered_map<std::string_view, NativePattern> CROSSMAP_NATIVES;
+    extern const std::unordered_map<std::string, NativePattern> CROSSMAP_NATIVES;
 
-    const NativePattern* findNativePattern(std::string_view name);
+    const NativePattern* findNativePattern(std::string name);
 
-    const std::string_view* findPatternForBuild(std::string_view name, int build);
+    const std::string* findPatternForBuild(std::string name, int build);
 
 }
