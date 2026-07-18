@@ -782,10 +782,8 @@ namespace Gui {
 
             ImGui_ImplDX11_NewFrame();
             ImGui_ImplWin32_NewFrame();
-            ImGui::NewFrame();
 
             if (s_ll_eat_mouse.load()) {
-
                 int rdx = s_raw_dx.exchange(0);
                 int rdy = s_raw_dy.exchange(0);
                 if (rdx != 0 || rdy != 0) {
@@ -796,13 +794,15 @@ namespace Gui {
                     s_virt_mouse_x = ImClamp(s_virt_mouse_x + (float)rdx, 0.f, maxX);
                     s_virt_mouse_y = ImClamp(s_virt_mouse_y + (float)rdy, 0.f, maxY);
                 }
-
-
-                ImGui::GetIO().MousePos = ImVec2(s_virt_mouse_x, s_virt_mouse_y);
-
-
+                ImGui::GetIO().AddMousePosEvent(s_virt_mouse_x, s_virt_mouse_y);
                 ImGui::GetIO().MouseDrawCursor = true;
+            } else {
+                ImGui::GetIO().MouseDrawCursor = false;
+            }
 
+            ImGui::NewFrame();
+
+            if (s_ll_eat_mouse.load()) {
                 RECT wr;
                 if (GetWindowRect(hwnd, &wr)) {
                     LONG cx = wr.left + (wr.right - wr.left) / 2;
@@ -810,8 +810,6 @@ namespace Gui {
                     RECT clip = { cx, cy, cx + 1, cy + 1 };
                     ClipCursor(&clip);
                 }
-            } else {
-                ImGui::GetIO().MouseDrawCursor = false;
             }
 
             bool is_auth_phase = (var->auth.current_screen == auth_screen::spinner_pre ||
