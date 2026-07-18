@@ -119,14 +119,12 @@ static LRESULT CALLBACK OverlayMouseLLProc(int nCode, WPARAM wParam, LPARAM lPar
     bool injected = (mh->flags & LLMHF_INJECTED) != 0;
 
     if (wParam == WM_MOUSEMOVE) {
-        if (!injected) {
-            if (s_last_hw_valid) {
-                s_raw_dx.fetch_add((int)(mh->pt.x - s_last_hw_pt.x));
-                s_raw_dy.fetch_add((int)(mh->pt.y - s_last_hw_pt.y));
-            }
-            s_last_hw_pt    = mh->pt;
-            s_last_hw_valid = true;
+        if (!injected && s_last_hw_valid) {
+            s_raw_dx.fetch_add((int)(mh->pt.x - s_last_hw_pt.x));
+            s_raw_dy.fetch_add((int)(mh->pt.y - s_last_hw_pt.y));
         }
+        s_last_hw_pt    = mh->pt;
+        s_last_hw_valid = true;
 
         return 1;
     }
@@ -824,6 +822,13 @@ namespace Gui {
 
 
                 ImGui::GetIO().MouseDrawCursor = true;
+
+                RECT wr;
+                if (GetWindowRect(hwnd, &wr)) {
+                    LONG cx = wr.left + (wr.right - wr.left) / 2;
+                    LONG cy = wr.top + (wr.bottom - wr.top) / 2;
+                    SetCursorPos(cx, cy);
+                }
             } else {
                 ImGui::GetIO().MouseDrawCursor = false;
             }
