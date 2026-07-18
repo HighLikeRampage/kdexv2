@@ -1,66 +1,7 @@
-
-
-
-
-
-
-
-
-
 #include "d3dx9.h"
 
 #ifndef __D3DX9TEX_H__
 #define __D3DX9TEX_H__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define D3DX_FILTER_NONE             (1 << 0)
 #define D3DX_FILTER_POINT            (2 << 0)
@@ -80,42 +21,9 @@
 #define D3DX_FILTER_SRGB_OUT         (2 << 21)
 #define D3DX_FILTER_SRGB             (3 << 21)
 
-
-
-
-
-
 #define D3DX_SKIP_DDS_MIP_LEVELS_MASK   0x1F
 #define D3DX_SKIP_DDS_MIP_LEVELS_SHIFT  26
 #define D3DX_SKIP_DDS_MIP_LEVELS(levels, filter) ((((levels) & D3DX_SKIP_DDS_MIP_LEVELS_MASK) << D3DX_SKIP_DDS_MIP_LEVELS_SHIFT) | ((filter) == D3DX_DEFAULT ? D3DX_FILTER_BOX : (filter)))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define D3DX_NORMALMAP_MIRROR_U     (1 << 16)
 #define D3DX_NORMALMAP_MIRROR_V     (2 << 16)
@@ -123,44 +31,11 @@
 #define D3DX_NORMALMAP_INVERTSIGN   (8 << 16)
 #define D3DX_NORMALMAP_COMPUTE_OCCLUSION (16 << 16)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #define D3DX_CHANNEL_RED            (1 << 0)
 #define D3DX_CHANNEL_BLUE           (1 << 1)
 #define D3DX_CHANNEL_GREEN          (1 << 2)
 #define D3DX_CHANNEL_ALPHA          (1 << 3)
 #define D3DX_CHANNEL_LUMINANCE      (1 << 4)
-
-
-
-
-
-
-
-
-
-
 
 typedef enum _D3DXIMAGE_FILEFORMAT
 {
@@ -171,64 +46,17 @@ typedef enum _D3DXIMAGE_FILEFORMAT
     D3DXIFF_DDS         = 4,
     D3DXIFF_PPM         = 5,
     D3DXIFF_DIB         = 6,
-    D3DXIFF_HDR         = 7,       
-    D3DXIFF_PFM         = 8,       
+    D3DXIFF_HDR         = 7,
+    D3DXIFF_PFM         = 8,
     D3DXIFF_FORCE_DWORD = 0x7fffffff
 
 } D3DXIMAGE_FILEFORMAT;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-typedef VOID (WINAPI *LPD3DXFILL2D)(D3DXVECTOR4 *pOut, 
+typedef VOID (WINAPI *LPD3DXFILL2D)(D3DXVECTOR4 *pOut,
     CONST D3DXVECTOR2 *pTexCoord, CONST D3DXVECTOR2 *pTexelSize, LPVOID pData);
 
-typedef VOID (WINAPI *LPD3DXFILL3D)(D3DXVECTOR4 *pOut, 
+typedef VOID (WINAPI *LPD3DXFILL3D)(D3DXVECTOR4 *pOut,
     CONST D3DXVECTOR3 *pTexCoord, CONST D3DXVECTOR3 *pTexelSize, LPVOID pData);
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 typedef struct _D3DXIMAGE_INFO
 {
@@ -242,42 +70,11 @@ typedef struct _D3DXIMAGE_INFO
 
 } D3DXIMAGE_INFO;
 
-
-
-
-
 #ifdef __cplusplus
 extern "C" {
-#endif 
-
-
-
-
-
+#endif
 
 ;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXGetImageInfoFromFileA(
@@ -294,7 +91,6 @@ HRESULT WINAPI
 #else
 #define D3DXGetImageInfoFromFile D3DXGetImageInfoFromFileA
 #endif
-
 
 HRESULT WINAPI
     D3DXGetImageInfoFromResourceA(
@@ -314,58 +110,11 @@ HRESULT WINAPI
 #define D3DXGetImageInfoFromResource D3DXGetImageInfoFromResourceA
 #endif
 
-
 HRESULT WINAPI
     D3DXGetImageInfoFromFileInMemory(
         LPCVOID                   pSrcData,
         UINT                      SrcDataSize,
         D3DXIMAGE_INFO*           pSrcInfo);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXLoadSurfaceFromFileA(
@@ -395,8 +144,6 @@ HRESULT WINAPI
 #define D3DXLoadSurfaceFromFile D3DXLoadSurfaceFromFileA
 #endif
 
-
-
 HRESULT WINAPI
     D3DXLoadSurfaceFromResourceA(
         LPDIRECT3DSURFACE9        pDestSurface,
@@ -421,14 +168,11 @@ HRESULT WINAPI
         D3DCOLOR                  ColorKey,
         D3DXIMAGE_INFO*           pSrcInfo);
 
-
 #ifdef UNICODE
 #define D3DXLoadSurfaceFromResource D3DXLoadSurfaceFromResourceW
 #else
 #define D3DXLoadSurfaceFromResource D3DXLoadSurfaceFromResourceA
 #endif
-
-
 
 HRESULT WINAPI
     D3DXLoadSurfaceFromFileInMemory(
@@ -442,37 +186,6 @@ HRESULT WINAPI
         D3DCOLOR                  ColorKey,
         D3DXIMAGE_INFO*           pSrcInfo);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 HRESULT WINAPI
     D3DXLoadSurfaceFromSurface(
         LPDIRECT3DSURFACE9        pDestSurface,
@@ -483,41 +196,6 @@ HRESULT WINAPI
         CONST RECT*               pSrcRect,
         DWORD                     Filter,
         D3DCOLOR                  ColorKey);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXLoadSurfaceFromMemory(
@@ -531,26 +209,6 @@ HRESULT WINAPI
         CONST RECT*               pSrcRect,
         DWORD                     Filter,
         D3DCOLOR                  ColorKey);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXSaveSurfaceToFileA(
@@ -574,25 +232,6 @@ HRESULT WINAPI
 #define D3DXSaveSurfaceToFile D3DXSaveSurfaceToFileA
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 HRESULT WINAPI
     D3DXSaveSurfaceToFileInMemory(
         LPD3DXBUFFER*             ppDestBuf,
@@ -600,50 +239,6 @@ HRESULT WINAPI
         LPDIRECT3DSURFACE9        pSrcSurface,
         CONST PALETTEENTRY*       pSrcPalette,
         CONST RECT*               pSrcRect);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXLoadVolumeFromFileA(
@@ -672,7 +267,6 @@ HRESULT WINAPI
 #else
 #define D3DXLoadVolumeFromFile D3DXLoadVolumeFromFileA
 #endif
-
 
 HRESULT WINAPI
     D3DXLoadVolumeFromResourceA(
@@ -704,8 +298,6 @@ HRESULT WINAPI
 #define D3DXLoadVolumeFromResource D3DXLoadVolumeFromResourceA
 #endif
 
-
-
 HRESULT WINAPI
     D3DXLoadVolumeFromFileInMemory(
         LPDIRECT3DVOLUME9         pDestVolume,
@@ -718,37 +310,6 @@ HRESULT WINAPI
         D3DCOLOR                  ColorKey,
         D3DXIMAGE_INFO*           pSrcInfo);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 HRESULT WINAPI
     D3DXLoadVolumeFromVolume(
         LPDIRECT3DVOLUME9         pDestVolume,
@@ -759,45 +320,6 @@ HRESULT WINAPI
         CONST D3DBOX*             pSrcBox,
         DWORD                     Filter,
         D3DCOLOR                  ColorKey);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXLoadVolumeFromMemory(
@@ -812,27 +334,6 @@ HRESULT WINAPI
         CONST D3DBOX*             pSrcBox,
         DWORD                     Filter,
         D3DCOLOR                  ColorKey);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXSaveVolumeToFileA(
@@ -856,26 +357,6 @@ HRESULT WINAPI
 #define D3DXSaveVolumeToFile D3DXSaveVolumeToFileA
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 HRESULT WINAPI
     D3DXSaveVolumeToFileInMemory(
         LPD3DXBUFFER*             ppDestBuf,
@@ -883,33 +364,6 @@ HRESULT WINAPI
         LPDIRECT3DVOLUME9         pSrcVolume,
         CONST PALETTEENTRY*       pSrcPalette,
         CONST D3DBOX*             pSrcBox);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXCheckTextureRequirements(
@@ -940,32 +394,6 @@ HRESULT WINAPI
         DWORD                     Usage,
         D3DFORMAT*                pFormat,
         D3DPOOL                   Pool);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXCreateTexture(
@@ -1000,72 +428,6 @@ HRESULT WINAPI
         D3DPOOL                   Pool,
         LPDIRECT3DVOLUMETEXTURE9* ppVolumeTexture);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 HRESULT WINAPI
     D3DXCreateTextureFromFileA(
         LPDIRECT3DDEVICE9         pDevice,
@@ -1083,7 +445,6 @@ HRESULT WINAPI
 #else
 #define D3DXCreateTextureFromFile D3DXCreateTextureFromFileA
 #endif
-
 
 HRESULT WINAPI
     D3DXCreateCubeTextureFromFileA(
@@ -1103,7 +464,6 @@ HRESULT WINAPI
 #define D3DXCreateCubeTextureFromFile D3DXCreateCubeTextureFromFileA
 #endif
 
-
 HRESULT WINAPI
     D3DXCreateVolumeTextureFromFileA(
         LPDIRECT3DDEVICE9         pDevice,
@@ -1121,9 +481,6 @@ HRESULT WINAPI
 #else
 #define D3DXCreateVolumeTextureFromFile D3DXCreateVolumeTextureFromFileA
 #endif
-
-
-
 
 HRESULT WINAPI
     D3DXCreateTextureFromResourceA(
@@ -1145,7 +502,6 @@ HRESULT WINAPI
 #define D3DXCreateTextureFromResource D3DXCreateTextureFromResourceA
 #endif
 
-
 HRESULT WINAPI
     D3DXCreateCubeTextureFromResourceA(
         LPDIRECT3DDEVICE9         pDevice,
@@ -1166,7 +522,6 @@ HRESULT WINAPI
 #define D3DXCreateCubeTextureFromResource D3DXCreateCubeTextureFromResourceA
 #endif
 
-
 HRESULT WINAPI
     D3DXCreateVolumeTextureFromResourceA(
         LPDIRECT3DDEVICE9         pDevice,
@@ -1186,9 +541,6 @@ HRESULT WINAPI
 #else
 #define D3DXCreateVolumeTextureFromResource D3DXCreateVolumeTextureFromResourceA
 #endif
-
-
-
 
 HRESULT WINAPI
     D3DXCreateTextureFromFileExA(
@@ -1230,7 +582,6 @@ HRESULT WINAPI
 #define D3DXCreateTextureFromFileEx D3DXCreateTextureFromFileExA
 #endif
 
-
 HRESULT WINAPI
     D3DXCreateCubeTextureFromFileExA(
         LPDIRECT3DDEVICE9         pDevice,
@@ -1268,7 +619,6 @@ HRESULT WINAPI
 #else
 #define D3DXCreateCubeTextureFromFileEx D3DXCreateCubeTextureFromFileExA
 #endif
-
 
 HRESULT WINAPI
     D3DXCreateVolumeTextureFromFileExA(
@@ -1312,9 +662,6 @@ HRESULT WINAPI
 #define D3DXCreateVolumeTextureFromFileEx D3DXCreateVolumeTextureFromFileExA
 #endif
 
-
-
-
 HRESULT WINAPI
     D3DXCreateTextureFromResourceExA(
         LPDIRECT3DDEVICE9         pDevice,
@@ -1357,7 +704,6 @@ HRESULT WINAPI
 #define D3DXCreateTextureFromResourceEx D3DXCreateTextureFromResourceExA
 #endif
 
-
 HRESULT WINAPI
     D3DXCreateCubeTextureFromResourceExA(
         LPDIRECT3DDEVICE9         pDevice,
@@ -1397,7 +743,6 @@ HRESULT WINAPI
 #else
 #define D3DXCreateCubeTextureFromResourceEx D3DXCreateCubeTextureFromResourceExA
 #endif
-
 
 HRESULT WINAPI
     D3DXCreateVolumeTextureFromResourceExA(
@@ -1443,9 +788,6 @@ HRESULT WINAPI
 #define D3DXCreateVolumeTextureFromResourceEx D3DXCreateVolumeTextureFromResourceExA
 #endif
 
-
-
-
 HRESULT WINAPI
     D3DXCreateTextureFromFileInMemory(
         LPDIRECT3DDEVICE9         pDevice,
@@ -1466,9 +808,6 @@ HRESULT WINAPI
         LPCVOID                   pSrcData,
         UINT                      SrcDataSize,
         LPDIRECT3DVOLUMETEXTURE9* ppVolumeTexture);
-
-
-
 
 HRESULT WINAPI
     D3DXCreateTextureFromFileInMemoryEx(
@@ -1524,26 +863,6 @@ HRESULT WINAPI
         PALETTEENTRY*             pPalette,
         LPDIRECT3DVOLUMETEXTURE9* ppVolumeTexture);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 HRESULT WINAPI
     D3DXSaveTextureToFileA(
         LPCSTR                    pDestFile,
@@ -1564,55 +883,12 @@ HRESULT WINAPI
 #define D3DXSaveTextureToFile D3DXSaveTextureToFileA
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 HRESULT WINAPI
     D3DXSaveTextureToFileInMemory(
         LPD3DXBUFFER*             ppDestBuf,
         D3DXIMAGE_FILEFORMAT      DestFormat,
         LPDIRECT3DBASETEXTURE9    pSrcTexture,
         CONST PALETTEENTRY*       pSrcPalette);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXFilterTexture(
@@ -1623,25 +899,6 @@ HRESULT WINAPI
 
 #define D3DXFilterCubeTexture D3DXFilterTexture
 #define D3DXFilterVolumeTexture D3DXFilterTexture
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXFillTexture(
@@ -1661,59 +918,20 @@ HRESULT WINAPI
         LPD3DXFILL3D              pFunction,
         LPVOID                    pData);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-HRESULT WINAPI 
+HRESULT WINAPI
     D3DXFillTextureTX(
         LPDIRECT3DTEXTURE9        pTexture,
         LPD3DXTEXTURESHADER       pTextureShader);
-
 
 HRESULT WINAPI
     D3DXFillCubeTextureTX(
         LPDIRECT3DCUBETEXTURE9    pCubeTexture,
         LPD3DXTEXTURESHADER       pTextureShader);
-                                                
-                                                        
-HRESULT WINAPI 
+
+HRESULT WINAPI
     D3DXFillVolumeTextureTX(
         LPDIRECT3DVOLUMETEXTURE9  pVolumeTexture,
         LPD3DXTEXTURESHADER       pTextureShader);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT WINAPI
     D3DXComputeNormalMap(
@@ -1724,12 +942,8 @@ HRESULT WINAPI
         DWORD                     Channel,
         FLOAT                     Amplitude);
 
-
-
-
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
-#endif 
-
+#endif

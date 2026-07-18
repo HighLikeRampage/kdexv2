@@ -1,21 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef OTSVG_H_
 #define OTSVG_H_
 
@@ -27,219 +9,22 @@
 #error "so that freetype.h of FreeType 2 is found first."
 #endif
 
-
 FT_BEGIN_HEADER
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef FT_Error
   (*SVG_Lib_Init_Func)( FT_Pointer  *data_pointer );
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef void
   (*SVG_Lib_Free_Func)( FT_Pointer  *data_pointer );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef FT_Error
   (*SVG_Lib_Render_Func)( FT_GlyphSlot  slot,
                           FT_Pointer   *data_pointer );
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef FT_Error
   (*SVG_Lib_Preset_Slot_Func)( FT_GlyphSlot  slot,
                                FT_Bool       cache,
                                FT_Pointer   *state );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct SVG_RendererHooks_
   {
@@ -250,52 +35,6 @@ FT_BEGIN_HEADER
     SVG_Lib_Preset_Slot_Func  preset_slot;
 
   } SVG_RendererHooks;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_SVG_DocumentRec_
   {
@@ -313,24 +52,8 @@ FT_BEGIN_HEADER
 
   } FT_SVG_DocumentRec;
 
-
-  
-
-
-
-
-
-
-
-
-
-
   typedef struct FT_SVG_DocumentRec_*  FT_SVG_Document;
-
 
 FT_END_HEADER
 
-#endif 
-
-
-
+#endif

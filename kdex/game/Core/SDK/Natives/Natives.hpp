@@ -1420,7 +1420,6 @@ namespace Natives {
     constexpr uint64_t ANIMPOSTFX_STOP_ALL                                          = 0xB4EDDC19532BFB85;
     constexpr uint64_t ANIMPOSTFX_STOP_AND_FLUSH_REQUESTS                           = 0xD2209BE128B5418C;
 
-
     constexpr uint64_t CREATE_MOBILE_PHONE                                          = 0xA4E8E696C532FBC7;
     constexpr uint64_t DESTROY_MOBILE_PHONE                                         = 0x3BC861DF703E5097;
     constexpr uint64_t SET_MOBILE_PHONE_SCALE                                       = 0xCBDD322A73D6D932;
@@ -1446,7 +1445,6 @@ namespace Natives {
     constexpr uint64_t CELL_CAM_SET_SELFIE_MODE_HEAD_PITCH_OFFSET                   = 0x466DA42C89865553;
     constexpr uint64_t CELL_CAM_IS_CHAR_VISIBLE_NO_FACE_CHECK                       = 0x439E9BC95B7E7FBE;
     constexpr uint64_t GET_MOBILE_PHONE_RENDER_ID                                   = 0xB4A53E05F68B6FA1;
-
 
     constexpr uint64_t BEGIN_TEXT_COMMAND_BUSYSPINNER_ON                            = 0xABA17D7CE615ADBF;
     constexpr uint64_t END_TEXT_COMMAND_BUSYSPINNER_ON                              = 0xBD12F8228410D9B4;
@@ -1962,7 +1960,6 @@ namespace Natives {
     constexpr uint64_t SET_DIRECTOR_MODE_AVAILABLE                                  = 0x04655F9D075D0AE5;
     constexpr uint64_t HIDE_HUDMARKERS_THIS_FRAME                                   = 0x243296A510B562B6;
 
-
     constexpr uint64_t GET_INTERIOR_HEADING                                         = 0xF49B58631D9E22D9;
     constexpr uint64_t GET_INTERIOR_LOCATION_AND_NAMEHASH                           = 0x252BDC06B73FA6EA;
     constexpr uint64_t GET_INTERIOR_GROUP_ID                                        = 0xE4A84ABF135EF91A;
@@ -2009,7 +2006,6 @@ namespace Natives {
     constexpr uint64_t DISABLE_METRO_SYSTEM                                         = 0x9E6542F0CE8E70A3;
     constexpr uint64_t SET_IS_EXTERIOR_ONLY                                         = 0x7241CCB7D020DB69;
 
-
     constexpr uint64_t CREATE_ITEMSET                                               = 0x35AD299F50D91B24;
     constexpr uint64_t DESTROY_ITEMSET                                              = 0xDE18220B1C183EDA;
     constexpr uint64_t IS_ITEMSET_VALID                                             = 0xB1B1EA596344DFAB;
@@ -2020,7 +2016,6 @@ namespace Natives {
     constexpr uint64_t IS_IN_ITEMSET                                                = 0x2D0FC594D1E9C107;
     constexpr uint64_t CLEAN_ITEMSET                                                = 0x41BC0D722FC04221;
 
-
     constexpr uint64_t LOBBY_AUTO_MULTIPLAYER_MENU                                  = 0xF2CA003F167E21D2;
     constexpr uint64_t LOBBY_AUTO_MULTIPLAYER_FREEMODE                              = 0xEF7D17BC6C85264C;
     constexpr uint64_t LOBBY_SET_AUTO_MULTIPLAYER                                   = 0xB0C56BD3D808D863;
@@ -2030,11 +2025,9 @@ namespace Natives {
     constexpr uint64_t LOBBY_SET_AUTO_MP_RANDOM_JOB                                 = 0xC7E7181C09F33B69;
     constexpr uint64_t SHUTDOWN_SESSION_CLEARS_AUTO_MULTIPLAYER                     = 0xFA1E0E893D915215;
 
-
     constexpr uint64_t LOCALIZATION_GET_SYSTEM_LANGUAGE                             = 0x497420E022796B3F;
     constexpr uint64_t GET_CURRENT_LANGUAGE                                         = 0x2BDD44CC428A7EAE;
     constexpr uint64_t LOCALIZATION_GET_SYSTEM_DATE_TYPE                            = 0xA8AE43AEC1A61314;
-
 
     constexpr uint64_t GET_ALLOCATED_STACK_SIZE                                     = 0x8B3CA62B1EF19B62;
     constexpr uint64_t GET_NUMBER_OF_FREE_STACKS_OF_THIS_SIZE                       = 0xFEAD16FC8F9DFC0F;
@@ -2368,7 +2361,6 @@ namespace Natives {
     constexpr uint64_t GET_CONTENT_ID_INDEX                                         = 0xECF041186C5A94DC;
     constexpr uint64_t SET_CONTENT_PROP_TYPE_                                       = 0xBA4583AF4C678A9B;
     constexpr uint64_t GET_CONTENT_PROP_TYPE_                                       = 0x8BAF8AD59F47AAFC;
-
 
     constexpr uint64_t NETWORK_INITIALIZE_CASH                                      = 0x3DA5ECD1A56CBA6D;
     constexpr uint64_t NETWORK_DELETE_CHARACTER                                     = 0x05A50AF38947EB8D;
@@ -2723,7 +2715,6 @@ namespace Natives {
     constexpr uint64_t HAS_VC_WITHDRAWAL_COMPLETED                                  = 0xE154B48B68EF72BC;
     constexpr uint64_t WAS_VC_WITHDRAWAL_SUCCESSFUL                                 = 0x6FCF8DDEA146C45B;
 
-
     constexpr uint64_t NET_GAMESERVER_USE_SERVER_TRANSACTIONS                       = 0x7D2708796355B20B;
     constexpr uint64_t NET_GAMESERVER_CATALOG_ITEM_IS_VALID                         = 0xBD4D7EAF8A30F637;
     constexpr uint64_t NET_GAMESERVER_CATALOG_ITEM_KEY_IS_VALID                     = 0x247F0F73A182EA0B;
@@ -2765,7 +2756,6 @@ namespace Natives {
     constexpr uint64_t NET_GAMESERVER_TRANSFER_WALLET_TO_BANK_GET_STATUS            = 0x350AA5EBC03D3BD2;
     constexpr uint64_t NET_GAMESERVER_TRANSFER_CASH_SET_TELEMETRY_NONCE_SEED        = 0x498C1E05CE5F7877;
     constexpr uint64_t NET_GAMESERVER_SET_TELEMETRY_NONCE_SEED                      = 0x9507D4271988E1AE;
-
 
     constexpr uint64_t NETWORK_IS_SIGNED_IN                                         = 0x054354A99211EB96;
     constexpr uint64_t NETWORK_IS_SIGNED_ONLINE                                     = 0x1077788E268557C2;
@@ -3614,7 +3604,6 @@ namespace Natives {
     constexpr uint64_t NETWORK_GET_GAME_RESTART_REASON_                             = 0x7F7E8401F81CB65B;
     constexpr uint64_t NETWORK_CONFIRM_GAME_RESTART_                                = 0x0A141818CA2311AD;
 
-
     constexpr uint64_t CREATE_OBJECT                                                = 0x509D5878EB39E842;
     constexpr uint64_t CREATE_OBJECT_NO_OFFSET                                      = 0x9A294B2138ABB884;
     constexpr uint64_t DELETE_OBJECT                                                = 0x539E0AE3E6634B9F;
@@ -3782,7 +3771,6 @@ namespace Natives {
     constexpr uint64_t SET_IS_OBJECT_ARTICULATED                                    = 0x1C57C94A6446492A;
     constexpr uint64_t SET_IS_OBJECT_BALL                                           = 0xB5B7742424BD4445;
 
-
     constexpr uint64_t IS_CONTROL_ENABLED                                           = 0x1CEA6BFDF248E5D9;
     constexpr uint64_t IS_CONTROL_PRESSED                                           = 0xF3A21BCD95725A4A;
     constexpr uint64_t IS_CONTROL_RELEASED                                          = 0x648EE3E7F38877DD;
@@ -3831,7 +3819,6 @@ namespace Natives {
     constexpr uint64_t SHUTDOWN_PC_SCRIPTED_CONTROLS                                = 0x643ED62D5EA3BEBD;
     constexpr uint64_t ALLOW_ALTERNATIVE_SCRIPT_CONTROLS_LAYOUT                     = 0x7F4724035FDCA1DD;
     constexpr uint64_t GET_GAMEPAD_TYPE_                                            = 0x18E474F40EF05F10;
-
 
     constexpr uint64_t SET_ROADS_IN_AREA                                            = 0xBF1A602B5BA52FEE;
     constexpr uint64_t SET_ROADS_IN_ANGLED_AREA                                     = 0x1A5AA1208AF5DB59;
@@ -3893,7 +3880,6 @@ namespace Natives {
     constexpr uint64_t GET_APPROX_FLOOR_FOR_POINT                                   = 0x336511A34F2E5185;
     constexpr uint64_t GET_APPROX_FLOOR_FOR_AREA                                    = 0x3599D741C9AC6310;
     constexpr uint64_t CALCULATE_TRAVEL_DISTANCE_BETWEEN_POINTS                     = 0xADD95C7005C4A197;
-
 
     constexpr uint64_t CREATE_PED                                                   = 0xD49F9B0955C367DE;
     constexpr uint64_t DELETE_PED                                                   = 0x9614299DCB53E54B;
@@ -4510,7 +4496,6 @@ namespace Natives {
     constexpr uint64_t CLEAR_COVER_POINT_FOR_PED                                    = 0x637822DC2AFEEBF8;
     constexpr uint64_t SET_ALLOW_STUNT_JUMP_CAMERA                                  = 0xFAB944D4D481ACCB;
 
-
     constexpr uint64_t ADD_ROPE                                                     = 0xE832D760399EB220;
     constexpr uint64_t DELETE_ROPE                                                  = 0x52B4829281364649;
     constexpr uint64_t DELETE_CHILD_ROPE                                            = 0xAA5D6B1888E4DB20;
@@ -4560,7 +4545,6 @@ namespace Natives {
     constexpr uint64_t SET_USE_KINEMATIC_PHYSICS                                    = 0x15F944730C832252;
     constexpr uint64_t SET_IN_STUNT_MODE                                            = 0x9EBD751E5787BAF2;
     constexpr uint64_t SET_IN_ARENA_MODE                                            = 0xAA6A6098851C396F;
-
 
     constexpr uint64_t GET_PLAYER_PED                                               = 0x43A66C31C68491C0;
     constexpr uint64_t GET_PLAYER_PED_SCRIPT_INDEX                                  = 0x50FAC3A3E030A6E1;
@@ -4812,7 +4796,6 @@ namespace Natives {
     constexpr uint64_t REMOVE_SCRIPT_FIRE_POSITION                                  = 0x7148E0F43D11F0D9;
     constexpr uint64_t SET_SCRIPT_FIRE_POSITION                                     = 0x70A382ADEC069DD3;
 
-
     constexpr uint64_t REPLAY_START_EVENT                                           = 0x48621C9FCA3EBD28;
     constexpr uint64_t REPLAY_STOP_EVENT                                            = 0x81CBAE94390F9F89;
     constexpr uint64_t REPLAY_CANCEL_EVENT                                          = 0x13B350B8AD0EEE10;
@@ -4831,14 +4814,12 @@ namespace Natives {
     constexpr uint64_t IS_REPLAY_AVAILABLE                                          = 0x4282E08174868BE3;
     constexpr uint64_t IS_REPLAY_RECORD_SPACE_AVAILABLE                             = 0x33D47E85B476ABCD;
 
-
     constexpr uint64_t REGISTER_EFFECT_FOR_REPLAY_EDITOR                            = 0x7E2BD3EF6C205F09;
     constexpr uint64_t REPLAY_SYSTEM_HAS_REQUESTED_A_SCRIPT_CLEANUP                 = 0x95AB8B5C992C7B58;
     constexpr uint64_t SET_SCRIPTS_HAVE_CLEANED_UP_FOR_REPLAY_SYSTEM                = 0x5AD3932DAEB1E5D3;
     constexpr uint64_t SET_REPLAY_SYSTEM_PAUSED_FOR_SAVE                            = 0xE058175F8EAFE79A;
     constexpr uint64_t REPLAY_CONTROL_SHUTDOWN                                      = 0x3353D13F09307691;
     constexpr uint64_t ACTIVATE_ROCKSTAR_EDITOR                                     = 0x49DA8145672B2725;
-
 
     constexpr uint64_t SAVEMIGRATION_IS_MP_ENABLED                                  = 0x84B418E93894AC1C;
     constexpr uint64_t SAVEMIGRATION_MP_REQUEST_ACCOUNTS                            = 0x85F41F9225D08C72;
@@ -4847,7 +4828,6 @@ namespace Natives {
     constexpr uint64_t SAVEMIGRATION_MP_GET_ACCOUNT                                 = 0xFCE2747EEF1D05FC;
     constexpr uint64_t SAVEMIGRATION_MP_REQUEST_STATUS                              = 0xE5E9746A66359F9D;
     constexpr uint64_t SAVEMIGRATION_MP_GET_STATUS                                  = 0x690B76BD2763E068;
-
 
     constexpr uint64_t REQUEST_SCRIPT                                               = 0x6EB5F71AA68F2E8E;
     constexpr uint64_t SET_SCRIPT_AS_NO_LONGER_NEEDED                               = 0xC90D2DCACD56184C;
@@ -4885,11 +4865,9 @@ namespace Natives {
     constexpr uint64_t BG_GET_SCRIPT_ID_FROM_NAME_HASH                              = 0x829CD22E043A2577;
     constexpr uint64_t SEND_TU_SCRIPT_EVENT_NEW_                                    = 0x71A6F836422FDD2B;
 
-
     constexpr uint64_t REGISTER_SCRIPT_VARIABLE                                     = 0x40EB1EFD921822BC;
     constexpr uint64_t UNREGISTER_SCRIPT_VARIABLE                                   = 0x340A36A700E99699;
     constexpr uint64_t FORCE_CHECK_SCRIPT_VARIABLES                                 = 0x8E580AB902917360;
-
 
     constexpr uint64_t START_SHAPE_TEST_LOS_PROBE                                   = 0x7EE9F5D83DD4F90E;
     constexpr uint64_t START_EXPENSIVE_SYNCHRONOUS_SHAPE_TEST_LOS_PROBE             = 0x377906D8A31E5586;
@@ -4902,7 +4880,6 @@ namespace Natives {
     constexpr uint64_t GET_SHAPE_TEST_RESULT                                        = 0x3D87450E15D98694;
     constexpr uint64_t GET_SHAPE_TEST_RESULT_INCLUDING_MATERIAL                     = 0x65287525D951F6BE;
     constexpr uint64_t RELEASE_SCRIPT_GUID_FROM_ENTITY                              = 0x2B3334BCA57CD799;
-
 
     constexpr uint64_t SC_INBOX_GET_TOTAL_NUM_MESSAGES                              = 0x03A93FF1A2CA0864;
     constexpr uint64_t SC_INBOX_GET_MESSAGE_TYPE_AT_INDEX                           = 0xBB8EA16ECBC976C4;
@@ -4983,7 +4960,6 @@ namespace Natives {
     constexpr uint64_t SC_PAUSE_NEWS_SHUTDOWN                                       = 0xEA95C0853A27888E;
     constexpr uint64_t SC_ACHIEVEMENT_INFO_STATUS                                   = 0x225798743970412B;
     constexpr uint64_t SC_HAS_ACHIEVEMENT_BEEN_PASSED                               = 0x418DC16FAE452C1C;
-
 
     constexpr uint64_t STAT_CLEAR_SLOT_FOR_RELOAD                                   = 0xEB0A72181D4AA4AD;
     constexpr uint64_t STAT_LOAD                                                    = 0xA651443F437B1CE6;
@@ -5316,7 +5292,6 @@ namespace Natives {
     constexpr uint64_t PLAYSTATS_LOBBY_STARTED_                                     = 0xDC00BB9C27347A8F;
     constexpr uint64_t PLAYSTATS_CREATOR_END_                                       = 0x72289B8C78B02962;
 
-
     constexpr uint64_t LOAD_ALL_OBJECTS_NOW                                         = 0xBD6E84632DD4CB3F;
     constexpr uint64_t LOAD_SCENE                                                   = 0x4448EB75B4904BDB;
     constexpr uint64_t NETWORK_UPDATE_LOAD_SCENE                                    = 0xC4582015556D1C46;
@@ -5440,7 +5415,6 @@ namespace Natives {
     constexpr uint64_t GET_TOTAL_MODEL_COST_                                        = 0x4A91423C04BAADA1;
     constexpr uint64_t SET_ISLAND_ENABLED                                           = 0x9A9D1BA639675CF1;
     constexpr uint64_t SET_SPHERICAL_STREAM_DISTANT_HILODS_THIS_FRAME_              = 0x68F1C25420D5F6AA;
-
 
     constexpr uint64_t TASK_PAUSE                                                   = 0xE73A266DB0CA9042;
     constexpr uint64_t TASK_STAND_STILL                                             = 0x919BE13EED931959;
@@ -5753,7 +5727,6 @@ namespace Natives {
     constexpr uint64_t IS_PED_BEING_ARRESTED                                        = 0x90A09F3A45FED688;
     constexpr uint64_t UNCUFF_PED                                                   = 0x67406F2C8F87FC4F;
     constexpr uint64_t IS_PED_CUFFED                                                = 0x74E559B3BC910685;
-
 
     constexpr uint64_t CREATE_VEHICLE                                               = 0xAF35D0D2583051B0;
     constexpr uint64_t DELETE_VEHICLE                                               = 0xEA386986E786A54F;
@@ -6527,7 +6500,6 @@ namespace Natives {
     constexpr uint64_t GET_VEHICLE_MAX_EXHAUST_BONE_COUNT_                          = 0x3EE18B00CD86C54F;
     constexpr uint64_t GET_VEHICLE_EXHAUST_BONE_                                    = 0xE728F090D538CB18;
 
-
     constexpr uint64_t GET_WATER_HEIGHT                                             = 0xF6829842C06AE524;
     constexpr uint64_t GET_WATER_HEIGHT_NO_WAVES                                    = 0x8EE6B53CE13A9794;
     constexpr uint64_t TEST_PROBE_AGAINST_WATER                                     = 0xFFA5D878809819DB;
@@ -6540,7 +6512,6 @@ namespace Natives {
     constexpr uint64_t GET_DEEP_OCEAN_SCALER                                        = 0x2B2A2CC86778B619;
     constexpr uint64_t SET_CALMED_WAVE_HEIGHT_SCALER                                = 0x547237AA71AB44DE;
     constexpr uint64_t RESET_DEEP_OCEAN_SCALER                                      = 0x5E5E99285AE812DB;
-
 
     constexpr uint64_t ENABLE_LASER_SIGHT_RENDERING                                 = 0xC8B46D7727D864AA;
     constexpr uint64_t GET_WEAPON_COMPONENT_TYPE                                    = 0x0DB57B41EC1DB083;
@@ -6666,7 +6637,6 @@ namespace Natives {
     constexpr uint64_t SET_CAN_PED_SELECT_INVENTORY_WEAPON                          = 0xB4771B9AAF4E68E4;
     constexpr uint64_t SET_CAN_PED_SELECT_ALL_WEAPONS                               = 0xEFF296097FF1E509;
 
-
     constexpr uint64_t GET_ZONE_AT_COORDS                                           = 0x27040C25DE6CB2F4;
     constexpr uint64_t GET_ZONE_FROM_NAME_ID                                        = 0x98CD1D2934B76CC1;
     constexpr uint64_t GET_ZONE_POPSCHEDULE                                         = 0x4334BC40AA0CB4BB;
@@ -6675,7 +6645,6 @@ namespace Natives {
     constexpr uint64_t OVERRIDE_POPSCHEDULE_VEHICLE_MODEL                           = 0x5F7D596BAC2E7777;
     constexpr uint64_t CLEAR_POPSCHEDULE_OVERRIDE_VEHICLE_MODEL                     = 0x5C0DE367AA0D911C;
     constexpr uint64_t GET_HASH_OF_MAP_AREA_AT_COORDS                               = 0x7EE64D51E8498728;
-
 
     constexpr uint64_t ADD_MINIMAP_OVERLAY                                          = 0x4AFD2499;
     constexpr uint64_t ADD_HEALTH_CONFIG                                            = 0x9CBFD5C1;
@@ -7457,5 +7426,4 @@ namespace Natives {
     constexpr uint64_t ADD_BLIP_FOR_AREA_                                           = 0x6228F159;
     constexpr uint64_t SET_PED_HEAD_OVERLAY_COLOR_                                  = 0x78935A27;
 
-
-} 
+}

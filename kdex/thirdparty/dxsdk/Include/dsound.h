@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 #define COM_NO_WINDOWS_H
 #include <objbase.h>
 #include <float.h>
@@ -14,24 +5,22 @@
 
 #ifndef DIRECTSOUND_VERSION
 
-#if (NTDDI_VERSION < NTDDI_WINXP) 
-#define DIRECTSOUND_VERSION 0x0700  
-#elif (NTDDI_VERSION < NTDDI_WINXPSP2 || NTDDI_VERSION == NTDDI_WS03) 
-#define DIRECTSOUND_VERSION 0x0800  
-#else 
-#define DIRECTSOUND_VERSION 0x0900  
+#if (NTDDI_VERSION < NTDDI_WINXP)
+#define DIRECTSOUND_VERSION 0x0700
+#elif (NTDDI_VERSION < NTDDI_WINXPSP2 || NTDDI_VERSION == NTDDI_WS03)
+#define DIRECTSOUND_VERSION 0x0800
+#else
+#define DIRECTSOUND_VERSION 0x0900
 #endif
 
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
 #ifndef __DSOUND_INCLUDED__
 #define __DSOUND_INCLUDED__
-
-
 
 #ifndef DX_SHARED_DEFINES
 
@@ -62,44 +51,28 @@ typedef D3DVECTOR *LPD3DVECTOR;
 #endif
 
 #define DX_SHARED_DEFINES
-#endif 
+#endif
 
-#define _FACDS  0x878   
+#define _FACDS  0x878
 #define MAKE_DSHRESULT(code)  MAKE_HRESULT(1, _FACDS, code)
-
 
 DEFINE_GUID(CLSID_DirectSound, 0x47d4d946, 0x62e8, 0x11cf, 0x93, 0xbc, 0x44, 0x45, 0x53, 0x54, 0x0, 0x0);
 
-
 DEFINE_GUID(CLSID_DirectSound8, 0x3901cc3f, 0x84b5, 0x4fa4, 0xba, 0x35, 0xaa, 0x81, 0x72, 0xb8, 0xa0, 0x9b);
-
 
 DEFINE_GUID(CLSID_DirectSoundCapture, 0xb0210780, 0x89cd, 0x11d0, 0xaf, 0x8, 0x0, 0xa0, 0xc9, 0x25, 0xcd, 0x16);
 
-
 DEFINE_GUID(CLSID_DirectSoundCapture8, 0xe4bcac13, 0x7f99, 0x4908, 0x9a, 0x8e, 0x74, 0xe3, 0xbf, 0x24, 0xb6, 0xe1);
-
 
 DEFINE_GUID(CLSID_DirectSoundFullDuplex, 0xfea4300c, 0x7959, 0x4147, 0xb2, 0x6a, 0x23, 0x77, 0xb9, 0xe7, 0xa9, 0x1d);
 
-
-
 DEFINE_GUID(DSDEVID_DefaultPlayback, 0xdef00000, 0x9c6d, 0x47ed, 0xaa, 0xf1, 0x4d, 0xda, 0x8f, 0x2b, 0x5c, 0x03);
-
 
 DEFINE_GUID(DSDEVID_DefaultCapture, 0xdef00001, 0x9c6d, 0x47ed, 0xaa, 0xf1, 0x4d, 0xda, 0x8f, 0x2b, 0x5c, 0x03);
 
-
 DEFINE_GUID(DSDEVID_DefaultVoicePlayback, 0xdef00002, 0x9c6d, 0x47ed, 0xaa, 0xf1, 0x4d, 0xda, 0x8f, 0x2b, 0x5c, 0x03);
 
-
 DEFINE_GUID(DSDEVID_DefaultVoiceCapture, 0xdef00003, 0x9c6d, 0x47ed, 0xaa, 0xf1, 0x4d, 0xda, 0x8f, 0x2b, 0x5c, 0x03);
-
-
-
-
-
-
 
 #ifdef __cplusplus
 struct IDirectSound;
@@ -109,11 +82,7 @@ struct IDirectSound3DBuffer;
 struct IDirectSoundCapture;
 struct IDirectSoundCaptureBuffer;
 struct IDirectSoundNotify;
-#endif 
-
-
-
-
+#endif
 
 #if DIRECTSOUND_VERSION >= 0x0800
 
@@ -133,11 +102,7 @@ struct IDirectSoundFXI3DL2Reverb;
 struct IDirectSoundCaptureFXAec;
 struct IDirectSoundCaptureFXNoiseSuppress;
 struct IDirectSoundFullDuplex;
-#endif 
-
-
-
-
+#endif
 
 #define IDirectSoundCapture8            IDirectSoundCapture
 #define IDirectSound3DListener8         IDirectSound3DListener
@@ -156,7 +121,7 @@ struct IDirectSoundFullDuplex;
 #define IDirectSoundCaptureFXNoiseSuppress8 IDirectSoundCaptureFXNoiseSuppress
 #define IDirectSoundFullDuplex8         IDirectSoundFullDuplex
 
-#endif 
+#endif
 
 typedef struct IDirectSound                 *LPDIRECTSOUND;
 typedef struct IDirectSoundBuffer           *LPDIRECTSOUNDBUFFER;
@@ -201,11 +166,7 @@ typedef struct IDirectSoundCaptureFXAec8    *LPDIRECTSOUNDCAPTUREFXAEC8;
 typedef struct IDirectSoundCaptureFXNoiseSuppress8 *LPDIRECTSOUNDCAPTUREFXNOISESUPPRESS8;
 typedef struct IDirectSoundFullDuplex8      *LPDIRECTSOUNDFULLDUPLEX8;
 
-#endif 
-
-
-
-
+#endif
 
 #if DIRECTSOUND_VERSION >= 0x0800
 
@@ -226,21 +187,17 @@ typedef struct IDirectSoundFullDuplex8      *LPDIRECTSOUNDFULLDUPLEX8;
 #define IID_IDirectSoundCaptureFXNoiseSuppress8 IID_IDirectSoundCaptureFXNoiseSuppress
 #define IID_IDirectSoundFullDuplex8         IID_IDirectSoundFullDuplex
 
-#endif 
-
-
-
-
+#endif
 
 #ifndef _LPCWAVEFORMATEX_DEFINED
 #define _LPCWAVEFORMATEX_DEFINED
 typedef const WAVEFORMATEX *LPCWAVEFORMATEX;
-#endif 
+#endif
 
 #ifndef __LPCGUID_DEFINED__
 #define __LPCGUID_DEFINED__
 typedef const GUID *LPCGUID;
-#endif 
+#endif
 
 typedef LPDIRECTSOUND *LPLPDIRECTSOUND;
 typedef LPDIRECTSOUNDBUFFER *LPLPDIRECTSOUNDBUFFER;
@@ -255,11 +212,7 @@ typedef LPDIRECTSOUND8 *LPLPDIRECTSOUND8;
 typedef LPDIRECTSOUNDBUFFER8 *LPLPDIRECTSOUNDBUFFER8;
 typedef LPDIRECTSOUNDCAPTURE8 *LPLPDIRECTSOUNDCAPTURE8;
 typedef LPDIRECTSOUNDCAPTUREBUFFER8 *LPLPDIRECTSOUNDCAPTUREBUFFER8;
-#endif 
-
-
-
-
+#endif
 
 typedef struct _DSCAPS
 {
@@ -319,13 +272,13 @@ typedef const DSBCAPS *LPCDSBCAPS;
 
     enum
     {
-        DSFXR_PRESENT,          
-        DSFXR_LOCHARDWARE,      
-        DSFXR_LOCSOFTWARE,      
-        DSFXR_UNALLOCATED,      
-        DSFXR_FAILED,           
-        DSFXR_UNKNOWN,          
-        DSFXR_SENDLOOP          
+        DSFXR_PRESENT,
+        DSFXR_LOCHARDWARE,
+        DSFXR_LOCSOFTWARE,
+        DSFXR_UNALLOCATED,
+        DSFXR_FAILED,
+        DSFXR_UNKNOWN,
+        DSFXR_SENDLOOP
     };
 
     typedef struct _DSCEFFECTDESC
@@ -345,7 +298,7 @@ typedef const DSBCAPS *LPCDSBCAPS;
     #define DSCFXR_LOCHARDWARE  0x00000010
     #define DSCFXR_LOCSOFTWARE  0x00000020
 
-#endif 
+#endif
 
 typedef struct _DSBUFFERDESC
 {
@@ -360,8 +313,6 @@ typedef struct _DSBUFFERDESC
 } DSBUFFERDESC, *LPDSBUFFERDESC;
 
 typedef const DSBUFFERDESC *LPCDSBUFFERDESC;
-
-
 
 typedef struct _DSBUFFERDESC1
 {
@@ -456,10 +407,6 @@ typedef struct _DSBPOSITIONNOTIFY
 
 typedef const DSBPOSITIONNOTIFY *LPCDSBPOSITIONNOTIFY;
 
-
-
-
-
 typedef BOOL (CALLBACK *LPDSENUMCALLBACKA)(LPGUID, LPCSTR, LPCSTR, LPVOID);
 typedef BOOL (CALLBACK *LPDSENUMCALLBACKW)(LPGUID, LPCWSTR, LPCWSTR, LPVOID);
 
@@ -490,43 +437,39 @@ extern HRESULT WINAPI DirectSoundFullDuplexCreate
 #define DirectSoundFullDuplexCreate8 DirectSoundFullDuplexCreate
 
 extern HRESULT WINAPI GetDeviceID(__in_opt LPCGUID pGuidSrc, __out LPGUID pGuidDest);
-#endif 
+#endif
 
 #ifdef UNICODE
 #define LPDSENUMCALLBACK            LPDSENUMCALLBACKW
 #define DirectSoundEnumerate        DirectSoundEnumerateW
 #define DirectSoundCaptureEnumerate DirectSoundCaptureEnumerateW
-#else 
+#else
 #define LPDSENUMCALLBACK            LPDSENUMCALLBACKA
 #define DirectSoundEnumerate        DirectSoundEnumerateA
 #define DirectSoundCaptureEnumerate DirectSoundCaptureEnumerateA
-#endif 
-
-
-
-
+#endif
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #ifndef IUnknown_QueryInterface
 #define IUnknown_QueryInterface(p,a,b)  (p)->lpVtbl->QueryInterface(p,a,b)
-#endif 
+#endif
 #ifndef IUnknown_AddRef
 #define IUnknown_AddRef(p)              (p)->lpVtbl->AddRef(p)
-#endif 
+#endif
 #ifndef IUnknown_Release
 #define IUnknown_Release(p)             (p)->lpVtbl->Release(p)
-#endif 
-#else 
+#endif
+#else
 #ifndef IUnknown_QueryInterface
 #define IUnknown_QueryInterface(p,a,b)  (p)->QueryInterface(a,b)
-#endif 
+#endif
 #ifndef IUnknown_AddRef
 #define IUnknown_AddRef(p)              (p)->AddRef()
-#endif 
+#endif
 #ifndef IUnknown_Release
 #define IUnknown_Release(p)             (p)->Release()
-#endif 
-#endif 
+#endif
+#endif
 
 #ifndef __IReferenceClock_INTERFACE_DEFINED__
 #define __IReferenceClock_INTERFACE_DEFINED__
@@ -541,12 +484,11 @@ DEFINE_GUID(IID_IReferenceClock, 0x56a86897, 0x0ad4, 0x11ce, 0xb0, 0x3a, 0x00, 0
 
 DECLARE_INTERFACE_(IReferenceClock, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(GetTime)              (THIS_ __out REFERENCE_TIME *pTime) PURE;
     STDMETHOD(AdviseTime)           (THIS_ REFERENCE_TIME rtBaseTime, REFERENCE_TIME rtStreamTime,
                                            HANDLE hEvent, __out LPDWORD pdwAdviseCookie) PURE;
@@ -555,7 +497,7 @@ DECLARE_INTERFACE_(IReferenceClock, IUnknown)
     STDMETHOD(Unadvise)             (THIS_ DWORD dwAdviseCookie) PURE;
 };
 
-#endif 
+#endif
 
 #ifndef IReferenceClock_QueryInterface
 
@@ -568,18 +510,14 @@ DECLARE_INTERFACE_(IReferenceClock, IUnknown)
 #define IReferenceClock_AdviseTime(p,a,b,c,d)      (p)->lpVtbl->AdviseTime(p,a,b,c,d)
 #define IReferenceClock_AdvisePeriodic(p,a,b,c,d)  (p)->lpVtbl->AdvisePeriodic(p,a,b,c,d)
 #define IReferenceClock_Unadvise(p,a)              (p)->lpVtbl->Unadvise(p,a)
-#else 
+#else
 #define IReferenceClock_GetTime(p,a)               (p)->GetTime(a)
 #define IReferenceClock_AdviseTime(p,a,b,c,d)      (p)->AdviseTime(a,b,c,d)
 #define IReferenceClock_AdvisePeriodic(p,a,b,c,d)  (p)->AdvisePeriodic(a,b,c,d)
 #define IReferenceClock_Unadvise(p,a)              (p)->Unadvise(a)
-#endif 
+#endif
 
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSound, 0x279AFA83, 0x4981, 0x11CE, 0xA5, 0x21, 0x00, 0x20, 0xAF, 0x0B, 0xE5, 0x60);
 
@@ -588,12 +526,11 @@ DEFINE_GUID(IID_IDirectSound, 0x279AFA83, 0x4981, 0x11CE, 0xA5, 0x21, 0x00, 0x20
 
 DECLARE_INTERFACE_(IDirectSound, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(CreateSoundBuffer)    (THIS_ __in LPCDSBUFFERDESC pcDSBufferDesc, __deref_out LPDIRECTSOUNDBUFFER *ppDSBuffer, __null LPUNKNOWN pUnkOuter) PURE;
     STDMETHOD(GetCaps)              (THIS_ __out LPDSCAPS pDSCaps) PURE;
     STDMETHOD(DuplicateSoundBuffer) (THIS_ __in LPDIRECTSOUNDBUFFER pDSBufferOriginal, __deref_out LPDIRECTSOUNDBUFFER *ppDSBufferDuplicate) PURE;
@@ -617,7 +554,7 @@ DECLARE_INTERFACE_(IDirectSound, IUnknown)
 #define IDirectSound_GetSpeakerConfig(p,a)       (p)->lpVtbl->GetSpeakerConfig(p,a)
 #define IDirectSound_SetSpeakerConfig(p,b)       (p)->lpVtbl->SetSpeakerConfig(p,b)
 #define IDirectSound_Initialize(p,a)             (p)->lpVtbl->Initialize(p,a)
-#else 
+#else
 #define IDirectSound_CreateSoundBuffer(p,a,b,c)  (p)->CreateSoundBuffer(a,b,c)
 #define IDirectSound_GetCaps(p,a)                (p)->GetCaps(a)
 #define IDirectSound_DuplicateSoundBuffer(p,a,b) (p)->DuplicateSoundBuffer(a,b)
@@ -626,13 +563,9 @@ DECLARE_INTERFACE_(IDirectSound, IUnknown)
 #define IDirectSound_GetSpeakerConfig(p,a)       (p)->GetSpeakerConfig(a)
 #define IDirectSound_SetSpeakerConfig(p,b)       (p)->SetSpeakerConfig(b)
 #define IDirectSound_Initialize(p,a)             (p)->Initialize(a)
-#endif 
+#endif
 
 #if DIRECTSOUND_VERSION >= 0x0800
-
-
-
-
 
 DEFINE_GUID(IID_IDirectSound8, 0xC50A7E93, 0xF395, 0x4834, 0x9E, 0xF6, 0x7F, 0xA9, 0x9D, 0xE5, 0x09, 0x66);
 
@@ -641,12 +574,11 @@ DEFINE_GUID(IID_IDirectSound8, 0xC50A7E93, 0xF395, 0x4834, 0x9E, 0xF6, 0x7F, 0xA
 
 DECLARE_INTERFACE_(IDirectSound8, IDirectSound)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(CreateSoundBuffer)    (THIS_ __in LPCDSBUFFERDESC pcDSBufferDesc, __out LPDIRECTSOUNDBUFFER *ppDSBuffer, __null LPUNKNOWN pUnkOuter) PURE;
     STDMETHOD(GetCaps)              (THIS_ __out LPDSCAPS pDSCaps) PURE;
     STDMETHOD(DuplicateSoundBuffer) (THIS_ __in LPDIRECTSOUNDBUFFER pDSBufferOriginal, __out LPDIRECTSOUNDBUFFER *ppDSBufferDuplicate) PURE;
@@ -656,7 +588,6 @@ DECLARE_INTERFACE_(IDirectSound8, IDirectSound)
     STDMETHOD(SetSpeakerConfig)     (THIS_ DWORD dwSpeakerConfig) PURE;
     STDMETHOD(Initialize)           (THIS_ __in_opt LPCGUID pcGuidDevice) PURE;
 
-    
     STDMETHOD(VerifyCertification)  (THIS_ __out LPDWORD pdwCertified) PURE;
 };
 
@@ -674,15 +605,11 @@ DECLARE_INTERFACE_(IDirectSound8, IDirectSound)
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSound8_VerifyCertification(p,a)           (p)->lpVtbl->VerifyCertification(p,a)
-#else 
+#else
 #define IDirectSound8_VerifyCertification(p,a)           (p)->VerifyCertification(a)
-#endif 
+#endif
 
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundBuffer, 0x279AFA85, 0x4981, 0x11CE, 0xA5, 0x21, 0x00, 0x20, 0xAF, 0x0B, 0xE5, 0x60);
 
@@ -691,12 +618,11 @@ DEFINE_GUID(IID_IDirectSoundBuffer, 0x279AFA85, 0x4981, 0x11CE, 0xA5, 0x21, 0x00
 
 DECLARE_INTERFACE_(IDirectSoundBuffer, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(GetCaps)              (THIS_ __out LPDSBCAPS pDSBufferCaps) PURE;
     STDMETHOD(GetCurrentPosition)   (THIS_ __out_opt LPDWORD pdwCurrentPlayCursor, __out_opt LPDWORD pdwCurrentWriteCursor) PURE;
     STDMETHOD(GetFormat)            (THIS_ __out_bcount_opt(dwSizeAllocated) LPWAVEFORMATEX pwfxFormat, DWORD dwSizeAllocated, __out_opt LPDWORD pdwSizeWritten) PURE;
@@ -743,7 +669,7 @@ DECLARE_INTERFACE_(IDirectSoundBuffer, IUnknown)
 #define IDirectSoundBuffer_Stop(p)                      (p)->lpVtbl->Stop(p)
 #define IDirectSoundBuffer_Unlock(p,a,b,c,d)            (p)->lpVtbl->Unlock(p,a,b,c,d)
 #define IDirectSoundBuffer_Restore(p)                   (p)->lpVtbl->Restore(p)
-#else 
+#else
 #define IDirectSoundBuffer_GetCaps(p,a)                 (p)->GetCaps(a)
 #define IDirectSoundBuffer_GetCurrentPosition(p,a,b)    (p)->GetCurrentPosition(a,b)
 #define IDirectSoundBuffer_GetFormat(p,a,b,c)           (p)->GetFormat(a,b,c)
@@ -762,13 +688,9 @@ DECLARE_INTERFACE_(IDirectSoundBuffer, IUnknown)
 #define IDirectSoundBuffer_Stop(p)                      (p)->Stop()
 #define IDirectSoundBuffer_Unlock(p,a,b,c,d)            (p)->Unlock(a,b,c,d)
 #define IDirectSoundBuffer_Restore(p)                   (p)->Restore()
-#endif 
+#endif
 
 #if DIRECTSOUND_VERSION >= 0x0800
-
-
-
-
 
 DEFINE_GUID(IID_IDirectSoundBuffer8, 0x6825a449, 0x7524, 0x4d82, 0x92, 0x0f, 0x50, 0xe3, 0x6a, 0xb3, 0xab, 0x1e);
 
@@ -777,12 +699,11 @@ DEFINE_GUID(IID_IDirectSoundBuffer8, 0x6825a449, 0x7524, 0x4d82, 0x92, 0x0f, 0x5
 
 DECLARE_INTERFACE_(IDirectSoundBuffer8, IDirectSoundBuffer)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(GetCaps)              (THIS_ __out LPDSBCAPS pDSBufferCaps) PURE;
     STDMETHOD(GetCurrentPosition)   (THIS_ __out_opt LPDWORD pdwCurrentPlayCursor, __out_opt LPDWORD pdwCurrentWriteCursor) PURE;
     STDMETHOD(GetFormat)            (THIS_ __out_bcount_opt(dwSizeAllocated) LPWAVEFORMATEX pwfxFormat, DWORD dwSizeAllocated, __out_opt LPDWORD pdwSizeWritten) PURE;
@@ -805,12 +726,10 @@ DECLARE_INTERFACE_(IDirectSoundBuffer8, IDirectSoundBuffer)
                                            __in_bcount_opt(dwAudioBytes2) LPVOID pvAudioPtr2, DWORD dwAudioBytes2) PURE;
     STDMETHOD(Restore)              (THIS) PURE;
 
-    
     STDMETHOD(SetFX)                (THIS_ DWORD dwEffectsCount, __in_ecount_opt(dwEffectsCount) LPDSEFFECTDESC pDSFXDesc, __out_ecount_opt(dwEffectsCount) LPDWORD pdwResultCodes) PURE;
     STDMETHOD(AcquireResources)     (THIS_ DWORD dwFlags, DWORD dwEffectsCount, __out_ecount(dwEffectsCount) LPDWORD pdwResultCodes) PURE;
     STDMETHOD(GetObjectInPath)      (THIS_ __in REFGUID rguidObject, DWORD dwIndex, __in REFGUID rguidInterface, __deref_out LPVOID *ppObject) PURE;
 };
-
 
 DEFINE_GUID(GUID_All_Objects, 0xaa114de5, 0xc262, 0x4169, 0xa1, 0xc8, 0x23, 0xd6, 0x98, 0xcc, 0x73, 0xb5);
 
@@ -841,17 +760,13 @@ DEFINE_GUID(GUID_All_Objects, 0xaa114de5, 0xc262, 0x4169, 0xa1, 0xc8, 0x23, 0xd6
 #define IDirectSoundBuffer8_SetFX(p,a,b,c)                  (p)->lpVtbl->SetFX(p,a,b,c)
 #define IDirectSoundBuffer8_AcquireResources(p,a,b,c)       (p)->lpVtbl->AcquireResources(p,a,b,c)
 #define IDirectSoundBuffer8_GetObjectInPath(p,a,b,c,d)      (p)->lpVtbl->GetObjectInPath(p,a,b,c,d)
-#else 
+#else
 #define IDirectSoundBuffer8_SetFX(p,a,b,c)                  (p)->SetFX(a,b,c)
 #define IDirectSoundBuffer8_AcquireResources(p,a,b,c)       (p)->AcquireResources(a,b,c)
 #define IDirectSoundBuffer8_GetObjectInPath(p,a,b,c,d)      (p)->GetObjectInPath(a,b,c,d)
-#endif 
+#endif
 
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSound3DListener, 0x279AFA84, 0x4981, 0x11CE, 0xA5, 0x21, 0x00, 0x20, 0xAF, 0x0B, 0xE5, 0x60);
 
@@ -860,12 +775,11 @@ DEFINE_GUID(IID_IDirectSound3DListener, 0x279AFA84, 0x4981, 0x11CE, 0xA5, 0x21, 
 
 DECLARE_INTERFACE_(IDirectSound3DListener, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)           (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)            (THIS) PURE;
     STDMETHOD_(ULONG,Release)           (THIS) PURE;
 
-    
     STDMETHOD(GetAllParameters)         (THIS_ __out LPDS3DLISTENER pListener) PURE;
     STDMETHOD(GetDistanceFactor)        (THIS_ __out D3DVALUE* pflDistanceFactor) PURE;
     STDMETHOD(GetDopplerFactor)         (THIS_ __out D3DVALUE* pflDopplerFactor) PURE;
@@ -904,7 +818,7 @@ DECLARE_INTERFACE_(IDirectSound3DListener, IUnknown)
 #define IDirectSound3DListener_SetRolloffFactor(p,a,b)          (p)->lpVtbl->SetRolloffFactor(p,a,b)
 #define IDirectSound3DListener_SetVelocity(p,a,b,c,d)           (p)->lpVtbl->SetVelocity(p,a,b,c,d)
 #define IDirectSound3DListener_CommitDeferredSettings(p)        (p)->lpVtbl->CommitDeferredSettings(p)
-#else 
+#else
 #define IDirectSound3DListener_GetAllParameters(p,a)            (p)->GetAllParameters(a)
 #define IDirectSound3DListener_GetDistanceFactor(p,a)           (p)->GetDistanceFactor(a)
 #define IDirectSound3DListener_GetDopplerFactor(p,a)            (p)->GetDopplerFactor(a)
@@ -920,11 +834,7 @@ DECLARE_INTERFACE_(IDirectSound3DListener, IUnknown)
 #define IDirectSound3DListener_SetRolloffFactor(p,a,b)          (p)->SetRolloffFactor(a,b)
 #define IDirectSound3DListener_SetVelocity(p,a,b,c,d)           (p)->SetVelocity(a,b,c,d)
 #define IDirectSound3DListener_CommitDeferredSettings(p)        (p)->CommitDeferredSettings()
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSound3DBuffer, 0x279AFA86, 0x4981, 0x11CE, 0xA5, 0x21, 0x00, 0x20, 0xAF, 0x0B, 0xE5, 0x60);
 
@@ -933,12 +843,11 @@ DEFINE_GUID(IID_IDirectSound3DBuffer, 0x279AFA86, 0x4981, 0x11CE, 0xA5, 0x21, 0x
 
 DECLARE_INTERFACE_(IDirectSound3DBuffer, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDS3DBUFFER pDs3dBuffer) PURE;
     STDMETHOD(GetConeAngles)        (THIS_ __out LPDWORD pdwInsideConeAngle, __out LPDWORD pdwOutsideConeAngle) PURE;
     STDMETHOD(GetConeOrientation)   (THIS_ __out D3DVECTOR* pvOrientation) PURE;
@@ -982,7 +891,7 @@ DECLARE_INTERFACE_(IDirectSound3DBuffer, IUnknown)
 #define IDirectSound3DBuffer_SetMaxDistance(p,a,b)          (p)->lpVtbl->SetMaxDistance(p,a,b)
 #define IDirectSound3DBuffer_SetMode(p,a,b)                 (p)->lpVtbl->SetMode(p,a,b)
 #define IDirectSound3DBuffer_SetVelocity(p,a,b,c,d)         (p)->lpVtbl->SetVelocity(p,a,b,c,d)
-#else 
+#else
 #define IDirectSound3DBuffer_GetAllParameters(p,a)          (p)->GetAllParameters(a)
 #define IDirectSound3DBuffer_GetConeAngles(p,a,b)           (p)->GetConeAngles(a,b)
 #define IDirectSound3DBuffer_GetConeOrientation(p,a)        (p)->GetConeOrientation(a)
@@ -1001,11 +910,7 @@ DECLARE_INTERFACE_(IDirectSound3DBuffer, IUnknown)
 #define IDirectSound3DBuffer_SetMaxDistance(p,a,b)          (p)->SetMaxDistance(a,b)
 #define IDirectSound3DBuffer_SetMode(p,a,b)                 (p)->SetMode(a,b)
 #define IDirectSound3DBuffer_SetVelocity(p,a,b,c,d)         (p)->SetVelocity(a,b,c,d)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundCapture, 0xb0210781, 0x89cd, 0x11d0, 0xaf, 0x8, 0x0, 0xa0, 0xc9, 0x25, 0xcd, 0x16);
 
@@ -1014,12 +919,11 @@ DEFINE_GUID(IID_IDirectSoundCapture, 0xb0210781, 0x89cd, 0x11d0, 0xaf, 0x8, 0x0,
 
 DECLARE_INTERFACE_(IDirectSoundCapture, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(CreateCaptureBuffer)  (THIS_ __in LPCDSCBUFFERDESC pcDSCBufferDesc, __deref_out LPDIRECTSOUNDCAPTUREBUFFER *ppDSCBuffer, __null LPUNKNOWN pUnkOuter) PURE;
     STDMETHOD(GetCaps)              (THIS_ __out LPDSCCAPS pDSCCaps) PURE;
     STDMETHOD(Initialize)           (THIS_ __in_opt LPCGUID pcGuidDevice) PURE;
@@ -1033,15 +937,11 @@ DECLARE_INTERFACE_(IDirectSoundCapture, IUnknown)
 #define IDirectSoundCapture_CreateCaptureBuffer(p,a,b,c)    (p)->lpVtbl->CreateCaptureBuffer(p,a,b,c)
 #define IDirectSoundCapture_GetCaps(p,a)                    (p)->lpVtbl->GetCaps(p,a)
 #define IDirectSoundCapture_Initialize(p,a)                 (p)->lpVtbl->Initialize(p,a)
-#else 
+#else
 #define IDirectSoundCapture_CreateCaptureBuffer(p,a,b,c)    (p)->CreateCaptureBuffer(a,b,c)
 #define IDirectSoundCapture_GetCaps(p,a)                    (p)->GetCaps(a)
 #define IDirectSoundCapture_Initialize(p,a)                 (p)->Initialize(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundCaptureBuffer, 0xb0210782, 0x89cd, 0x11d0, 0xaf, 0x8, 0x0, 0xa0, 0xc9, 0x25, 0xcd, 0x16);
 
@@ -1050,12 +950,11 @@ DEFINE_GUID(IID_IDirectSoundCaptureBuffer, 0xb0210782, 0x89cd, 0x11d0, 0xaf, 0x8
 
 DECLARE_INTERFACE_(IDirectSoundCaptureBuffer, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(GetCaps)              (THIS_ __out LPDSCBCAPS pDSCBCaps) PURE;
     STDMETHOD(GetCurrentPosition)   (THIS_ __out_opt LPDWORD pdwCapturePosition, __out_opt LPDWORD pdwReadPosition) PURE;
     STDMETHOD(GetFormat)            (THIS_ __out_bcount_opt(dwSizeAllocated) LPWAVEFORMATEX pwfxFormat, DWORD dwSizeAllocated, __out_opt LPDWORD pdwSizeWritten) PURE;
@@ -1084,7 +983,7 @@ DECLARE_INTERFACE_(IDirectSoundCaptureBuffer, IUnknown)
 #define IDirectSoundCaptureBuffer_Start(p,a)                    (p)->lpVtbl->Start(p,a)
 #define IDirectSoundCaptureBuffer_Stop(p)                       (p)->lpVtbl->Stop(p)
 #define IDirectSoundCaptureBuffer_Unlock(p,a,b,c,d)             (p)->lpVtbl->Unlock(p,a,b,c,d)
-#else 
+#else
 #define IDirectSoundCaptureBuffer_GetCaps(p,a)                  (p)->GetCaps(a)
 #define IDirectSoundCaptureBuffer_GetCurrentPosition(p,a,b)     (p)->GetCurrentPosition(a,b)
 #define IDirectSoundCaptureBuffer_GetFormat(p,a,b,c)            (p)->GetFormat(a,b,c)
@@ -1094,13 +993,9 @@ DECLARE_INTERFACE_(IDirectSoundCaptureBuffer, IUnknown)
 #define IDirectSoundCaptureBuffer_Start(p,a)                    (p)->Start(a)
 #define IDirectSoundCaptureBuffer_Stop(p)                       (p)->Stop()
 #define IDirectSoundCaptureBuffer_Unlock(p,a,b,c,d)             (p)->Unlock(a,b,c,d)
-#endif 
+#endif
 
 #if DIRECTSOUND_VERSION >= 0x0800
-
-
-
-
 
 DEFINE_GUID(IID_IDirectSoundCaptureBuffer8, 0x990df4, 0xdbb, 0x4872, 0x83, 0x3e, 0x6d, 0x30, 0x3e, 0x80, 0xae, 0xb6);
 
@@ -1109,12 +1004,11 @@ DEFINE_GUID(IID_IDirectSoundCaptureBuffer8, 0x990df4, 0xdbb, 0x4872, 0x83, 0x3e,
 
 DECLARE_INTERFACE_(IDirectSoundCaptureBuffer8, IDirectSoundCaptureBuffer)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(GetCaps)              (THIS_ __out LPDSCBCAPS pDSCBCaps) PURE;
     STDMETHOD(GetCurrentPosition)   (THIS_ __out_opt LPDWORD pdwCapturePosition, __out_opt LPDWORD pdwReadPosition) PURE;
     STDMETHOD(GetFormat)            (THIS_ __out_bcount_opt(dwSizeAllocated) LPWAVEFORMATEX pwfxFormat, DWORD dwSizeAllocated, __out_opt LPDWORD pdwSizeWritten) PURE;
@@ -1128,7 +1022,6 @@ DECLARE_INTERFACE_(IDirectSoundCaptureBuffer8, IDirectSoundCaptureBuffer)
     STDMETHOD(Unlock)               (THIS_ __in_bcount(dwAudioBytes1) LPVOID pvAudioPtr1, DWORD dwAudioBytes1,
                                            __in_bcount_opt(dwAudioBytes2) LPVOID pvAudioPtr2, DWORD dwAudioBytes2) PURE;
 
-    
     STDMETHOD(GetObjectInPath)      (THIS_ __in REFGUID rguidObject, DWORD dwIndex, __in REFGUID rguidInterface, __deref_out LPVOID *ppObject) PURE;
     STDMETHOD(GetFXStatus)          (DWORD dwEffectsCount, __out_ecount(dwEffectsCount) LPDWORD pdwFXStatus) PURE;
 };
@@ -1150,16 +1043,12 @@ DECLARE_INTERFACE_(IDirectSoundCaptureBuffer8, IDirectSoundCaptureBuffer)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundCaptureBuffer8_GetObjectInPath(p,a,b,c,d)       (p)->lpVtbl->GetObjectInPath(p,a,b,c,d)
 #define IDirectSoundCaptureBuffer8_GetFXStatus(p,a,b)               (p)->lpVtbl->GetFXStatus(p,a,b)
-#else 
+#else
 #define IDirectSoundCaptureBuffer8_GetObjectInPath(p,a,b,c,d)       (p)->GetObjectInPath(a,b,c,d)
 #define IDirectSoundCaptureBuffer8_GetFXStatus(p,a,b)               (p)->GetFXStatus(a,b)
-#endif 
+#endif
 
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundNotify, 0xb0210783, 0x89cd, 0x11d0, 0xaf, 0x8, 0x0, 0xa0, 0xc9, 0x25, 0xcd, 0x16);
 
@@ -1168,12 +1057,11 @@ DEFINE_GUID(IID_IDirectSoundNotify, 0xb0210783, 0x89cd, 0x11d0, 0xaf, 0x8, 0x0, 
 
 DECLARE_INTERFACE_(IDirectSoundNotify, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)           (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)            (THIS) PURE;
     STDMETHOD_(ULONG,Release)           (THIS) PURE;
 
-    
     STDMETHOD(SetNotificationPositions) (THIS_ DWORD dwPositionNotifies, __in_ecount(dwPositionNotifies) LPCDSBPOSITIONNOTIFY pcPositionNotifies) PURE;
 };
 
@@ -1183,13 +1071,9 @@ DECLARE_INTERFACE_(IDirectSoundNotify, IUnknown)
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundNotify_SetNotificationPositions(p,a,b)  (p)->lpVtbl->SetNotificationPositions(p,a,b)
-#else 
+#else
 #define IDirectSoundNotify_SetNotificationPositions(p,a,b)  (p)->SetNotificationPositions(a,b)
-#endif 
-
-
-
-
+#endif
 
 #ifndef _IKsPropertySet_
 #define _IKsPropertySet_
@@ -1197,7 +1081,7 @@ DECLARE_INTERFACE_(IDirectSoundNotify, IUnknown)
 #ifdef __cplusplus
 
 struct IKsPropertySet;
-#endif 
+#endif
 
 typedef struct IKsPropertySet *LPKSPROPERTYSET;
 
@@ -1211,12 +1095,11 @@ DEFINE_GUID(IID_IKsPropertySet, 0x31efac30, 0x515c, 0x11d0, 0xa9, 0xaa, 0x00, 0x
 
 DECLARE_INTERFACE_(IKsPropertySet, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)   (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)    (THIS) PURE;
     STDMETHOD_(ULONG,Release)   (THIS) PURE;
 
-    
     STDMETHOD(Get)              (THIS_ __in REFGUID rguidPropSet, ULONG ulId, __in_bcount(ulInstanceLength) LPVOID pInstanceData, ULONG ulInstanceLength,
                                        __out_bcount(ulDataLength) LPVOID pPropertyData, ULONG ulDataLength, __out PULONG pulBytesReturned) PURE;
     STDMETHOD(Set)              (THIS_ __in REFGUID rguidPropSet, ULONG ulId, __in_bcount(ulInstanceLength)  LPVOID pInstanceData, ULONG ulInstanceLength,
@@ -1232,26 +1115,22 @@ DECLARE_INTERFACE_(IKsPropertySet, IUnknown)
 #define IKsPropertySet_Get(p,a,b,c,d,e,f,g)        (p)->lpVtbl->Get(p,a,b,c,d,e,f,g)
 #define IKsPropertySet_Set(p,a,b,c,d,e,f)          (p)->lpVtbl->Set(p,a,b,c,d,e,f)
 #define IKsPropertySet_QuerySupport(p,a,b,c)       (p)->lpVtbl->QuerySupport(p,a,b,c)
-#else 
+#else
 #define IKsPropertySet_Get(p,a,b,c,d,e,f,g)        (p)->Get(a,b,c,d,e,f,g)
 #define IKsPropertySet_Set(p,a,b,c,d,e,f)          (p)->Set(a,b,c,d,e,f)
 #define IKsPropertySet_QuerySupport(p,a,b,c)       (p)->QuerySupport(a,b,c)
-#endif 
+#endif
 
-#endif 
+#endif
 
 #if DIRECTSOUND_VERSION >= 0x0800
-
-
-
-
 
 DEFINE_GUID(IID_IDirectSoundFXGargle, 0xd616f352, 0xd622, 0x11ce, 0xaa, 0xc5, 0x00, 0x20, 0xaf, 0x0b, 0x99, 0xa3);
 
 typedef struct _DSFXGargle
 {
-    DWORD       dwRateHz;               
-    DWORD       dwWaveShape;            
+    DWORD       dwRateHz;
+    DWORD       dwWaveShape;
 } DSFXGargle, *LPDSFXGargle;
 
 #define DSFXGARGLE_WAVE_TRIANGLE        0
@@ -1267,12 +1146,11 @@ typedef const DSFXGargle *LPCDSFXGargle;
 
 DECLARE_INTERFACE_(IDirectSoundFXGargle, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSFXGargle pcDsFxGargle) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSFXGargle pDsFxGargle) PURE;
 };
@@ -1284,14 +1162,10 @@ DECLARE_INTERFACE_(IDirectSoundFXGargle, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundFXGargle_SetAllParameters(p,a)          (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundFXGargle_GetAllParameters(p,a)          (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundFXGargle_SetAllParameters(p,a)          (p)->SetAllParameters(a)
 #define IDirectSoundFXGargle_GetAllParameters(p,a)          (p)->GetAllParameters(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundFXChorus, 0x880842e3, 0x145f, 0x43e6, 0xa9, 0x34, 0xa7, 0x18, 0x06, 0xe5, 0x05, 0x47);
 
@@ -1301,7 +1175,7 @@ typedef struct _DSFXChorus
     FLOAT       fDepth;
     FLOAT       fFeedback;
     FLOAT       fFrequency;
-    LONG        lWaveform;          
+    LONG        lWaveform;
     FLOAT       fDelay;
     LONG        lPhase;
 } DSFXChorus, *LPDSFXChorus;
@@ -1335,12 +1209,11 @@ typedef const DSFXChorus *LPCDSFXChorus;
 
 DECLARE_INTERFACE_(IDirectSoundFXChorus, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSFXChorus pcDsFxChorus) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSFXChorus pDsFxChorus) PURE;
 };
@@ -1352,14 +1225,10 @@ DECLARE_INTERFACE_(IDirectSoundFXChorus, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundFXChorus_SetAllParameters(p,a)          (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundFXChorus_GetAllParameters(p,a)          (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundFXChorus_SetAllParameters(p,a)          (p)->SetAllParameters(a)
 #define IDirectSoundFXChorus_GetAllParameters(p,a)          (p)->GetAllParameters(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundFXFlanger, 0x903e9878, 0x2c92, 0x4072, 0x9b, 0x2c, 0xea, 0x68, 0xf5, 0x39, 0x67, 0x83);
 
@@ -1403,12 +1272,11 @@ typedef const DSFXFlanger *LPCDSFXFlanger;
 
 DECLARE_INTERFACE_(IDirectSoundFXFlanger, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSFXFlanger pcDsFxFlanger) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSFXFlanger pDsFxFlanger) PURE;
 };
@@ -1420,14 +1288,10 @@ DECLARE_INTERFACE_(IDirectSoundFXFlanger, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundFXFlanger_SetAllParameters(p,a)         (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundFXFlanger_GetAllParameters(p,a)         (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundFXFlanger_SetAllParameters(p,a)         (p)->SetAllParameters(a)
 #define IDirectSoundFXFlanger_GetAllParameters(p,a)         (p)->GetAllParameters(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundFXEcho, 0x8bd28edf, 0x50db, 0x4e92, 0xa2, 0xbd, 0x44, 0x54, 0x88, 0xd1, 0xed, 0x42);
 
@@ -1458,12 +1322,11 @@ typedef const DSFXEcho *LPCDSFXEcho;
 
 DECLARE_INTERFACE_(IDirectSoundFXEcho, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSFXEcho pcDsFxEcho) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSFXEcho pDsFxEcho) PURE;
 };
@@ -1475,14 +1338,10 @@ DECLARE_INTERFACE_(IDirectSoundFXEcho, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundFXEcho_SetAllParameters(p,a)            (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundFXEcho_GetAllParameters(p,a)            (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundFXEcho_SetAllParameters(p,a)            (p)->SetAllParameters(a)
 #define IDirectSoundFXEcho_GetAllParameters(p,a)            (p)->GetAllParameters(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundFXDistortion, 0x8ecf4326, 0x455f, 0x4d8b, 0xbd, 0xa9, 0x8d, 0x5d, 0x3e, 0x9e, 0x3e, 0x0b);
 
@@ -1513,12 +1372,11 @@ typedef const DSFXDistortion *LPCDSFXDistortion;
 
 DECLARE_INTERFACE_(IDirectSoundFXDistortion, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSFXDistortion pcDsFxDistortion) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSFXDistortion pDsFxDistortion) PURE;
 };
@@ -1530,14 +1388,10 @@ DECLARE_INTERFACE_(IDirectSoundFXDistortion, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundFXDistortion_SetAllParameters(p,a)      (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundFXDistortion_GetAllParameters(p,a)      (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundFXDistortion_SetAllParameters(p,a)      (p)->SetAllParameters(a)
 #define IDirectSoundFXDistortion_GetAllParameters(p,a)      (p)->GetAllParameters(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundFXCompressor, 0x4bbd1154, 0x62f6, 0x4e2c, 0xa1, 0x5c, 0xd3, 0xb6, 0xc4, 0x17, 0xf7, 0xa0);
 
@@ -1571,12 +1425,11 @@ typedef const DSFXCompressor *LPCDSFXCompressor;
 
 DECLARE_INTERFACE_(IDirectSoundFXCompressor, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSFXCompressor pcDsFxCompressor) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSFXCompressor pDsFxCompressor) PURE;
 };
@@ -1588,14 +1441,10 @@ DECLARE_INTERFACE_(IDirectSoundFXCompressor, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundFXCompressor_SetAllParameters(p,a)      (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundFXCompressor_GetAllParameters(p,a)      (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundFXCompressor_SetAllParameters(p,a)      (p)->SetAllParameters(a)
 #define IDirectSoundFXCompressor_GetAllParameters(p,a)      (p)->GetAllParameters(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundFXParamEq, 0xc03ca9fe, 0xfe90, 0x4204, 0x80, 0x78, 0x82, 0x33, 0x4c, 0xd1, 0x77, 0xda);
 
@@ -1620,12 +1469,11 @@ typedef const DSFXParamEq *LPCDSFXParamEq;
 
 DECLARE_INTERFACE_(IDirectSoundFXParamEq, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSFXParamEq pcDsFxParamEq) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSFXParamEq pDsFxParamEq) PURE;
 };
@@ -1637,31 +1485,27 @@ DECLARE_INTERFACE_(IDirectSoundFXParamEq, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundFXParamEq_SetAllParameters(p,a)      (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundFXParamEq_GetAllParameters(p,a)      (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundFXParamEq_SetAllParameters(p,a)      (p)->SetAllParameters(a)
 #define IDirectSoundFXParamEq_GetAllParameters(p,a)      (p)->GetAllParameters(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundFXI3DL2Reverb, 0x4b166a6a, 0x0d66, 0x43f3, 0x80, 0xe3, 0xee, 0x62, 0x80, 0xde, 0xe1, 0xa4);
 
 typedef struct _DSFXI3DL2Reverb
 {
-    LONG    lRoom;                  
-    LONG    lRoomHF;                
-    FLOAT   flRoomRolloffFactor;    
-    FLOAT   flDecayTime;            
-    FLOAT   flDecayHFRatio;         
-    LONG    lReflections;           
-    FLOAT   flReflectionsDelay;     
-    LONG    lReverb;                
-    FLOAT   flReverbDelay;          
-    FLOAT   flDiffusion;            
-    FLOAT   flDensity;              
-    FLOAT   flHFReference;          
+    LONG    lRoom;
+    LONG    lRoomHF;
+    FLOAT   flRoomRolloffFactor;
+    FLOAT   flDecayTime;
+    FLOAT   flDecayHFRatio;
+    LONG    lReflections;
+    FLOAT   flReflectionsDelay;
+    LONG    lReverb;
+    FLOAT   flReverbDelay;
+    FLOAT   flDiffusion;
+    FLOAT   flDensity;
+    FLOAT   flHFReference;
 } DSFXI3DL2Reverb, *LPDSFXI3DL2Reverb;
 
 typedef const DSFXI3DL2Reverb *LPCDSFXI3DL2Reverb;
@@ -1723,12 +1567,11 @@ typedef const DSFXI3DL2Reverb *LPCDSFXI3DL2Reverb;
 
 DECLARE_INTERFACE_(IDirectSoundFXI3DL2Reverb, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSFXI3DL2Reverb pcDsFxI3DL2Reverb) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSFXI3DL2Reverb pDsFxI3DL2Reverb) PURE;
     STDMETHOD(SetPreset)            (THIS_ DWORD dwPreset) PURE;
@@ -1746,25 +1589,21 @@ DECLARE_INTERFACE_(IDirectSoundFXI3DL2Reverb, IUnknown)
 #define IDirectSoundFXI3DL2Reverb_GetAllParameters(p,a)     (p)->lpVtbl->GetAllParameters(p,a)
 #define IDirectSoundFXI3DL2Reverb_SetPreset(p,a)            (p)->lpVtbl->SetPreset(p,a)
 #define IDirectSoundFXI3DL2Reverb_GetPreset(p,a)            (p)->lpVtbl->GetPreset(p,a)
-#else 
+#else
 #define IDirectSoundFXI3DL2Reverb_SetAllParameters(p,a)     (p)->SetAllParameters(a)
 #define IDirectSoundFXI3DL2Reverb_GetAllParameters(p,a)     (p)->GetAllParameters(a)
 #define IDirectSoundFXI3DL2Reverb_SetPreset(p,a)            (p)->SetPreset(a)
 #define IDirectSoundFXI3DL2Reverb_GetPreset(p,a)            (p)->GetPreset(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundFXWavesReverb,0x46858c3a,0x0dc6,0x45e3,0xb7,0x60,0xd4,0xee,0xf1,0x6c,0xb3,0x25);
 
 typedef struct _DSFXWavesReverb
 {
-    FLOAT   fInGain;                
-    FLOAT   fReverbMix;             
-    FLOAT   fReverbTime;            
-    FLOAT   fHighFreqRTRatio;       
+    FLOAT   fInGain;
+    FLOAT   fReverbMix;
+    FLOAT   fReverbTime;
+    FLOAT   fHighFreqRTRatio;
 } DSFXWavesReverb, *LPDSFXWavesReverb;
 
 typedef const DSFXWavesReverb *LPCDSFXWavesReverb;
@@ -1787,12 +1626,11 @@ typedef const DSFXWavesReverb *LPCDSFXWavesReverb;
 
 DECLARE_INTERFACE_(IDirectSoundFXWavesReverb, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSFXWavesReverb pcDsFxWavesReverb) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSFXWavesReverb pDsFxWavesReverb) PURE;
 };
@@ -1804,14 +1642,10 @@ DECLARE_INTERFACE_(IDirectSoundFXWavesReverb, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundFXWavesReverb_SetAllParameters(p,a)     (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundFXWavesReverb_GetAllParameters(p,a)     (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundFXWavesReverb_SetAllParameters(p,a)     (p)->SetAllParameters(a)
 #define IDirectSoundFXWavesReverb_GetAllParameters(p,a)     (p)->GetAllParameters(a)
-#endif 
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundCaptureFXAec, 0xad74143d, 0x903d, 0x4ab7, 0x80, 0x66, 0x28, 0xd3, 0x63, 0x03, 0x6d, 0x65);
 
@@ -1824,11 +1658,9 @@ typedef struct _DSCFXAec
 
 typedef const DSCFXAec *LPCDSCFXAec;
 
-
 #define DSCFX_AEC_MODE_PASS_THROUGH                     0x0
 #define DSCFX_AEC_MODE_HALF_DUPLEX                      0x1
 #define DSCFX_AEC_MODE_FULL_DUPLEX                      0x2
-
 
 #define DSCFX_AEC_STATUS_HISTORY_UNINITIALIZED          0x0
 #define DSCFX_AEC_STATUS_HISTORY_CONTINUOUSLY_CONVERGED 0x1
@@ -1840,12 +1672,11 @@ typedef const DSCFXAec *LPCDSCFXAec;
 
 DECLARE_INTERFACE_(IDirectSoundCaptureFXAec, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSCFXAec pDscFxAec) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSCFXAec pDscFxAec) PURE;
     STDMETHOD(GetStatus)            (THIS_ __out LPDWORD pdwStatus) PURE;
@@ -1859,15 +1690,10 @@ DECLARE_INTERFACE_(IDirectSoundCaptureFXAec, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundCaptureFXAec_SetAllParameters(p,a)     (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundCaptureFXAec_GetAllParameters(p,a)     (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundCaptureFXAec_SetAllParameters(p,a)     (p)->SetAllParameters(a)
 #define IDirectSoundCaptureFXAec_GetAllParameters(p,a)     (p)->GetAllParameters(a)
-#endif 
-
-
-
-
-
+#endif
 
 DEFINE_GUID(IID_IDirectSoundCaptureFXNoiseSuppress, 0xed311e41, 0xfbae, 0x4175, 0x96, 0x25, 0xcd, 0x8, 0x54, 0xf6, 0x93, 0xca);
 
@@ -1883,12 +1709,11 @@ typedef const DSCFXNoiseSuppress *LPCDSCFXNoiseSuppress;
 
 DECLARE_INTERFACE_(IDirectSoundCaptureFXNoiseSuppress, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)       (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)        (THIS) PURE;
     STDMETHOD_(ULONG,Release)       (THIS) PURE;
 
-    
     STDMETHOD(SetAllParameters)     (THIS_ __in LPCDSCFXNoiseSuppress pcDscFxNoiseSuppress) PURE;
     STDMETHOD(GetAllParameters)     (THIS_ __out LPDSCFXNoiseSuppress pDscFxNoiseSuppress) PURE;
     STDMETHOD(Reset)                (THIS) PURE;
@@ -1901,15 +1726,10 @@ DECLARE_INTERFACE_(IDirectSoundCaptureFXNoiseSuppress, IUnknown)
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundCaptureFXNoiseSuppress_SetAllParameters(p,a)     (p)->lpVtbl->SetAllParameters(p,a)
 #define IDirectSoundCaptureFXNoiseSuppress_GetAllParameters(p,a)     (p)->lpVtbl->GetAllParameters(p,a)
-#else 
+#else
 #define IDirectSoundCaptureFXNoiseSuppress_SetAllParameters(p,a)     (p)->SetAllParameters(a)
 #define IDirectSoundCaptureFXNoiseSuppress_GetAllParameters(p,a)     (p)->GetAllParameters(a)
-#endif 
-
-
-
-
-
+#endif
 
 #ifndef _IDirectSoundFullDuplex_
 #define _IDirectSoundFullDuplex_
@@ -1917,7 +1737,7 @@ DECLARE_INTERFACE_(IDirectSoundCaptureFXNoiseSuppress, IUnknown)
 #ifdef __cplusplus
 
 struct IDirectSoundFullDuplex;
-#endif 
+#endif
 
 typedef struct IDirectSoundFullDuplex *LPDIRECTSOUNDFULLDUPLEX;
 
@@ -1928,12 +1748,11 @@ DEFINE_GUID(IID_IDirectSoundFullDuplex, 0xedcb4c7a, 0xdaab, 0x4216, 0xa4, 0x2e, 
 
 DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)   (THIS_ __in REFIID, __deref_out LPVOID*) PURE;
     STDMETHOD_(ULONG,AddRef)    (THIS) PURE;
     STDMETHOD_(ULONG,Release)   (THIS) PURE;
 
-    
     STDMETHOD(Initialize)     (THIS_ __in LPCGUID pCaptureGuid, __in LPCGUID pRenderGuid, __in LPCDSCBUFFERDESC lpDscBufferDesc, __in LPCDSBUFFERDESC lpDsBufferDesc, HWND hWnd, DWORD dwLevel,
                                __deref_out LPLPDIRECTSOUNDCAPTUREBUFFER8 lplpDirectSoundCaptureBuffer8, __deref_out LPLPDIRECTSOUNDBUFFER8 lplpDirectSoundBuffer8) PURE;
 };
@@ -1944,100 +1763,63 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
 #define IDirectSoundFullDuplex_Initialize(p,a,b,c,d,e,f,g,h)     (p)->lpVtbl->Initialize(p,a,b,c,d,e,f,g,h)
-#else 
+#else
 #define IDirectSoundFullDuplex_Initialize(p,a,b,c,d,e,f,g,h)     (p)->Initialize(a,b,c,d,e,f,g,h)
-#endif 
+#endif
 
-#endif 
+#endif
 
-#endif 
-
-
-
-
-
+#endif
 
 #define DS_OK                           S_OK
 
-
 #define DS_NO_VIRTUALIZATION            MAKE_HRESULT(0, _FACDS, 10)
-
-
 
 #define DSERR_ALLOCATED                 MAKE_DSHRESULT(10)
 
-
 #define DSERR_CONTROLUNAVAIL            MAKE_DSHRESULT(30)
-
 
 #define DSERR_INVALIDPARAM              E_INVALIDARG
 
-
 #define DSERR_INVALIDCALL               MAKE_DSHRESULT(50)
-
 
 #define DSERR_GENERIC                   E_FAIL
 
-
-
 #define DSERR_PRIOLEVELNEEDED           MAKE_DSHRESULT(70)
-
 
 #define DSERR_OUTOFMEMORY               E_OUTOFMEMORY
 
-
 #define DSERR_BADFORMAT                 MAKE_DSHRESULT(100)
-
 
 #define DSERR_UNSUPPORTED               E_NOTIMPL
 
-
 #define DSERR_NODRIVER                  MAKE_DSHRESULT(120)
-
 
 #define DSERR_ALREADYINITIALIZED        MAKE_DSHRESULT(130)
 
-
 #define DSERR_NOAGGREGATION             CLASS_E_NOAGGREGATION
-
 
 #define DSERR_BUFFERLOST                MAKE_DSHRESULT(150)
 
-
-
 #define DSERR_OTHERAPPHASPRIO           MAKE_DSHRESULT(160)
-
 
 #define DSERR_UNINITIALIZED             MAKE_DSHRESULT(170)
 
-
 #define DSERR_NOINTERFACE               E_NOINTERFACE
-
 
 #define DSERR_ACCESSDENIED              E_ACCESSDENIED
 
-
 #define DSERR_BUFFERTOOSMALL            MAKE_DSHRESULT(180)
-
 
 #define DSERR_DS8_REQUIRED              MAKE_DSHRESULT(190)
 
-
 #define DSERR_SENDLOOP                  MAKE_DSHRESULT(200)
-
 
 #define DSERR_BADSENDBUFFERGUID         MAKE_DSHRESULT(210)
 
-
 #define DSERR_OBJECTNOTFOUND            MAKE_DSHRESULT(4449)
 
-
-
 #define DSERR_FXUNAVAILABLE             MAKE_DSHRESULT(220)
-
-
-
-
 
 #define DSCAPS_PRIMARYMONO          0x00000001
 #define DSCAPS_PRIMARYSTEREO        0x00000002
@@ -2062,17 +1844,17 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 #define DSSPEAKER_QUAD              0x00000003
 #define DSSPEAKER_STEREO            0x00000004
 #define DSSPEAKER_SURROUND          0x00000005
-#define DSSPEAKER_5POINT1           0x00000006  
-#define DSSPEAKER_7POINT1           0x00000007  
-#define DSSPEAKER_7POINT1_SURROUND  0x00000008  
-#define DSSPEAKER_5POINT1_SURROUND  0x00000009  
+#define DSSPEAKER_5POINT1           0x00000006
+#define DSSPEAKER_7POINT1           0x00000007
+#define DSSPEAKER_7POINT1_SURROUND  0x00000008
+#define DSSPEAKER_5POINT1_SURROUND  0x00000009
 #define DSSPEAKER_7POINT1_WIDE      DSSPEAKER_7POINT1
 #define DSSPEAKER_5POINT1_BACK      DSSPEAKER_5POINT1
 
-#define DSSPEAKER_GEOMETRY_MIN      0x00000005  
-#define DSSPEAKER_GEOMETRY_NARROW   0x0000000A  
-#define DSSPEAKER_GEOMETRY_WIDE     0x00000014  
-#define DSSPEAKER_GEOMETRY_MAX      0x000000B4  
+#define DSSPEAKER_GEOMETRY_MIN      0x00000005
+#define DSSPEAKER_GEOMETRY_NARROW   0x0000000A
+#define DSSPEAKER_GEOMETRY_WIDE     0x00000014
+#define DSSPEAKER_GEOMETRY_MAX      0x000000B4
 
 #define DSSPEAKER_COMBINED(c, g)    ((DWORD)(((BYTE)(c)) | ((DWORD)((BYTE)(g))) << 16))
 #define DSSPEAKER_CONFIG(a)         ((BYTE)(a))
@@ -2129,7 +1911,7 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 
 #define DSBSIZE_MIN                 4
 #define DSBSIZE_MAX                 0x0FFFFFFF
-#define DSBSIZE_FX_MIN              150  
+#define DSBSIZE_FX_MIN              150
 
 #define DSBNOTIFICATIONS_MAX        100000UL
 
@@ -2161,13 +1943,9 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 
 #define DS3D_DEFAULTCONEOUTSIDEVOLUME DSBVOLUME_MAX
 
-
-
 #define DSCCAPS_EMULDRIVER          DSCAPS_EMULDRIVER
 #define DSCCAPS_CERTIFIED           DSCAPS_CERTIFIED
 #define DSCCAPS_MULTIPLECAPTURE     0x00000001
-
-
 
 #define DSCBCAPS_WAVEMAPPED         0x80000000
 #if DIRECTSOUND_VERSION >= 0x0800
@@ -2185,14 +1963,6 @@ DECLARE_INTERFACE_(IDirectSoundFullDuplex, IUnknown)
 
 #define DS_CERTIFIED                0x00000000
 #define DS_UNCERTIFIED              0x00000001
-
-
-
-
-
-
-
-
 
 enum
 {
@@ -2249,10 +2019,6 @@ enum
     DSFX_I3DL2_ENVIRONMENT_PRESET_PLATE
 };
 
-
-
-
-
 #define I3DL2_ENVIRONMENT_PRESET_DEFAULT         -1000, -100, 0.0f, 1.49f, 0.83f, -2602, 0.007f,   200, 0.011f, 100.0f, 100.0f, 5000.0f
 #define I3DL2_ENVIRONMENT_PRESET_GENERIC         -1000, -100, 0.0f, 1.49f, 0.83f, -2602, 0.007f,   200, 0.011f, 100.0f, 100.0f, 5000.0f
 #define I3DL2_ENVIRONMENT_PRESET_PADDEDCELL      -1000,-6000, 0.0f, 0.17f, 0.10f, -1204, 0.001f,   207, 0.002f, 100.0f, 100.0f, 5000.0f
@@ -2278,18 +2044,6 @@ enum
 #define I3DL2_ENVIRONMENT_PRESET_SEWERPIPE       -1000,-1000, 0.0f, 2.81f, 0.14f,   429, 0.014f,   648, 0.021f,  80.0f,  60.0f, 5000.0f
 #define I3DL2_ENVIRONMENT_PRESET_UNDERWATER      -1000,-4000, 0.0f, 1.49f, 0.10f,  -449, 0.007f,  1700, 0.011f, 100.0f, 100.0f, 5000.0f
 
-
-
-
-
-
-
-
-
-
-
-
-
 #define I3DL2_ENVIRONMENT_PRESET_SMALLROOM       -1000, -600, 0.0f, 1.10f, 0.83f,  -400, 0.005f,   500, 0.010f, 100.0f, 100.0f, 5000.0f
 #define I3DL2_ENVIRONMENT_PRESET_MEDIUMROOM      -1000, -600, 0.0f, 1.30f, 0.83f, -1000, 0.010f,  -200, 0.020f, 100.0f, 100.0f, 5000.0f
 #define I3DL2_ENVIRONMENT_PRESET_LARGEROOM       -1000, -600, 0.0f, 1.50f, 0.83f, -1600, 0.020f, -1000, 0.040f, 100.0f, 100.0f, 5000.0f
@@ -2297,89 +2051,50 @@ enum
 #define I3DL2_ENVIRONMENT_PRESET_LARGEHALL       -1000, -600, 0.0f, 1.80f, 0.70f, -2000, 0.030f, -1400, 0.060f, 100.0f, 100.0f, 5000.0f
 #define I3DL2_ENVIRONMENT_PRESET_PLATE           -1000, -200, 0.0f, 1.30f, 0.90f,     0, 0.002f,     0, 0.010f, 100.0f,  75.0f, 5000.0f
 
-
-
-
-
-
 #define DS3DALG_DEFAULT GUID_NULL
-
 
 DEFINE_GUID(DS3DALG_NO_VIRTUALIZATION, 0xc241333f, 0x1c1b, 0x11d2, 0x94, 0xf5, 0x0, 0xc0, 0x4f, 0xc2, 0x8a, 0xca);
 
-
 DEFINE_GUID(DS3DALG_HRTF_FULL, 0xc2413340, 0x1c1b, 0x11d2, 0x94, 0xf5, 0x0, 0xc0, 0x4f, 0xc2, 0x8a, 0xca);
-
 
 DEFINE_GUID(DS3DALG_HRTF_LIGHT, 0xc2413342, 0x1c1b, 0x11d2, 0x94, 0xf5, 0x0, 0xc0, 0x4f, 0xc2, 0x8a, 0xca);
 
-
 #if DIRECTSOUND_VERSION >= 0x0800
-
-
-
-
-
-
 
 DEFINE_GUID(GUID_DSFX_STANDARD_GARGLE, 0xdafd8210, 0x5711, 0x4b91, 0x9f, 0xe3, 0xf7, 0x5b, 0x7a, 0xe2, 0x79, 0xbf);
 
-
 DEFINE_GUID(GUID_DSFX_STANDARD_CHORUS, 0xefe6629c, 0x81f7, 0x4281, 0xbd, 0x91, 0xc9, 0xd6, 0x04, 0xa9, 0x5a, 0xf6);
-
 
 DEFINE_GUID(GUID_DSFX_STANDARD_FLANGER, 0xefca3d92, 0xdfd8, 0x4672, 0xa6, 0x03, 0x74, 0x20, 0x89, 0x4b, 0xad, 0x98);
 
-
 DEFINE_GUID(GUID_DSFX_STANDARD_ECHO, 0xef3e932c, 0xd40b, 0x4f51, 0x8c, 0xcf, 0x3f, 0x98, 0xf1, 0xb2, 0x9d, 0x5d);
-
 
 DEFINE_GUID(GUID_DSFX_STANDARD_DISTORTION, 0xef114c90, 0xcd1d, 0x484e, 0x96, 0xe5, 0x09, 0xcf, 0xaf, 0x91, 0x2a, 0x21);
 
-
 DEFINE_GUID(GUID_DSFX_STANDARD_COMPRESSOR, 0xef011f79, 0x4000, 0x406d, 0x87, 0xaf, 0xbf, 0xfb, 0x3f, 0xc3, 0x9d, 0x57);
-
 
 DEFINE_GUID(GUID_DSFX_STANDARD_PARAMEQ, 0x120ced89, 0x3bf4, 0x4173, 0xa1, 0x32, 0x3c, 0xb4, 0x06, 0xcf, 0x32, 0x31);
 
-
 DEFINE_GUID(GUID_DSFX_STANDARD_I3DL2REVERB, 0xef985e71, 0xd5c7, 0x42d4, 0xba, 0x4d, 0x2d, 0x07, 0x3e, 0x2e, 0x96, 0xf4);
-
 
 DEFINE_GUID(GUID_DSFX_WAVES_REVERB, 0x87fc0268, 0x9a55, 0x4360, 0x95, 0xaa, 0x00, 0x4a, 0x1d, 0x9d, 0xe2, 0x6c);
 
-
-
-
-
-
-
-
 DEFINE_GUID(GUID_DSCFX_CLASS_AEC, 0xBF963D80L, 0xC559, 0x11D0, 0x8A, 0x2B, 0x00, 0xA0, 0xC9, 0x25, 0x5A, 0xC1);
-
 
 DEFINE_GUID(GUID_DSCFX_MS_AEC, 0xcdebb919, 0x379a, 0x488a, 0x87, 0x65, 0xf5, 0x3c, 0xfd, 0x36, 0xde, 0x40);
 
-
 DEFINE_GUID(GUID_DSCFX_SYSTEM_AEC, 0x1c22c56d, 0x9879, 0x4f5b, 0xa3, 0x89, 0x27, 0x99, 0x6d, 0xdc, 0x28, 0x10);
-
-
 
 DEFINE_GUID(GUID_DSCFX_CLASS_NS, 0xe07f903f, 0x62fd, 0x4e60, 0x8c, 0xdd, 0xde, 0xa7, 0x23, 0x66, 0x65, 0xb5);
 
-
 DEFINE_GUID(GUID_DSCFX_MS_NS, 0x11c5c73b, 0x66e9, 0x4ba1, 0xa0, 0xba, 0xe8, 0x14, 0xc6, 0xee, 0xd9, 0x2d);
-
 
 DEFINE_GUID(GUID_DSCFX_SYSTEM_NS, 0x5ab0882e, 0x7274, 0x4516, 0x87, 0x7d, 0x4e, 0xee, 0x99, 0xba, 0x4f, 0xd0);
 
-#endif 
+#endif
 
-#endif 
-
-
+#endif
 
 #ifdef __cplusplus
 };
-#endif 
-
+#endif

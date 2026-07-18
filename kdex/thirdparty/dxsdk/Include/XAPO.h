@@ -1,253 +1,74 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #pragma once
 
-#include "comdecl.h" 
-
+#include "comdecl.h"
 
 DEFINE_IID(IXAPO,           A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 00);
 DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01);
 
-
-#if !defined(GUID_DEFS_ONLY) 
-    #if defined(_XBOX)       
+#if !defined(GUID_DEFS_ONLY)
+    #if defined(_XBOX)
         #include <xtl.h>
         #include <xobjbase.h>
     #else
         #include <windows.h>
         #include <objbase.h>
     #endif
-    #include "audiodefs.h"   
+    #include "audiodefs.h"
 
-    
     #define FACILITY_XAPO 0x897
-    #define XAPO_E_FORMAT_UNSUPPORTED MAKE_HRESULT(SEVERITY_ERROR, FACILITY_XAPO, 0x01) 
+    #define XAPO_E_FORMAT_UNSUPPORTED MAKE_HRESULT(SEVERITY_ERROR, FACILITY_XAPO, 0x01)
 
-    
     #define XAPO_MIN_CHANNELS 1
     #define XAPO_MAX_CHANNELS 64
 
-    
     #define XAPO_MIN_FRAMERATE 1000
     #define XAPO_MAX_FRAMERATE 200000
 
-    
     #define XAPO_REGISTRATION_STRING_LENGTH 256
 
-
-    
-    
-    
     #define XAPO_FLAG_CHANNELS_MUST_MATCH      0x00000001
 
-    
-    
     #define XAPO_FLAG_FRAMERATE_MUST_MATCH     0x00000002
 
-    
-    
-    
-    
     #define XAPO_FLAG_BITSPERSAMPLE_MUST_MATCH 0x00000004
 
-    
-    
-    
-    
-    
-    
-    
     #define XAPO_FLAG_BUFFERCOUNT_MUST_MATCH   0x00000008
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     #define XAPO_FLAG_INPLACE_REQUIRED         0x00000020
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     #define XAPO_FLAG_INPLACE_SUPPORTED        0x00000010
 
+    #pragma pack(push, 1)
 
-
-    #pragma pack(push, 1) 
-
-
-    
     typedef struct XAPO_REGISTRATION_PROPERTIES {
-        CLSID  clsid;                                          
-        WCHAR  FriendlyName[XAPO_REGISTRATION_STRING_LENGTH];  
-        WCHAR  CopyrightInfo[XAPO_REGISTRATION_STRING_LENGTH]; 
-        UINT32 MajorVersion;                                   
-        UINT32 MinorVersion;                                   
-        UINT32 Flags;                                          
-        UINT32 MinInputBufferCount;                            
-        UINT32 MaxInputBufferCount;                            
-        UINT32 MinOutputBufferCount;                           
-        UINT32 MaxOutputBufferCount;                           
+        CLSID  clsid;
+        WCHAR  FriendlyName[XAPO_REGISTRATION_STRING_LENGTH];
+        WCHAR  CopyrightInfo[XAPO_REGISTRATION_STRING_LENGTH];
+        UINT32 MajorVersion;
+        UINT32 MinorVersion;
+        UINT32 Flags;
+        UINT32 MinInputBufferCount;
+        UINT32 MaxInputBufferCount;
+        UINT32 MinOutputBufferCount;
+        UINT32 MaxOutputBufferCount;
     } XAPO_REGISTRATION_PROPERTIES;
 
-
-    
-    
-    
-    
-    
-    
     typedef struct XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS {
-        const WAVEFORMATEX* pFormat;       
-        UINT32              MaxFrameCount; 
+        const WAVEFORMATEX* pFormat;
+        UINT32              MaxFrameCount;
     } XAPO_LOCKFORPROCESS_PARAMETERS;
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     typedef enum XAPO_BUFFER_FLAGS {
-        XAPO_BUFFER_SILENT, 
-        XAPO_BUFFER_VALID,  
+        XAPO_BUFFER_SILENT,
+        XAPO_BUFFER_VALID,
     } XAPO_BUFFER_FLAGS;
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     typedef struct XAPO_PROCESS_BUFFER_PARAMETERS {
-        void*             pBuffer;         
-        XAPO_BUFFER_FLAGS BufferFlags;     
-        UINT32            ValidFrameCount; 
+        void*             pBuffer;
+        XAPO_BUFFER_FLAGS BufferFlags;
+        UINT32            ValidFrameCount;
     } XAPO_PROCESS_BUFFER_PARAMETERS;
 
-
-
-    
-    
-    
-    
-    
-    
     #if defined(_XBOX)
         #define XAPO_ALLOC_ATTRIBUTES MAKE_XALLOC_ATTRIBUTES (      \
             0,                                      \
@@ -267,321 +88,42 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
         #define XAPOFree(p)     CoTaskMemFree(p)
     #endif
 
-
-
-    
-    
-    
     #undef INTERFACE
     #define INTERFACE IXAPO
     DECLARE_INTERFACE_(IXAPO, IUnknown) {
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
+
         STDMETHOD(GetRegistrationProperties) (THIS_ __deref_out XAPO_REGISTRATION_PROPERTIES** ppRegistrationProperties) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD(IsInputFormatSupported) (THIS_ const WAVEFORMATEX* pOutputFormat, const WAVEFORMATEX* pRequestedInputFormat, __deref_opt_out WAVEFORMATEX** ppSupportedInputFormat) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD(IsOutputFormatSupported) (THIS_ const WAVEFORMATEX* pInputFormat, const WAVEFORMATEX* pRequestedOutputFormat, __deref_opt_out WAVEFORMATEX** ppSupportedOutputFormat) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD(Initialize) (THIS_ __in_bcount_opt(DataByteSize) const void* pData, UINT32 DataByteSize) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD_(void, Reset) (THIS) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD(LockForProcess) (THIS_ UINT32 InputLockedParameterCount, __in_ecount_opt(InputLockedParameterCount) const XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS* pInputLockedParameters, UINT32 OutputLockedParameterCount, __in_ecount_opt(OutputLockedParameterCount) const XAPO_LOCKFORPROCESS_BUFFER_PARAMETERS* pOutputLockedParameters) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD_(void, UnlockForProcess) (THIS) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD_(void, Process) (THIS_ UINT32 InputProcessParameterCount, __in_ecount_opt(InputProcessParameterCount) const XAPO_PROCESS_BUFFER_PARAMETERS* pInputProcessParameters, UINT32 OutputProcessParameterCount, __inout_ecount_opt(OutputProcessParameterCount) XAPO_PROCESS_BUFFER_PARAMETERS* pOutputProcessParameters, BOOL IsEnabled) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD_(UINT32, CalcInputFrames) (THIS_ UINT32 OutputFrameCount) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD_(UINT32, CalcOutputFrames) (THIS_ UINT32 InputFrameCount) PURE;
     };
 
-
-
-    
-    
-    
     #undef INTERFACE
     #define INTERFACE IXAPOParameters
     DECLARE_INTERFACE_(IXAPOParameters, IUnknown) {
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
+
         STDMETHOD_(void, SetParameters) (THIS_ __in_bcount(ParameterByteSize) const void* pParameters, UINT32 ParameterByteSize) PURE;
 
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
         STDMETHOD_(void, GetParameters) (THIS_ __out_bcount(ParameterByteSize) void* pParameters, UINT32 ParameterByteSize) PURE;
     };
 
-
-
-    
     #if !defined(__cplusplus)
-        
+
         #define IXAPO_QueryInterface(This, riid, ppInterface) \
             ( (This)->lpVtbl->QueryInterface(This, riid, ppInterface) )
 
@@ -621,8 +163,6 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
         #define IXAPO_CalcOutputFrames(This, InputFrameCount) \
             ( (This)->lpVtbl->CalcOutputFrames(This, InputFrameCount) )
 
-
-        
         #define IXAPOParameters_QueryInterface(This, riid, ppInterface) \
             ( (This)->lpVtbl->QueryInterface(This, riid, ppInterface) )
 
@@ -637,9 +177,7 @@ DEFINE_IID(IXAPOParameters, A90BC001, E897, E897, 55, E4, 9E, 47, 00, 00, 00, 01
 
         #define IXAPOParameters_GetParameters(This, pParameters, ParameterByteSize) \
             ( (This)->lpVtbl->GetParameters(This, pParameters, ParameterByteSize) )
-    #endif 
+    #endif
 
-
-    #pragma pack(pop) 
-#endif 
-
+    #pragma pack(pop)
+#endif

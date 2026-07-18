@@ -67,13 +67,11 @@ static HHOOK s_mouse_ll_hook = nullptr;
 static HWND s_ll_overlay_hwnd = nullptr;
 static std::atomic<bool> s_ll_eat_mouse{ false };
 
-
 static std::atomic<int> s_raw_dx{ 0 };
 static std::atomic<int> s_raw_dy{ 0 };
 static std::atomic<bool> s_raw_input_registered{ false };
 static POINT s_last_hw_pt    = { 0, 0 };
 static bool  s_last_hw_valid = false;
-
 
 static float s_virt_mouse_x = 0.f;
 static float s_virt_mouse_y = 0.f;
@@ -493,7 +491,6 @@ namespace Gui {
         if (option->param.stream_proof) {
             BOOL exclude = TRUE;
 
-
         }
 
         IMGUI_CHECKVERSION();
@@ -719,7 +716,6 @@ namespace Gui {
             if (stream_proof != s_last_stream_proof || dwm_reset) {
                 s_last_stream_proof = stream_proof;
                 BOOL exclude = stream_proof ? TRUE : FALSE;
-
 
             }
 
@@ -1314,7 +1310,6 @@ namespace Gui {
                 SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOSENDCHANGING);
                 if (s_last_stream_proof) {
                     BOOL ex = TRUE;
-
 
                 }
             }

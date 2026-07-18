@@ -1,17 +1,7 @@
-
-
-
-
-
-
-
-
 #ifndef _XINPUT_H_
 #define _XINPUT_H_
 
 #include <windef.h>
-
-
 
 #ifndef XINPUT_USE_9_1_0
 #define XINPUT_DLL_A  "xinput1_3.dll"
@@ -24,15 +14,9 @@
     #define XINPUT_DLL XINPUT_DLL_W
 #else
     #define XINPUT_DLL XINPUT_DLL_A
-#endif 
-
-
-
+#endif
 
 #define XINPUT_DEVTYPE_GAMEPAD          0x01
-
-
-
 
 #define XINPUT_DEVSUBTYPE_GAMEPAD       0x01
 
@@ -45,17 +29,9 @@
 #define XINPUT_DEVSUBTYPE_GUITAR        0x06
 #define XINPUT_DEVSUBTYPE_DRUM_KIT      0x08
 
-#endif 
-
-
-
-
-
+#endif
 
 #define XINPUT_CAPS_VOICE_SUPPORTED     0x0004
-
-
-
 
 #define XINPUT_GAMEPAD_DPAD_UP          0x0001
 #define XINPUT_GAMEPAD_DPAD_DOWN        0x0002
@@ -72,53 +48,31 @@
 #define XINPUT_GAMEPAD_X                0x4000
 #define XINPUT_GAMEPAD_Y                0x8000
 
-
-
-
-
 #define XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE  7849
 #define XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE 8689
 #define XINPUT_GAMEPAD_TRIGGER_THRESHOLD    30
 
-
-
-
 #define XINPUT_FLAG_GAMEPAD             0x00000001
 
-
 #ifndef XINPUT_USE_9_1_0
-
-
-
 
 #define BATTERY_DEVTYPE_GAMEPAD         0x00
 #define BATTERY_DEVTYPE_HEADSET         0x01
 
-
-
-
-#define BATTERY_TYPE_DISCONNECTED       0x00    
-#define BATTERY_TYPE_WIRED              0x01    
-#define BATTERY_TYPE_ALKALINE           0x02    
-#define BATTERY_TYPE_NIMH               0x03    
-#define BATTERY_TYPE_UNKNOWN            0xFF    
-
-
+#define BATTERY_TYPE_DISCONNECTED       0x00
+#define BATTERY_TYPE_WIRED              0x01
+#define BATTERY_TYPE_ALKALINE           0x02
+#define BATTERY_TYPE_NIMH               0x03
+#define BATTERY_TYPE_UNKNOWN            0xFF
 
 #define BATTERY_LEVEL_EMPTY             0x00
 #define BATTERY_LEVEL_LOW               0x01
 #define BATTERY_LEVEL_MEDIUM            0x02
 #define BATTERY_LEVEL_FULL              0x03
 
-
 #define XUSER_MAX_COUNT                 4
 
 #define XUSER_INDEX_ANY                 0x000000FF
-
-
-
-
-
 
 #define VK_PAD_A                        0x5800
 #define VK_PAD_B                        0x5801
@@ -156,17 +110,11 @@
 #define VK_PAD_RTHUMB_DOWNRIGHT         0x5836
 #define VK_PAD_RTHUMB_DOWNLEFT          0x5837
 
-
-
-
 #define XINPUT_KEYSTROKE_KEYDOWN        0x0001
 #define XINPUT_KEYSTROKE_KEYUP          0x0002
 #define XINPUT_KEYSTROKE_REPEAT         0x0004
 
-#endif 
-
-
-
+#endif
 
 typedef struct _XINPUT_GAMEPAD
 {
@@ -217,10 +165,7 @@ typedef struct _XINPUT_KEYSTROKE
     BYTE    HidCode;
 } XINPUT_KEYSTROKE, *PXINPUT_KEYSTROKE;
 
-#endif 
-
-
-
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -228,56 +173,55 @@ extern "C" {
 
 DWORD WINAPI XInputGetState
 (
-    __in  DWORD         dwUserIndex,  
-    __out XINPUT_STATE* pState        
+    __in  DWORD         dwUserIndex,
+    __out XINPUT_STATE* pState
 );
 
 DWORD WINAPI XInputSetState
 (
-    __in DWORD             dwUserIndex,  
-    __in XINPUT_VIBRATION* pVibration    
+    __in DWORD             dwUserIndex,
+    __in XINPUT_VIBRATION* pVibration
 );
 
 DWORD WINAPI XInputGetCapabilities
 (
-    __in  DWORD                dwUserIndex,   
-    __in  DWORD                dwFlags,       
-    __out XINPUT_CAPABILITIES* pCapabilities  
+    __in  DWORD                dwUserIndex,
+    __in  DWORD                dwFlags,
+    __out XINPUT_CAPABILITIES* pCapabilities
 );
 
 void WINAPI XInputEnable
 (
-    __in BOOL enable     
+    __in BOOL enable
 );
 
 DWORD WINAPI XInputGetDSoundAudioDeviceGuids
 (
-    __in  DWORD dwUserIndex,          
-    __out GUID* pDSoundRenderGuid,    
-    __out GUID* pDSoundCaptureGuid    
+    __in  DWORD dwUserIndex,
+    __out GUID* pDSoundRenderGuid,
+    __out GUID* pDSoundCaptureGuid
 );
 
 #ifndef XINPUT_USE_9_1_0
 
 DWORD WINAPI XInputGetBatteryInformation
 (
-    __in  DWORD                       dwUserIndex,        
-    __in  BYTE                        devType,            
-    __out XINPUT_BATTERY_INFORMATION* pBatteryInformation 
+    __in  DWORD                       dwUserIndex,
+    __in  BYTE                        devType,
+    __out XINPUT_BATTERY_INFORMATION* pBatteryInformation
 );
 
 DWORD WINAPI XInputGetKeystroke
 (
-    __in       DWORD dwUserIndex,              
-    __reserved DWORD dwReserved,               
-    __out      PXINPUT_KEYSTROKE pKeystroke    
+    __in       DWORD dwUserIndex,
+    __reserved DWORD dwReserved,
+    __out      PXINPUT_KEYSTROKE pKeystroke
 );
 
-#endif 
+#endif
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  
-
+#endif

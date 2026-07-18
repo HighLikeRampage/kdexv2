@@ -1,60 +1,15 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "../../../game/Security/xorstr.hpp"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #include "imgui.h"
 #ifndef IMGUI_DISABLE
 #include "imgui_impl_dx12.h"
 
-
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #include <d3dcompiler.h>
 #ifdef _MSC_VER
-#pragma comment(lib, "d3dcompiler") 
+#pragma comment(lib, "d3dcompiler")
 #endif
-
 
 struct ImGui_ImplDX12_RenderBuffers;
 struct ImGui_ImplDX12_Data
@@ -75,13 +30,10 @@ struct ImGui_ImplDX12_Data
     ImGui_ImplDX12_Data()       { memset((void*)this, 0, sizeof(*this)); frameIndex = UINT_MAX; }
 };
 
-
-
 static ImGui_ImplDX12_Data* ImGui_ImplDX12_GetBackendData()
 {
     return ImGui::GetCurrentContext() ? (ImGui_ImplDX12_Data*)ImGui::GetIO().BackendRendererUserData : nullptr;
 }
-
 
 struct ImGui_ImplDX12_RenderBuffers
 {
@@ -96,13 +48,10 @@ struct VERTEX_CONSTANT_BUFFER_DX12
     float   mvp[4][4];
 };
 
-
 static void ImGui_ImplDX12_SetupRenderState(ImDrawData* draw_data, ID3D12GraphicsCommandList* ctx, ImGui_ImplDX12_RenderBuffers* fr)
 {
     ImGui_ImplDX12_Data* bd = ImGui_ImplDX12_GetBackendData();
 
-    
-    
     VERTEX_CONSTANT_BUFFER_DX12 vertex_constant_buffer;
     {
         float L = draw_data->DisplayPos.x;
@@ -119,7 +68,6 @@ static void ImGui_ImplDX12_SetupRenderState(ImDrawData* draw_data, ID3D12Graphic
         memcpy(&vertex_constant_buffer.mvp, mvp, sizeof(mvp));
     }
 
-    
     D3D12_VIEWPORT vp;
     memset(&vp, 0, sizeof(D3D12_VIEWPORT));
     vp.Width = draw_data->DisplaySize.x;
@@ -129,7 +77,6 @@ static void ImGui_ImplDX12_SetupRenderState(ImDrawData* draw_data, ID3D12Graphic
     vp.TopLeftX = vp.TopLeftY = 0.0f;
     ctx->RSSetViewports(1, &vp);
 
-    
     unsigned int stride = sizeof(ImDrawVert);
     unsigned int offset = 0;
     D3D12_VERTEX_BUFFER_VIEW vbv;
@@ -149,7 +96,6 @@ static void ImGui_ImplDX12_SetupRenderState(ImDrawData* draw_data, ID3D12Graphic
     ctx->SetGraphicsRootSignature(bd->pRootSignature);
     ctx->SetGraphicsRoot32BitConstants(0, 16, &vertex_constant_buffer, 0);
 
-    
     const float blend_factor[4] = { 0.f, 0.f, 0.f, 0.f };
     ctx->OMSetBlendFactor(blend_factor);
 }
@@ -162,20 +108,16 @@ static inline void SafeRelease(T*& res)
     res = nullptr;
 }
 
-
 void ImGui_ImplDX12_RenderDrawData(ImDrawData* draw_data, ID3D12GraphicsCommandList* ctx)
 {
-    
+
     if (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f)
         return;
 
-    
-    
     ImGui_ImplDX12_Data* bd = ImGui_ImplDX12_GetBackendData();
     bd->frameIndex = bd->frameIndex + 1;
     ImGui_ImplDX12_RenderBuffers* fr = &bd->pFrameResources[bd->frameIndex % bd->numFramesInFlight];
 
-    
     if (fr->VertexBuffer == nullptr || fr->VertexBufferSize < draw_data->TotalVtxCount)
     {
         SafeRelease(fr->VertexBuffer);
@@ -223,7 +165,6 @@ void ImGui_ImplDX12_RenderDrawData(ImDrawData* draw_data, ID3D12GraphicsCommandL
             return;
     }
 
-    
     void* vtx_resource, *idx_resource;
     D3D12_RANGE range;
     memset(&range, 0, sizeof(D3D12_RANGE));
@@ -244,11 +185,8 @@ void ImGui_ImplDX12_RenderDrawData(ImDrawData* draw_data, ID3D12GraphicsCommandL
     fr->VertexBuffer->Unmap(0, &range);
     fr->IndexBuffer->Unmap(0, &range);
 
-    
     ImGui_ImplDX12_SetupRenderState(draw_data, ctx, fr);
 
-    
-    
     int global_vtx_offset = 0;
     int global_idx_offset = 0;
     ImVec2 clip_off = draw_data->DisplayPos;
@@ -260,8 +198,7 @@ void ImGui_ImplDX12_RenderDrawData(ImDrawData* draw_data, ID3D12GraphicsCommandL
             const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
             if (pcmd->UserCallback != nullptr)
             {
-                
-                
+
                 if (pcmd->UserCallback == ImDrawCallback_ResetRenderState)
                     ImGui_ImplDX12_SetupRenderState(draw_data, ctx, fr);
                 else
@@ -269,13 +206,12 @@ void ImGui_ImplDX12_RenderDrawData(ImDrawData* draw_data, ID3D12GraphicsCommandL
             }
             else
             {
-                
+
                 ImVec2 clip_min(pcmd->ClipRect.x - clip_off.x, pcmd->ClipRect.y - clip_off.y);
                 ImVec2 clip_max(pcmd->ClipRect.z - clip_off.x, pcmd->ClipRect.w - clip_off.y);
                 if (clip_max.x <= clip_min.x || clip_max.y <= clip_min.y)
                     continue;
 
-                
                 const D3D12_RECT r = { (LONG)clip_min.x, (LONG)clip_min.y, (LONG)clip_max.x, (LONG)clip_max.y };
                 D3D12_GPU_DESCRIPTOR_HANDLE texture_handle = {};
                 texture_handle.ptr = (UINT64)pcmd->GetTexID();
@@ -291,14 +227,13 @@ void ImGui_ImplDX12_RenderDrawData(ImDrawData* draw_data, ID3D12GraphicsCommandL
 
 static void ImGui_ImplDX12_CreateFontsTexture()
 {
-    
+
     ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplDX12_Data* bd = ImGui_ImplDX12_GetBackendData();
     unsigned char* pixels;
     int width, height;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
-    
     {
         D3D12_HEAP_PROPERTIES props;
         memset(&props, 0, sizeof(D3D12_HEAP_PROPERTIES));
@@ -421,7 +356,6 @@ static void ImGui_ImplDX12_CreateFontsTexture()
         fence->Release();
         uploadBuffer->Release();
 
-        
         D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
         ZeroMemory(&srvDesc, sizeof(srvDesc));
         srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -434,14 +368,6 @@ static void ImGui_ImplDX12_CreateFontsTexture()
         bd->pFontTextureResource = pTexture;
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
     static_assert(sizeof(ImTextureID) >= sizeof(bd->hFontSrvGpuDescHandle.ptr), "Can't pack descriptor handle into TexID, 32-bit not supported yet.");
     io.Fonts->SetTexID((ImTextureID)bd->hFontSrvGpuDescHandle.ptr);
 }
@@ -454,7 +380,6 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
     if (bd->pPipelineState)
         ImGui_ImplDX12_InvalidateDeviceObjects();
 
-    
     {
         D3D12_DESCRIPTOR_RANGE descRange = {};
         descRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
@@ -476,7 +401,6 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
         param[1].DescriptorTable.pDescriptorRanges = &descRange;
         param[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
-        
         D3D12_STATIC_SAMPLER_DESC staticSampler = {};
         staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
         staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -503,20 +427,14 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
             D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
             D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
-        
-        
         static HINSTANCE d3d12_dll = ::GetModuleHandleA(xorstr("d3d12.dll"));
         if (d3d12_dll == nullptr)
         {
-            
-            
-            
-            
+
             if (!(d3d12_dll = ::LoadLibraryA(xorstr(".\\d3d12.dll"))))
                 if (!(d3d12_dll = ::LoadLibraryA(xorstr(".\\d3d12on7\\d3d12.dll"))))
                     d3d12_dll = ::LoadLibraryA(xorstr(".\\12on7\\d3d12.dll"));
 
-            
             if (d3d12_dll == nullptr)
                 d3d12_dll = ::LoadLibraryA(xorstr("d3d12.dll"));
 
@@ -536,12 +454,6 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
         blob->Release();
     }
 
-    
-    
-    
-    
-    
-
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
     memset(&psoDesc, 0, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
     psoDesc.NodeMask = 1;
@@ -556,7 +468,6 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
     ID3DBlob* vertexShaderBlob;
     ID3DBlob* pixelShaderBlob;
 
-    
     {
         static const char* vertexShader =
             "cbuffer vertexBuffer : register(b0) \
@@ -587,10 +498,9 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
             }";
 
         if (FAILED(D3DCompile(vertexShader, strlen(vertexShader), nullptr, nullptr, nullptr, xorstr_lite("main"), xorstr_lite("vs_5_0"), 0, 0, &vertexShaderBlob, nullptr)))
-            return false; 
+            return false;
         psoDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };
 
-        
         static D3D12_INPUT_ELEMENT_DESC local_layout[] =
         {
             { xorstr_lite("POSITION"), 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)offsetof(ImDrawVert, pos), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -600,7 +510,6 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
         psoDesc.InputLayout = { local_layout, 3 };
     }
 
-    
     {
         static const char* pixelShader =
             "struct PS_INPUT\
@@ -621,12 +530,11 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
         if (FAILED(D3DCompile(pixelShader, strlen(pixelShader), nullptr, nullptr, nullptr, xorstr_lite("main"), xorstr_lite("ps_5_0"), 0, 0, &pixelShaderBlob, nullptr)))
         {
             vertexShaderBlob->Release();
-            return false; 
+            return false;
         }
         psoDesc.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };
     }
 
-    
     {
         D3D12_BLEND_DESC& desc = psoDesc.BlendState;
         desc.AlphaToCoverageEnable = false;
@@ -640,7 +548,6 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
         desc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
     }
 
-    
     {
         D3D12_RASTERIZER_DESC& desc = psoDesc.RasterizerState;
         desc.FillMode = D3D12_FILL_MODE_SOLID;
@@ -656,7 +563,6 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
         desc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
     }
 
-    
     {
         D3D12_DEPTH_STENCIL_DESC& desc = psoDesc.DepthStencilState;
         desc.DepthEnable = false;
@@ -689,7 +595,7 @@ void    ImGui_ImplDX12_InvalidateDeviceObjects()
     SafeRelease(bd->pRootSignature);
     SafeRelease(bd->pPipelineState);
     SafeRelease(bd->pFontTextureResource);
-    io.Fonts->SetTexID(0); 
+    io.Fonts->SetTexID(0);
 
     for (UINT i = 0; i < bd->numFramesInFlight; i++)
     {
@@ -706,11 +612,10 @@ bool ImGui_ImplDX12_Init(ID3D12Device* device, int num_frames_in_flight, DXGI_FO
     IMGUI_CHECKVERSION();
     IM_ASSERT(io.BackendRendererUserData == nullptr && IM_STR("Already initialized a renderer backend!"));
 
-    
     ImGui_ImplDX12_Data* bd = IM_NEW(ImGui_ImplDX12_Data)();
     io.BackendRendererUserData = (void*)bd;
     io.BackendRendererName = xorstr_lite("imgui_impl_dx12");
-    io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;  
+    io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;
 
     bd->pd3dDevice = device;
     bd->RTVFormat = rtv_format;
@@ -721,7 +626,6 @@ bool ImGui_ImplDX12_Init(ID3D12Device* device, int num_frames_in_flight, DXGI_FO
     bd->pd3dSrvDescHeap = cbv_srv_heap;
     bd->frameIndex = UINT_MAX;
 
-    
     for (int i = 0; i < num_frames_in_flight; i++)
     {
         ImGui_ImplDX12_RenderBuffers* fr = &bd->pFrameResources[i];
@@ -740,7 +644,6 @@ void ImGui_ImplDX12_Shutdown()
     IM_ASSERT(bd != nullptr && IM_STR("No renderer backend to shutdown, or already shutdown?"));
     ImGuiIO& io = ImGui::GetIO();
 
-    
     ImGui_ImplDX12_InvalidateDeviceObjects();
     delete[] bd->pFrameResources;
     io.BackendRendererName = nullptr;
@@ -758,6 +661,4 @@ void ImGui_ImplDX12_NewFrame()
         ImGui_ImplDX12_CreateDeviceObjects();
 }
 
-
-
-#endif 
+#endif

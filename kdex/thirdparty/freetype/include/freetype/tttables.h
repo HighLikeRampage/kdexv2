@@ -1,25 +1,5 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef TTTABLES_H_
 #define TTTABLES_H_
-
 
 #include <freetype/freetype.h>
 
@@ -29,57 +9,7 @@
 #error "so that freetype.h of FreeType 2 is found first."
 #endif
 
-
 FT_BEGIN_HEADER
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
 
   typedef struct  TT_Header_
   {
@@ -109,94 +39,6 @@ FT_BEGIN_HEADER
 
   } TT_Header;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  TT_HoriHeader_
   {
     FT_Fixed   Version;
@@ -204,11 +46,11 @@ FT_BEGIN_HEADER
     FT_Short   Descender;
     FT_Short   Line_Gap;
 
-    FT_UShort  advance_Width_Max;      
+    FT_UShort  advance_Width_Max;
 
-    FT_Short   min_Left_Side_Bearing;  
-    FT_Short   min_Right_Side_Bearing; 
-    FT_Short   xMax_Extent;            
+    FT_Short   min_Left_Side_Bearing;
+    FT_Short   min_Right_Side_Bearing;
+    FT_Short   xMax_Extent;
     FT_Short   caret_Slope_Rise;
     FT_Short   caret_Slope_Run;
     FT_Short   caret_Offset;
@@ -218,102 +60,10 @@ FT_BEGIN_HEADER
     FT_Short   metric_Data_Format;
     FT_UShort  number_Of_HMetrics;
 
-    
-    
-    
-
     void*      long_metrics;
     void*      short_metrics;
 
   } TT_HoriHeader;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  TT_VertHeader_
   {
@@ -322,11 +72,11 @@ FT_BEGIN_HEADER
     FT_Short   Descender;
     FT_Short   Line_Gap;
 
-    FT_UShort  advance_Height_Max;      
+    FT_UShort  advance_Height_Max;
 
-    FT_Short   min_Top_Side_Bearing;    
-    FT_Short   min_Bottom_Side_Bearing; 
-    FT_Short   yMax_Extent;             
+    FT_Short   min_Top_Side_Bearing;
+    FT_Short   min_Bottom_Side_Bearing;
+    FT_Short   yMax_Extent;
     FT_Short   caret_Slope_Rise;
     FT_Short   caret_Slope_Run;
     FT_Short   caret_Offset;
@@ -336,45 +86,14 @@ FT_BEGIN_HEADER
     FT_Short   metric_Data_Format;
     FT_UShort  number_Of_VMetrics;
 
-    
-    
-    
-
     void*      long_metrics;
     void*      short_metrics;
 
   } TT_VertHeader;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  TT_OS2_
   {
-    FT_UShort  version;                
+    FT_UShort  version;
     FT_Short   xAvgCharWidth;
     FT_UShort  usWeightClass;
     FT_UShort  usWidthClass;
@@ -393,10 +112,10 @@ FT_BEGIN_HEADER
 
     FT_Byte    panose[10];
 
-    FT_ULong   ulUnicodeRange1;        
-    FT_ULong   ulUnicodeRange2;        
-    FT_ULong   ulUnicodeRange3;        
-    FT_ULong   ulUnicodeRange4;        
+    FT_ULong   ulUnicodeRange1;
+    FT_ULong   ulUnicodeRange2;
+    FT_ULong   ulUnicodeRange3;
+    FT_ULong   ulUnicodeRange4;
 
     FT_Char    achVendID[4];
 
@@ -409,12 +128,8 @@ FT_BEGIN_HEADER
     FT_UShort  usWinAscent;
     FT_UShort  usWinDescent;
 
-    
-
-    FT_ULong   ulCodePageRange1;       
-    FT_ULong   ulCodePageRange2;       
-
-    
+    FT_ULong   ulCodePageRange1;
+    FT_ULong   ulCodePageRange2;
 
     FT_Short   sxHeight;
     FT_Short   sCapHeight;
@@ -422,30 +137,10 @@ FT_BEGIN_HEADER
     FT_UShort  usBreakChar;
     FT_UShort  usMaxContext;
 
-    
-
-    FT_UShort  usLowerOpticalPointSize;       
-    FT_UShort  usUpperOpticalPointSize;       
+    FT_UShort  usLowerOpticalPointSize;
+    FT_UShort  usUpperOpticalPointSize;
 
   } TT_OS2;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  TT_Postscript_
   {
@@ -459,20 +154,7 @@ FT_BEGIN_HEADER
     FT_ULong  minMemType1;
     FT_ULong  maxMemType1;
 
-    
-    
-
   } TT_Postscript;
-
-
-  
-
-
-
-
-
-
-
 
   typedef struct  TT_PCLT_
   {
@@ -494,76 +176,6 @@ FT_BEGIN_HEADER
 
   } TT_PCLT;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  TT_MaxProfile_
   {
     FT_Fixed   version;
@@ -584,39 +196,6 @@ FT_BEGIN_HEADER
 
   } TT_MaxProfile;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef enum  FT_Sfnt_Tag_
   {
     FT_SFNT_HEAD,
@@ -631,8 +210,6 @@ FT_BEGIN_HEADER
 
   } FT_Sfnt_Tag;
 
-  
-  
 #define ft_sfnt_head  FT_SFNT_HEAD
 #define ft_sfnt_maxp  FT_SFNT_MAXP
 #define ft_sfnt_os2   FT_SFNT_OS2
@@ -641,115 +218,9 @@ FT_BEGIN_HEADER
 #define ft_sfnt_post  FT_SFNT_POST
 #define ft_sfnt_pclt  FT_SFNT_PCLT
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( void* )
   FT_Get_Sfnt_Table( FT_Face      face,
                      FT_Sfnt_Tag  tag );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   FT_EXPORT( FT_Error )
   FT_Load_Sfnt_Table( FT_Face    face,
@@ -758,98 +229,18 @@ FT_BEGIN_HEADER
                       FT_Byte*   buffer,
                       FT_ULong*  length );
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_Error )
   FT_Sfnt_Table_Info( FT_Face    face,
                       FT_UInt    table_index,
                       FT_ULong  *tag,
                       FT_ULong  *length );
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_ULong )
   FT_Get_CMap_Language_ID( FT_CharMap  charmap );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   FT_EXPORT( FT_Long )
   FT_Get_CMap_Format( FT_CharMap  charmap );
 
-  
-
-
 FT_END_HEADER
 
-#endif 
-
-
-
+#endif

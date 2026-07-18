@@ -1,47 +1,12 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef __XACT3D3_H__
 #define __XACT3D3_H__
-
 
     #include <x3daudio.h>
     #include <xact3.h>
 
     #pragma warning(push)
-    #pragma warning(disable: 4701) 
+    #pragma warning(disable: 4701)
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     #define LEFT_AZIMUTH                    (3*X3DAUDIO_PI/2)
     #define RIGHT_AZIMUTH                   (X3DAUDIO_PI/2)
     #define FRONT_LEFT_AZIMUTH              (7*X3DAUDIO_PI/4)
@@ -54,9 +19,6 @@
     #define FRONT_LEFT_OF_CENTER_AZIMUTH    (15*X3DAUDIO_PI/8)
     #define FRONT_RIGHT_OF_CENTER_AZIMUTH   (X3DAUDIO_PI/8)
 
-
-
-    
     static const float aStereoLayout[] =
     {
         LEFT_AZIMUTH,
@@ -104,24 +66,6 @@
         RIGHT_AZIMUTH
     };
 
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     EXTERN_C HRESULT inline XACT3DInitialize (__in IXACT3Engine* pEngine, __in X3DAUDIO_HANDLE X3DInstance)
     {
         HRESULT hr = S_OK;
@@ -145,52 +89,6 @@
         return hr;
     }
 
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     EXTERN_C HRESULT inline XACT3DCalculate (__in X3DAUDIO_HANDLE X3DInstance, __in const X3DAUDIO_LISTENER* pListener, __inout X3DAUDIO_EMITTER* pEmitter, __inout X3DAUDIO_DSP_SETTINGS* pDSPSettings)
     {
         HRESULT hr = S_OK;
@@ -230,18 +128,6 @@
         return hr;
     }
 
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     EXTERN_C HRESULT inline XACT3DApply (__in const X3DAUDIO_DSP_SETTINGS* pDSPSettings, __in IXACT3Cue* pCue)
     {
         HRESULT hr = S_OK;
@@ -268,8 +154,6 @@
         return hr;
     }
 
-
     #pragma warning(pop)
 
-#endif 
-
+#endif

@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 #ifndef __DINPUT_INCLUDED__
 #define __DINPUT_INCLUDED__
 
@@ -17,25 +8,11 @@
 #include <objbase.h>
 #endif
 
-#endif 
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define DIRECTINPUT_HEADER_VERSION  0x0800
 #ifndef DIRECTINPUT_VERSION
@@ -45,23 +22,11 @@ extern "C" {
 
 #ifndef DIJ_RINGZERO
 
-
-
-
-
-
-
 DEFINE_GUID(CLSID_DirectInput,       0x25E609E0,0xB259,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 DEFINE_GUID(CLSID_DirectInputDevice, 0x25E609E1,0xB259,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 
 DEFINE_GUID(CLSID_DirectInput8,      0x25E609E4,0xB259,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 DEFINE_GUID(CLSID_DirectInputDevice8,0x25E609E5,0xB259,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
-
-
-
-
-
-
 
 DEFINE_GUID(IID_IDirectInputA,     0x89521360,0xAA8A,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 DEFINE_GUID(IID_IDirectInputW,     0x89521361,0xAA8A,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
@@ -81,12 +46,6 @@ DEFINE_GUID(IID_IDirectInputDevice8A,0x54D41080,0xDC15,0x4833,0xA4,0x1B,0x74,0x8
 DEFINE_GUID(IID_IDirectInputDevice8W,0x54D41081,0xDC15,0x4833,0xA4,0x1B,0x74,0x8F,0x73,0xA3,0x81,0x79);
 DEFINE_GUID(IID_IDirectInputEffect,  0xE7E1F7C0,0x88D2,0x11D0,0x9A,0xD0,0x00,0xA0,0xC9,0xA0,0x6E,0x35);
 
-
-
-
-
-
-
 DEFINE_GUID(GUID_XAxis,   0xA36D02E0,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 DEFINE_GUID(GUID_YAxis,   0xA36D02E1,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 DEFINE_GUID(GUID_ZAxis,   0xA36D02E2,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
@@ -102,12 +61,6 @@ DEFINE_GUID(GUID_POV,     0xA36D02F2,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54
 
 DEFINE_GUID(GUID_Unknown, 0xA36D02F3,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 
-
-
-
-
-
-
 DEFINE_GUID(GUID_SysMouse,   0x6F1D2B60,0xD5A0,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 DEFINE_GUID(GUID_SysKeyboard,0x6F1D2B61,0xD5A0,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 DEFINE_GUID(GUID_Joystick   ,0x6F1D2B70,0xD5A0,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
@@ -115,12 +68,6 @@ DEFINE_GUID(GUID_SysMouseEm, 0x6F1D2B80,0xD5A0,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0
 DEFINE_GUID(GUID_SysMouseEm2,0x6F1D2B81,0xD5A0,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 DEFINE_GUID(GUID_SysKeyboardEm, 0x6F1D2B82,0xD5A0,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
 DEFINE_GUID(GUID_SysKeyboardEm2,0x6F1D2B83,0xD5A0,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
-
-
-
-
-
-
 
 DEFINE_GUID(GUID_ConstantForce, 0x13541C20,0x8E33,0x11D0,0x9A,0xD0,0x00,0xA0,0xC9,0xA0,0x6E,0x35);
 DEFINE_GUID(GUID_RampForce,     0x13541C21,0x8E33,0x11D0,0x9A,0xD0,0x00,0xA0,0xC9,0xA0,0x6E,0x35);
@@ -135,21 +82,9 @@ DEFINE_GUID(GUID_Inertia,       0x13541C29,0x8E33,0x11D0,0x9A,0xD0,0x00,0xA0,0xC
 DEFINE_GUID(GUID_Friction,      0x13541C2A,0x8E33,0x11D0,0x9A,0xD0,0x00,0xA0,0xC9,0xA0,0x6E,0x35);
 DEFINE_GUID(GUID_CustomForce,   0x13541C2B,0x8E33,0x11D0,0x9A,0xD0,0x00,0xA0,0xC9,0xA0,0x6E,0x35);
 
-#endif 
-
-
-
-
-
-
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0500)
-
-
-
-
-
-
 
 #define DIEFT_ALL                   0x00000000
 
@@ -209,57 +144,53 @@ typedef struct DICUSTOMFORCE {
 } DICUSTOMFORCE, *LPDICUSTOMFORCE;
 typedef const DICUSTOMFORCE *LPCDICUSTOMFORCE;
 
-
 typedef struct DIENVELOPE {
-    DWORD dwSize;                   
+    DWORD dwSize;
     DWORD dwAttackLevel;
-    DWORD dwAttackTime;             
+    DWORD dwAttackTime;
     DWORD dwFadeLevel;
-    DWORD dwFadeTime;               
+    DWORD dwFadeTime;
 } DIENVELOPE, *LPDIENVELOPE;
 typedef const DIENVELOPE *LPCDIENVELOPE;
 
-
-
 typedef struct DIEFFECT_DX5 {
-    DWORD dwSize;                   
-    DWORD dwFlags;                  
-    DWORD dwDuration;               
-    DWORD dwSamplePeriod;           
+    DWORD dwSize;
+    DWORD dwFlags;
+    DWORD dwDuration;
+    DWORD dwSamplePeriod;
     DWORD dwGain;
-    DWORD dwTriggerButton;          
-    DWORD dwTriggerRepeatInterval;  
-    DWORD cAxes;                    
-    LPDWORD rgdwAxes;               
-    LPLONG rglDirection;            
-    LPDIENVELOPE lpEnvelope;        
-    DWORD cbTypeSpecificParams;     
-    LPVOID lpvTypeSpecificParams;   
+    DWORD dwTriggerButton;
+    DWORD dwTriggerRepeatInterval;
+    DWORD cAxes;
+    LPDWORD rgdwAxes;
+    LPLONG rglDirection;
+    LPDIENVELOPE lpEnvelope;
+    DWORD cbTypeSpecificParams;
+    LPVOID lpvTypeSpecificParams;
 } DIEFFECT_DX5, *LPDIEFFECT_DX5;
 typedef const DIEFFECT_DX5 *LPCDIEFFECT_DX5;
 
 typedef struct DIEFFECT {
-    DWORD dwSize;                   
-    DWORD dwFlags;                  
-    DWORD dwDuration;               
-    DWORD dwSamplePeriod;           
+    DWORD dwSize;
+    DWORD dwFlags;
+    DWORD dwDuration;
+    DWORD dwSamplePeriod;
     DWORD dwGain;
-    DWORD dwTriggerButton;          
-    DWORD dwTriggerRepeatInterval;  
-    DWORD cAxes;                    
-    LPDWORD rgdwAxes;               
-    LPLONG rglDirection;            
-    LPDIENVELOPE lpEnvelope;        
-    DWORD cbTypeSpecificParams;     
-    LPVOID lpvTypeSpecificParams;   
+    DWORD dwTriggerButton;
+    DWORD dwTriggerRepeatInterval;
+    DWORD cAxes;
+    LPDWORD rgdwAxes;
+    LPLONG rglDirection;
+    LPDIENVELOPE lpEnvelope;
+    DWORD cbTypeSpecificParams;
+    LPVOID lpvTypeSpecificParams;
 #if(DIRECTINPUT_VERSION >= 0x0600)
-    DWORD  dwStartDelay;            
-#endif 
+    DWORD  dwStartDelay;
+#endif
 } DIEFFECT, *LPDIEFFECT;
 typedef DIEFFECT DIEFFECT_DX6;
 typedef LPDIEFFECT LPDIEFFECT_DX6;
 typedef const DIEFFECT *LPCDIEFFECT;
-
 
 #if(DIRECTINPUT_VERSION >= 0x0700)
 #ifndef DIJ_RINGZERO
@@ -271,8 +202,8 @@ typedef struct DIFILEEFFECT{
 }DIFILEEFFECT, *LPDIFILEEFFECT;
 typedef const DIFILEEFFECT *LPCDIFILEEFFECT;
 typedef BOOL (FAR PASCAL * LPDIENUMEFFECTSINFILECALLBACK)(LPCDIFILEEFFECT , LPVOID);
-#endif 
-#endif 
+#endif
+#endif
 
 #define DIEFF_OBJECTIDS             0x00000001
 #define DIEFF_OBJECTOFFSETS         0x00000002
@@ -293,9 +224,9 @@ typedef BOOL (FAR PASCAL * LPDIENUMEFFECTSINFILECALLBACK)(LPCDIFILEEFFECT , LPVO
 #define DIEP_STARTDELAY             0x00000200
 #define DIEP_ALLPARAMS_DX5          0x000001FF
 #define DIEP_ALLPARAMS              0x000003FF
-#else 
+#else
 #define DIEP_ALLPARAMS              0x000001FF
-#endif 
+#endif
 #define DIEP_START                  0x20000000
 #define DIEP_NORESTART              0x40000000
 #define DIEP_NODOWNLOAD             0x80000000
@@ -323,12 +254,11 @@ typedef struct DIEFFESCAPE {
 
 DECLARE_INTERFACE_(IDirectInputEffect, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(Initialize)(THIS_ HINSTANCE,DWORD,REFGUID) PURE;
     STDMETHOD(GetEffectGuid)(THIS_ LPGUID) PURE;
     STDMETHOD(GetParameters)(THIS_ LPDIEFFECT,DWORD) PURE;
@@ -373,15 +303,9 @@ typedef struct IDirectInputEffect *LPDIRECTINPUTEFFECT;
 #define IDirectInputEffect_Escape(p,a) (p)->Escape(a)
 #endif
 
-#endif 
+#endif
 
-#endif 
-
-
-
-
-
-
+#endif
 
 #if DIRECTINPUT_VERSION <= 0x700
 #define DIDEVTYPE_DEVICE        1
@@ -408,7 +332,7 @@ typedef struct IDirectInputEffect *LPDIRECTINPUTEFFECT;
 #define DI8DEVTYPE_SCREENPOINTER    0x1A
 #define DI8DEVTYPE_REMOTE           0x1B
 #define DI8DEVTYPE_SUPPLEMENTAL     0x1C
-#endif 
+#endif
 
 #define DIDEVTYPE_HID           0x00010000
 
@@ -511,7 +435,7 @@ typedef struct IDirectInputEffect *LPDIRECTINPUTEFFECT;
 #define DI8DEVTYPESUPPLEMENTAL_DUALPEDALS          11
 #define DI8DEVTYPESUPPLEMENTAL_THREEPEDALS         12
 #define DI8DEVTYPESUPPLEMENTAL_RUDDERPEDALS        13
-#endif 
+#endif
 
 #define GET_DIDEVICE_TYPE(dwDevType)    LOBYTE(dwDevType)
 #define GET_DIDEVICE_SUBTYPE(dwDevType) HIBYTE(dwDevType)
@@ -526,7 +450,7 @@ typedef struct DIDEVCAPS_DX3 {
     DWORD   dwButtons;
     DWORD   dwPOVs;
 } DIDEVCAPS_DX3, *LPDIDEVCAPS_DX3;
-#endif 
+#endif
 
 typedef struct DIDEVCAPS {
     DWORD   dwSize;
@@ -541,7 +465,7 @@ typedef struct DIDEVCAPS {
     DWORD   dwFirmwareRevision;
     DWORD   dwHardwareRevision;
     DWORD   dwFFDriverVersion;
-#endif 
+#endif
 } DIDEVCAPS, *LPDIDEVCAPS;
 
 #define DIDC_ATTACHED           0x00000001
@@ -556,15 +480,15 @@ typedef struct DIDEVCAPS {
 #define DIDC_POSNEGCOEFFICIENTS 0x00001000
 #define DIDC_POSNEGSATURATION   0x00002000
 #define DIDC_DEADBAND           0x00004000
-#endif 
+#endif
 #define DIDC_STARTDELAY         0x00008000
 #if(DIRECTINPUT_VERSION >= 0x050a)
 #define DIDC_ALIAS              0x00010000
 #define DIDC_PHANTOM            0x00020000
-#endif 
+#endif
 #if(DIRECTINPUT_VERSION >= 0x0800)
 #define DIDC_HIDDEN             0x00040000
-#endif 
+#endif
 
 #define DIDFT_ALL           0x00000000
 
@@ -591,7 +515,7 @@ typedef struct DIDEVCAPS {
 #define DIDFT_OUTPUT            0x10000000
 #define DIDFT_VENDORDEFINED     0x04000000
 #define DIDFT_ALIAS             0x08000000
-#endif 
+#endif
 #ifndef DIDFT_OPTIONAL
 #define DIDFT_OPTIONAL          0x80000000
 #endif
@@ -629,19 +553,18 @@ extern const DIDATAFORMAT c_dfDIMouse;
 
 #if(DIRECTINPUT_VERSION >= 0x0700)
 extern const DIDATAFORMAT c_dfDIMouse2;
-#endif 
+#endif
 
 extern const DIDATAFORMAT c_dfDIKeyboard;
 
 #if(DIRECTINPUT_VERSION >= 0x0500)
 extern const DIDATAFORMAT c_dfDIJoystick;
 extern const DIDATAFORMAT c_dfDIJoystick2;
-#endif 
+#endif
 
 #ifdef __cplusplus
 };
 #endif
-
 
 #if DIRECTINPUT_VERSION > 0x0700
 
@@ -675,7 +598,7 @@ typedef LPDIACTIONW LPDIACTION;
 #else
 typedef DIACTIONA DIACTION;
 typedef LPDIACTIONA LPDIACTION;
-#endif 
+#endif
 
 typedef const DIACTIONA *LPCDIACTIONA;
 typedef const DIACTIONW *LPCDIACTIONW;
@@ -685,9 +608,8 @@ typedef LPCDIACTIONW LPCDIACTION;
 #else
 typedef DIACTIONA DIACTION;
 typedef LPCDIACTIONA LPCDIACTION;
-#endif 
+#endif
 typedef const DIACTION *LPCDIACTION;
-
 
 #define DIA_FORCEFEEDBACK       0x00000001
 #define DIA_APPMAPPED           0x00000002
@@ -741,7 +663,7 @@ typedef LPDIACTIONFORMATW LPDIACTIONFORMAT;
 #else
 typedef DIACTIONFORMATA DIACTIONFORMAT;
 typedef LPDIACTIONFORMATA LPDIACTIONFORMAT;
-#endif 
+#endif
 typedef const DIACTIONFORMATA *LPCDIACTIONFORMATA;
 typedef const DIACTIONFORMATW *LPCDIACTIONFORMATW;
 #ifdef UNICODE
@@ -750,7 +672,7 @@ typedef LPCDIACTIONFORMATW LPCDIACTIONFORMAT;
 #else
 typedef DIACTIONFORMATA DIACTIONFORMAT;
 typedef LPCDIACTIONFORMATA LPCDIACTIONFORMAT;
-#endif 
+#endif
 typedef const DIACTIONFORMAT *LPCDIACTIONFORMAT;
 
 #define DIAFTS_NEWDEVICELOW     0xFFFFFFFF
@@ -770,9 +692,6 @@ typedef const DIACTIONFORMAT *LPCDIACTIONFORMAT;
 #define DICD_DEFAULT            0x00000000
 #define DICD_EDIT               0x00000001
 
-
-
-
 #ifndef D3DCOLOR_DEFINED
 typedef DWORD D3DCOLOR;
 #define D3DCOLOR_DEFINED
@@ -790,7 +709,6 @@ typedef struct _DICOLORSET{
     D3DCOLOR cAreaFill;
 } DICOLORSET, *LPDICOLORSET;
 typedef const DICOLORSET *LPCDICOLORSET;
-
 
 typedef struct _DICONFIGUREDEVICESPARAMSA{
      DWORD             dwSize;
@@ -818,7 +736,7 @@ typedef LPDICONFIGUREDEVICESPARAMSW LPDICONFIGUREDEVICESPARAMS;
 #else
 typedef DICONFIGUREDEVICESPARAMSA DICONFIGUREDEVICESPARAMS;
 typedef LPDICONFIGUREDEVICESPARAMSA LPDICONFIGUREDEVICESPARAMS;
-#endif 
+#endif
 typedef const DICONFIGUREDEVICESPARAMSA *LPCDICONFIGUREDEVICESPARAMSA;
 typedef const DICONFIGUREDEVICESPARAMSW *LPCDICONFIGUREDEVICESPARAMSW;
 #ifdef UNICODE
@@ -827,9 +745,8 @@ typedef LPCDICONFIGUREDEVICESPARAMSW LPCDICONFIGUREDEVICESPARAMS;
 #else
 typedef DICONFIGUREDEVICESPARAMSA DICONFIGUREDEVICESPARAMS;
 typedef LPCDICONFIGUREDEVICESPARAMSA LPCDICONFIGUREDEVICESPARAMS;
-#endif 
+#endif
 typedef const DICONFIGUREDEVICESPARAMS *LPCDICONFIGUREDEVICESPARAMS;
-
 
 #define DIDIFT_CONFIGURATION    0x00000001
 #define DIDIFT_OVERLAY          0x00000002
@@ -843,27 +760,27 @@ typedef const DICONFIGUREDEVICESPARAMS *LPCDICONFIGUREDEVICESPARAMS;
 
 typedef struct _DIDEVICEIMAGEINFOA {
     CHAR        tszImagePath[MAX_PATH];
-    DWORD       dwFlags; 
-    
-    DWORD       dwViewID;      
-    RECT        rcOverlay;             
+    DWORD       dwFlags;
+
+    DWORD       dwViewID;
+    RECT        rcOverlay;
     DWORD       dwObjID;
     DWORD       dwcValidPts;
-    POINT       rgptCalloutLine[5];  
-    RECT        rcCalloutRect;  
-    DWORD       dwTextAlign;     
+    POINT       rgptCalloutLine[5];
+    RECT        rcCalloutRect;
+    DWORD       dwTextAlign;
 } DIDEVICEIMAGEINFOA, *LPDIDEVICEIMAGEINFOA;
 typedef struct _DIDEVICEIMAGEINFOW {
     WCHAR       tszImagePath[MAX_PATH];
-    DWORD       dwFlags; 
-    
-    DWORD       dwViewID;      
-    RECT        rcOverlay;             
+    DWORD       dwFlags;
+
+    DWORD       dwViewID;
+    RECT        rcOverlay;
     DWORD       dwObjID;
     DWORD       dwcValidPts;
-    POINT       rgptCalloutLine[5];  
-    RECT        rcCalloutRect;  
-    DWORD       dwTextAlign;     
+    POINT       rgptCalloutLine[5];
+    RECT        rcCalloutRect;
+    DWORD       dwTextAlign;
 } DIDEVICEIMAGEINFOW, *LPDIDEVICEIMAGEINFOW;
 #ifdef UNICODE
 typedef DIDEVICEIMAGEINFOW DIDEVICEIMAGEINFO;
@@ -871,7 +788,7 @@ typedef LPDIDEVICEIMAGEINFOW LPDIDEVICEIMAGEINFO;
 #else
 typedef DIDEVICEIMAGEINFOA DIDEVICEIMAGEINFO;
 typedef LPDIDEVICEIMAGEINFOA LPDIDEVICEIMAGEINFO;
-#endif 
+#endif
 typedef const DIDEVICEIMAGEINFOA *LPCDIDEVICEIMAGEINFOA;
 typedef const DIDEVICEIMAGEINFOW *LPCDIDEVICEIMAGEINFOW;
 #ifdef UNICODE
@@ -880,7 +797,7 @@ typedef LPCDIDEVICEIMAGEINFOW LPCDIDEVICEIMAGEINFO;
 #else
 typedef DIDEVICEIMAGEINFOA DIDEVICEIMAGEINFO;
 typedef LPCDIDEVICEIMAGEINFOA LPCDIDEVICEIMAGEINFO;
-#endif 
+#endif
 typedef const DIDEVICEIMAGEINFO *LPCDIDEVICEIMAGEINFO;
 
 typedef struct _DIDEVICEIMAGEINFOHEADERA {
@@ -911,7 +828,7 @@ typedef LPDIDEVICEIMAGEINFOHEADERW LPDIDEVICEIMAGEINFOHEADER;
 #else
 typedef DIDEVICEIMAGEINFOHEADERA DIDEVICEIMAGEINFOHEADER;
 typedef LPDIDEVICEIMAGEINFOHEADERA LPDIDEVICEIMAGEINFOHEADER;
-#endif 
+#endif
 typedef const DIDEVICEIMAGEINFOHEADERA *LPCDIDEVICEIMAGEINFOHEADERA;
 typedef const DIDEVICEIMAGEINFOHEADERW *LPCDIDEVICEIMAGEINFOHEADERW;
 #ifdef UNICODE
@@ -920,13 +837,12 @@ typedef LPCDIDEVICEIMAGEINFOHEADERW LPCDIDEVICEIMAGEINFOHEADER;
 #else
 typedef DIDEVICEIMAGEINFOHEADERA DIDEVICEIMAGEINFOHEADER;
 typedef LPCDIDEVICEIMAGEINFOHEADERA LPCDIDEVICEIMAGEINFOHEADER;
-#endif 
+#endif
 typedef const DIDEVICEIMAGEINFOHEADER *LPCDIDEVICEIMAGEINFOHEADER;
 
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0500)
-
 
 typedef struct DIDEVICEOBJECTINSTANCE_DX3A {
     DWORD   dwSize;
@@ -950,11 +866,11 @@ typedef LPDIDEVICEOBJECTINSTANCE_DX3W LPDIDEVICEOBJECTINSTANCE_DX3;
 #else
 typedef DIDEVICEOBJECTINSTANCE_DX3A DIDEVICEOBJECTINSTANCE_DX3;
 typedef LPDIDEVICEOBJECTINSTANCE_DX3A LPDIDEVICEOBJECTINSTANCE_DX3;
-#endif 
+#endif
 typedef const DIDEVICEOBJECTINSTANCE_DX3A *LPCDIDEVICEOBJECTINSTANCE_DX3A;
 typedef const DIDEVICEOBJECTINSTANCE_DX3W *LPCDIDEVICEOBJECTINSTANCE_DX3W;
 typedef const DIDEVICEOBJECTINSTANCE_DX3  *LPCDIDEVICEOBJECTINSTANCE_DX3;
-#endif 
+#endif
 
 typedef struct DIDEVICEOBJECTINSTANCEA {
     DWORD   dwSize;
@@ -973,7 +889,7 @@ typedef struct DIDEVICEOBJECTINSTANCEA {
     DWORD   dwDimension;
     WORD    wExponent;
     WORD    wReportId;
-#endif 
+#endif
 } DIDEVICEOBJECTINSTANCEA, *LPDIDEVICEOBJECTINSTANCEA;
 typedef struct DIDEVICEOBJECTINSTANCEW {
     DWORD   dwSize;
@@ -992,7 +908,7 @@ typedef struct DIDEVICEOBJECTINSTANCEW {
     DWORD   dwDimension;
     WORD    wExponent;
     WORD    wReportId;
-#endif 
+#endif
 } DIDEVICEOBJECTINSTANCEW, *LPDIDEVICEOBJECTINSTANCEW;
 #ifdef UNICODE
 typedef DIDEVICEOBJECTINSTANCEW DIDEVICEOBJECTINSTANCE;
@@ -1000,7 +916,7 @@ typedef LPDIDEVICEOBJECTINSTANCEW LPDIDEVICEOBJECTINSTANCE;
 #else
 typedef DIDEVICEOBJECTINSTANCEA DIDEVICEOBJECTINSTANCE;
 typedef LPDIDEVICEOBJECTINSTANCEA LPDIDEVICEOBJECTINSTANCE;
-#endif 
+#endif
 typedef const DIDEVICEOBJECTINSTANCEA *LPCDIDEVICEOBJECTINSTANCEA;
 typedef const DIDEVICEOBJECTINSTANCEW *LPCDIDEVICEOBJECTINSTANCEW;
 typedef const DIDEVICEOBJECTINSTANCE  *LPCDIDEVICEOBJECTINSTANCE;
@@ -1011,7 +927,7 @@ typedef BOOL (FAR PASCAL * LPDIENUMDEVICEOBJECTSCALLBACKW)(LPCDIDEVICEOBJECTINST
 #define LPDIENUMDEVICEOBJECTSCALLBACK  LPDIENUMDEVICEOBJECTSCALLBACKW
 #else
 #define LPDIENUMDEVICEOBJECTSCALLBACK  LPDIENUMDEVICEOBJECTSCALLBACKA
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0500)
 #define DIDOI_FFACTUATOR        0x00000001
@@ -1022,10 +938,10 @@ typedef BOOL (FAR PASCAL * LPDIENUMDEVICEOBJECTSCALLBACKW)(LPCDIDEVICEOBJECTINST
 #define DIDOI_ASPECTACCEL       0x00000300
 #define DIDOI_ASPECTFORCE       0x00000400
 #define DIDOI_ASPECTMASK        0x00000F00
-#endif 
+#endif
 #if(DIRECTINPUT_VERSION >= 0x050a)
 #define DIDOI_GUIDISUSAGE       0x00010000
-#endif 
+#endif
 
 typedef struct DIPROPHEADER {
     DWORD   dwSize;
@@ -1040,12 +956,12 @@ typedef const DIPROPHEADER *LPCDIPROPHEADER;
 #define DIPH_BYID               2
 #if(DIRECTINPUT_VERSION >= 0x050a)
 #define DIPH_BYUSAGE            3
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x050a)
 #define DIMAKEUSAGEDWORD(UsagePage, Usage) \
                                 (DWORD)MAKELONG(Usage, UsagePage)
-#endif 
+#endif
 
 typedef struct DIPROPDWORD {
     DIPROPHEADER diph;
@@ -1059,7 +975,7 @@ typedef struct DIPROPPOINTER {
     UINT_PTR uData;
 } DIPROPPOINTER, *LPDIPROPPOINTER;
 typedef const DIPROPPOINTER *LPCDIPROPPOINTER;
-#endif 
+#endif
 
 typedef struct DIPROPRANGE {
     DIPROPHEADER diph;
@@ -1100,15 +1016,15 @@ typedef struct DIPROPSTRING {
 } DIPROPSTRING, *LPDIPROPSTRING;
 typedef const DIPROPSTRING *LPCDIPROPSTRING;
 
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0800)
 #define MAXCPOINTSNUM          8
 
 typedef struct _CPOINT
 {
-    LONG  lP;     
-    DWORD dwLog;  
+    LONG  lP;
+    DWORD dwLog;
 } CPOINT, *PCPOINT;
 
 typedef struct DIPROPCPOINTS {
@@ -1117,8 +1033,7 @@ typedef struct DIPROPCPOINTS {
     CPOINT cp[MAXCPOINTSNUM];
 } DIPROPCPOINTS, *LPDIPROPCPOINTS;
 typedef const DIPROPCPOINTS *LPCDIPROPCPOINTS;
-#endif 
-
+#endif
 
 #ifdef __cplusplus
 #define MAKEDIPROP(prop)    (*(const GUID *)(prop))
@@ -1163,20 +1078,20 @@ typedef const DIPROPCPOINTS *LPCDIPROPCPOINTS;
 #define DIPROP_INSTANCENAME     MAKEDIPROP(13)
 
 #define DIPROP_PRODUCTNAME      MAKEDIPROP(14)
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x05b2)
 #define DIPROP_JOYSTICKID       MAKEDIPROP(15)
 
 #define DIPROP_GETPORTDISPLAYNAME       MAKEDIPROP(16)
 
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0700)
 #define DIPROP_PHYSICALRANGE            MAKEDIPROP(18)
 
 #define DIPROP_LOGICALRANGE             MAKEDIPROP(19)
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0800)
 #define DIPROP_KEYNAME                     MAKEDIPROP(20)
@@ -1192,8 +1107,7 @@ typedef const DIPROPCPOINTS *LPCDIPROPCPOINTS;
 #define DIPROP_USERNAME         MAKEDIPROP(25)
 
 #define DIPROP_TYPENAME         MAKEDIPROP(26)
-#endif 
-
+#endif
 
 typedef struct DIDEVICEOBJECTDATA_DX3 {
     DWORD       dwOfs;
@@ -1210,7 +1124,7 @@ typedef struct DIDEVICEOBJECTDATA {
     DWORD       dwSequence;
 #if(DIRECTINPUT_VERSION >= 0x0800)
     UINT_PTR    uAppData;
-#endif 
+#endif
 } DIDEVICEOBJECTDATA, *LPDIDEVICEOBJECTDATA;
 typedef const DIDEVICEOBJECTDATA *LPCDIDEVICEOBJECTDATA;
 
@@ -1225,7 +1139,6 @@ typedef const DIDEVICEOBJECTDATA *LPCDIDEVICEOBJECTDATA;
 #define DISCL_NOWINKEY      0x00000010
 
 #if(DIRECTINPUT_VERSION >= 0x0500)
-
 
 typedef struct DIDEVICEINSTANCE_DX3A {
     DWORD   dwSize;
@@ -1249,11 +1162,11 @@ typedef LPDIDEVICEINSTANCE_DX3W LPDIDEVICEINSTANCE_DX3;
 #else
 typedef DIDEVICEINSTANCE_DX3A DIDEVICEINSTANCE_DX3;
 typedef LPDIDEVICEINSTANCE_DX3A LPDIDEVICEINSTANCE_DX3;
-#endif 
+#endif
 typedef const DIDEVICEINSTANCE_DX3A *LPCDIDEVICEINSTANCE_DX3A;
 typedef const DIDEVICEINSTANCE_DX3W *LPCDIDEVICEINSTANCE_DX3W;
 typedef const DIDEVICEINSTANCE_DX3  *LPCDIDEVICEINSTANCE_DX3;
-#endif 
+#endif
 
 typedef struct DIDEVICEINSTANCEA {
     DWORD   dwSize;
@@ -1266,7 +1179,7 @@ typedef struct DIDEVICEINSTANCEA {
     GUID    guidFFDriver;
     WORD    wUsagePage;
     WORD    wUsage;
-#endif 
+#endif
 } DIDEVICEINSTANCEA, *LPDIDEVICEINSTANCEA;
 typedef struct DIDEVICEINSTANCEW {
     DWORD   dwSize;
@@ -1279,7 +1192,7 @@ typedef struct DIDEVICEINSTANCEW {
     GUID    guidFFDriver;
     WORD    wUsagePage;
     WORD    wUsage;
-#endif 
+#endif
 } DIDEVICEINSTANCEW, *LPDIDEVICEINSTANCEW;
 #ifdef UNICODE
 typedef DIDEVICEINSTANCEW DIDEVICEINSTANCE;
@@ -1287,7 +1200,7 @@ typedef LPDIDEVICEINSTANCEW LPDIDEVICEINSTANCE;
 #else
 typedef DIDEVICEINSTANCEA DIDEVICEINSTANCE;
 typedef LPDIDEVICEINSTANCEA LPDIDEVICEINSTANCE;
-#endif 
+#endif
 
 typedef const DIDEVICEINSTANCEA *LPCDIDEVICEINSTANCEA;
 typedef const DIDEVICEINSTANCEW *LPCDIDEVICEINSTANCEW;
@@ -1297,7 +1210,7 @@ typedef LPCDIDEVICEINSTANCEW LPCDIDEVICEINSTANCE;
 #else
 typedef DIDEVICEINSTANCEA DIDEVICEINSTANCE;
 typedef LPCDIDEVICEINSTANCEA LPCDIDEVICEINSTANCE;
-#endif 
+#endif
 typedef const DIDEVICEINSTANCE  *LPCDIDEVICEINSTANCE;
 
 #undef INTERFACE
@@ -1305,12 +1218,11 @@ typedef const DIDEVICEINSTANCE  *LPCDIDEVICEINSTANCE;
 
 DECLARE_INTERFACE_(IDirectInputDeviceW, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(GetCapabilities)(THIS_ LPDIDEVCAPS) PURE;
     STDMETHOD(EnumObjects)(THIS_ LPDIENUMDEVICEOBJECTSCALLBACKW,LPVOID,DWORD) PURE;
     STDMETHOD(GetProperty)(THIS_ REFGUID,LPDIPROPHEADER) PURE;
@@ -1335,12 +1247,11 @@ typedef struct IDirectInputDeviceW *LPDIRECTINPUTDEVICEW;
 
 DECLARE_INTERFACE_(IDirectInputDeviceA, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(GetCapabilities)(THIS_ LPDIDEVCAPS) PURE;
     STDMETHOD(EnumObjects)(THIS_ LPDIENUMDEVICEOBJECTSCALLBACKA,LPVOID,DWORD) PURE;
     STDMETHOD(GetProperty)(THIS_ REFGUID,LPDIPROPHEADER) PURE;
@@ -1411,8 +1322,7 @@ typedef struct IDirectInputDevice *LPDIRECTINPUTDEVICE;
 #define IDirectInputDevice_Initialize(p,a,b,c) (p)->Initialize(a,b,c)
 #endif
 
-#endif 
-
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0500)
 
@@ -1460,7 +1370,7 @@ typedef LPDIEFFECTINFOW LPDIEFFECTINFO;
 #else
 typedef DIEFFECTINFOA DIEFFECTINFO;
 typedef LPDIEFFECTINFOA LPDIEFFECTINFO;
-#endif 
+#endif
 typedef const DIEFFECTINFOA *LPCDIEFFECTINFOA;
 typedef const DIEFFECTINFOW *LPCDIEFFECTINFOW;
 typedef const DIEFFECTINFO  *LPCDIEFFECTINFO;
@@ -1473,7 +1383,7 @@ typedef BOOL (FAR PASCAL * LPDIENUMEFFECTSCALLBACKW)(LPCDIEFFECTINFOW, LPVOID);
 #define LPDIENUMEFFECTSCALLBACK  LPDIENUMEFFECTSCALLBACKW
 #else
 #define LPDIENUMEFFECTSCALLBACK  LPDIENUMEFFECTSCALLBACKA
-#endif 
+#endif
 typedef BOOL (FAR PASCAL * LPDIENUMCREATEDEFFECTOBJECTSCALLBACK)(LPDIRECTINPUTEFFECT, LPVOID);
 
 #undef INTERFACE
@@ -1481,12 +1391,11 @@ typedef BOOL (FAR PASCAL * LPDIENUMCREATEDEFFECTOBJECTSCALLBACK)(LPDIRECTINPUTEF
 
 DECLARE_INTERFACE_(IDirectInputDevice2W, IDirectInputDeviceW)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(GetCapabilities)(THIS_ LPDIDEVCAPS) PURE;
     STDMETHOD(EnumObjects)(THIS_ LPDIENUMDEVICEOBJECTSCALLBACKW,LPVOID,DWORD) PURE;
     STDMETHOD(GetProperty)(THIS_ REFGUID,LPDIPROPHEADER) PURE;
@@ -1503,7 +1412,6 @@ DECLARE_INTERFACE_(IDirectInputDevice2W, IDirectInputDeviceW)
     STDMETHOD(RunControlPanel)(THIS_ HWND,DWORD) PURE;
     STDMETHOD(Initialize)(THIS_ HINSTANCE,DWORD,REFGUID) PURE;
 
-    
     STDMETHOD(CreateEffect)(THIS_ REFGUID,LPCDIEFFECT,LPDIRECTINPUTEFFECT *,LPUNKNOWN) PURE;
     STDMETHOD(EnumEffects)(THIS_ LPDIENUMEFFECTSCALLBACKW,LPVOID,DWORD) PURE;
     STDMETHOD(GetEffectInfo)(THIS_ LPDIEFFECTINFOW,REFGUID) PURE;
@@ -1522,12 +1430,11 @@ typedef struct IDirectInputDevice2W *LPDIRECTINPUTDEVICE2W;
 
 DECLARE_INTERFACE_(IDirectInputDevice2A, IDirectInputDeviceA)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(GetCapabilities)(THIS_ LPDIDEVCAPS) PURE;
     STDMETHOD(EnumObjects)(THIS_ LPDIENUMDEVICEOBJECTSCALLBACKA,LPVOID,DWORD) PURE;
     STDMETHOD(GetProperty)(THIS_ REFGUID,LPDIPROPHEADER) PURE;
@@ -1544,7 +1451,6 @@ DECLARE_INTERFACE_(IDirectInputDevice2A, IDirectInputDeviceA)
     STDMETHOD(RunControlPanel)(THIS_ HWND,DWORD) PURE;
     STDMETHOD(Initialize)(THIS_ HINSTANCE,DWORD,REFGUID) PURE;
 
-    
     STDMETHOD(CreateEffect)(THIS_ REFGUID,LPCDIEFFECT,LPDIRECTINPUTEFFECT *,LPUNKNOWN) PURE;
     STDMETHOD(EnumEffects)(THIS_ LPDIENUMEFFECTSCALLBACKA,LPVOID,DWORD) PURE;
     STDMETHOD(GetEffectInfo)(THIS_ LPDIEFFECTINFOA,REFGUID) PURE;
@@ -1627,9 +1533,9 @@ typedef struct IDirectInputDevice2 *LPDIRECTINPUTDEVICE2;
 #define IDirectInputDevice2_SendDeviceData(p,a,b,c,d) (p)->SendDeviceData(a,b,c,d)
 #endif
 
-#endif 
+#endif
 
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0700)
 #define DIFEF_DEFAULT               0x00000000
@@ -1643,12 +1549,11 @@ typedef struct IDirectInputDevice2 *LPDIRECTINPUTDEVICE2;
 
 DECLARE_INTERFACE_(IDirectInputDevice7W, IDirectInputDevice2W)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(GetCapabilities)(THIS_ LPDIDEVCAPS) PURE;
     STDMETHOD(EnumObjects)(THIS_ LPDIENUMDEVICEOBJECTSCALLBACKW,LPVOID,DWORD) PURE;
     STDMETHOD(GetProperty)(THIS_ REFGUID,LPDIPROPHEADER) PURE;
@@ -1674,7 +1579,6 @@ DECLARE_INTERFACE_(IDirectInputDevice7W, IDirectInputDevice2W)
     STDMETHOD(Poll)(THIS) PURE;
     STDMETHOD(SendDeviceData)(THIS_ DWORD,LPCDIDEVICEOBJECTDATA,LPDWORD,DWORD) PURE;
 
-    
     STDMETHOD(EnumEffectsInFile)(THIS_ LPCWSTR,LPDIENUMEFFECTSINFILECALLBACK,LPVOID,DWORD) PURE;
     STDMETHOD(WriteEffectToFile)(THIS_ LPCWSTR,DWORD,LPDIFILEEFFECT,DWORD) PURE;
 };
@@ -1686,12 +1590,11 @@ typedef struct IDirectInputDevice7W *LPDIRECTINPUTDEVICE7W;
 
 DECLARE_INTERFACE_(IDirectInputDevice7A, IDirectInputDevice2A)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(GetCapabilities)(THIS_ LPDIDEVCAPS) PURE;
     STDMETHOD(EnumObjects)(THIS_ LPDIENUMDEVICEOBJECTSCALLBACKA,LPVOID,DWORD) PURE;
     STDMETHOD(GetProperty)(THIS_ REFGUID,LPDIPROPHEADER) PURE;
@@ -1717,7 +1620,6 @@ DECLARE_INTERFACE_(IDirectInputDevice7A, IDirectInputDevice2A)
     STDMETHOD(Poll)(THIS) PURE;
     STDMETHOD(SendDeviceData)(THIS_ DWORD,LPCDIDEVICEOBJECTDATA,LPDWORD,DWORD) PURE;
 
-    
     STDMETHOD(EnumEffectsInFile)(THIS_ LPCSTR,LPDIENUMEFFECTSINFILECALLBACK,LPVOID,DWORD) PURE;
     STDMETHOD(WriteEffectToFile)(THIS_ LPCSTR,DWORD,LPDIFILEEFFECT,DWORD) PURE;
 };
@@ -1797,9 +1699,9 @@ typedef struct IDirectInputDevice7 *LPDIRECTINPUTDEVICE7;
 #define IDirectInputDevice7_WriteEffectToFile(p,a,b,c,d) (p)->WriteEffectToFile(a,b,c,d)
 #endif
 
-#endif 
+#endif
 
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0800)
 
@@ -1810,12 +1712,11 @@ typedef struct IDirectInputDevice7 *LPDIRECTINPUTDEVICE7;
 
 DECLARE_INTERFACE_(IDirectInputDevice8W, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(GetCapabilities)(THIS_ LPDIDEVCAPS) PURE;
     STDMETHOD(EnumObjects)(THIS_ LPDIENUMDEVICEOBJECTSCALLBACKW,LPVOID,DWORD) PURE;
     STDMETHOD(GetProperty)(THIS_ REFGUID,LPDIPROPHEADER) PURE;
@@ -1854,12 +1755,11 @@ typedef struct IDirectInputDevice8W *LPDIRECTINPUTDEVICE8W;
 
 DECLARE_INTERFACE_(IDirectInputDevice8A, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(GetCapabilities)(THIS_ LPDIDEVCAPS) PURE;
     STDMETHOD(EnumObjects)(THIS_ LPDIENUMDEVICEOBJECTSCALLBACKA,LPVOID,DWORD) PURE;
     STDMETHOD(GetProperty)(THIS_ REFGUID,LPDIPROPHEADER) PURE;
@@ -1972,15 +1872,9 @@ typedef struct IDirectInputDevice8 *LPDIRECTINPUTDEVICE8;
 #define IDirectInputDevice8_GetImageInfo(p,a) (p)->GetImageInfo(a)
 #endif
 
-#endif 
+#endif
 
-#endif 
-
-
-
-
-
-
+#endif
 
 #ifndef DIJ_RINGZERO
 
@@ -2000,7 +1894,6 @@ typedef struct _DIMOUSESTATE2 {
 } DIMOUSESTATE2, *LPDIMOUSESTATE2;
 #endif
 
-
 #define DIMOFS_X        FIELD_OFFSET(DIMOUSESTATE, lX)
 #define DIMOFS_Y        FIELD_OFFSET(DIMOUSESTATE, lY)
 #define DIMOFS_Z        FIELD_OFFSET(DIMOUSESTATE, lZ)
@@ -2014,20 +1907,9 @@ typedef struct _DIMOUSESTATE2 {
 #define DIMOFS_BUTTON6 (FIELD_OFFSET(DIMOUSESTATE2, rgbButtons) + 6)
 #define DIMOFS_BUTTON7 (FIELD_OFFSET(DIMOUSESTATE2, rgbButtons) + 7)
 #endif
-#endif 
-
-
-
-
-
-
+#endif
 
 #ifndef DIJ_RINGZERO
-
-
-
-
-
 
 #define DIK_ESCAPE          0x01
 #define DIK_1               0x02
@@ -2040,9 +1922,9 @@ typedef struct _DIMOUSESTATE2 {
 #define DIK_8               0x09
 #define DIK_9               0x0A
 #define DIK_0               0x0B
-#define DIK_MINUS           0x0C    
+#define DIK_MINUS           0x0C
 #define DIK_EQUALS          0x0D
-#define DIK_BACK            0x0E    
+#define DIK_BACK            0x0E
 #define DIK_TAB             0x0F
 #define DIK_Q               0x10
 #define DIK_W               0x11
@@ -2056,7 +1938,7 @@ typedef struct _DIMOUSESTATE2 {
 #define DIK_P               0x19
 #define DIK_LBRACKET        0x1A
 #define DIK_RBRACKET        0x1B
-#define DIK_RETURN          0x1C    
+#define DIK_RETURN          0x1C
 #define DIK_LCONTROL        0x1D
 #define DIK_A               0x1E
 #define DIK_S               0x1F
@@ -2069,7 +1951,7 @@ typedef struct _DIMOUSESTATE2 {
 #define DIK_L               0x26
 #define DIK_SEMICOLON       0x27
 #define DIK_APOSTROPHE      0x28
-#define DIK_GRAVE           0x29    
+#define DIK_GRAVE           0x29
 #define DIK_LSHIFT          0x2A
 #define DIK_BACKSLASH       0x2B
 #define DIK_Z               0x2C
@@ -2080,11 +1962,11 @@ typedef struct _DIMOUSESTATE2 {
 #define DIK_N               0x31
 #define DIK_M               0x32
 #define DIK_COMMA           0x33
-#define DIK_PERIOD          0x34    
-#define DIK_SLASH           0x35    
+#define DIK_PERIOD          0x34
+#define DIK_SLASH           0x35
 #define DIK_RSHIFT          0x36
-#define DIK_MULTIPLY        0x37    
-#define DIK_LMENU           0x38    
+#define DIK_MULTIPLY        0x37
+#define DIK_LMENU           0x38
 #define DIK_SPACE           0x39
 #define DIK_CAPITAL         0x3A
 #define DIK_F1              0x3B
@@ -2098,159 +1980,147 @@ typedef struct _DIMOUSESTATE2 {
 #define DIK_F9              0x43
 #define DIK_F10             0x44
 #define DIK_NUMLOCK         0x45
-#define DIK_SCROLL          0x46    
+#define DIK_SCROLL          0x46
 #define DIK_NUMPAD7         0x47
 #define DIK_NUMPAD8         0x48
 #define DIK_NUMPAD9         0x49
-#define DIK_SUBTRACT        0x4A    
+#define DIK_SUBTRACT        0x4A
 #define DIK_NUMPAD4         0x4B
 #define DIK_NUMPAD5         0x4C
 #define DIK_NUMPAD6         0x4D
-#define DIK_ADD             0x4E    
+#define DIK_ADD             0x4E
 #define DIK_NUMPAD1         0x4F
 #define DIK_NUMPAD2         0x50
 #define DIK_NUMPAD3         0x51
 #define DIK_NUMPAD0         0x52
-#define DIK_DECIMAL         0x53    
-#define DIK_OEM_102         0x56    
+#define DIK_DECIMAL         0x53
+#define DIK_OEM_102         0x56
 #define DIK_F11             0x57
 #define DIK_F12             0x58
-#define DIK_F13             0x64    
-#define DIK_F14             0x65    
-#define DIK_F15             0x66    
-#define DIK_KANA            0x70    
-#define DIK_ABNT_C1         0x73    
-#define DIK_CONVERT         0x79    
-#define DIK_NOCONVERT       0x7B    
-#define DIK_YEN             0x7D    
-#define DIK_ABNT_C2         0x7E    
-#define DIK_NUMPADEQUALS    0x8D    
-#define DIK_PREVTRACK       0x90    
-#define DIK_AT              0x91    
-#define DIK_COLON           0x92    
-#define DIK_UNDERLINE       0x93    
-#define DIK_KANJI           0x94    
-#define DIK_STOP            0x95    
-#define DIK_AX              0x96    
-#define DIK_UNLABELED       0x97    
-#define DIK_NEXTTRACK       0x99    
-#define DIK_NUMPADENTER     0x9C    
+#define DIK_F13             0x64
+#define DIK_F14             0x65
+#define DIK_F15             0x66
+#define DIK_KANA            0x70
+#define DIK_ABNT_C1         0x73
+#define DIK_CONVERT         0x79
+#define DIK_NOCONVERT       0x7B
+#define DIK_YEN             0x7D
+#define DIK_ABNT_C2         0x7E
+#define DIK_NUMPADEQUALS    0x8D
+#define DIK_PREVTRACK       0x90
+#define DIK_AT              0x91
+#define DIK_COLON           0x92
+#define DIK_UNDERLINE       0x93
+#define DIK_KANJI           0x94
+#define DIK_STOP            0x95
+#define DIK_AX              0x96
+#define DIK_UNLABELED       0x97
+#define DIK_NEXTTRACK       0x99
+#define DIK_NUMPADENTER     0x9C
 #define DIK_RCONTROL        0x9D
-#define DIK_MUTE            0xA0    
-#define DIK_CALCULATOR      0xA1    
-#define DIK_PLAYPAUSE       0xA2    
-#define DIK_MEDIASTOP       0xA4    
-#define DIK_VOLUMEDOWN      0xAE    
-#define DIK_VOLUMEUP        0xB0    
-#define DIK_WEBHOME         0xB2    
-#define DIK_NUMPADCOMMA     0xB3    
-#define DIK_DIVIDE          0xB5    
+#define DIK_MUTE            0xA0
+#define DIK_CALCULATOR      0xA1
+#define DIK_PLAYPAUSE       0xA2
+#define DIK_MEDIASTOP       0xA4
+#define DIK_VOLUMEDOWN      0xAE
+#define DIK_VOLUMEUP        0xB0
+#define DIK_WEBHOME         0xB2
+#define DIK_NUMPADCOMMA     0xB3
+#define DIK_DIVIDE          0xB5
 #define DIK_SYSRQ           0xB7
-#define DIK_RMENU           0xB8    
-#define DIK_PAUSE           0xC5    
-#define DIK_HOME            0xC7    
-#define DIK_UP              0xC8    
-#define DIK_PRIOR           0xC9    
-#define DIK_LEFT            0xCB    
-#define DIK_RIGHT           0xCD    
-#define DIK_END             0xCF    
-#define DIK_DOWN            0xD0    
-#define DIK_NEXT            0xD1    
-#define DIK_INSERT          0xD2    
-#define DIK_DELETE          0xD3    
-#define DIK_LWIN            0xDB    
-#define DIK_RWIN            0xDC    
-#define DIK_APPS            0xDD    
-#define DIK_POWER           0xDE    
-#define DIK_SLEEP           0xDF    
-#define DIK_WAKE            0xE3    
-#define DIK_WEBSEARCH       0xE5    
-#define DIK_WEBFAVORITES    0xE6    
-#define DIK_WEBREFRESH      0xE7    
-#define DIK_WEBSTOP         0xE8    
-#define DIK_WEBFORWARD      0xE9    
-#define DIK_WEBBACK         0xEA    
-#define DIK_MYCOMPUTER      0xEB    
-#define DIK_MAIL            0xEC    
-#define DIK_MEDIASELECT     0xED    
+#define DIK_RMENU           0xB8
+#define DIK_PAUSE           0xC5
+#define DIK_HOME            0xC7
+#define DIK_UP              0xC8
+#define DIK_PRIOR           0xC9
+#define DIK_LEFT            0xCB
+#define DIK_RIGHT           0xCD
+#define DIK_END             0xCF
+#define DIK_DOWN            0xD0
+#define DIK_NEXT            0xD1
+#define DIK_INSERT          0xD2
+#define DIK_DELETE          0xD3
+#define DIK_LWIN            0xDB
+#define DIK_RWIN            0xDC
+#define DIK_APPS            0xDD
+#define DIK_POWER           0xDE
+#define DIK_SLEEP           0xDF
+#define DIK_WAKE            0xE3
+#define DIK_WEBSEARCH       0xE5
+#define DIK_WEBFAVORITES    0xE6
+#define DIK_WEBREFRESH      0xE7
+#define DIK_WEBSTOP         0xE8
+#define DIK_WEBFORWARD      0xE9
+#define DIK_WEBBACK         0xEA
+#define DIK_MYCOMPUTER      0xEB
+#define DIK_MAIL            0xEC
+#define DIK_MEDIASELECT     0xED
 
+#define DIK_BACKSPACE       DIK_BACK
+#define DIK_NUMPADSTAR      DIK_MULTIPLY
+#define DIK_LALT            DIK_LMENU
+#define DIK_CAPSLOCK        DIK_CAPITAL
+#define DIK_NUMPADMINUS     DIK_SUBTRACT
+#define DIK_NUMPADPLUS      DIK_ADD
+#define DIK_NUMPADPERIOD    DIK_DECIMAL
+#define DIK_NUMPADSLASH     DIK_DIVIDE
+#define DIK_RALT            DIK_RMENU
+#define DIK_UPARROW         DIK_UP
+#define DIK_PGUP            DIK_PRIOR
+#define DIK_LEFTARROW       DIK_LEFT
+#define DIK_RIGHTARROW      DIK_RIGHT
+#define DIK_DOWNARROW       DIK_DOWN
+#define DIK_PGDN            DIK_NEXT
 
+#define DIK_CIRCUMFLEX      DIK_PREVTRACK
 
-
-#define DIK_BACKSPACE       DIK_BACK            
-#define DIK_NUMPADSTAR      DIK_MULTIPLY        
-#define DIK_LALT            DIK_LMENU           
-#define DIK_CAPSLOCK        DIK_CAPITAL         
-#define DIK_NUMPADMINUS     DIK_SUBTRACT        
-#define DIK_NUMPADPLUS      DIK_ADD             
-#define DIK_NUMPADPERIOD    DIK_DECIMAL         
-#define DIK_NUMPADSLASH     DIK_DIVIDE          
-#define DIK_RALT            DIK_RMENU           
-#define DIK_UPARROW         DIK_UP              
-#define DIK_PGUP            DIK_PRIOR           
-#define DIK_LEFTARROW       DIK_LEFT            
-#define DIK_RIGHTARROW      DIK_RIGHT           
-#define DIK_DOWNARROW       DIK_DOWN            
-#define DIK_PGDN            DIK_NEXT            
-
-
-
-
-#define DIK_CIRCUMFLEX      DIK_PREVTRACK       
-
-#endif 
-
-
-
-
-
-
+#endif
 
 #ifndef DIJ_RINGZERO
 
 typedef struct DIJOYSTATE {
-    LONG    lX;                     
-    LONG    lY;                     
-    LONG    lZ;                     
-    LONG    lRx;                    
-    LONG    lRy;                    
-    LONG    lRz;                    
-    LONG    rglSlider[2];           
-    DWORD   rgdwPOV[4];             
-    BYTE    rgbButtons[32];         
+    LONG    lX;
+    LONG    lY;
+    LONG    lZ;
+    LONG    lRx;
+    LONG    lRy;
+    LONG    lRz;
+    LONG    rglSlider[2];
+    DWORD   rgdwPOV[4];
+    BYTE    rgbButtons[32];
 } DIJOYSTATE, *LPDIJOYSTATE;
 
 typedef struct DIJOYSTATE2 {
-    LONG    lX;                     
-    LONG    lY;                     
-    LONG    lZ;                     
-    LONG    lRx;                    
-    LONG    lRy;                    
-    LONG    lRz;                    
-    LONG    rglSlider[2];           
-    DWORD   rgdwPOV[4];             
-    BYTE    rgbButtons[128];        
-    LONG    lVX;                    
-    LONG    lVY;                    
-    LONG    lVZ;                    
-    LONG    lVRx;                   
-    LONG    lVRy;                   
-    LONG    lVRz;                   
-    LONG    rglVSlider[2];          
-    LONG    lAX;                    
-    LONG    lAY;                    
-    LONG    lAZ;                    
-    LONG    lARx;                   
-    LONG    lARy;                   
-    LONG    lARz;                   
-    LONG    rglASlider[2];          
-    LONG    lFX;                    
-    LONG    lFY;                    
-    LONG    lFZ;                    
-    LONG    lFRx;                   
-    LONG    lFRy;                   
-    LONG    lFRz;                   
-    LONG    rglFSlider[2];          
+    LONG    lX;
+    LONG    lY;
+    LONG    lZ;
+    LONG    lRx;
+    LONG    lRy;
+    LONG    lRz;
+    LONG    rglSlider[2];
+    DWORD   rgdwPOV[4];
+    BYTE    rgbButtons[128];
+    LONG    lVX;
+    LONG    lVY;
+    LONG    lVZ;
+    LONG    lVRx;
+    LONG    lVRy;
+    LONG    lVRz;
+    LONG    rglVSlider[2];
+    LONG    lAX;
+    LONG    lAY;
+    LONG    lAZ;
+    LONG    lARx;
+    LONG    lARy;
+    LONG    lARz;
+    LONG    rglASlider[2];
+    LONG    lFX;
+    LONG    lFY;
+    LONG    lFZ;
+    LONG    lFRx;
+    LONG    lFRy;
+    LONG    lFRz;
+    LONG    rglFSlider[2];
 } DIJOYSTATE2, *LPDIJOYSTATE2;
 
 #define DIJOFS_X            FIELD_OFFSET(DIJOYSTATE, lX)
@@ -2297,14 +2167,7 @@ typedef struct DIJOYSTATE2 {
 #define DIJOFS_BUTTON30     DIJOFS_BUTTON(30)
 #define DIJOFS_BUTTON31     DIJOFS_BUTTON(31)
 
-
-#endif 
-
-
-
-
-
-
+#endif
 
 #ifndef DIJ_RINGZERO
 
@@ -2317,22 +2180,21 @@ typedef BOOL (FAR PASCAL * LPDIENUMDEVICESCALLBACKW)(LPCDIDEVICEINSTANCEW, LPVOI
 #define LPDIENUMDEVICESCALLBACK  LPDIENUMDEVICESCALLBACKW
 #else
 #define LPDIENUMDEVICESCALLBACK  LPDIENUMDEVICESCALLBACKA
-#endif 
+#endif
 typedef BOOL (FAR PASCAL * LPDICONFIGUREDEVICESCALLBACK)(IUnknown FAR *, LPVOID);
 
 #define DIEDFL_ALLDEVICES       0x00000000
 #define DIEDFL_ATTACHEDONLY     0x00000001
 #if(DIRECTINPUT_VERSION >= 0x0500)
 #define DIEDFL_FORCEFEEDBACK    0x00000100
-#endif 
+#endif
 #if(DIRECTINPUT_VERSION >= 0x050a)
 #define DIEDFL_INCLUDEALIASES   0x00010000
 #define DIEDFL_INCLUDEPHANTOMS  0x00020000
-#endif 
+#endif
 #if(DIRECTINPUT_VERSION >= 0x0800)
 #define DIEDFL_INCLUDEHIDDEN    0x00040000
-#endif 
-
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0800)
 typedef BOOL (FAR PASCAL * LPDIENUMDEVICESBYSEMANTICSCBA)(LPCDIDEVICEINSTANCEA, LPDIRECTINPUTDEVICE8A, DWORD, DWORD, LPVOID);
@@ -2341,15 +2203,15 @@ typedef BOOL (FAR PASCAL * LPDIENUMDEVICESBYSEMANTICSCBW)(LPCDIDEVICEINSTANCEW, 
 #define LPDIENUMDEVICESBYSEMANTICSCB  LPDIENUMDEVICESBYSEMANTICSCBW
 #else
 #define LPDIENUMDEVICESBYSEMANTICSCB  LPDIENUMDEVICESBYSEMANTICSCBA
-#endif 
-#endif 
+#endif
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0800)
 #define DIEDBS_MAPPEDPRI1         0x00000001
 #define DIEDBS_MAPPEDPRI2         0x00000002
 #define DIEDBS_RECENTDEVICE       0x00000010
 #define DIEDBS_NEWDEVICE          0x00000020
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0800)
 #define DIEDBSFL_ATTACHEDONLY       0x00000000
@@ -2359,19 +2221,18 @@ typedef BOOL (FAR PASCAL * LPDIENUMDEVICESBYSEMANTICSCBW)(LPCDIDEVICEINSTANCEW, 
 #define DIEDBSFL_MULTIMICEKEYBOARDS 0x00002000
 #define DIEDBSFL_NONGAMINGDEVICES   0x00004000
 #define DIEDBSFL_VALID              0x00007110
-#endif 
+#endif
 
 #undef INTERFACE
 #define INTERFACE IDirectInputW
 
 DECLARE_INTERFACE_(IDirectInputW, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(CreateDevice)(THIS_ REFGUID,LPDIRECTINPUTDEVICEW *,LPUNKNOWN) PURE;
     STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKW,LPVOID,DWORD) PURE;
     STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
@@ -2386,12 +2247,11 @@ typedef struct IDirectInputW *LPDIRECTINPUTW;
 
 DECLARE_INTERFACE_(IDirectInputA, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(CreateDevice)(THIS_ REFGUID,LPDIRECTINPUTDEVICEA *,LPUNKNOWN) PURE;
     STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKA,LPVOID,DWORD) PURE;
     STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
@@ -2437,19 +2297,17 @@ typedef struct IDirectInput *LPDIRECTINPUT;
 
 DECLARE_INTERFACE_(IDirectInput2W, IDirectInputW)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(CreateDevice)(THIS_ REFGUID,LPDIRECTINPUTDEVICEW *,LPUNKNOWN) PURE;
     STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKW,LPVOID,DWORD) PURE;
     STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
     STDMETHOD(RunControlPanel)(THIS_ HWND,DWORD) PURE;
     STDMETHOD(Initialize)(THIS_ HINSTANCE,DWORD) PURE;
 
-    
     STDMETHOD(FindDevice)(THIS_ REFGUID,LPCWSTR,LPGUID) PURE;
 };
 
@@ -2460,19 +2318,17 @@ typedef struct IDirectInput2W *LPDIRECTINPUT2W;
 
 DECLARE_INTERFACE_(IDirectInput2A, IDirectInputA)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(CreateDevice)(THIS_ REFGUID,LPDIRECTINPUTDEVICEA *,LPUNKNOWN) PURE;
     STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKA,LPVOID,DWORD) PURE;
     STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
     STDMETHOD(RunControlPanel)(THIS_ HWND,DWORD) PURE;
     STDMETHOD(Initialize)(THIS_ HINSTANCE,DWORD) PURE;
 
-    
     STDMETHOD(FindDevice)(THIS_ REFGUID,LPCSTR,LPGUID) PURE;
 };
 
@@ -2511,18 +2367,16 @@ typedef struct IDirectInput2 *LPDIRECTINPUT2;
 #define IDirectInput2_FindDevice(p,a,b,c) (p)->FindDevice(a,b,c)
 #endif
 
-
 #undef INTERFACE
 #define INTERFACE IDirectInput7W
 
 DECLARE_INTERFACE_(IDirectInput7W, IDirectInput2W)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(CreateDevice)(THIS_ REFGUID,LPDIRECTINPUTDEVICEW *,LPUNKNOWN) PURE;
     STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKW,LPVOID,DWORD) PURE;
     STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
@@ -2530,7 +2384,6 @@ DECLARE_INTERFACE_(IDirectInput7W, IDirectInput2W)
     STDMETHOD(Initialize)(THIS_ HINSTANCE,DWORD) PURE;
     STDMETHOD(FindDevice)(THIS_ REFGUID,LPCWSTR,LPGUID) PURE;
 
-    
     STDMETHOD(CreateDeviceEx)(THIS_ REFGUID,REFIID,LPVOID *,LPUNKNOWN) PURE;
 };
 
@@ -2541,12 +2394,11 @@ typedef struct IDirectInput7W *LPDIRECTINPUT7W;
 
 DECLARE_INTERFACE_(IDirectInput7A, IDirectInput2A)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(CreateDevice)(THIS_ REFGUID,LPDIRECTINPUTDEVICEA *,LPUNKNOWN) PURE;
     STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKA,LPVOID,DWORD) PURE;
     STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
@@ -2554,7 +2406,6 @@ DECLARE_INTERFACE_(IDirectInput7A, IDirectInput2A)
     STDMETHOD(Initialize)(THIS_ HINSTANCE,DWORD) PURE;
     STDMETHOD(FindDevice)(THIS_ REFGUID,LPCSTR,LPGUID) PURE;
 
-    
     STDMETHOD(CreateDeviceEx)(THIS_ REFGUID,REFIID,LPVOID *,LPUNKNOWN) PURE;
 };
 
@@ -2601,12 +2452,11 @@ typedef struct IDirectInput7 *LPDIRECTINPUT7;
 
 DECLARE_INTERFACE_(IDirectInput8W, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(CreateDevice)(THIS_ REFGUID,LPDIRECTINPUTDEVICE8W *,LPUNKNOWN) PURE;
     STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKW,LPVOID,DWORD) PURE;
     STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
@@ -2624,12 +2474,11 @@ typedef struct IDirectInput8W *LPDIRECTINPUT8W;
 
 DECLARE_INTERFACE_(IDirectInput8A, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(CreateDevice)(THIS_ REFGUID,LPDIRECTINPUTDEVICE8A *,LPUNKNOWN) PURE;
     STDMETHOD(EnumDevices)(THIS_ DWORD,LPDIENUMDEVICESCALLBACKA,LPVOID,DWORD) PURE;
     STDMETHOD(GetDeviceStatus)(THIS_ REFGUID) PURE;
@@ -2678,7 +2527,7 @@ typedef struct IDirectInput8 *LPDIRECTINPUT8;
 #define IDirectInput8_EnumDevicesBySemantics(p,a,b,c,d,e) (p)->EnumDevicesBySemantics(a,b,c,d,e)
 #define IDirectInput8_ConfigureDevices(p,a,b,c,d) (p)->ConfigureDevices(a,b,c,d)
 #endif
-#endif 
+#endif
 
 #if DIRECTINPUT_VERSION > 0x0700
 
@@ -2691,296 +2540,115 @@ extern HRESULT WINAPI DirectInputCreateW(HINSTANCE hinst, DWORD dwVersion, LPDIR
 #define DirectInputCreate  DirectInputCreateW
 #else
 #define DirectInputCreate  DirectInputCreateA
-#endif 
+#endif
 
 extern HRESULT WINAPI DirectInputCreateEx(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID *ppvOut, LPUNKNOWN punkOuter);
 
-#endif 
+#endif
 
-#endif 
-
-
-
-
-
-
-
-
-
-
+#endif
 
 #define DI_OK                           S_OK
 
-
-
-
 #define DI_NOTATTACHED                  S_FALSE
-
-
-
 
 #define DI_BUFFEROVERFLOW               S_FALSE
 
-
-
-
 #define DI_PROPNOEFFECT                 S_FALSE
-
-
-
 
 #define DI_NOEFFECT                     S_FALSE
 
-
-
-
-
-
 #define DI_POLLEDDEVICE                 ((HRESULT)0x00000002L)
-
-
-
-
-
-
 
 #define DI_DOWNLOADSKIPPED              ((HRESULT)0x00000003L)
 
-
-
-
-
-
 #define DI_EFFECTRESTARTED              ((HRESULT)0x00000004L)
-
-
-
-
-
 
 #define DI_TRUNCATED                    ((HRESULT)0x00000008L)
 
-
-
-
-
 #define DI_SETTINGSNOTSAVED				((HRESULT)0x0000000BL)
-
-
-
 
 #define DI_TRUNCATEDANDRESTARTED        ((HRESULT)0x0000000CL)
 
-
-
-
 #define DI_WRITEPROTECT                 ((HRESULT)0x00000013L)
-
-
-
 
 #define DIERR_OLDDIRECTINPUTVERSION     \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_OLD_WIN_VERSION)
 
-
-
-
-
 #define DIERR_BETADIRECTINPUTVERSION    \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_RMODE_APP)
-
-
-
-
 
 #define DIERR_BADDRIVERVER              \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_BAD_DRIVER_LEVEL)
 
-
-
-
 #define DIERR_DEVICENOTREG              REGDB_E_CLASSNOTREG
-
-
-
 
 #define DIERR_NOTFOUND                  \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_FILE_NOT_FOUND)
 
-
-
-
 #define DIERR_OBJECTNOTFOUND            \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_FILE_NOT_FOUND)
 
-
-
-
-
-
 #define DIERR_INVALIDPARAM              E_INVALIDARG
-
-
-
 
 #define DIERR_NOINTERFACE               E_NOINTERFACE
 
-
-
-
 #define DIERR_GENERIC                   E_FAIL
-
-
-
-
 
 #define DIERR_OUTOFMEMORY               E_OUTOFMEMORY
 
-
-
-
 #define DIERR_UNSUPPORTED               E_NOTIMPL
-
-
-
 
 #define DIERR_NOTINITIALIZED            \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_NOT_READY)
 
-
-
-
 #define DIERR_ALREADYINITIALIZED        \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_ALREADY_INITIALIZED)
 
-
-
-
 #define DIERR_NOAGGREGATION             CLASS_E_NOAGGREGATION
 
-
-
-
-
 #define DIERR_OTHERAPPHASPRIO           E_ACCESSDENIED
-
-
-
 
 #define DIERR_INPUTLOST                 \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_READ_FAULT)
 
-
-
-
 #define DIERR_ACQUIRED                  \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_BUSY)
-
-
-
 
 #define DIERR_NOTACQUIRED               \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_INVALID_ACCESS)
 
-
-
-
 #define DIERR_READONLY                  E_ACCESSDENIED
 
-
-
-
 #define DIERR_HANDLEEXISTS              E_ACCESSDENIED
-
-
-
 
 #ifndef E_PENDING
 #define E_PENDING                       0x8000000AL
 #endif
 
-
-
-
-
-
 #define DIERR_INSUFFICIENTPRIVS         0x80040200L
-
-
-
 
 #define DIERR_DEVICEFULL                0x80040201L
 
-
-
-
 #define DIERR_MOREDATA                  0x80040202L
-
-
-
 
 #define DIERR_NOTDOWNLOADED             0x80040203L
 
-
-
-
-
 #define DIERR_HASEFFECTS                0x80040204L
-
-
-
-
 
 #define DIERR_NOTEXCLUSIVEACQUIRED      0x80040205L
 
-
-
-
-
-
 #define DIERR_INCOMPLETEEFFECT          0x80040206L
-
-
-
-
 
 #define DIERR_NOTBUFFERED               0x80040207L
 
-
-
-
-
-
 #define DIERR_EFFECTPLAYING             0x80040208L
-
-
-
-
 
 #define DIERR_UNPLUGGED                 0x80040209L
 
-
-
-
-
-
-
-
 #define DIERR_REPORTFULL                0x8004020AL
 
-
-
-
-
-
 #define DIERR_MAPFILEFAIL               0x8004020BL
-
-
-
-
-
-
-
 
 #define DIKEYBOARD_ESCAPE                       0x81000401
 #define DIKEYBOARD_1                            0x81000402
@@ -2993,9 +2661,9 @@ extern HRESULT WINAPI DirectInputCreateEx(HINSTANCE hinst, DWORD dwVersion, REFI
 #define DIKEYBOARD_8                            0x81000409
 #define DIKEYBOARD_9                            0x8100040A
 #define DIKEYBOARD_0                            0x8100040B
-#define DIKEYBOARD_MINUS                        0x8100040C    
+#define DIKEYBOARD_MINUS                        0x8100040C
 #define DIKEYBOARD_EQUALS                       0x8100040D
-#define DIKEYBOARD_BACK                         0x8100040E    
+#define DIKEYBOARD_BACK                         0x8100040E
 #define DIKEYBOARD_TAB                          0x8100040F
 #define DIKEYBOARD_Q                            0x81000410
 #define DIKEYBOARD_W                            0x81000411
@@ -3009,7 +2677,7 @@ extern HRESULT WINAPI DirectInputCreateEx(HINSTANCE hinst, DWORD dwVersion, REFI
 #define DIKEYBOARD_P                            0x81000419
 #define DIKEYBOARD_LBRACKET                     0x8100041A
 #define DIKEYBOARD_RBRACKET                     0x8100041B
-#define DIKEYBOARD_RETURN                       0x8100041C    
+#define DIKEYBOARD_RETURN                       0x8100041C
 #define DIKEYBOARD_LCONTROL                     0x8100041D
 #define DIKEYBOARD_A                            0x8100041E
 #define DIKEYBOARD_S                            0x8100041F
@@ -3022,7 +2690,7 @@ extern HRESULT WINAPI DirectInputCreateEx(HINSTANCE hinst, DWORD dwVersion, REFI
 #define DIKEYBOARD_L                            0x81000426
 #define DIKEYBOARD_SEMICOLON                    0x81000427
 #define DIKEYBOARD_APOSTROPHE                   0x81000428
-#define DIKEYBOARD_GRAVE                        0x81000429    
+#define DIKEYBOARD_GRAVE                        0x81000429
 #define DIKEYBOARD_LSHIFT                       0x8100042A
 #define DIKEYBOARD_BACKSLASH                    0x8100042B
 #define DIKEYBOARD_Z                            0x8100042C
@@ -3033,11 +2701,11 @@ extern HRESULT WINAPI DirectInputCreateEx(HINSTANCE hinst, DWORD dwVersion, REFI
 #define DIKEYBOARD_N                            0x81000431
 #define DIKEYBOARD_M                            0x81000432
 #define DIKEYBOARD_COMMA                        0x81000433
-#define DIKEYBOARD_PERIOD                       0x81000434    
-#define DIKEYBOARD_SLASH                        0x81000435    
+#define DIKEYBOARD_PERIOD                       0x81000434
+#define DIKEYBOARD_SLASH                        0x81000435
 #define DIKEYBOARD_RSHIFT                       0x81000436
-#define DIKEYBOARD_MULTIPLY                     0x81000437    
-#define DIKEYBOARD_LMENU                        0x81000438    
+#define DIKEYBOARD_MULTIPLY                     0x81000437
+#define DIKEYBOARD_LMENU                        0x81000438
 #define DIKEYBOARD_SPACE                        0x81000439
 #define DIKEYBOARD_CAPITAL                      0x8100043A
 #define DIKEYBOARD_F1                           0x8100043B
@@ -3051,103 +2719,95 @@ extern HRESULT WINAPI DirectInputCreateEx(HINSTANCE hinst, DWORD dwVersion, REFI
 #define DIKEYBOARD_F9                           0x81000443
 #define DIKEYBOARD_F10                          0x81000444
 #define DIKEYBOARD_NUMLOCK                      0x81000445
-#define DIKEYBOARD_SCROLL                       0x81000446    
+#define DIKEYBOARD_SCROLL                       0x81000446
 #define DIKEYBOARD_NUMPAD7                      0x81000447
 #define DIKEYBOARD_NUMPAD8                      0x81000448
 #define DIKEYBOARD_NUMPAD9                      0x81000449
-#define DIKEYBOARD_SUBTRACT                     0x8100044A    
+#define DIKEYBOARD_SUBTRACT                     0x8100044A
 #define DIKEYBOARD_NUMPAD4                      0x8100044B
 #define DIKEYBOARD_NUMPAD5                      0x8100044C
 #define DIKEYBOARD_NUMPAD6                      0x8100044D
-#define DIKEYBOARD_ADD                          0x8100044E    
+#define DIKEYBOARD_ADD                          0x8100044E
 #define DIKEYBOARD_NUMPAD1                      0x8100044F
 #define DIKEYBOARD_NUMPAD2                      0x81000450
 #define DIKEYBOARD_NUMPAD3                      0x81000451
 #define DIKEYBOARD_NUMPAD0                      0x81000452
-#define DIKEYBOARD_DECIMAL                      0x81000453    
-#define DIKEYBOARD_OEM_102                      0x81000456    
+#define DIKEYBOARD_DECIMAL                      0x81000453
+#define DIKEYBOARD_OEM_102                      0x81000456
 #define DIKEYBOARD_F11                          0x81000457
 #define DIKEYBOARD_F12                          0x81000458
-#define DIKEYBOARD_F13                          0x81000464    
-#define DIKEYBOARD_F14                          0x81000465    
-#define DIKEYBOARD_F15                          0x81000466    
-#define DIKEYBOARD_KANA                         0x81000470    
-#define DIKEYBOARD_ABNT_C1                      0x81000473    
-#define DIKEYBOARD_CONVERT                      0x81000479    
-#define DIKEYBOARD_NOCONVERT                    0x8100047B    
-#define DIKEYBOARD_YEN                          0x8100047D    
-#define DIKEYBOARD_ABNT_C2                      0x8100047E    
-#define DIKEYBOARD_NUMPADEQUALS                 0x8100048D    
-#define DIKEYBOARD_PREVTRACK                    0x81000490    
-#define DIKEYBOARD_AT                           0x81000491    
-#define DIKEYBOARD_COLON                        0x81000492    
-#define DIKEYBOARD_UNDERLINE                    0x81000493    
-#define DIKEYBOARD_KANJI                        0x81000494    
-#define DIKEYBOARD_STOP                         0x81000495    
-#define DIKEYBOARD_AX                           0x81000496    
-#define DIKEYBOARD_UNLABELED                    0x81000497    
-#define DIKEYBOARD_NEXTTRACK                    0x81000499    
-#define DIKEYBOARD_NUMPADENTER                  0x8100049C    
+#define DIKEYBOARD_F13                          0x81000464
+#define DIKEYBOARD_F14                          0x81000465
+#define DIKEYBOARD_F15                          0x81000466
+#define DIKEYBOARD_KANA                         0x81000470
+#define DIKEYBOARD_ABNT_C1                      0x81000473
+#define DIKEYBOARD_CONVERT                      0x81000479
+#define DIKEYBOARD_NOCONVERT                    0x8100047B
+#define DIKEYBOARD_YEN                          0x8100047D
+#define DIKEYBOARD_ABNT_C2                      0x8100047E
+#define DIKEYBOARD_NUMPADEQUALS                 0x8100048D
+#define DIKEYBOARD_PREVTRACK                    0x81000490
+#define DIKEYBOARD_AT                           0x81000491
+#define DIKEYBOARD_COLON                        0x81000492
+#define DIKEYBOARD_UNDERLINE                    0x81000493
+#define DIKEYBOARD_KANJI                        0x81000494
+#define DIKEYBOARD_STOP                         0x81000495
+#define DIKEYBOARD_AX                           0x81000496
+#define DIKEYBOARD_UNLABELED                    0x81000497
+#define DIKEYBOARD_NEXTTRACK                    0x81000499
+#define DIKEYBOARD_NUMPADENTER                  0x8100049C
 #define DIKEYBOARD_RCONTROL                     0x8100049D
-#define DIKEYBOARD_MUTE                         0x810004A0    
-#define DIKEYBOARD_CALCULATOR                   0x810004A1    
-#define DIKEYBOARD_PLAYPAUSE                    0x810004A2    
-#define DIKEYBOARD_MEDIASTOP                    0x810004A4    
-#define DIKEYBOARD_VOLUMEDOWN                   0x810004AE    
-#define DIKEYBOARD_VOLUMEUP                     0x810004B0    
-#define DIKEYBOARD_WEBHOME                      0x810004B2    
-#define DIKEYBOARD_NUMPADCOMMA                  0x810004B3    
-#define DIKEYBOARD_DIVIDE                       0x810004B5    
+#define DIKEYBOARD_MUTE                         0x810004A0
+#define DIKEYBOARD_CALCULATOR                   0x810004A1
+#define DIKEYBOARD_PLAYPAUSE                    0x810004A2
+#define DIKEYBOARD_MEDIASTOP                    0x810004A4
+#define DIKEYBOARD_VOLUMEDOWN                   0x810004AE
+#define DIKEYBOARD_VOLUMEUP                     0x810004B0
+#define DIKEYBOARD_WEBHOME                      0x810004B2
+#define DIKEYBOARD_NUMPADCOMMA                  0x810004B3
+#define DIKEYBOARD_DIVIDE                       0x810004B5
 #define DIKEYBOARD_SYSRQ                        0x810004B7
-#define DIKEYBOARD_RMENU                        0x810004B8    
-#define DIKEYBOARD_PAUSE                        0x810004C5    
-#define DIKEYBOARD_HOME                         0x810004C7    
-#define DIKEYBOARD_UP                           0x810004C8    
-#define DIKEYBOARD_PRIOR                        0x810004C9    
-#define DIKEYBOARD_LEFT                         0x810004CB    
-#define DIKEYBOARD_RIGHT                        0x810004CD    
-#define DIKEYBOARD_END                          0x810004CF    
-#define DIKEYBOARD_DOWN                         0x810004D0    
-#define DIKEYBOARD_NEXT                         0x810004D1    
-#define DIKEYBOARD_INSERT                       0x810004D2    
-#define DIKEYBOARD_DELETE                       0x810004D3    
-#define DIKEYBOARD_LWIN                         0x810004DB    
-#define DIKEYBOARD_RWIN                         0x810004DC    
-#define DIKEYBOARD_APPS                         0x810004DD    
-#define DIKEYBOARD_POWER                        0x810004DE    
-#define DIKEYBOARD_SLEEP                        0x810004DF    
-#define DIKEYBOARD_WAKE                         0x810004E3    
-#define DIKEYBOARD_WEBSEARCH                    0x810004E5    
-#define DIKEYBOARD_WEBFAVORITES                 0x810004E6    
-#define DIKEYBOARD_WEBREFRESH                   0x810004E7    
-#define DIKEYBOARD_WEBSTOP                      0x810004E8    
-#define DIKEYBOARD_WEBFORWARD                   0x810004E9    
-#define DIKEYBOARD_WEBBACK                      0x810004EA    
-#define DIKEYBOARD_MYCOMPUTER                   0x810004EB    
-#define DIKEYBOARD_MAIL                         0x810004EC    
-#define DIKEYBOARD_MEDIASELECT                  0x810004ED    
-  
+#define DIKEYBOARD_RMENU                        0x810004B8
+#define DIKEYBOARD_PAUSE                        0x810004C5
+#define DIKEYBOARD_HOME                         0x810004C7
+#define DIKEYBOARD_UP                           0x810004C8
+#define DIKEYBOARD_PRIOR                        0x810004C9
+#define DIKEYBOARD_LEFT                         0x810004CB
+#define DIKEYBOARD_RIGHT                        0x810004CD
+#define DIKEYBOARD_END                          0x810004CF
+#define DIKEYBOARD_DOWN                         0x810004D0
+#define DIKEYBOARD_NEXT                         0x810004D1
+#define DIKEYBOARD_INSERT                       0x810004D2
+#define DIKEYBOARD_DELETE                       0x810004D3
+#define DIKEYBOARD_LWIN                         0x810004DB
+#define DIKEYBOARD_RWIN                         0x810004DC
+#define DIKEYBOARD_APPS                         0x810004DD
+#define DIKEYBOARD_POWER                        0x810004DE
+#define DIKEYBOARD_SLEEP                        0x810004DF
+#define DIKEYBOARD_WAKE                         0x810004E3
+#define DIKEYBOARD_WEBSEARCH                    0x810004E5
+#define DIKEYBOARD_WEBFAVORITES                 0x810004E6
+#define DIKEYBOARD_WEBREFRESH                   0x810004E7
+#define DIKEYBOARD_WEBSTOP                      0x810004E8
+#define DIKEYBOARD_WEBFORWARD                   0x810004E9
+#define DIKEYBOARD_WEBBACK                      0x810004EA
+#define DIKEYBOARD_MYCOMPUTER                   0x810004EB
+#define DIKEYBOARD_MAIL                         0x810004EC
+#define DIKEYBOARD_MEDIASELECT                  0x810004ED
 
-
-
-
-#define DIMOUSE_XAXISAB                         (0x82000200 |DIMOFS_X )  
-#define DIMOUSE_YAXISAB                         (0x82000200 |DIMOFS_Y ) 
-#define DIMOUSE_XAXIS                           (0x82000300 |DIMOFS_X ) 
-#define DIMOUSE_YAXIS                           (0x82000300 |DIMOFS_Y ) 
-#define DIMOUSE_WHEEL                           (0x82000300 |DIMOFS_Z ) 
-#define DIMOUSE_BUTTON0                         (0x82000400 |DIMOFS_BUTTON0) 
-#define DIMOUSE_BUTTON1                         (0x82000400 |DIMOFS_BUTTON1) 
-#define DIMOUSE_BUTTON2                         (0x82000400 |DIMOFS_BUTTON2) 
-#define DIMOUSE_BUTTON3                         (0x82000400 |DIMOFS_BUTTON3) 
-#define DIMOUSE_BUTTON4                         (0x82000400 |DIMOFS_BUTTON4) 
-#define DIMOUSE_BUTTON5                         (0x82000400 |DIMOFS_BUTTON5) 
-#define DIMOUSE_BUTTON6                         (0x82000400 |DIMOFS_BUTTON6) 
-#define DIMOUSE_BUTTON7                         (0x82000400 |DIMOFS_BUTTON7) 
-
-
-
-
+#define DIMOUSE_XAXISAB                         (0x82000200 |DIMOFS_X )
+#define DIMOUSE_YAXISAB                         (0x82000200 |DIMOFS_Y )
+#define DIMOUSE_XAXIS                           (0x82000300 |DIMOFS_X )
+#define DIMOUSE_YAXIS                           (0x82000300 |DIMOFS_Y )
+#define DIMOUSE_WHEEL                           (0x82000300 |DIMOFS_Z )
+#define DIMOUSE_BUTTON0                         (0x82000400 |DIMOFS_BUTTON0)
+#define DIMOUSE_BUTTON1                         (0x82000400 |DIMOFS_BUTTON1)
+#define DIMOUSE_BUTTON2                         (0x82000400 |DIMOFS_BUTTON2)
+#define DIMOUSE_BUTTON3                         (0x82000400 |DIMOFS_BUTTON3)
+#define DIMOUSE_BUTTON4                         (0x82000400 |DIMOFS_BUTTON4)
+#define DIMOUSE_BUTTON5                         (0x82000400 |DIMOFS_BUTTON5)
+#define DIMOUSE_BUTTON6                         (0x82000400 |DIMOFS_BUTTON6)
+#define DIMOUSE_BUTTON7                         (0x82000400 |DIMOFS_BUTTON7)
 
 #define DIVOICE_CHANNEL1                        0x83000401
 #define DIVOICE_CHANNEL2                        0x83000402
@@ -3165,1136 +2825,997 @@ extern HRESULT WINAPI DirectInputCreateEx(HINSTANCE hinst, DWORD dwVersion, REFI
 
 #define DIVOICE_VOICECOMMAND                    0x83000410
 
-
-
-
 #define DIVIRTUAL_DRIVING_RACE                  0x01000000
-#define DIAXIS_DRIVINGR_STEER                   0x01008A01 
-#define DIAXIS_DRIVINGR_ACCELERATE              0x01039202 
-#define DIAXIS_DRIVINGR_BRAKE                   0x01041203 
-#define DIBUTTON_DRIVINGR_SHIFTUP               0x01000C01 
-#define DIBUTTON_DRIVINGR_SHIFTDOWN             0x01000C02 
-#define DIBUTTON_DRIVINGR_VIEW                  0x01001C03 
-#define DIBUTTON_DRIVINGR_MENU                  0x010004FD 
+#define DIAXIS_DRIVINGR_STEER                   0x01008A01
+#define DIAXIS_DRIVINGR_ACCELERATE              0x01039202
+#define DIAXIS_DRIVINGR_BRAKE                   0x01041203
+#define DIBUTTON_DRIVINGR_SHIFTUP               0x01000C01
+#define DIBUTTON_DRIVINGR_SHIFTDOWN             0x01000C02
+#define DIBUTTON_DRIVINGR_VIEW                  0x01001C03
+#define DIBUTTON_DRIVINGR_MENU                  0x010004FD
 
-
-#define DIAXIS_DRIVINGR_ACCEL_AND_BRAKE         0x01014A04 
-#define DIHATSWITCH_DRIVINGR_GLANCE             0x01004601 
-#define DIBUTTON_DRIVINGR_BRAKE                 0x01004C04 
-#define DIBUTTON_DRIVINGR_DASHBOARD             0x01004405 
-#define DIBUTTON_DRIVINGR_AIDS                  0x01004406 
-#define DIBUTTON_DRIVINGR_MAP                   0x01004407 
-#define DIBUTTON_DRIVINGR_BOOST                 0x01004408 
-#define DIBUTTON_DRIVINGR_PIT                   0x01004409 
-#define DIBUTTON_DRIVINGR_ACCELERATE_LINK       0x0103D4E0 
-#define DIBUTTON_DRIVINGR_STEER_LEFT_LINK       0x0100CCE4 
-#define DIBUTTON_DRIVINGR_STEER_RIGHT_LINK      0x0100CCEC 
-#define DIBUTTON_DRIVINGR_GLANCE_LEFT_LINK      0x0107C4E4 
-#define DIBUTTON_DRIVINGR_GLANCE_RIGHT_LINK     0x0107C4EC 
-#define DIBUTTON_DRIVINGR_DEVICE                0x010044FE 
-#define DIBUTTON_DRIVINGR_PAUSE                 0x010044FC 
-
-
+#define DIAXIS_DRIVINGR_ACCEL_AND_BRAKE         0x01014A04
+#define DIHATSWITCH_DRIVINGR_GLANCE             0x01004601
+#define DIBUTTON_DRIVINGR_BRAKE                 0x01004C04
+#define DIBUTTON_DRIVINGR_DASHBOARD             0x01004405
+#define DIBUTTON_DRIVINGR_AIDS                  0x01004406
+#define DIBUTTON_DRIVINGR_MAP                   0x01004407
+#define DIBUTTON_DRIVINGR_BOOST                 0x01004408
+#define DIBUTTON_DRIVINGR_PIT                   0x01004409
+#define DIBUTTON_DRIVINGR_ACCELERATE_LINK       0x0103D4E0
+#define DIBUTTON_DRIVINGR_STEER_LEFT_LINK       0x0100CCE4
+#define DIBUTTON_DRIVINGR_STEER_RIGHT_LINK      0x0100CCEC
+#define DIBUTTON_DRIVINGR_GLANCE_LEFT_LINK      0x0107C4E4
+#define DIBUTTON_DRIVINGR_GLANCE_RIGHT_LINK     0x0107C4EC
+#define DIBUTTON_DRIVINGR_DEVICE                0x010044FE
+#define DIBUTTON_DRIVINGR_PAUSE                 0x010044FC
 
 #define DIVIRTUAL_DRIVING_COMBAT                0x02000000
-#define DIAXIS_DRIVINGC_STEER                   0x02008A01 
-#define DIAXIS_DRIVINGC_ACCELERATE              0x02039202 
-#define DIAXIS_DRIVINGC_BRAKE                   0x02041203 
-#define DIBUTTON_DRIVINGC_FIRE                  0x02000C01 
-#define DIBUTTON_DRIVINGC_WEAPONS               0x02000C02 
-#define DIBUTTON_DRIVINGC_TARGET                0x02000C03 
-#define DIBUTTON_DRIVINGC_MENU                  0x020004FD 
+#define DIAXIS_DRIVINGC_STEER                   0x02008A01
+#define DIAXIS_DRIVINGC_ACCELERATE              0x02039202
+#define DIAXIS_DRIVINGC_BRAKE                   0x02041203
+#define DIBUTTON_DRIVINGC_FIRE                  0x02000C01
+#define DIBUTTON_DRIVINGC_WEAPONS               0x02000C02
+#define DIBUTTON_DRIVINGC_TARGET                0x02000C03
+#define DIBUTTON_DRIVINGC_MENU                  0x020004FD
 
-
-#define DIAXIS_DRIVINGC_ACCEL_AND_BRAKE         0x02014A04 
-#define DIHATSWITCH_DRIVINGC_GLANCE             0x02004601 
-#define DIBUTTON_DRIVINGC_SHIFTUP               0x02004C04 
-#define DIBUTTON_DRIVINGC_SHIFTDOWN             0x02004C05 
-#define DIBUTTON_DRIVINGC_DASHBOARD             0x02004406 
-#define DIBUTTON_DRIVINGC_AIDS                  0x02004407 
-#define DIBUTTON_DRIVINGC_BRAKE                 0x02004C08 
-#define DIBUTTON_DRIVINGC_FIRESECONDARY         0x02004C09 
-#define DIBUTTON_DRIVINGC_ACCELERATE_LINK       0x0203D4E0 
-#define DIBUTTON_DRIVINGC_STEER_LEFT_LINK       0x0200CCE4 
-#define DIBUTTON_DRIVINGC_STEER_RIGHT_LINK      0x0200CCEC 
-#define DIBUTTON_DRIVINGC_GLANCE_LEFT_LINK      0x0207C4E4 
-#define DIBUTTON_DRIVINGC_GLANCE_RIGHT_LINK     0x0207C4EC 
-#define DIBUTTON_DRIVINGC_DEVICE                0x020044FE 
-#define DIBUTTON_DRIVINGC_PAUSE                 0x020044FC 
-
-
+#define DIAXIS_DRIVINGC_ACCEL_AND_BRAKE         0x02014A04
+#define DIHATSWITCH_DRIVINGC_GLANCE             0x02004601
+#define DIBUTTON_DRIVINGC_SHIFTUP               0x02004C04
+#define DIBUTTON_DRIVINGC_SHIFTDOWN             0x02004C05
+#define DIBUTTON_DRIVINGC_DASHBOARD             0x02004406
+#define DIBUTTON_DRIVINGC_AIDS                  0x02004407
+#define DIBUTTON_DRIVINGC_BRAKE                 0x02004C08
+#define DIBUTTON_DRIVINGC_FIRESECONDARY         0x02004C09
+#define DIBUTTON_DRIVINGC_ACCELERATE_LINK       0x0203D4E0
+#define DIBUTTON_DRIVINGC_STEER_LEFT_LINK       0x0200CCE4
+#define DIBUTTON_DRIVINGC_STEER_RIGHT_LINK      0x0200CCEC
+#define DIBUTTON_DRIVINGC_GLANCE_LEFT_LINK      0x0207C4E4
+#define DIBUTTON_DRIVINGC_GLANCE_RIGHT_LINK     0x0207C4EC
+#define DIBUTTON_DRIVINGC_DEVICE                0x020044FE
+#define DIBUTTON_DRIVINGC_PAUSE                 0x020044FC
 
 #define DIVIRTUAL_DRIVING_TANK                  0x03000000
-#define DIAXIS_DRIVINGT_STEER                   0x03008A01 
-#define DIAXIS_DRIVINGT_BARREL                  0x03010202 
-#define DIAXIS_DRIVINGT_ACCELERATE              0x03039203 
-#define DIAXIS_DRIVINGT_ROTATE                  0x03020204 
-#define DIBUTTON_DRIVINGT_FIRE                  0x03000C01 
-#define DIBUTTON_DRIVINGT_WEAPONS               0x03000C02 
-#define DIBUTTON_DRIVINGT_TARGET                0x03000C03 
-#define DIBUTTON_DRIVINGT_MENU                  0x030004FD 
+#define DIAXIS_DRIVINGT_STEER                   0x03008A01
+#define DIAXIS_DRIVINGT_BARREL                  0x03010202
+#define DIAXIS_DRIVINGT_ACCELERATE              0x03039203
+#define DIAXIS_DRIVINGT_ROTATE                  0x03020204
+#define DIBUTTON_DRIVINGT_FIRE                  0x03000C01
+#define DIBUTTON_DRIVINGT_WEAPONS               0x03000C02
+#define DIBUTTON_DRIVINGT_TARGET                0x03000C03
+#define DIBUTTON_DRIVINGT_MENU                  0x030004FD
 
-
-#define DIHATSWITCH_DRIVINGT_GLANCE             0x03004601 
-#define DIAXIS_DRIVINGT_BRAKE                   0x03045205 
-#define DIAXIS_DRIVINGT_ACCEL_AND_BRAKE         0x03014A06 
-#define DIBUTTON_DRIVINGT_VIEW                  0x03005C04 
-#define DIBUTTON_DRIVINGT_DASHBOARD             0x03005C05 
-#define DIBUTTON_DRIVINGT_BRAKE                 0x03004C06 
-#define DIBUTTON_DRIVINGT_FIRESECONDARY         0x03004C07 
-#define DIBUTTON_DRIVINGT_ACCELERATE_LINK       0x0303D4E0 
-#define DIBUTTON_DRIVINGT_STEER_LEFT_LINK       0x0300CCE4 
-#define DIBUTTON_DRIVINGT_STEER_RIGHT_LINK      0x0300CCEC 
-#define DIBUTTON_DRIVINGT_BARREL_UP_LINK        0x030144E0 
-#define DIBUTTON_DRIVINGT_BARREL_DOWN_LINK      0x030144E8 
-#define DIBUTTON_DRIVINGT_ROTATE_LEFT_LINK      0x030244E4 
-#define DIBUTTON_DRIVINGT_ROTATE_RIGHT_LINK     0x030244EC 
-#define DIBUTTON_DRIVINGT_GLANCE_LEFT_LINK      0x0307C4E4 
-#define DIBUTTON_DRIVINGT_GLANCE_RIGHT_LINK     0x0307C4EC 
-#define DIBUTTON_DRIVINGT_DEVICE                0x030044FE 
-#define DIBUTTON_DRIVINGT_PAUSE                 0x030044FC 
-
-
+#define DIHATSWITCH_DRIVINGT_GLANCE             0x03004601
+#define DIAXIS_DRIVINGT_BRAKE                   0x03045205
+#define DIAXIS_DRIVINGT_ACCEL_AND_BRAKE         0x03014A06
+#define DIBUTTON_DRIVINGT_VIEW                  0x03005C04
+#define DIBUTTON_DRIVINGT_DASHBOARD             0x03005C05
+#define DIBUTTON_DRIVINGT_BRAKE                 0x03004C06
+#define DIBUTTON_DRIVINGT_FIRESECONDARY         0x03004C07
+#define DIBUTTON_DRIVINGT_ACCELERATE_LINK       0x0303D4E0
+#define DIBUTTON_DRIVINGT_STEER_LEFT_LINK       0x0300CCE4
+#define DIBUTTON_DRIVINGT_STEER_RIGHT_LINK      0x0300CCEC
+#define DIBUTTON_DRIVINGT_BARREL_UP_LINK        0x030144E0
+#define DIBUTTON_DRIVINGT_BARREL_DOWN_LINK      0x030144E8
+#define DIBUTTON_DRIVINGT_ROTATE_LEFT_LINK      0x030244E4
+#define DIBUTTON_DRIVINGT_ROTATE_RIGHT_LINK     0x030244EC
+#define DIBUTTON_DRIVINGT_GLANCE_LEFT_LINK      0x0307C4E4
+#define DIBUTTON_DRIVINGT_GLANCE_RIGHT_LINK     0x0307C4EC
+#define DIBUTTON_DRIVINGT_DEVICE                0x030044FE
+#define DIBUTTON_DRIVINGT_PAUSE                 0x030044FC
 
 #define DIVIRTUAL_FLYING_CIVILIAN               0x04000000
-#define DIAXIS_FLYINGC_BANK                     0x04008A01 
-#define DIAXIS_FLYINGC_PITCH                    0x04010A02 
-#define DIAXIS_FLYINGC_THROTTLE                 0x04039203 
-#define DIBUTTON_FLYINGC_VIEW                   0x04002401 
-#define DIBUTTON_FLYINGC_DISPLAY                0x04002402 
-#define DIBUTTON_FLYINGC_GEAR                   0x04002C03 
-#define DIBUTTON_FLYINGC_MENU                   0x040004FD 
+#define DIAXIS_FLYINGC_BANK                     0x04008A01
+#define DIAXIS_FLYINGC_PITCH                    0x04010A02
+#define DIAXIS_FLYINGC_THROTTLE                 0x04039203
+#define DIBUTTON_FLYINGC_VIEW                   0x04002401
+#define DIBUTTON_FLYINGC_DISPLAY                0x04002402
+#define DIBUTTON_FLYINGC_GEAR                   0x04002C03
+#define DIBUTTON_FLYINGC_MENU                   0x040004FD
 
-
-#define DIHATSWITCH_FLYINGC_GLANCE              0x04004601 
-#define DIAXIS_FLYINGC_BRAKE                    0x04046A04 
-#define DIAXIS_FLYINGC_RUDDER                   0x04025205 
-#define DIAXIS_FLYINGC_FLAPS                    0x04055A06 
-#define DIBUTTON_FLYINGC_FLAPSUP                0x04006404 
-#define DIBUTTON_FLYINGC_FLAPSDOWN              0x04006405 
-#define DIBUTTON_FLYINGC_BRAKE_LINK             0x04046CE0 
-#define DIBUTTON_FLYINGC_FASTER_LINK            0x0403D4E0 
-#define DIBUTTON_FLYINGC_SLOWER_LINK            0x0403D4E8 
-#define DIBUTTON_FLYINGC_GLANCE_LEFT_LINK       0x0407C4E4 
-#define DIBUTTON_FLYINGC_GLANCE_RIGHT_LINK      0x0407C4EC 
-#define DIBUTTON_FLYINGC_GLANCE_UP_LINK         0x0407C4E0 
-#define DIBUTTON_FLYINGC_GLANCE_DOWN_LINK       0x0407C4E8 
-#define DIBUTTON_FLYINGC_DEVICE                 0x040044FE 
-#define DIBUTTON_FLYINGC_PAUSE                  0x040044FC 
-
-
+#define DIHATSWITCH_FLYINGC_GLANCE              0x04004601
+#define DIAXIS_FLYINGC_BRAKE                    0x04046A04
+#define DIAXIS_FLYINGC_RUDDER                   0x04025205
+#define DIAXIS_FLYINGC_FLAPS                    0x04055A06
+#define DIBUTTON_FLYINGC_FLAPSUP                0x04006404
+#define DIBUTTON_FLYINGC_FLAPSDOWN              0x04006405
+#define DIBUTTON_FLYINGC_BRAKE_LINK             0x04046CE0
+#define DIBUTTON_FLYINGC_FASTER_LINK            0x0403D4E0
+#define DIBUTTON_FLYINGC_SLOWER_LINK            0x0403D4E8
+#define DIBUTTON_FLYINGC_GLANCE_LEFT_LINK       0x0407C4E4
+#define DIBUTTON_FLYINGC_GLANCE_RIGHT_LINK      0x0407C4EC
+#define DIBUTTON_FLYINGC_GLANCE_UP_LINK         0x0407C4E0
+#define DIBUTTON_FLYINGC_GLANCE_DOWN_LINK       0x0407C4E8
+#define DIBUTTON_FLYINGC_DEVICE                 0x040044FE
+#define DIBUTTON_FLYINGC_PAUSE                  0x040044FC
 
 #define DIVIRTUAL_FLYING_MILITARY               0x05000000
-#define DIAXIS_FLYINGM_BANK                     0x05008A01 
-#define DIAXIS_FLYINGM_PITCH                    0x05010A02 
-#define DIAXIS_FLYINGM_THROTTLE                 0x05039203 
-#define DIBUTTON_FLYINGM_FIRE                   0x05000C01 
-#define DIBUTTON_FLYINGM_WEAPONS                0x05000C02 
-#define DIBUTTON_FLYINGM_TARGET                 0x05000C03 
-#define DIBUTTON_FLYINGM_MENU                   0x050004FD 
+#define DIAXIS_FLYINGM_BANK                     0x05008A01
+#define DIAXIS_FLYINGM_PITCH                    0x05010A02
+#define DIAXIS_FLYINGM_THROTTLE                 0x05039203
+#define DIBUTTON_FLYINGM_FIRE                   0x05000C01
+#define DIBUTTON_FLYINGM_WEAPONS                0x05000C02
+#define DIBUTTON_FLYINGM_TARGET                 0x05000C03
+#define DIBUTTON_FLYINGM_MENU                   0x050004FD
 
-
-#define DIHATSWITCH_FLYINGM_GLANCE              0x05004601 
-#define DIBUTTON_FLYINGM_COUNTER                0x05005C04 
-#define DIAXIS_FLYINGM_RUDDER                   0x05024A04 
-#define DIAXIS_FLYINGM_BRAKE                    0x05046205 
-#define DIBUTTON_FLYINGM_VIEW                   0x05006405 
-#define DIBUTTON_FLYINGM_DISPLAY                0x05006406 
-#define DIAXIS_FLYINGM_FLAPS                    0x05055206 
-#define DIBUTTON_FLYINGM_FLAPSUP                0x05005407 
-#define DIBUTTON_FLYINGM_FLAPSDOWN              0x05005408 
-#define DIBUTTON_FLYINGM_FIRESECONDARY          0x05004C09 
-#define DIBUTTON_FLYINGM_GEAR                   0x0500640A 
-#define DIBUTTON_FLYINGM_BRAKE_LINK             0x050464E0 
-#define DIBUTTON_FLYINGM_FASTER_LINK            0x0503D4E0 
-#define DIBUTTON_FLYINGM_SLOWER_LINK            0x0503D4E8 
-#define DIBUTTON_FLYINGM_GLANCE_LEFT_LINK       0x0507C4E4 
-#define DIBUTTON_FLYINGM_GLANCE_RIGHT_LINK      0x0507C4EC 
-#define DIBUTTON_FLYINGM_GLANCE_UP_LINK         0x0507C4E0 
-#define DIBUTTON_FLYINGM_GLANCE_DOWN_LINK       0x0507C4E8 
-#define DIBUTTON_FLYINGM_DEVICE                 0x050044FE 
-#define DIBUTTON_FLYINGM_PAUSE                  0x050044FC 
-
-
+#define DIHATSWITCH_FLYINGM_GLANCE              0x05004601
+#define DIBUTTON_FLYINGM_COUNTER                0x05005C04
+#define DIAXIS_FLYINGM_RUDDER                   0x05024A04
+#define DIAXIS_FLYINGM_BRAKE                    0x05046205
+#define DIBUTTON_FLYINGM_VIEW                   0x05006405
+#define DIBUTTON_FLYINGM_DISPLAY                0x05006406
+#define DIAXIS_FLYINGM_FLAPS                    0x05055206
+#define DIBUTTON_FLYINGM_FLAPSUP                0x05005407
+#define DIBUTTON_FLYINGM_FLAPSDOWN              0x05005408
+#define DIBUTTON_FLYINGM_FIRESECONDARY          0x05004C09
+#define DIBUTTON_FLYINGM_GEAR                   0x0500640A
+#define DIBUTTON_FLYINGM_BRAKE_LINK             0x050464E0
+#define DIBUTTON_FLYINGM_FASTER_LINK            0x0503D4E0
+#define DIBUTTON_FLYINGM_SLOWER_LINK            0x0503D4E8
+#define DIBUTTON_FLYINGM_GLANCE_LEFT_LINK       0x0507C4E4
+#define DIBUTTON_FLYINGM_GLANCE_RIGHT_LINK      0x0507C4EC
+#define DIBUTTON_FLYINGM_GLANCE_UP_LINK         0x0507C4E0
+#define DIBUTTON_FLYINGM_GLANCE_DOWN_LINK       0x0507C4E8
+#define DIBUTTON_FLYINGM_DEVICE                 0x050044FE
+#define DIBUTTON_FLYINGM_PAUSE                  0x050044FC
 
 #define DIVIRTUAL_FLYING_HELICOPTER             0x06000000
-#define DIAXIS_FLYINGH_BANK                     0x06008A01 
-#define DIAXIS_FLYINGH_PITCH                    0x06010A02 
-#define DIAXIS_FLYINGH_COLLECTIVE               0x06018A03 
-#define DIBUTTON_FLYINGH_FIRE                   0x06001401 
-#define DIBUTTON_FLYINGH_WEAPONS                0x06001402 
-#define DIBUTTON_FLYINGH_TARGET                 0x06001403 
-#define DIBUTTON_FLYINGH_MENU                   0x060004FD 
+#define DIAXIS_FLYINGH_BANK                     0x06008A01
+#define DIAXIS_FLYINGH_PITCH                    0x06010A02
+#define DIAXIS_FLYINGH_COLLECTIVE               0x06018A03
+#define DIBUTTON_FLYINGH_FIRE                   0x06001401
+#define DIBUTTON_FLYINGH_WEAPONS                0x06001402
+#define DIBUTTON_FLYINGH_TARGET                 0x06001403
+#define DIBUTTON_FLYINGH_MENU                   0x060004FD
 
-
-#define DIHATSWITCH_FLYINGH_GLANCE              0x06004601 
-#define DIAXIS_FLYINGH_TORQUE                   0x06025A04 
-#define DIAXIS_FLYINGH_THROTTLE                 0x0603DA05 
-#define DIBUTTON_FLYINGH_COUNTER                0x06005404 
-#define DIBUTTON_FLYINGH_VIEW                   0x06006405 
-#define DIBUTTON_FLYINGH_GEAR                   0x06006406 
-#define DIBUTTON_FLYINGH_FIRESECONDARY          0x06004C07 
-#define DIBUTTON_FLYINGH_FASTER_LINK            0x0603DCE0 
-#define DIBUTTON_FLYINGH_SLOWER_LINK            0x0603DCE8 
-#define DIBUTTON_FLYINGH_GLANCE_LEFT_LINK       0x0607C4E4 
-#define DIBUTTON_FLYINGH_GLANCE_RIGHT_LINK      0x0607C4EC 
-#define DIBUTTON_FLYINGH_GLANCE_UP_LINK         0x0607C4E0 
-#define DIBUTTON_FLYINGH_GLANCE_DOWN_LINK       0x0607C4E8 
-#define DIBUTTON_FLYINGH_DEVICE                 0x060044FE 
-#define DIBUTTON_FLYINGH_PAUSE                  0x060044FC 
-
-
+#define DIHATSWITCH_FLYINGH_GLANCE              0x06004601
+#define DIAXIS_FLYINGH_TORQUE                   0x06025A04
+#define DIAXIS_FLYINGH_THROTTLE                 0x0603DA05
+#define DIBUTTON_FLYINGH_COUNTER                0x06005404
+#define DIBUTTON_FLYINGH_VIEW                   0x06006405
+#define DIBUTTON_FLYINGH_GEAR                   0x06006406
+#define DIBUTTON_FLYINGH_FIRESECONDARY          0x06004C07
+#define DIBUTTON_FLYINGH_FASTER_LINK            0x0603DCE0
+#define DIBUTTON_FLYINGH_SLOWER_LINK            0x0603DCE8
+#define DIBUTTON_FLYINGH_GLANCE_LEFT_LINK       0x0607C4E4
+#define DIBUTTON_FLYINGH_GLANCE_RIGHT_LINK      0x0607C4EC
+#define DIBUTTON_FLYINGH_GLANCE_UP_LINK         0x0607C4E0
+#define DIBUTTON_FLYINGH_GLANCE_DOWN_LINK       0x0607C4E8
+#define DIBUTTON_FLYINGH_DEVICE                 0x060044FE
+#define DIBUTTON_FLYINGH_PAUSE                  0x060044FC
 
 #define DIVIRTUAL_SPACESIM                      0x07000000
-#define DIAXIS_SPACESIM_LATERAL                 0x07008201 
-#define DIAXIS_SPACESIM_MOVE                    0x07010202 
-#define DIAXIS_SPACESIM_THROTTLE                0x07038203 
-#define DIBUTTON_SPACESIM_FIRE                  0x07000401 
-#define DIBUTTON_SPACESIM_WEAPONS               0x07000402 
-#define DIBUTTON_SPACESIM_TARGET                0x07000403 
-#define DIBUTTON_SPACESIM_MENU                  0x070004FD 
+#define DIAXIS_SPACESIM_LATERAL                 0x07008201
+#define DIAXIS_SPACESIM_MOVE                    0x07010202
+#define DIAXIS_SPACESIM_THROTTLE                0x07038203
+#define DIBUTTON_SPACESIM_FIRE                  0x07000401
+#define DIBUTTON_SPACESIM_WEAPONS               0x07000402
+#define DIBUTTON_SPACESIM_TARGET                0x07000403
+#define DIBUTTON_SPACESIM_MENU                  0x070004FD
 
-
-#define DIHATSWITCH_SPACESIM_GLANCE             0x07004601 
-#define DIAXIS_SPACESIM_CLIMB                   0x0701C204 
-#define DIAXIS_SPACESIM_ROTATE                  0x07024205 
-#define DIBUTTON_SPACESIM_VIEW                  0x07004404 
-#define DIBUTTON_SPACESIM_DISPLAY               0x07004405 
-#define DIBUTTON_SPACESIM_RAISE                 0x07004406 
-#define DIBUTTON_SPACESIM_LOWER                 0x07004407 
-#define DIBUTTON_SPACESIM_GEAR                  0x07004408 
-#define DIBUTTON_SPACESIM_FIRESECONDARY         0x07004409 
-#define DIBUTTON_SPACESIM_LEFT_LINK             0x0700C4E4 
-#define DIBUTTON_SPACESIM_RIGHT_LINK            0x0700C4EC 
-#define DIBUTTON_SPACESIM_FORWARD_LINK          0x070144E0 
-#define DIBUTTON_SPACESIM_BACKWARD_LINK         0x070144E8 
-#define DIBUTTON_SPACESIM_FASTER_LINK           0x0703C4E0 
-#define DIBUTTON_SPACESIM_SLOWER_LINK           0x0703C4E8 
-#define DIBUTTON_SPACESIM_TURN_LEFT_LINK        0x070244E4 
-#define DIBUTTON_SPACESIM_TURN_RIGHT_LINK       0x070244EC 
-#define DIBUTTON_SPACESIM_GLANCE_LEFT_LINK      0x0707C4E4 
-#define DIBUTTON_SPACESIM_GLANCE_RIGHT_LINK     0x0707C4EC 
-#define DIBUTTON_SPACESIM_GLANCE_UP_LINK        0x0707C4E0 
-#define DIBUTTON_SPACESIM_GLANCE_DOWN_LINK      0x0707C4E8 
-#define DIBUTTON_SPACESIM_DEVICE                0x070044FE 
-#define DIBUTTON_SPACESIM_PAUSE                 0x070044FC 
-
-
+#define DIHATSWITCH_SPACESIM_GLANCE             0x07004601
+#define DIAXIS_SPACESIM_CLIMB                   0x0701C204
+#define DIAXIS_SPACESIM_ROTATE                  0x07024205
+#define DIBUTTON_SPACESIM_VIEW                  0x07004404
+#define DIBUTTON_SPACESIM_DISPLAY               0x07004405
+#define DIBUTTON_SPACESIM_RAISE                 0x07004406
+#define DIBUTTON_SPACESIM_LOWER                 0x07004407
+#define DIBUTTON_SPACESIM_GEAR                  0x07004408
+#define DIBUTTON_SPACESIM_FIRESECONDARY         0x07004409
+#define DIBUTTON_SPACESIM_LEFT_LINK             0x0700C4E4
+#define DIBUTTON_SPACESIM_RIGHT_LINK            0x0700C4EC
+#define DIBUTTON_SPACESIM_FORWARD_LINK          0x070144E0
+#define DIBUTTON_SPACESIM_BACKWARD_LINK         0x070144E8
+#define DIBUTTON_SPACESIM_FASTER_LINK           0x0703C4E0
+#define DIBUTTON_SPACESIM_SLOWER_LINK           0x0703C4E8
+#define DIBUTTON_SPACESIM_TURN_LEFT_LINK        0x070244E4
+#define DIBUTTON_SPACESIM_TURN_RIGHT_LINK       0x070244EC
+#define DIBUTTON_SPACESIM_GLANCE_LEFT_LINK      0x0707C4E4
+#define DIBUTTON_SPACESIM_GLANCE_RIGHT_LINK     0x0707C4EC
+#define DIBUTTON_SPACESIM_GLANCE_UP_LINK        0x0707C4E0
+#define DIBUTTON_SPACESIM_GLANCE_DOWN_LINK      0x0707C4E8
+#define DIBUTTON_SPACESIM_DEVICE                0x070044FE
+#define DIBUTTON_SPACESIM_PAUSE                 0x070044FC
 
 #define DIVIRTUAL_FIGHTING_HAND2HAND            0x08000000
-#define DIAXIS_FIGHTINGH_LATERAL                0x08008201 
-#define DIAXIS_FIGHTINGH_MOVE                   0x08010202 
-#define DIBUTTON_FIGHTINGH_PUNCH                0x08000401 
-#define DIBUTTON_FIGHTINGH_KICK                 0x08000402 
-#define DIBUTTON_FIGHTINGH_BLOCK                0x08000403 
-#define DIBUTTON_FIGHTINGH_CROUCH               0x08000404 
-#define DIBUTTON_FIGHTINGH_JUMP                 0x08000405 
-#define DIBUTTON_FIGHTINGH_SPECIAL1             0x08000406 
-#define DIBUTTON_FIGHTINGH_SPECIAL2             0x08000407 
-#define DIBUTTON_FIGHTINGH_MENU                 0x080004FD 
+#define DIAXIS_FIGHTINGH_LATERAL                0x08008201
+#define DIAXIS_FIGHTINGH_MOVE                   0x08010202
+#define DIBUTTON_FIGHTINGH_PUNCH                0x08000401
+#define DIBUTTON_FIGHTINGH_KICK                 0x08000402
+#define DIBUTTON_FIGHTINGH_BLOCK                0x08000403
+#define DIBUTTON_FIGHTINGH_CROUCH               0x08000404
+#define DIBUTTON_FIGHTINGH_JUMP                 0x08000405
+#define DIBUTTON_FIGHTINGH_SPECIAL1             0x08000406
+#define DIBUTTON_FIGHTINGH_SPECIAL2             0x08000407
+#define DIBUTTON_FIGHTINGH_MENU                 0x080004FD
 
-
-#define DIBUTTON_FIGHTINGH_SELECT               0x08004408 
-#define DIHATSWITCH_FIGHTINGH_SLIDE             0x08004601 
-#define DIBUTTON_FIGHTINGH_DISPLAY              0x08004409 
-#define DIAXIS_FIGHTINGH_ROTATE                 0x08024203 
-#define DIBUTTON_FIGHTINGH_DODGE                0x0800440A 
-#define DIBUTTON_FIGHTINGH_LEFT_LINK            0x0800C4E4 
-#define DIBUTTON_FIGHTINGH_RIGHT_LINK           0x0800C4EC 
-#define DIBUTTON_FIGHTINGH_FORWARD_LINK         0x080144E0 
-#define DIBUTTON_FIGHTINGH_BACKWARD_LINK        0x080144E8 
-#define DIBUTTON_FIGHTINGH_DEVICE               0x080044FE 
-#define DIBUTTON_FIGHTINGH_PAUSE                0x080044FC 
-
-
+#define DIBUTTON_FIGHTINGH_SELECT               0x08004408
+#define DIHATSWITCH_FIGHTINGH_SLIDE             0x08004601
+#define DIBUTTON_FIGHTINGH_DISPLAY              0x08004409
+#define DIAXIS_FIGHTINGH_ROTATE                 0x08024203
+#define DIBUTTON_FIGHTINGH_DODGE                0x0800440A
+#define DIBUTTON_FIGHTINGH_LEFT_LINK            0x0800C4E4
+#define DIBUTTON_FIGHTINGH_RIGHT_LINK           0x0800C4EC
+#define DIBUTTON_FIGHTINGH_FORWARD_LINK         0x080144E0
+#define DIBUTTON_FIGHTINGH_BACKWARD_LINK        0x080144E8
+#define DIBUTTON_FIGHTINGH_DEVICE               0x080044FE
+#define DIBUTTON_FIGHTINGH_PAUSE                0x080044FC
 
 #define DIVIRTUAL_FIGHTING_FPS                  0x09000000
-#define DIAXIS_FPS_ROTATE                       0x09008201 
-#define DIAXIS_FPS_MOVE                         0x09010202 
-#define DIBUTTON_FPS_FIRE                       0x09000401 
-#define DIBUTTON_FPS_WEAPONS                    0x09000402 
-#define DIBUTTON_FPS_APPLY                      0x09000403 
-#define DIBUTTON_FPS_SELECT                     0x09000404 
-#define DIBUTTON_FPS_CROUCH                     0x09000405 
-#define DIBUTTON_FPS_JUMP                       0x09000406 
-#define DIAXIS_FPS_LOOKUPDOWN                   0x09018203 
-#define DIBUTTON_FPS_STRAFE                     0x09000407 
-#define DIBUTTON_FPS_MENU                       0x090004FD 
+#define DIAXIS_FPS_ROTATE                       0x09008201
+#define DIAXIS_FPS_MOVE                         0x09010202
+#define DIBUTTON_FPS_FIRE                       0x09000401
+#define DIBUTTON_FPS_WEAPONS                    0x09000402
+#define DIBUTTON_FPS_APPLY                      0x09000403
+#define DIBUTTON_FPS_SELECT                     0x09000404
+#define DIBUTTON_FPS_CROUCH                     0x09000405
+#define DIBUTTON_FPS_JUMP                       0x09000406
+#define DIAXIS_FPS_LOOKUPDOWN                   0x09018203
+#define DIBUTTON_FPS_STRAFE                     0x09000407
+#define DIBUTTON_FPS_MENU                       0x090004FD
 
-
-#define DIHATSWITCH_FPS_GLANCE                  0x09004601 
-#define DIBUTTON_FPS_DISPLAY                    0x09004408 
-#define DIAXIS_FPS_SIDESTEP                     0x09024204 
-#define DIBUTTON_FPS_DODGE                      0x09004409 
-#define DIBUTTON_FPS_GLANCEL                    0x0900440A 
-#define DIBUTTON_FPS_GLANCER                    0x0900440B 
-#define DIBUTTON_FPS_FIRESECONDARY              0x0900440C 
-#define DIBUTTON_FPS_ROTATE_LEFT_LINK           0x0900C4E4 
-#define DIBUTTON_FPS_ROTATE_RIGHT_LINK          0x0900C4EC 
-#define DIBUTTON_FPS_FORWARD_LINK               0x090144E0 
-#define DIBUTTON_FPS_BACKWARD_LINK              0x090144E8 
-#define DIBUTTON_FPS_GLANCE_UP_LINK             0x0901C4E0 
-#define DIBUTTON_FPS_GLANCE_DOWN_LINK           0x0901C4E8 
-#define DIBUTTON_FPS_STEP_LEFT_LINK             0x090244E4 
-#define DIBUTTON_FPS_STEP_RIGHT_LINK            0x090244EC 
-#define DIBUTTON_FPS_DEVICE                     0x090044FE 
-#define DIBUTTON_FPS_PAUSE                      0x090044FC 
-
-
+#define DIHATSWITCH_FPS_GLANCE                  0x09004601
+#define DIBUTTON_FPS_DISPLAY                    0x09004408
+#define DIAXIS_FPS_SIDESTEP                     0x09024204
+#define DIBUTTON_FPS_DODGE                      0x09004409
+#define DIBUTTON_FPS_GLANCEL                    0x0900440A
+#define DIBUTTON_FPS_GLANCER                    0x0900440B
+#define DIBUTTON_FPS_FIRESECONDARY              0x0900440C
+#define DIBUTTON_FPS_ROTATE_LEFT_LINK           0x0900C4E4
+#define DIBUTTON_FPS_ROTATE_RIGHT_LINK          0x0900C4EC
+#define DIBUTTON_FPS_FORWARD_LINK               0x090144E0
+#define DIBUTTON_FPS_BACKWARD_LINK              0x090144E8
+#define DIBUTTON_FPS_GLANCE_UP_LINK             0x0901C4E0
+#define DIBUTTON_FPS_GLANCE_DOWN_LINK           0x0901C4E8
+#define DIBUTTON_FPS_STEP_LEFT_LINK             0x090244E4
+#define DIBUTTON_FPS_STEP_RIGHT_LINK            0x090244EC
+#define DIBUTTON_FPS_DEVICE                     0x090044FE
+#define DIBUTTON_FPS_PAUSE                      0x090044FC
 
 #define DIVIRTUAL_FIGHTING_THIRDPERSON          0x0A000000
-#define DIAXIS_TPS_TURN                         0x0A020201 
-#define DIAXIS_TPS_MOVE                         0x0A010202 
-#define DIBUTTON_TPS_RUN                        0x0A000401 
-#define DIBUTTON_TPS_ACTION                     0x0A000402 
-#define DIBUTTON_TPS_SELECT                     0x0A000403 
-#define DIBUTTON_TPS_USE                        0x0A000404 
-#define DIBUTTON_TPS_JUMP                       0x0A000405 
-#define DIBUTTON_TPS_MENU                       0x0A0004FD 
+#define DIAXIS_TPS_TURN                         0x0A020201
+#define DIAXIS_TPS_MOVE                         0x0A010202
+#define DIBUTTON_TPS_RUN                        0x0A000401
+#define DIBUTTON_TPS_ACTION                     0x0A000402
+#define DIBUTTON_TPS_SELECT                     0x0A000403
+#define DIBUTTON_TPS_USE                        0x0A000404
+#define DIBUTTON_TPS_JUMP                       0x0A000405
+#define DIBUTTON_TPS_MENU                       0x0A0004FD
 
-
-#define DIHATSWITCH_TPS_GLANCE                  0x0A004601 
-#define DIBUTTON_TPS_VIEW                       0x0A004406 
-#define DIBUTTON_TPS_STEPLEFT                   0x0A004407 
-#define DIBUTTON_TPS_STEPRIGHT                  0x0A004408 
-#define DIAXIS_TPS_STEP                         0x0A00C203 
-#define DIBUTTON_TPS_DODGE                      0x0A004409 
-#define DIBUTTON_TPS_INVENTORY                  0x0A00440A 
-#define DIBUTTON_TPS_TURN_LEFT_LINK             0x0A0244E4 
-#define DIBUTTON_TPS_TURN_RIGHT_LINK            0x0A0244EC 
-#define DIBUTTON_TPS_FORWARD_LINK               0x0A0144E0 
-#define DIBUTTON_TPS_BACKWARD_LINK              0x0A0144E8 
-#define DIBUTTON_TPS_GLANCE_UP_LINK             0x0A07C4E0 
-#define DIBUTTON_TPS_GLANCE_DOWN_LINK           0x0A07C4E8 
-#define DIBUTTON_TPS_GLANCE_LEFT_LINK           0x0A07C4E4 
-#define DIBUTTON_TPS_GLANCE_RIGHT_LINK          0x0A07C4EC 
-#define DIBUTTON_TPS_DEVICE                     0x0A0044FE 
-#define DIBUTTON_TPS_PAUSE                      0x0A0044FC 
-
-
+#define DIHATSWITCH_TPS_GLANCE                  0x0A004601
+#define DIBUTTON_TPS_VIEW                       0x0A004406
+#define DIBUTTON_TPS_STEPLEFT                   0x0A004407
+#define DIBUTTON_TPS_STEPRIGHT                  0x0A004408
+#define DIAXIS_TPS_STEP                         0x0A00C203
+#define DIBUTTON_TPS_DODGE                      0x0A004409
+#define DIBUTTON_TPS_INVENTORY                  0x0A00440A
+#define DIBUTTON_TPS_TURN_LEFT_LINK             0x0A0244E4
+#define DIBUTTON_TPS_TURN_RIGHT_LINK            0x0A0244EC
+#define DIBUTTON_TPS_FORWARD_LINK               0x0A0144E0
+#define DIBUTTON_TPS_BACKWARD_LINK              0x0A0144E8
+#define DIBUTTON_TPS_GLANCE_UP_LINK             0x0A07C4E0
+#define DIBUTTON_TPS_GLANCE_DOWN_LINK           0x0A07C4E8
+#define DIBUTTON_TPS_GLANCE_LEFT_LINK           0x0A07C4E4
+#define DIBUTTON_TPS_GLANCE_RIGHT_LINK          0x0A07C4EC
+#define DIBUTTON_TPS_DEVICE                     0x0A0044FE
+#define DIBUTTON_TPS_PAUSE                      0x0A0044FC
 
 #define DIVIRTUAL_STRATEGY_ROLEPLAYING          0x0B000000
-#define DIAXIS_STRATEGYR_LATERAL                0x0B008201 
-#define DIAXIS_STRATEGYR_MOVE                   0x0B010202 
-#define DIBUTTON_STRATEGYR_GET                  0x0B000401 
-#define DIBUTTON_STRATEGYR_APPLY                0x0B000402 
-#define DIBUTTON_STRATEGYR_SELECT               0x0B000403 
-#define DIBUTTON_STRATEGYR_ATTACK               0x0B000404 
-#define DIBUTTON_STRATEGYR_CAST                 0x0B000405 
-#define DIBUTTON_STRATEGYR_CROUCH               0x0B000406 
-#define DIBUTTON_STRATEGYR_JUMP                 0x0B000407 
-#define DIBUTTON_STRATEGYR_MENU                 0x0B0004FD 
+#define DIAXIS_STRATEGYR_LATERAL                0x0B008201
+#define DIAXIS_STRATEGYR_MOVE                   0x0B010202
+#define DIBUTTON_STRATEGYR_GET                  0x0B000401
+#define DIBUTTON_STRATEGYR_APPLY                0x0B000402
+#define DIBUTTON_STRATEGYR_SELECT               0x0B000403
+#define DIBUTTON_STRATEGYR_ATTACK               0x0B000404
+#define DIBUTTON_STRATEGYR_CAST                 0x0B000405
+#define DIBUTTON_STRATEGYR_CROUCH               0x0B000406
+#define DIBUTTON_STRATEGYR_JUMP                 0x0B000407
+#define DIBUTTON_STRATEGYR_MENU                 0x0B0004FD
 
-
-#define DIHATSWITCH_STRATEGYR_GLANCE            0x0B004601 
-#define DIBUTTON_STRATEGYR_MAP                  0x0B004408 
-#define DIBUTTON_STRATEGYR_DISPLAY              0x0B004409 
-#define DIAXIS_STRATEGYR_ROTATE                 0x0B024203 
-#define DIBUTTON_STRATEGYR_LEFT_LINK            0x0B00C4E4 
-#define DIBUTTON_STRATEGYR_RIGHT_LINK           0x0B00C4EC 
-#define DIBUTTON_STRATEGYR_FORWARD_LINK         0x0B0144E0 
-#define DIBUTTON_STRATEGYR_BACK_LINK            0x0B0144E8 
-#define DIBUTTON_STRATEGYR_ROTATE_LEFT_LINK     0x0B0244E4 
-#define DIBUTTON_STRATEGYR_ROTATE_RIGHT_LINK    0x0B0244EC 
-#define DIBUTTON_STRATEGYR_DEVICE               0x0B0044FE 
-#define DIBUTTON_STRATEGYR_PAUSE                0x0B0044FC 
-
-
+#define DIHATSWITCH_STRATEGYR_GLANCE            0x0B004601
+#define DIBUTTON_STRATEGYR_MAP                  0x0B004408
+#define DIBUTTON_STRATEGYR_DISPLAY              0x0B004409
+#define DIAXIS_STRATEGYR_ROTATE                 0x0B024203
+#define DIBUTTON_STRATEGYR_LEFT_LINK            0x0B00C4E4
+#define DIBUTTON_STRATEGYR_RIGHT_LINK           0x0B00C4EC
+#define DIBUTTON_STRATEGYR_FORWARD_LINK         0x0B0144E0
+#define DIBUTTON_STRATEGYR_BACK_LINK            0x0B0144E8
+#define DIBUTTON_STRATEGYR_ROTATE_LEFT_LINK     0x0B0244E4
+#define DIBUTTON_STRATEGYR_ROTATE_RIGHT_LINK    0x0B0244EC
+#define DIBUTTON_STRATEGYR_DEVICE               0x0B0044FE
+#define DIBUTTON_STRATEGYR_PAUSE                0x0B0044FC
 
 #define DIVIRTUAL_STRATEGY_TURN                 0x0C000000
-#define DIAXIS_STRATEGYT_LATERAL                0x0C008201 
-#define DIAXIS_STRATEGYT_MOVE                   0x0C010202 
-#define DIBUTTON_STRATEGYT_SELECT               0x0C000401 
-#define DIBUTTON_STRATEGYT_INSTRUCT             0x0C000402 
-#define DIBUTTON_STRATEGYT_APPLY                0x0C000403 
-#define DIBUTTON_STRATEGYT_TEAM                 0x0C000404 
-#define DIBUTTON_STRATEGYT_TURN                 0x0C000405 
-#define DIBUTTON_STRATEGYT_MENU                 0x0C0004FD 
+#define DIAXIS_STRATEGYT_LATERAL                0x0C008201
+#define DIAXIS_STRATEGYT_MOVE                   0x0C010202
+#define DIBUTTON_STRATEGYT_SELECT               0x0C000401
+#define DIBUTTON_STRATEGYT_INSTRUCT             0x0C000402
+#define DIBUTTON_STRATEGYT_APPLY                0x0C000403
+#define DIBUTTON_STRATEGYT_TEAM                 0x0C000404
+#define DIBUTTON_STRATEGYT_TURN                 0x0C000405
+#define DIBUTTON_STRATEGYT_MENU                 0x0C0004FD
 
-
-#define DIBUTTON_STRATEGYT_ZOOM                 0x0C004406 
-#define DIBUTTON_STRATEGYT_MAP                  0x0C004407 
-#define DIBUTTON_STRATEGYT_DISPLAY              0x0C004408 
-#define DIBUTTON_STRATEGYT_LEFT_LINK            0x0C00C4E4 
-#define DIBUTTON_STRATEGYT_RIGHT_LINK           0x0C00C4EC 
-#define DIBUTTON_STRATEGYT_FORWARD_LINK         0x0C0144E0 
-#define DIBUTTON_STRATEGYT_BACK_LINK            0x0C0144E8 
-#define DIBUTTON_STRATEGYT_DEVICE               0x0C0044FE 
-#define DIBUTTON_STRATEGYT_PAUSE                0x0C0044FC 
-
-
+#define DIBUTTON_STRATEGYT_ZOOM                 0x0C004406
+#define DIBUTTON_STRATEGYT_MAP                  0x0C004407
+#define DIBUTTON_STRATEGYT_DISPLAY              0x0C004408
+#define DIBUTTON_STRATEGYT_LEFT_LINK            0x0C00C4E4
+#define DIBUTTON_STRATEGYT_RIGHT_LINK           0x0C00C4EC
+#define DIBUTTON_STRATEGYT_FORWARD_LINK         0x0C0144E0
+#define DIBUTTON_STRATEGYT_BACK_LINK            0x0C0144E8
+#define DIBUTTON_STRATEGYT_DEVICE               0x0C0044FE
+#define DIBUTTON_STRATEGYT_PAUSE                0x0C0044FC
 
 #define DIVIRTUAL_SPORTS_HUNTING                0x0D000000
-#define DIAXIS_HUNTING_LATERAL                  0x0D008201 
-#define DIAXIS_HUNTING_MOVE                     0x0D010202 
-#define DIBUTTON_HUNTING_FIRE                   0x0D000401 
-#define DIBUTTON_HUNTING_AIM                    0x0D000402 
-#define DIBUTTON_HUNTING_WEAPON                 0x0D000403 
-#define DIBUTTON_HUNTING_BINOCULAR              0x0D000404 
-#define DIBUTTON_HUNTING_CALL                   0x0D000405 
-#define DIBUTTON_HUNTING_MAP                    0x0D000406 
-#define DIBUTTON_HUNTING_SPECIAL                0x0D000407 
-#define DIBUTTON_HUNTING_MENU                   0x0D0004FD 
+#define DIAXIS_HUNTING_LATERAL                  0x0D008201
+#define DIAXIS_HUNTING_MOVE                     0x0D010202
+#define DIBUTTON_HUNTING_FIRE                   0x0D000401
+#define DIBUTTON_HUNTING_AIM                    0x0D000402
+#define DIBUTTON_HUNTING_WEAPON                 0x0D000403
+#define DIBUTTON_HUNTING_BINOCULAR              0x0D000404
+#define DIBUTTON_HUNTING_CALL                   0x0D000405
+#define DIBUTTON_HUNTING_MAP                    0x0D000406
+#define DIBUTTON_HUNTING_SPECIAL                0x0D000407
+#define DIBUTTON_HUNTING_MENU                   0x0D0004FD
 
-
-#define DIHATSWITCH_HUNTING_GLANCE              0x0D004601 
-#define DIBUTTON_HUNTING_DISPLAY                0x0D004408 
-#define DIAXIS_HUNTING_ROTATE                   0x0D024203 
-#define DIBUTTON_HUNTING_CROUCH                 0x0D004409 
-#define DIBUTTON_HUNTING_JUMP                   0x0D00440A 
-#define DIBUTTON_HUNTING_FIRESECONDARY          0x0D00440B 
-#define DIBUTTON_HUNTING_LEFT_LINK              0x0D00C4E4 
-#define DIBUTTON_HUNTING_RIGHT_LINK             0x0D00C4EC 
-#define DIBUTTON_HUNTING_FORWARD_LINK           0x0D0144E0 
-#define DIBUTTON_HUNTING_BACK_LINK              0x0D0144E8 
-#define DIBUTTON_HUNTING_ROTATE_LEFT_LINK       0x0D0244E4 
-#define DIBUTTON_HUNTING_ROTATE_RIGHT_LINK      0x0D0244EC 
-#define DIBUTTON_HUNTING_DEVICE                 0x0D0044FE 
-#define DIBUTTON_HUNTING_PAUSE                  0x0D0044FC 
-
-
+#define DIHATSWITCH_HUNTING_GLANCE              0x0D004601
+#define DIBUTTON_HUNTING_DISPLAY                0x0D004408
+#define DIAXIS_HUNTING_ROTATE                   0x0D024203
+#define DIBUTTON_HUNTING_CROUCH                 0x0D004409
+#define DIBUTTON_HUNTING_JUMP                   0x0D00440A
+#define DIBUTTON_HUNTING_FIRESECONDARY          0x0D00440B
+#define DIBUTTON_HUNTING_LEFT_LINK              0x0D00C4E4
+#define DIBUTTON_HUNTING_RIGHT_LINK             0x0D00C4EC
+#define DIBUTTON_HUNTING_FORWARD_LINK           0x0D0144E0
+#define DIBUTTON_HUNTING_BACK_LINK              0x0D0144E8
+#define DIBUTTON_HUNTING_ROTATE_LEFT_LINK       0x0D0244E4
+#define DIBUTTON_HUNTING_ROTATE_RIGHT_LINK      0x0D0244EC
+#define DIBUTTON_HUNTING_DEVICE                 0x0D0044FE
+#define DIBUTTON_HUNTING_PAUSE                  0x0D0044FC
 
 #define DIVIRTUAL_SPORTS_FISHING                0x0E000000
-#define DIAXIS_FISHING_LATERAL                  0x0E008201 
-#define DIAXIS_FISHING_MOVE                     0x0E010202 
-#define DIBUTTON_FISHING_CAST                   0x0E000401 
-#define DIBUTTON_FISHING_TYPE                   0x0E000402 
-#define DIBUTTON_FISHING_BINOCULAR              0x0E000403 
-#define DIBUTTON_FISHING_BAIT                   0x0E000404 
-#define DIBUTTON_FISHING_MAP                    0x0E000405 
-#define DIBUTTON_FISHING_MENU                   0x0E0004FD 
+#define DIAXIS_FISHING_LATERAL                  0x0E008201
+#define DIAXIS_FISHING_MOVE                     0x0E010202
+#define DIBUTTON_FISHING_CAST                   0x0E000401
+#define DIBUTTON_FISHING_TYPE                   0x0E000402
+#define DIBUTTON_FISHING_BINOCULAR              0x0E000403
+#define DIBUTTON_FISHING_BAIT                   0x0E000404
+#define DIBUTTON_FISHING_MAP                    0x0E000405
+#define DIBUTTON_FISHING_MENU                   0x0E0004FD
 
-
-#define DIHATSWITCH_FISHING_GLANCE              0x0E004601 
-#define DIBUTTON_FISHING_DISPLAY                0x0E004406 
-#define DIAXIS_FISHING_ROTATE                   0x0E024203 
-#define DIBUTTON_FISHING_CROUCH                 0x0E004407 
-#define DIBUTTON_FISHING_JUMP                   0x0E004408 
-#define DIBUTTON_FISHING_LEFT_LINK              0x0E00C4E4 
-#define DIBUTTON_FISHING_RIGHT_LINK             0x0E00C4EC 
-#define DIBUTTON_FISHING_FORWARD_LINK           0x0E0144E0 
-#define DIBUTTON_FISHING_BACK_LINK              0x0E0144E8 
-#define DIBUTTON_FISHING_ROTATE_LEFT_LINK       0x0E0244E4 
-#define DIBUTTON_FISHING_ROTATE_RIGHT_LINK      0x0E0244EC 
-#define DIBUTTON_FISHING_DEVICE                 0x0E0044FE 
-#define DIBUTTON_FISHING_PAUSE                  0x0E0044FC 
-
-
+#define DIHATSWITCH_FISHING_GLANCE              0x0E004601
+#define DIBUTTON_FISHING_DISPLAY                0x0E004406
+#define DIAXIS_FISHING_ROTATE                   0x0E024203
+#define DIBUTTON_FISHING_CROUCH                 0x0E004407
+#define DIBUTTON_FISHING_JUMP                   0x0E004408
+#define DIBUTTON_FISHING_LEFT_LINK              0x0E00C4E4
+#define DIBUTTON_FISHING_RIGHT_LINK             0x0E00C4EC
+#define DIBUTTON_FISHING_FORWARD_LINK           0x0E0144E0
+#define DIBUTTON_FISHING_BACK_LINK              0x0E0144E8
+#define DIBUTTON_FISHING_ROTATE_LEFT_LINK       0x0E0244E4
+#define DIBUTTON_FISHING_ROTATE_RIGHT_LINK      0x0E0244EC
+#define DIBUTTON_FISHING_DEVICE                 0x0E0044FE
+#define DIBUTTON_FISHING_PAUSE                  0x0E0044FC
 
 #define DIVIRTUAL_SPORTS_BASEBALL_BAT           0x0F000000
-#define DIAXIS_BASEBALLB_LATERAL                0x0F008201 
-#define DIAXIS_BASEBALLB_MOVE                   0x0F010202 
-#define DIBUTTON_BASEBALLB_SELECT               0x0F000401 
-#define DIBUTTON_BASEBALLB_NORMAL               0x0F000402 
-#define DIBUTTON_BASEBALLB_POWER                0x0F000403 
-#define DIBUTTON_BASEBALLB_BUNT                 0x0F000404 
-#define DIBUTTON_BASEBALLB_STEAL                0x0F000405 
-#define DIBUTTON_BASEBALLB_BURST                0x0F000406 
-#define DIBUTTON_BASEBALLB_SLIDE                0x0F000407 
-#define DIBUTTON_BASEBALLB_CONTACT              0x0F000408 
-#define DIBUTTON_BASEBALLB_MENU                 0x0F0004FD 
+#define DIAXIS_BASEBALLB_LATERAL                0x0F008201
+#define DIAXIS_BASEBALLB_MOVE                   0x0F010202
+#define DIBUTTON_BASEBALLB_SELECT               0x0F000401
+#define DIBUTTON_BASEBALLB_NORMAL               0x0F000402
+#define DIBUTTON_BASEBALLB_POWER                0x0F000403
+#define DIBUTTON_BASEBALLB_BUNT                 0x0F000404
+#define DIBUTTON_BASEBALLB_STEAL                0x0F000405
+#define DIBUTTON_BASEBALLB_BURST                0x0F000406
+#define DIBUTTON_BASEBALLB_SLIDE                0x0F000407
+#define DIBUTTON_BASEBALLB_CONTACT              0x0F000408
+#define DIBUTTON_BASEBALLB_MENU                 0x0F0004FD
 
-
-#define DIBUTTON_BASEBALLB_NOSTEAL              0x0F004409 
-#define DIBUTTON_BASEBALLB_BOX                  0x0F00440A 
-#define DIBUTTON_BASEBALLB_LEFT_LINK            0x0F00C4E4 
-#define DIBUTTON_BASEBALLB_RIGHT_LINK           0x0F00C4EC 
-#define DIBUTTON_BASEBALLB_FORWARD_LINK         0x0F0144E0 
-#define DIBUTTON_BASEBALLB_BACK_LINK            0x0F0144E8 
-#define DIBUTTON_BASEBALLB_DEVICE               0x0F0044FE 
-#define DIBUTTON_BASEBALLB_PAUSE                0x0F0044FC 
-
-
+#define DIBUTTON_BASEBALLB_NOSTEAL              0x0F004409
+#define DIBUTTON_BASEBALLB_BOX                  0x0F00440A
+#define DIBUTTON_BASEBALLB_LEFT_LINK            0x0F00C4E4
+#define DIBUTTON_BASEBALLB_RIGHT_LINK           0x0F00C4EC
+#define DIBUTTON_BASEBALLB_FORWARD_LINK         0x0F0144E0
+#define DIBUTTON_BASEBALLB_BACK_LINK            0x0F0144E8
+#define DIBUTTON_BASEBALLB_DEVICE               0x0F0044FE
+#define DIBUTTON_BASEBALLB_PAUSE                0x0F0044FC
 
 #define DIVIRTUAL_SPORTS_BASEBALL_PITCH         0x10000000
-#define DIAXIS_BASEBALLP_LATERAL                0x10008201 
-#define DIAXIS_BASEBALLP_MOVE                   0x10010202 
-#define DIBUTTON_BASEBALLP_SELECT               0x10000401 
-#define DIBUTTON_BASEBALLP_PITCH                0x10000402 
-#define DIBUTTON_BASEBALLP_BASE                 0x10000403 
-#define DIBUTTON_BASEBALLP_THROW                0x10000404 
-#define DIBUTTON_BASEBALLP_FAKE                 0x10000405 
-#define DIBUTTON_BASEBALLP_MENU                 0x100004FD 
+#define DIAXIS_BASEBALLP_LATERAL                0x10008201
+#define DIAXIS_BASEBALLP_MOVE                   0x10010202
+#define DIBUTTON_BASEBALLP_SELECT               0x10000401
+#define DIBUTTON_BASEBALLP_PITCH                0x10000402
+#define DIBUTTON_BASEBALLP_BASE                 0x10000403
+#define DIBUTTON_BASEBALLP_THROW                0x10000404
+#define DIBUTTON_BASEBALLP_FAKE                 0x10000405
+#define DIBUTTON_BASEBALLP_MENU                 0x100004FD
 
-
-#define DIBUTTON_BASEBALLP_WALK                 0x10004406 
-#define DIBUTTON_BASEBALLP_LOOK                 0x10004407 
-#define DIBUTTON_BASEBALLP_LEFT_LINK            0x1000C4E4 
-#define DIBUTTON_BASEBALLP_RIGHT_LINK           0x1000C4EC 
-#define DIBUTTON_BASEBALLP_FORWARD_LINK         0x100144E0 
-#define DIBUTTON_BASEBALLP_BACK_LINK            0x100144E8 
-#define DIBUTTON_BASEBALLP_DEVICE               0x100044FE 
-#define DIBUTTON_BASEBALLP_PAUSE                0x100044FC 
-
-
+#define DIBUTTON_BASEBALLP_WALK                 0x10004406
+#define DIBUTTON_BASEBALLP_LOOK                 0x10004407
+#define DIBUTTON_BASEBALLP_LEFT_LINK            0x1000C4E4
+#define DIBUTTON_BASEBALLP_RIGHT_LINK           0x1000C4EC
+#define DIBUTTON_BASEBALLP_FORWARD_LINK         0x100144E0
+#define DIBUTTON_BASEBALLP_BACK_LINK            0x100144E8
+#define DIBUTTON_BASEBALLP_DEVICE               0x100044FE
+#define DIBUTTON_BASEBALLP_PAUSE                0x100044FC
 
 #define DIVIRTUAL_SPORTS_BASEBALL_FIELD         0x11000000
-#define DIAXIS_BASEBALLF_LATERAL                0x11008201 
-#define DIAXIS_BASEBALLF_MOVE                   0x11010202 
-#define DIBUTTON_BASEBALLF_NEAREST              0x11000401 
-#define DIBUTTON_BASEBALLF_THROW1               0x11000402 
-#define DIBUTTON_BASEBALLF_THROW2               0x11000403 
-#define DIBUTTON_BASEBALLF_BURST                0x11000404 
-#define DIBUTTON_BASEBALLF_JUMP                 0x11000405 
-#define DIBUTTON_BASEBALLF_DIVE                 0x11000406 
-#define DIBUTTON_BASEBALLF_MENU                 0x110004FD 
+#define DIAXIS_BASEBALLF_LATERAL                0x11008201
+#define DIAXIS_BASEBALLF_MOVE                   0x11010202
+#define DIBUTTON_BASEBALLF_NEAREST              0x11000401
+#define DIBUTTON_BASEBALLF_THROW1               0x11000402
+#define DIBUTTON_BASEBALLF_THROW2               0x11000403
+#define DIBUTTON_BASEBALLF_BURST                0x11000404
+#define DIBUTTON_BASEBALLF_JUMP                 0x11000405
+#define DIBUTTON_BASEBALLF_DIVE                 0x11000406
+#define DIBUTTON_BASEBALLF_MENU                 0x110004FD
 
-
-#define DIBUTTON_BASEBALLF_SHIFTIN              0x11004407 
-#define DIBUTTON_BASEBALLF_SHIFTOUT             0x11004408 
-#define DIBUTTON_BASEBALLF_AIM_LEFT_LINK        0x1100C4E4 
-#define DIBUTTON_BASEBALLF_AIM_RIGHT_LINK       0x1100C4EC 
-#define DIBUTTON_BASEBALLF_FORWARD_LINK         0x110144E0 
-#define DIBUTTON_BASEBALLF_BACK_LINK            0x110144E8 
-#define DIBUTTON_BASEBALLF_DEVICE               0x110044FE 
-#define DIBUTTON_BASEBALLF_PAUSE                0x110044FC 
-
-
+#define DIBUTTON_BASEBALLF_SHIFTIN              0x11004407
+#define DIBUTTON_BASEBALLF_SHIFTOUT             0x11004408
+#define DIBUTTON_BASEBALLF_AIM_LEFT_LINK        0x1100C4E4
+#define DIBUTTON_BASEBALLF_AIM_RIGHT_LINK       0x1100C4EC
+#define DIBUTTON_BASEBALLF_FORWARD_LINK         0x110144E0
+#define DIBUTTON_BASEBALLF_BACK_LINK            0x110144E8
+#define DIBUTTON_BASEBALLF_DEVICE               0x110044FE
+#define DIBUTTON_BASEBALLF_PAUSE                0x110044FC
 
 #define DIVIRTUAL_SPORTS_BASKETBALL_OFFENSE     0x12000000
-#define DIAXIS_BBALLO_LATERAL                   0x12008201 
-#define DIAXIS_BBALLO_MOVE                      0x12010202 
-#define DIBUTTON_BBALLO_SHOOT                   0x12000401 
-#define DIBUTTON_BBALLO_DUNK                    0x12000402 
-#define DIBUTTON_BBALLO_PASS                    0x12000403 
-#define DIBUTTON_BBALLO_FAKE                    0x12000404 
-#define DIBUTTON_BBALLO_SPECIAL                 0x12000405 
-#define DIBUTTON_BBALLO_PLAYER                  0x12000406 
-#define DIBUTTON_BBALLO_BURST                   0x12000407 
-#define DIBUTTON_BBALLO_CALL                    0x12000408 
-#define DIBUTTON_BBALLO_MENU                    0x120004FD 
+#define DIAXIS_BBALLO_LATERAL                   0x12008201
+#define DIAXIS_BBALLO_MOVE                      0x12010202
+#define DIBUTTON_BBALLO_SHOOT                   0x12000401
+#define DIBUTTON_BBALLO_DUNK                    0x12000402
+#define DIBUTTON_BBALLO_PASS                    0x12000403
+#define DIBUTTON_BBALLO_FAKE                    0x12000404
+#define DIBUTTON_BBALLO_SPECIAL                 0x12000405
+#define DIBUTTON_BBALLO_PLAYER                  0x12000406
+#define DIBUTTON_BBALLO_BURST                   0x12000407
+#define DIBUTTON_BBALLO_CALL                    0x12000408
+#define DIBUTTON_BBALLO_MENU                    0x120004FD
 
-
-#define DIHATSWITCH_BBALLO_GLANCE               0x12004601 
-#define DIBUTTON_BBALLO_SCREEN                  0x12004409 
-#define DIBUTTON_BBALLO_PLAY                    0x1200440A 
-#define DIBUTTON_BBALLO_JAB                     0x1200440B 
-#define DIBUTTON_BBALLO_POST                    0x1200440C 
-#define DIBUTTON_BBALLO_TIMEOUT                 0x1200440D 
-#define DIBUTTON_BBALLO_SUBSTITUTE              0x1200440E 
-#define DIBUTTON_BBALLO_LEFT_LINK               0x1200C4E4 
-#define DIBUTTON_BBALLO_RIGHT_LINK              0x1200C4EC 
-#define DIBUTTON_BBALLO_FORWARD_LINK            0x120144E0 
-#define DIBUTTON_BBALLO_BACK_LINK               0x120144E8 
-#define DIBUTTON_BBALLO_DEVICE                  0x120044FE 
-#define DIBUTTON_BBALLO_PAUSE                   0x120044FC 
-
-
+#define DIHATSWITCH_BBALLO_GLANCE               0x12004601
+#define DIBUTTON_BBALLO_SCREEN                  0x12004409
+#define DIBUTTON_BBALLO_PLAY                    0x1200440A
+#define DIBUTTON_BBALLO_JAB                     0x1200440B
+#define DIBUTTON_BBALLO_POST                    0x1200440C
+#define DIBUTTON_BBALLO_TIMEOUT                 0x1200440D
+#define DIBUTTON_BBALLO_SUBSTITUTE              0x1200440E
+#define DIBUTTON_BBALLO_LEFT_LINK               0x1200C4E4
+#define DIBUTTON_BBALLO_RIGHT_LINK              0x1200C4EC
+#define DIBUTTON_BBALLO_FORWARD_LINK            0x120144E0
+#define DIBUTTON_BBALLO_BACK_LINK               0x120144E8
+#define DIBUTTON_BBALLO_DEVICE                  0x120044FE
+#define DIBUTTON_BBALLO_PAUSE                   0x120044FC
 
 #define DIVIRTUAL_SPORTS_BASKETBALL_DEFENSE     0x13000000
-#define DIAXIS_BBALLD_LATERAL                   0x13008201 
-#define DIAXIS_BBALLD_MOVE                      0x13010202 
-#define DIBUTTON_BBALLD_JUMP                    0x13000401 
-#define DIBUTTON_BBALLD_STEAL                   0x13000402 
-#define DIBUTTON_BBALLD_FAKE                    0x13000403 
-#define DIBUTTON_BBALLD_SPECIAL                 0x13000404 
-#define DIBUTTON_BBALLD_PLAYER                  0x13000405 
-#define DIBUTTON_BBALLD_BURST                   0x13000406 
-#define DIBUTTON_BBALLD_PLAY                    0x13000407 
-#define DIBUTTON_BBALLD_MENU                    0x130004FD 
+#define DIAXIS_BBALLD_LATERAL                   0x13008201
+#define DIAXIS_BBALLD_MOVE                      0x13010202
+#define DIBUTTON_BBALLD_JUMP                    0x13000401
+#define DIBUTTON_BBALLD_STEAL                   0x13000402
+#define DIBUTTON_BBALLD_FAKE                    0x13000403
+#define DIBUTTON_BBALLD_SPECIAL                 0x13000404
+#define DIBUTTON_BBALLD_PLAYER                  0x13000405
+#define DIBUTTON_BBALLD_BURST                   0x13000406
+#define DIBUTTON_BBALLD_PLAY                    0x13000407
+#define DIBUTTON_BBALLD_MENU                    0x130004FD
 
-
-#define DIHATSWITCH_BBALLD_GLANCE               0x13004601 
-#define DIBUTTON_BBALLD_TIMEOUT                 0x13004408 
-#define DIBUTTON_BBALLD_SUBSTITUTE              0x13004409 
-#define DIBUTTON_BBALLD_LEFT_LINK               0x1300C4E4 
-#define DIBUTTON_BBALLD_RIGHT_LINK              0x1300C4EC 
-#define DIBUTTON_BBALLD_FORWARD_LINK            0x130144E0 
-#define DIBUTTON_BBALLD_BACK_LINK               0x130144E8 
-#define DIBUTTON_BBALLD_DEVICE                  0x130044FE 
-#define DIBUTTON_BBALLD_PAUSE                   0x130044FC 
-
-
+#define DIHATSWITCH_BBALLD_GLANCE               0x13004601
+#define DIBUTTON_BBALLD_TIMEOUT                 0x13004408
+#define DIBUTTON_BBALLD_SUBSTITUTE              0x13004409
+#define DIBUTTON_BBALLD_LEFT_LINK               0x1300C4E4
+#define DIBUTTON_BBALLD_RIGHT_LINK              0x1300C4EC
+#define DIBUTTON_BBALLD_FORWARD_LINK            0x130144E0
+#define DIBUTTON_BBALLD_BACK_LINK               0x130144E8
+#define DIBUTTON_BBALLD_DEVICE                  0x130044FE
+#define DIBUTTON_BBALLD_PAUSE                   0x130044FC
 
 #define DIVIRTUAL_SPORTS_FOOTBALL_FIELD         0x14000000
-#define DIBUTTON_FOOTBALLP_PLAY                 0x14000401 
-#define DIBUTTON_FOOTBALLP_SELECT               0x14000402 
-#define DIBUTTON_FOOTBALLP_HELP                 0x14000403 
-#define DIBUTTON_FOOTBALLP_MENU                 0x140004FD 
+#define DIBUTTON_FOOTBALLP_PLAY                 0x14000401
+#define DIBUTTON_FOOTBALLP_SELECT               0x14000402
+#define DIBUTTON_FOOTBALLP_HELP                 0x14000403
+#define DIBUTTON_FOOTBALLP_MENU                 0x140004FD
 
-
-#define DIBUTTON_FOOTBALLP_DEVICE               0x140044FE 
-#define DIBUTTON_FOOTBALLP_PAUSE                0x140044FC 
-
-
+#define DIBUTTON_FOOTBALLP_DEVICE               0x140044FE
+#define DIBUTTON_FOOTBALLP_PAUSE                0x140044FC
 
 #define DIVIRTUAL_SPORTS_FOOTBALL_QBCK          0x15000000
-#define DIAXIS_FOOTBALLQ_LATERAL                0x15008201 
-#define DIAXIS_FOOTBALLQ_MOVE                   0x15010202 
-#define DIBUTTON_FOOTBALLQ_SELECT               0x15000401 
-#define DIBUTTON_FOOTBALLQ_SNAP                 0x15000402 
-#define DIBUTTON_FOOTBALLQ_JUMP                 0x15000403 
-#define DIBUTTON_FOOTBALLQ_SLIDE                0x15000404 
-#define DIBUTTON_FOOTBALLQ_PASS                 0x15000405 
-#define DIBUTTON_FOOTBALLQ_FAKE                 0x15000406 
-#define DIBUTTON_FOOTBALLQ_MENU                 0x150004FD 
+#define DIAXIS_FOOTBALLQ_LATERAL                0x15008201
+#define DIAXIS_FOOTBALLQ_MOVE                   0x15010202
+#define DIBUTTON_FOOTBALLQ_SELECT               0x15000401
+#define DIBUTTON_FOOTBALLQ_SNAP                 0x15000402
+#define DIBUTTON_FOOTBALLQ_JUMP                 0x15000403
+#define DIBUTTON_FOOTBALLQ_SLIDE                0x15000404
+#define DIBUTTON_FOOTBALLQ_PASS                 0x15000405
+#define DIBUTTON_FOOTBALLQ_FAKE                 0x15000406
+#define DIBUTTON_FOOTBALLQ_MENU                 0x150004FD
 
-
-#define DIBUTTON_FOOTBALLQ_FAKESNAP             0x15004407 
-#define DIBUTTON_FOOTBALLQ_MOTION               0x15004408 
-#define DIBUTTON_FOOTBALLQ_AUDIBLE              0x15004409 
-#define DIBUTTON_FOOTBALLQ_LEFT_LINK            0x1500C4E4 
-#define DIBUTTON_FOOTBALLQ_RIGHT_LINK           0x1500C4EC 
-#define DIBUTTON_FOOTBALLQ_FORWARD_LINK         0x150144E0 
-#define DIBUTTON_FOOTBALLQ_BACK_LINK            0x150144E8 
-#define DIBUTTON_FOOTBALLQ_DEVICE               0x150044FE 
-#define DIBUTTON_FOOTBALLQ_PAUSE                0x150044FC 
-
-
+#define DIBUTTON_FOOTBALLQ_FAKESNAP             0x15004407
+#define DIBUTTON_FOOTBALLQ_MOTION               0x15004408
+#define DIBUTTON_FOOTBALLQ_AUDIBLE              0x15004409
+#define DIBUTTON_FOOTBALLQ_LEFT_LINK            0x1500C4E4
+#define DIBUTTON_FOOTBALLQ_RIGHT_LINK           0x1500C4EC
+#define DIBUTTON_FOOTBALLQ_FORWARD_LINK         0x150144E0
+#define DIBUTTON_FOOTBALLQ_BACK_LINK            0x150144E8
+#define DIBUTTON_FOOTBALLQ_DEVICE               0x150044FE
+#define DIBUTTON_FOOTBALLQ_PAUSE                0x150044FC
 
 #define DIVIRTUAL_SPORTS_FOOTBALL_OFFENSE       0x16000000
-#define DIAXIS_FOOTBALLO_LATERAL                0x16008201 
-#define DIAXIS_FOOTBALLO_MOVE                   0x16010202 
-#define DIBUTTON_FOOTBALLO_JUMP                 0x16000401 
-#define DIBUTTON_FOOTBALLO_LEFTARM              0x16000402 
-#define DIBUTTON_FOOTBALLO_RIGHTARM             0x16000403 
-#define DIBUTTON_FOOTBALLO_THROW                0x16000404 
-#define DIBUTTON_FOOTBALLO_SPIN                 0x16000405 
-#define DIBUTTON_FOOTBALLO_MENU                 0x160004FD 
+#define DIAXIS_FOOTBALLO_LATERAL                0x16008201
+#define DIAXIS_FOOTBALLO_MOVE                   0x16010202
+#define DIBUTTON_FOOTBALLO_JUMP                 0x16000401
+#define DIBUTTON_FOOTBALLO_LEFTARM              0x16000402
+#define DIBUTTON_FOOTBALLO_RIGHTARM             0x16000403
+#define DIBUTTON_FOOTBALLO_THROW                0x16000404
+#define DIBUTTON_FOOTBALLO_SPIN                 0x16000405
+#define DIBUTTON_FOOTBALLO_MENU                 0x160004FD
 
-
-#define DIBUTTON_FOOTBALLO_JUKE                 0x16004406 
-#define DIBUTTON_FOOTBALLO_SHOULDER             0x16004407 
-#define DIBUTTON_FOOTBALLO_TURBO                0x16004408 
-#define DIBUTTON_FOOTBALLO_DIVE                 0x16004409 
-#define DIBUTTON_FOOTBALLO_ZOOM                 0x1600440A 
-#define DIBUTTON_FOOTBALLO_SUBSTITUTE           0x1600440B 
-#define DIBUTTON_FOOTBALLO_LEFT_LINK            0x1600C4E4 
-#define DIBUTTON_FOOTBALLO_RIGHT_LINK           0x1600C4EC 
-#define DIBUTTON_FOOTBALLO_FORWARD_LINK         0x160144E0 
-#define DIBUTTON_FOOTBALLO_BACK_LINK            0x160144E8 
-#define DIBUTTON_FOOTBALLO_DEVICE               0x160044FE 
-#define DIBUTTON_FOOTBALLO_PAUSE                0x160044FC 
-
-
+#define DIBUTTON_FOOTBALLO_JUKE                 0x16004406
+#define DIBUTTON_FOOTBALLO_SHOULDER             0x16004407
+#define DIBUTTON_FOOTBALLO_TURBO                0x16004408
+#define DIBUTTON_FOOTBALLO_DIVE                 0x16004409
+#define DIBUTTON_FOOTBALLO_ZOOM                 0x1600440A
+#define DIBUTTON_FOOTBALLO_SUBSTITUTE           0x1600440B
+#define DIBUTTON_FOOTBALLO_LEFT_LINK            0x1600C4E4
+#define DIBUTTON_FOOTBALLO_RIGHT_LINK           0x1600C4EC
+#define DIBUTTON_FOOTBALLO_FORWARD_LINK         0x160144E0
+#define DIBUTTON_FOOTBALLO_BACK_LINK            0x160144E8
+#define DIBUTTON_FOOTBALLO_DEVICE               0x160044FE
+#define DIBUTTON_FOOTBALLO_PAUSE                0x160044FC
 
 #define DIVIRTUAL_SPORTS_FOOTBALL_DEFENSE       0x17000000
-#define DIAXIS_FOOTBALLD_LATERAL                0x17008201 
-#define DIAXIS_FOOTBALLD_MOVE                   0x17010202 
-#define DIBUTTON_FOOTBALLD_PLAY                 0x17000401 
-#define DIBUTTON_FOOTBALLD_SELECT               0x17000402 
-#define DIBUTTON_FOOTBALLD_JUMP                 0x17000403 
-#define DIBUTTON_FOOTBALLD_TACKLE               0x17000404 
-#define DIBUTTON_FOOTBALLD_FAKE                 0x17000405 
-#define DIBUTTON_FOOTBALLD_SUPERTACKLE          0x17000406 
-#define DIBUTTON_FOOTBALLD_MENU                 0x170004FD 
+#define DIAXIS_FOOTBALLD_LATERAL                0x17008201
+#define DIAXIS_FOOTBALLD_MOVE                   0x17010202
+#define DIBUTTON_FOOTBALLD_PLAY                 0x17000401
+#define DIBUTTON_FOOTBALLD_SELECT               0x17000402
+#define DIBUTTON_FOOTBALLD_JUMP                 0x17000403
+#define DIBUTTON_FOOTBALLD_TACKLE               0x17000404
+#define DIBUTTON_FOOTBALLD_FAKE                 0x17000405
+#define DIBUTTON_FOOTBALLD_SUPERTACKLE          0x17000406
+#define DIBUTTON_FOOTBALLD_MENU                 0x170004FD
 
-
-#define DIBUTTON_FOOTBALLD_SPIN                 0x17004407 
-#define DIBUTTON_FOOTBALLD_SWIM                 0x17004408 
-#define DIBUTTON_FOOTBALLD_BULLRUSH             0x17004409 
-#define DIBUTTON_FOOTBALLD_RIP                  0x1700440A 
-#define DIBUTTON_FOOTBALLD_AUDIBLE              0x1700440B 
-#define DIBUTTON_FOOTBALLD_ZOOM                 0x1700440C 
-#define DIBUTTON_FOOTBALLD_SUBSTITUTE           0x1700440D 
-#define DIBUTTON_FOOTBALLD_LEFT_LINK            0x1700C4E4 
-#define DIBUTTON_FOOTBALLD_RIGHT_LINK           0x1700C4EC 
-#define DIBUTTON_FOOTBALLD_FORWARD_LINK         0x170144E0 
-#define DIBUTTON_FOOTBALLD_BACK_LINK            0x170144E8 
-#define DIBUTTON_FOOTBALLD_DEVICE               0x170044FE 
-#define DIBUTTON_FOOTBALLD_PAUSE                0x170044FC 
-
-
+#define DIBUTTON_FOOTBALLD_SPIN                 0x17004407
+#define DIBUTTON_FOOTBALLD_SWIM                 0x17004408
+#define DIBUTTON_FOOTBALLD_BULLRUSH             0x17004409
+#define DIBUTTON_FOOTBALLD_RIP                  0x1700440A
+#define DIBUTTON_FOOTBALLD_AUDIBLE              0x1700440B
+#define DIBUTTON_FOOTBALLD_ZOOM                 0x1700440C
+#define DIBUTTON_FOOTBALLD_SUBSTITUTE           0x1700440D
+#define DIBUTTON_FOOTBALLD_LEFT_LINK            0x1700C4E4
+#define DIBUTTON_FOOTBALLD_RIGHT_LINK           0x1700C4EC
+#define DIBUTTON_FOOTBALLD_FORWARD_LINK         0x170144E0
+#define DIBUTTON_FOOTBALLD_BACK_LINK            0x170144E8
+#define DIBUTTON_FOOTBALLD_DEVICE               0x170044FE
+#define DIBUTTON_FOOTBALLD_PAUSE                0x170044FC
 
 #define DIVIRTUAL_SPORTS_GOLF                   0x18000000
-#define DIAXIS_GOLF_LATERAL                     0x18008201 
-#define DIAXIS_GOLF_MOVE                        0x18010202 
-#define DIBUTTON_GOLF_SWING                     0x18000401 
-#define DIBUTTON_GOLF_SELECT                    0x18000402 
-#define DIBUTTON_GOLF_UP                        0x18000403 
-#define DIBUTTON_GOLF_DOWN                      0x18000404 
-#define DIBUTTON_GOLF_TERRAIN                   0x18000405 
-#define DIBUTTON_GOLF_FLYBY                     0x18000406 
-#define DIBUTTON_GOLF_MENU                      0x180004FD 
+#define DIAXIS_GOLF_LATERAL                     0x18008201
+#define DIAXIS_GOLF_MOVE                        0x18010202
+#define DIBUTTON_GOLF_SWING                     0x18000401
+#define DIBUTTON_GOLF_SELECT                    0x18000402
+#define DIBUTTON_GOLF_UP                        0x18000403
+#define DIBUTTON_GOLF_DOWN                      0x18000404
+#define DIBUTTON_GOLF_TERRAIN                   0x18000405
+#define DIBUTTON_GOLF_FLYBY                     0x18000406
+#define DIBUTTON_GOLF_MENU                      0x180004FD
 
-
-#define DIHATSWITCH_GOLF_SCROLL                 0x18004601 
-#define DIBUTTON_GOLF_ZOOM                      0x18004407 
-#define DIBUTTON_GOLF_TIMEOUT                   0x18004408 
-#define DIBUTTON_GOLF_SUBSTITUTE                0x18004409 
-#define DIBUTTON_GOLF_LEFT_LINK                 0x1800C4E4 
-#define DIBUTTON_GOLF_RIGHT_LINK                0x1800C4EC 
-#define DIBUTTON_GOLF_FORWARD_LINK              0x180144E0 
-#define DIBUTTON_GOLF_BACK_LINK                 0x180144E8 
-#define DIBUTTON_GOLF_DEVICE                    0x180044FE 
-#define DIBUTTON_GOLF_PAUSE                     0x180044FC 
-
-
+#define DIHATSWITCH_GOLF_SCROLL                 0x18004601
+#define DIBUTTON_GOLF_ZOOM                      0x18004407
+#define DIBUTTON_GOLF_TIMEOUT                   0x18004408
+#define DIBUTTON_GOLF_SUBSTITUTE                0x18004409
+#define DIBUTTON_GOLF_LEFT_LINK                 0x1800C4E4
+#define DIBUTTON_GOLF_RIGHT_LINK                0x1800C4EC
+#define DIBUTTON_GOLF_FORWARD_LINK              0x180144E0
+#define DIBUTTON_GOLF_BACK_LINK                 0x180144E8
+#define DIBUTTON_GOLF_DEVICE                    0x180044FE
+#define DIBUTTON_GOLF_PAUSE                     0x180044FC
 
 #define DIVIRTUAL_SPORTS_HOCKEY_OFFENSE         0x19000000
-#define DIAXIS_HOCKEYO_LATERAL                  0x19008201 
-#define DIAXIS_HOCKEYO_MOVE                     0x19010202 
-#define DIBUTTON_HOCKEYO_SHOOT                  0x19000401 
-#define DIBUTTON_HOCKEYO_PASS                   0x19000402 
-#define DIBUTTON_HOCKEYO_BURST                  0x19000403 
-#define DIBUTTON_HOCKEYO_SPECIAL                0x19000404 
-#define DIBUTTON_HOCKEYO_FAKE                   0x19000405 
-#define DIBUTTON_HOCKEYO_MENU                   0x190004FD 
+#define DIAXIS_HOCKEYO_LATERAL                  0x19008201
+#define DIAXIS_HOCKEYO_MOVE                     0x19010202
+#define DIBUTTON_HOCKEYO_SHOOT                  0x19000401
+#define DIBUTTON_HOCKEYO_PASS                   0x19000402
+#define DIBUTTON_HOCKEYO_BURST                  0x19000403
+#define DIBUTTON_HOCKEYO_SPECIAL                0x19000404
+#define DIBUTTON_HOCKEYO_FAKE                   0x19000405
+#define DIBUTTON_HOCKEYO_MENU                   0x190004FD
 
-
-#define DIHATSWITCH_HOCKEYO_SCROLL              0x19004601 
-#define DIBUTTON_HOCKEYO_ZOOM                   0x19004406 
-#define DIBUTTON_HOCKEYO_STRATEGY               0x19004407 
-#define DIBUTTON_HOCKEYO_TIMEOUT                0x19004408 
-#define DIBUTTON_HOCKEYO_SUBSTITUTE             0x19004409 
-#define DIBUTTON_HOCKEYO_LEFT_LINK              0x1900C4E4 
-#define DIBUTTON_HOCKEYO_RIGHT_LINK             0x1900C4EC 
-#define DIBUTTON_HOCKEYO_FORWARD_LINK           0x190144E0 
-#define DIBUTTON_HOCKEYO_BACK_LINK              0x190144E8 
-#define DIBUTTON_HOCKEYO_DEVICE                 0x190044FE 
-#define DIBUTTON_HOCKEYO_PAUSE                  0x190044FC 
-
-
+#define DIHATSWITCH_HOCKEYO_SCROLL              0x19004601
+#define DIBUTTON_HOCKEYO_ZOOM                   0x19004406
+#define DIBUTTON_HOCKEYO_STRATEGY               0x19004407
+#define DIBUTTON_HOCKEYO_TIMEOUT                0x19004408
+#define DIBUTTON_HOCKEYO_SUBSTITUTE             0x19004409
+#define DIBUTTON_HOCKEYO_LEFT_LINK              0x1900C4E4
+#define DIBUTTON_HOCKEYO_RIGHT_LINK             0x1900C4EC
+#define DIBUTTON_HOCKEYO_FORWARD_LINK           0x190144E0
+#define DIBUTTON_HOCKEYO_BACK_LINK              0x190144E8
+#define DIBUTTON_HOCKEYO_DEVICE                 0x190044FE
+#define DIBUTTON_HOCKEYO_PAUSE                  0x190044FC
 
 #define DIVIRTUAL_SPORTS_HOCKEY_DEFENSE         0x1A000000
-#define DIAXIS_HOCKEYD_LATERAL                  0x1A008201 
-#define DIAXIS_HOCKEYD_MOVE                     0x1A010202 
-#define DIBUTTON_HOCKEYD_PLAYER                 0x1A000401 
-#define DIBUTTON_HOCKEYD_STEAL                  0x1A000402 
-#define DIBUTTON_HOCKEYD_BURST                  0x1A000403 
-#define DIBUTTON_HOCKEYD_BLOCK                  0x1A000404 
-#define DIBUTTON_HOCKEYD_FAKE                   0x1A000405 
-#define DIBUTTON_HOCKEYD_MENU                   0x1A0004FD 
+#define DIAXIS_HOCKEYD_LATERAL                  0x1A008201
+#define DIAXIS_HOCKEYD_MOVE                     0x1A010202
+#define DIBUTTON_HOCKEYD_PLAYER                 0x1A000401
+#define DIBUTTON_HOCKEYD_STEAL                  0x1A000402
+#define DIBUTTON_HOCKEYD_BURST                  0x1A000403
+#define DIBUTTON_HOCKEYD_BLOCK                  0x1A000404
+#define DIBUTTON_HOCKEYD_FAKE                   0x1A000405
+#define DIBUTTON_HOCKEYD_MENU                   0x1A0004FD
 
-
-#define DIHATSWITCH_HOCKEYD_SCROLL              0x1A004601 
-#define DIBUTTON_HOCKEYD_ZOOM                   0x1A004406 
-#define DIBUTTON_HOCKEYD_STRATEGY               0x1A004407 
-#define DIBUTTON_HOCKEYD_TIMEOUT                0x1A004408 
-#define DIBUTTON_HOCKEYD_SUBSTITUTE             0x1A004409 
-#define DIBUTTON_HOCKEYD_LEFT_LINK              0x1A00C4E4 
-#define DIBUTTON_HOCKEYD_RIGHT_LINK             0x1A00C4EC 
-#define DIBUTTON_HOCKEYD_FORWARD_LINK           0x1A0144E0 
-#define DIBUTTON_HOCKEYD_BACK_LINK              0x1A0144E8 
-#define DIBUTTON_HOCKEYD_DEVICE                 0x1A0044FE 
-#define DIBUTTON_HOCKEYD_PAUSE                  0x1A0044FC 
-
-
+#define DIHATSWITCH_HOCKEYD_SCROLL              0x1A004601
+#define DIBUTTON_HOCKEYD_ZOOM                   0x1A004406
+#define DIBUTTON_HOCKEYD_STRATEGY               0x1A004407
+#define DIBUTTON_HOCKEYD_TIMEOUT                0x1A004408
+#define DIBUTTON_HOCKEYD_SUBSTITUTE             0x1A004409
+#define DIBUTTON_HOCKEYD_LEFT_LINK              0x1A00C4E4
+#define DIBUTTON_HOCKEYD_RIGHT_LINK             0x1A00C4EC
+#define DIBUTTON_HOCKEYD_FORWARD_LINK           0x1A0144E0
+#define DIBUTTON_HOCKEYD_BACK_LINK              0x1A0144E8
+#define DIBUTTON_HOCKEYD_DEVICE                 0x1A0044FE
+#define DIBUTTON_HOCKEYD_PAUSE                  0x1A0044FC
 
 #define DIVIRTUAL_SPORTS_HOCKEY_GOALIE          0x1B000000
-#define DIAXIS_HOCKEYG_LATERAL                  0x1B008201 
-#define DIAXIS_HOCKEYG_MOVE                     0x1B010202 
-#define DIBUTTON_HOCKEYG_PASS                   0x1B000401 
-#define DIBUTTON_HOCKEYG_POKE                   0x1B000402 
-#define DIBUTTON_HOCKEYG_STEAL                  0x1B000403 
-#define DIBUTTON_HOCKEYG_BLOCK                  0x1B000404 
-#define DIBUTTON_HOCKEYG_MENU                   0x1B0004FD 
+#define DIAXIS_HOCKEYG_LATERAL                  0x1B008201
+#define DIAXIS_HOCKEYG_MOVE                     0x1B010202
+#define DIBUTTON_HOCKEYG_PASS                   0x1B000401
+#define DIBUTTON_HOCKEYG_POKE                   0x1B000402
+#define DIBUTTON_HOCKEYG_STEAL                  0x1B000403
+#define DIBUTTON_HOCKEYG_BLOCK                  0x1B000404
+#define DIBUTTON_HOCKEYG_MENU                   0x1B0004FD
 
-
-#define DIHATSWITCH_HOCKEYG_SCROLL              0x1B004601 
-#define DIBUTTON_HOCKEYG_ZOOM                   0x1B004405 
-#define DIBUTTON_HOCKEYG_STRATEGY               0x1B004406 
-#define DIBUTTON_HOCKEYG_TIMEOUT                0x1B004407 
-#define DIBUTTON_HOCKEYG_SUBSTITUTE             0x1B004408 
-#define DIBUTTON_HOCKEYG_LEFT_LINK              0x1B00C4E4 
-#define DIBUTTON_HOCKEYG_RIGHT_LINK             0x1B00C4EC 
-#define DIBUTTON_HOCKEYG_FORWARD_LINK           0x1B0144E0 
-#define DIBUTTON_HOCKEYG_BACK_LINK              0x1B0144E8 
-#define DIBUTTON_HOCKEYG_DEVICE                 0x1B0044FE 
-#define DIBUTTON_HOCKEYG_PAUSE                  0x1B0044FC 
-
-
+#define DIHATSWITCH_HOCKEYG_SCROLL              0x1B004601
+#define DIBUTTON_HOCKEYG_ZOOM                   0x1B004405
+#define DIBUTTON_HOCKEYG_STRATEGY               0x1B004406
+#define DIBUTTON_HOCKEYG_TIMEOUT                0x1B004407
+#define DIBUTTON_HOCKEYG_SUBSTITUTE             0x1B004408
+#define DIBUTTON_HOCKEYG_LEFT_LINK              0x1B00C4E4
+#define DIBUTTON_HOCKEYG_RIGHT_LINK             0x1B00C4EC
+#define DIBUTTON_HOCKEYG_FORWARD_LINK           0x1B0144E0
+#define DIBUTTON_HOCKEYG_BACK_LINK              0x1B0144E8
+#define DIBUTTON_HOCKEYG_DEVICE                 0x1B0044FE
+#define DIBUTTON_HOCKEYG_PAUSE                  0x1B0044FC
 
 #define DIVIRTUAL_SPORTS_BIKING_MOUNTAIN        0x1C000000
-#define DIAXIS_BIKINGM_TURN                     0x1C008201 
-#define DIAXIS_BIKINGM_PEDAL                    0x1C010202 
-#define DIBUTTON_BIKINGM_JUMP                   0x1C000401 
-#define DIBUTTON_BIKINGM_CAMERA                 0x1C000402 
-#define DIBUTTON_BIKINGM_SPECIAL1               0x1C000403 
-#define DIBUTTON_BIKINGM_SELECT                 0x1C000404 
-#define DIBUTTON_BIKINGM_SPECIAL2               0x1C000405 
-#define DIBUTTON_BIKINGM_MENU                   0x1C0004FD 
+#define DIAXIS_BIKINGM_TURN                     0x1C008201
+#define DIAXIS_BIKINGM_PEDAL                    0x1C010202
+#define DIBUTTON_BIKINGM_JUMP                   0x1C000401
+#define DIBUTTON_BIKINGM_CAMERA                 0x1C000402
+#define DIBUTTON_BIKINGM_SPECIAL1               0x1C000403
+#define DIBUTTON_BIKINGM_SELECT                 0x1C000404
+#define DIBUTTON_BIKINGM_SPECIAL2               0x1C000405
+#define DIBUTTON_BIKINGM_MENU                   0x1C0004FD
 
-
-#define DIHATSWITCH_BIKINGM_SCROLL              0x1C004601 
-#define DIBUTTON_BIKINGM_ZOOM                   0x1C004406 
-#define DIAXIS_BIKINGM_BRAKE                    0x1C044203 
-#define DIBUTTON_BIKINGM_LEFT_LINK              0x1C00C4E4 
-#define DIBUTTON_BIKINGM_RIGHT_LINK             0x1C00C4EC 
-#define DIBUTTON_BIKINGM_FASTER_LINK            0x1C0144E0 
-#define DIBUTTON_BIKINGM_SLOWER_LINK            0x1C0144E8 
-#define DIBUTTON_BIKINGM_BRAKE_BUTTON_LINK      0x1C0444E8 
-#define DIBUTTON_BIKINGM_DEVICE                 0x1C0044FE 
-#define DIBUTTON_BIKINGM_PAUSE                  0x1C0044FC 
-
-
+#define DIHATSWITCH_BIKINGM_SCROLL              0x1C004601
+#define DIBUTTON_BIKINGM_ZOOM                   0x1C004406
+#define DIAXIS_BIKINGM_BRAKE                    0x1C044203
+#define DIBUTTON_BIKINGM_LEFT_LINK              0x1C00C4E4
+#define DIBUTTON_BIKINGM_RIGHT_LINK             0x1C00C4EC
+#define DIBUTTON_BIKINGM_FASTER_LINK            0x1C0144E0
+#define DIBUTTON_BIKINGM_SLOWER_LINK            0x1C0144E8
+#define DIBUTTON_BIKINGM_BRAKE_BUTTON_LINK      0x1C0444E8
+#define DIBUTTON_BIKINGM_DEVICE                 0x1C0044FE
+#define DIBUTTON_BIKINGM_PAUSE                  0x1C0044FC
 
 #define DIVIRTUAL_SPORTS_SKIING                 0x1D000000
-#define DIAXIS_SKIING_TURN                      0x1D008201 
-#define DIAXIS_SKIING_SPEED                     0x1D010202 
-#define DIBUTTON_SKIING_JUMP                    0x1D000401 
-#define DIBUTTON_SKIING_CROUCH                  0x1D000402 
-#define DIBUTTON_SKIING_CAMERA                  0x1D000403 
-#define DIBUTTON_SKIING_SPECIAL1                0x1D000404 
-#define DIBUTTON_SKIING_SELECT                  0x1D000405 
-#define DIBUTTON_SKIING_SPECIAL2                0x1D000406 
-#define DIBUTTON_SKIING_MENU                    0x1D0004FD 
+#define DIAXIS_SKIING_TURN                      0x1D008201
+#define DIAXIS_SKIING_SPEED                     0x1D010202
+#define DIBUTTON_SKIING_JUMP                    0x1D000401
+#define DIBUTTON_SKIING_CROUCH                  0x1D000402
+#define DIBUTTON_SKIING_CAMERA                  0x1D000403
+#define DIBUTTON_SKIING_SPECIAL1                0x1D000404
+#define DIBUTTON_SKIING_SELECT                  0x1D000405
+#define DIBUTTON_SKIING_SPECIAL2                0x1D000406
+#define DIBUTTON_SKIING_MENU                    0x1D0004FD
 
-
-#define DIHATSWITCH_SKIING_GLANCE               0x1D004601 
-#define DIBUTTON_SKIING_ZOOM                    0x1D004407 
-#define DIBUTTON_SKIING_LEFT_LINK               0x1D00C4E4 
-#define DIBUTTON_SKIING_RIGHT_LINK              0x1D00C4EC 
-#define DIBUTTON_SKIING_FASTER_LINK             0x1D0144E0 
-#define DIBUTTON_SKIING_SLOWER_LINK             0x1D0144E8 
-#define DIBUTTON_SKIING_DEVICE                  0x1D0044FE 
-#define DIBUTTON_SKIING_PAUSE                   0x1D0044FC 
-
-
+#define DIHATSWITCH_SKIING_GLANCE               0x1D004601
+#define DIBUTTON_SKIING_ZOOM                    0x1D004407
+#define DIBUTTON_SKIING_LEFT_LINK               0x1D00C4E4
+#define DIBUTTON_SKIING_RIGHT_LINK              0x1D00C4EC
+#define DIBUTTON_SKIING_FASTER_LINK             0x1D0144E0
+#define DIBUTTON_SKIING_SLOWER_LINK             0x1D0144E8
+#define DIBUTTON_SKIING_DEVICE                  0x1D0044FE
+#define DIBUTTON_SKIING_PAUSE                   0x1D0044FC
 
 #define DIVIRTUAL_SPORTS_SOCCER_OFFENSE         0x1E000000
-#define DIAXIS_SOCCERO_LATERAL                  0x1E008201 
-#define DIAXIS_SOCCERO_MOVE                     0x1E010202 
-#define DIAXIS_SOCCERO_BEND                     0x1E018203 
-#define DIBUTTON_SOCCERO_SHOOT                  0x1E000401 
-#define DIBUTTON_SOCCERO_PASS                   0x1E000402 
-#define DIBUTTON_SOCCERO_FAKE                   0x1E000403 
-#define DIBUTTON_SOCCERO_PLAYER                 0x1E000404 
-#define DIBUTTON_SOCCERO_SPECIAL1               0x1E000405 
-#define DIBUTTON_SOCCERO_SELECT                 0x1E000406 
-#define DIBUTTON_SOCCERO_MENU                   0x1E0004FD 
+#define DIAXIS_SOCCERO_LATERAL                  0x1E008201
+#define DIAXIS_SOCCERO_MOVE                     0x1E010202
+#define DIAXIS_SOCCERO_BEND                     0x1E018203
+#define DIBUTTON_SOCCERO_SHOOT                  0x1E000401
+#define DIBUTTON_SOCCERO_PASS                   0x1E000402
+#define DIBUTTON_SOCCERO_FAKE                   0x1E000403
+#define DIBUTTON_SOCCERO_PLAYER                 0x1E000404
+#define DIBUTTON_SOCCERO_SPECIAL1               0x1E000405
+#define DIBUTTON_SOCCERO_SELECT                 0x1E000406
+#define DIBUTTON_SOCCERO_MENU                   0x1E0004FD
 
-
-#define DIHATSWITCH_SOCCERO_GLANCE              0x1E004601 
-#define DIBUTTON_SOCCERO_SUBSTITUTE             0x1E004407 
-#define DIBUTTON_SOCCERO_SHOOTLOW               0x1E004408 
-#define DIBUTTON_SOCCERO_SHOOTHIGH              0x1E004409 
-#define DIBUTTON_SOCCERO_PASSTHRU               0x1E00440A 
-#define DIBUTTON_SOCCERO_SPRINT                 0x1E00440B 
-#define DIBUTTON_SOCCERO_CONTROL                0x1E00440C 
-#define DIBUTTON_SOCCERO_HEAD                   0x1E00440D 
-#define DIBUTTON_SOCCERO_LEFT_LINK              0x1E00C4E4 
-#define DIBUTTON_SOCCERO_RIGHT_LINK             0x1E00C4EC 
-#define DIBUTTON_SOCCERO_FORWARD_LINK           0x1E0144E0 
-#define DIBUTTON_SOCCERO_BACK_LINK              0x1E0144E8 
-#define DIBUTTON_SOCCERO_DEVICE                 0x1E0044FE 
-#define DIBUTTON_SOCCERO_PAUSE                  0x1E0044FC 
-
-
+#define DIHATSWITCH_SOCCERO_GLANCE              0x1E004601
+#define DIBUTTON_SOCCERO_SUBSTITUTE             0x1E004407
+#define DIBUTTON_SOCCERO_SHOOTLOW               0x1E004408
+#define DIBUTTON_SOCCERO_SHOOTHIGH              0x1E004409
+#define DIBUTTON_SOCCERO_PASSTHRU               0x1E00440A
+#define DIBUTTON_SOCCERO_SPRINT                 0x1E00440B
+#define DIBUTTON_SOCCERO_CONTROL                0x1E00440C
+#define DIBUTTON_SOCCERO_HEAD                   0x1E00440D
+#define DIBUTTON_SOCCERO_LEFT_LINK              0x1E00C4E4
+#define DIBUTTON_SOCCERO_RIGHT_LINK             0x1E00C4EC
+#define DIBUTTON_SOCCERO_FORWARD_LINK           0x1E0144E0
+#define DIBUTTON_SOCCERO_BACK_LINK              0x1E0144E8
+#define DIBUTTON_SOCCERO_DEVICE                 0x1E0044FE
+#define DIBUTTON_SOCCERO_PAUSE                  0x1E0044FC
 
 #define DIVIRTUAL_SPORTS_SOCCER_DEFENSE         0x1F000000
-#define DIAXIS_SOCCERD_LATERAL                  0x1F008201 
-#define DIAXIS_SOCCERD_MOVE                     0x1F010202 
-#define DIBUTTON_SOCCERD_BLOCK                  0x1F000401 
-#define DIBUTTON_SOCCERD_STEAL                  0x1F000402 
-#define DIBUTTON_SOCCERD_FAKE                   0x1F000403 
-#define DIBUTTON_SOCCERD_PLAYER                 0x1F000404 
-#define DIBUTTON_SOCCERD_SPECIAL                0x1F000405 
-#define DIBUTTON_SOCCERD_SELECT                 0x1F000406 
-#define DIBUTTON_SOCCERD_SLIDE                  0x1F000407 
-#define DIBUTTON_SOCCERD_MENU                   0x1F0004FD 
+#define DIAXIS_SOCCERD_LATERAL                  0x1F008201
+#define DIAXIS_SOCCERD_MOVE                     0x1F010202
+#define DIBUTTON_SOCCERD_BLOCK                  0x1F000401
+#define DIBUTTON_SOCCERD_STEAL                  0x1F000402
+#define DIBUTTON_SOCCERD_FAKE                   0x1F000403
+#define DIBUTTON_SOCCERD_PLAYER                 0x1F000404
+#define DIBUTTON_SOCCERD_SPECIAL                0x1F000405
+#define DIBUTTON_SOCCERD_SELECT                 0x1F000406
+#define DIBUTTON_SOCCERD_SLIDE                  0x1F000407
+#define DIBUTTON_SOCCERD_MENU                   0x1F0004FD
 
-
-#define DIHATSWITCH_SOCCERD_GLANCE              0x1F004601 
-#define DIBUTTON_SOCCERD_FOUL                   0x1F004408 
-#define DIBUTTON_SOCCERD_HEAD                   0x1F004409 
-#define DIBUTTON_SOCCERD_CLEAR                  0x1F00440A 
-#define DIBUTTON_SOCCERD_GOALIECHARGE           0x1F00440B 
-#define DIBUTTON_SOCCERD_SUBSTITUTE             0x1F00440C 
-#define DIBUTTON_SOCCERD_LEFT_LINK              0x1F00C4E4 
-#define DIBUTTON_SOCCERD_RIGHT_LINK             0x1F00C4EC 
-#define DIBUTTON_SOCCERD_FORWARD_LINK           0x1F0144E0 
-#define DIBUTTON_SOCCERD_BACK_LINK              0x1F0144E8 
-#define DIBUTTON_SOCCERD_DEVICE                 0x1F0044FE 
-#define DIBUTTON_SOCCERD_PAUSE                  0x1F0044FC 
-
-
+#define DIHATSWITCH_SOCCERD_GLANCE              0x1F004601
+#define DIBUTTON_SOCCERD_FOUL                   0x1F004408
+#define DIBUTTON_SOCCERD_HEAD                   0x1F004409
+#define DIBUTTON_SOCCERD_CLEAR                  0x1F00440A
+#define DIBUTTON_SOCCERD_GOALIECHARGE           0x1F00440B
+#define DIBUTTON_SOCCERD_SUBSTITUTE             0x1F00440C
+#define DIBUTTON_SOCCERD_LEFT_LINK              0x1F00C4E4
+#define DIBUTTON_SOCCERD_RIGHT_LINK             0x1F00C4EC
+#define DIBUTTON_SOCCERD_FORWARD_LINK           0x1F0144E0
+#define DIBUTTON_SOCCERD_BACK_LINK              0x1F0144E8
+#define DIBUTTON_SOCCERD_DEVICE                 0x1F0044FE
+#define DIBUTTON_SOCCERD_PAUSE                  0x1F0044FC
 
 #define DIVIRTUAL_SPORTS_RACQUET                0x20000000
-#define DIAXIS_RACQUET_LATERAL                  0x20008201 
-#define DIAXIS_RACQUET_MOVE                     0x20010202 
-#define DIBUTTON_RACQUET_SWING                  0x20000401 
-#define DIBUTTON_RACQUET_BACKSWING              0x20000402 
-#define DIBUTTON_RACQUET_SMASH                  0x20000403 
-#define DIBUTTON_RACQUET_SPECIAL                0x20000404 
-#define DIBUTTON_RACQUET_SELECT                 0x20000405 
-#define DIBUTTON_RACQUET_MENU                   0x200004FD 
+#define DIAXIS_RACQUET_LATERAL                  0x20008201
+#define DIAXIS_RACQUET_MOVE                     0x20010202
+#define DIBUTTON_RACQUET_SWING                  0x20000401
+#define DIBUTTON_RACQUET_BACKSWING              0x20000402
+#define DIBUTTON_RACQUET_SMASH                  0x20000403
+#define DIBUTTON_RACQUET_SPECIAL                0x20000404
+#define DIBUTTON_RACQUET_SELECT                 0x20000405
+#define DIBUTTON_RACQUET_MENU                   0x200004FD
 
-
-#define DIHATSWITCH_RACQUET_GLANCE              0x20004601 
-#define DIBUTTON_RACQUET_TIMEOUT                0x20004406 
-#define DIBUTTON_RACQUET_SUBSTITUTE             0x20004407 
-#define DIBUTTON_RACQUET_LEFT_LINK              0x2000C4E4 
-#define DIBUTTON_RACQUET_RIGHT_LINK             0x2000C4EC 
-#define DIBUTTON_RACQUET_FORWARD_LINK           0x200144E0 
-#define DIBUTTON_RACQUET_BACK_LINK              0x200144E8 
-#define DIBUTTON_RACQUET_DEVICE                 0x200044FE 
-#define DIBUTTON_RACQUET_PAUSE                  0x200044FC 
-
-
+#define DIHATSWITCH_RACQUET_GLANCE              0x20004601
+#define DIBUTTON_RACQUET_TIMEOUT                0x20004406
+#define DIBUTTON_RACQUET_SUBSTITUTE             0x20004407
+#define DIBUTTON_RACQUET_LEFT_LINK              0x2000C4E4
+#define DIBUTTON_RACQUET_RIGHT_LINK             0x2000C4EC
+#define DIBUTTON_RACQUET_FORWARD_LINK           0x200144E0
+#define DIBUTTON_RACQUET_BACK_LINK              0x200144E8
+#define DIBUTTON_RACQUET_DEVICE                 0x200044FE
+#define DIBUTTON_RACQUET_PAUSE                  0x200044FC
 
 #define DIVIRTUAL_ARCADE_SIDE2SIDE              0x21000000
-#define DIAXIS_ARCADES_LATERAL                  0x21008201 
-#define DIAXIS_ARCADES_MOVE                     0x21010202 
-#define DIBUTTON_ARCADES_THROW                  0x21000401 
-#define DIBUTTON_ARCADES_CARRY                  0x21000402 
-#define DIBUTTON_ARCADES_ATTACK                 0x21000403 
-#define DIBUTTON_ARCADES_SPECIAL                0x21000404 
-#define DIBUTTON_ARCADES_SELECT                 0x21000405 
-#define DIBUTTON_ARCADES_MENU                   0x210004FD 
+#define DIAXIS_ARCADES_LATERAL                  0x21008201
+#define DIAXIS_ARCADES_MOVE                     0x21010202
+#define DIBUTTON_ARCADES_THROW                  0x21000401
+#define DIBUTTON_ARCADES_CARRY                  0x21000402
+#define DIBUTTON_ARCADES_ATTACK                 0x21000403
+#define DIBUTTON_ARCADES_SPECIAL                0x21000404
+#define DIBUTTON_ARCADES_SELECT                 0x21000405
+#define DIBUTTON_ARCADES_MENU                   0x210004FD
 
-
-#define DIHATSWITCH_ARCADES_VIEW                0x21004601 
-#define DIBUTTON_ARCADES_LEFT_LINK              0x2100C4E4 
-#define DIBUTTON_ARCADES_RIGHT_LINK             0x2100C4EC 
-#define DIBUTTON_ARCADES_FORWARD_LINK           0x210144E0 
-#define DIBUTTON_ARCADES_BACK_LINK              0x210144E8 
-#define DIBUTTON_ARCADES_VIEW_UP_LINK           0x2107C4E0 
-#define DIBUTTON_ARCADES_VIEW_DOWN_LINK         0x2107C4E8 
-#define DIBUTTON_ARCADES_VIEW_LEFT_LINK         0x2107C4E4 
-#define DIBUTTON_ARCADES_VIEW_RIGHT_LINK        0x2107C4EC 
-#define DIBUTTON_ARCADES_DEVICE                 0x210044FE 
-#define DIBUTTON_ARCADES_PAUSE                  0x210044FC 
-
-
+#define DIHATSWITCH_ARCADES_VIEW                0x21004601
+#define DIBUTTON_ARCADES_LEFT_LINK              0x2100C4E4
+#define DIBUTTON_ARCADES_RIGHT_LINK             0x2100C4EC
+#define DIBUTTON_ARCADES_FORWARD_LINK           0x210144E0
+#define DIBUTTON_ARCADES_BACK_LINK              0x210144E8
+#define DIBUTTON_ARCADES_VIEW_UP_LINK           0x2107C4E0
+#define DIBUTTON_ARCADES_VIEW_DOWN_LINK         0x2107C4E8
+#define DIBUTTON_ARCADES_VIEW_LEFT_LINK         0x2107C4E4
+#define DIBUTTON_ARCADES_VIEW_RIGHT_LINK        0x2107C4EC
+#define DIBUTTON_ARCADES_DEVICE                 0x210044FE
+#define DIBUTTON_ARCADES_PAUSE                  0x210044FC
 
 #define DIVIRTUAL_ARCADE_PLATFORM               0x22000000
-#define DIAXIS_ARCADEP_LATERAL                  0x22008201 
-#define DIAXIS_ARCADEP_MOVE                     0x22010202 
-#define DIBUTTON_ARCADEP_JUMP                   0x22000401 
-#define DIBUTTON_ARCADEP_FIRE                   0x22000402 
-#define DIBUTTON_ARCADEP_CROUCH                 0x22000403 
-#define DIBUTTON_ARCADEP_SPECIAL                0x22000404 
-#define DIBUTTON_ARCADEP_SELECT                 0x22000405 
-#define DIBUTTON_ARCADEP_MENU                   0x220004FD 
+#define DIAXIS_ARCADEP_LATERAL                  0x22008201
+#define DIAXIS_ARCADEP_MOVE                     0x22010202
+#define DIBUTTON_ARCADEP_JUMP                   0x22000401
+#define DIBUTTON_ARCADEP_FIRE                   0x22000402
+#define DIBUTTON_ARCADEP_CROUCH                 0x22000403
+#define DIBUTTON_ARCADEP_SPECIAL                0x22000404
+#define DIBUTTON_ARCADEP_SELECT                 0x22000405
+#define DIBUTTON_ARCADEP_MENU                   0x220004FD
 
-
-#define DIHATSWITCH_ARCADEP_VIEW                0x22004601 
-#define DIBUTTON_ARCADEP_FIRESECONDARY          0x22004406 
-#define DIBUTTON_ARCADEP_LEFT_LINK              0x2200C4E4 
-#define DIBUTTON_ARCADEP_RIGHT_LINK             0x2200C4EC 
-#define DIBUTTON_ARCADEP_FORWARD_LINK           0x220144E0 
-#define DIBUTTON_ARCADEP_BACK_LINK              0x220144E8 
-#define DIBUTTON_ARCADEP_VIEW_UP_LINK           0x2207C4E0 
-#define DIBUTTON_ARCADEP_VIEW_DOWN_LINK         0x2207C4E8 
-#define DIBUTTON_ARCADEP_VIEW_LEFT_LINK         0x2207C4E4 
-#define DIBUTTON_ARCADEP_VIEW_RIGHT_LINK        0x2207C4EC 
-#define DIBUTTON_ARCADEP_DEVICE                 0x220044FE 
-#define DIBUTTON_ARCADEP_PAUSE                  0x220044FC 
-
-
+#define DIHATSWITCH_ARCADEP_VIEW                0x22004601
+#define DIBUTTON_ARCADEP_FIRESECONDARY          0x22004406
+#define DIBUTTON_ARCADEP_LEFT_LINK              0x2200C4E4
+#define DIBUTTON_ARCADEP_RIGHT_LINK             0x2200C4EC
+#define DIBUTTON_ARCADEP_FORWARD_LINK           0x220144E0
+#define DIBUTTON_ARCADEP_BACK_LINK              0x220144E8
+#define DIBUTTON_ARCADEP_VIEW_UP_LINK           0x2207C4E0
+#define DIBUTTON_ARCADEP_VIEW_DOWN_LINK         0x2207C4E8
+#define DIBUTTON_ARCADEP_VIEW_LEFT_LINK         0x2207C4E4
+#define DIBUTTON_ARCADEP_VIEW_RIGHT_LINK        0x2207C4EC
+#define DIBUTTON_ARCADEP_DEVICE                 0x220044FE
+#define DIBUTTON_ARCADEP_PAUSE                  0x220044FC
 
 #define DIVIRTUAL_CAD_2DCONTROL                 0x23000000
-#define DIAXIS_2DCONTROL_LATERAL                0x23008201 
-#define DIAXIS_2DCONTROL_MOVE                   0x23010202 
-#define DIAXIS_2DCONTROL_INOUT                  0x23018203 
-#define DIBUTTON_2DCONTROL_SELECT               0x23000401 
-#define DIBUTTON_2DCONTROL_SPECIAL1             0x23000402 
-#define DIBUTTON_2DCONTROL_SPECIAL              0x23000403 
-#define DIBUTTON_2DCONTROL_SPECIAL2             0x23000404 
-#define DIBUTTON_2DCONTROL_MENU                 0x230004FD 
+#define DIAXIS_2DCONTROL_LATERAL                0x23008201
+#define DIAXIS_2DCONTROL_MOVE                   0x23010202
+#define DIAXIS_2DCONTROL_INOUT                  0x23018203
+#define DIBUTTON_2DCONTROL_SELECT               0x23000401
+#define DIBUTTON_2DCONTROL_SPECIAL1             0x23000402
+#define DIBUTTON_2DCONTROL_SPECIAL              0x23000403
+#define DIBUTTON_2DCONTROL_SPECIAL2             0x23000404
+#define DIBUTTON_2DCONTROL_MENU                 0x230004FD
 
-
-#define DIHATSWITCH_2DCONTROL_HATSWITCH         0x23004601 
-#define DIAXIS_2DCONTROL_ROTATEZ                0x23024204 
-#define DIBUTTON_2DCONTROL_DISPLAY              0x23004405 
-#define DIBUTTON_2DCONTROL_DEVICE               0x230044FE 
-#define DIBUTTON_2DCONTROL_PAUSE                0x230044FC 
-
-
+#define DIHATSWITCH_2DCONTROL_HATSWITCH         0x23004601
+#define DIAXIS_2DCONTROL_ROTATEZ                0x23024204
+#define DIBUTTON_2DCONTROL_DISPLAY              0x23004405
+#define DIBUTTON_2DCONTROL_DEVICE               0x230044FE
+#define DIBUTTON_2DCONTROL_PAUSE                0x230044FC
 
 #define DIVIRTUAL_CAD_3DCONTROL                 0x24000000
-#define DIAXIS_3DCONTROL_LATERAL                0x24008201 
-#define DIAXIS_3DCONTROL_MOVE                   0x24010202 
-#define DIAXIS_3DCONTROL_INOUT                  0x24018203 
-#define DIBUTTON_3DCONTROL_SELECT               0x24000401 
-#define DIBUTTON_3DCONTROL_SPECIAL1             0x24000402 
-#define DIBUTTON_3DCONTROL_SPECIAL              0x24000403 
-#define DIBUTTON_3DCONTROL_SPECIAL2             0x24000404 
-#define DIBUTTON_3DCONTROL_MENU                 0x240004FD 
+#define DIAXIS_3DCONTROL_LATERAL                0x24008201
+#define DIAXIS_3DCONTROL_MOVE                   0x24010202
+#define DIAXIS_3DCONTROL_INOUT                  0x24018203
+#define DIBUTTON_3DCONTROL_SELECT               0x24000401
+#define DIBUTTON_3DCONTROL_SPECIAL1             0x24000402
+#define DIBUTTON_3DCONTROL_SPECIAL              0x24000403
+#define DIBUTTON_3DCONTROL_SPECIAL2             0x24000404
+#define DIBUTTON_3DCONTROL_MENU                 0x240004FD
 
-
-#define DIHATSWITCH_3DCONTROL_HATSWITCH         0x24004601 
-#define DIAXIS_3DCONTROL_ROTATEX                0x24034204 
-#define DIAXIS_3DCONTROL_ROTATEY                0x2402C205 
-#define DIAXIS_3DCONTROL_ROTATEZ                0x24024206 
-#define DIBUTTON_3DCONTROL_DISPLAY              0x24004405 
-#define DIBUTTON_3DCONTROL_DEVICE               0x240044FE 
-#define DIBUTTON_3DCONTROL_PAUSE                0x240044FC 
-
-
+#define DIHATSWITCH_3DCONTROL_HATSWITCH         0x24004601
+#define DIAXIS_3DCONTROL_ROTATEX                0x24034204
+#define DIAXIS_3DCONTROL_ROTATEY                0x2402C205
+#define DIAXIS_3DCONTROL_ROTATEZ                0x24024206
+#define DIBUTTON_3DCONTROL_DISPLAY              0x24004405
+#define DIBUTTON_3DCONTROL_DEVICE               0x240044FE
+#define DIBUTTON_3DCONTROL_PAUSE                0x240044FC
 
 #define DIVIRTUAL_CAD_FLYBY                     0x25000000
-#define DIAXIS_CADF_LATERAL                     0x25008201 
-#define DIAXIS_CADF_MOVE                        0x25010202 
-#define DIAXIS_CADF_INOUT                       0x25018203 
-#define DIBUTTON_CADF_SELECT                    0x25000401 
-#define DIBUTTON_CADF_SPECIAL1                  0x25000402 
-#define DIBUTTON_CADF_SPECIAL                   0x25000403 
-#define DIBUTTON_CADF_SPECIAL2                  0x25000404 
-#define DIBUTTON_CADF_MENU                      0x250004FD 
+#define DIAXIS_CADF_LATERAL                     0x25008201
+#define DIAXIS_CADF_MOVE                        0x25010202
+#define DIAXIS_CADF_INOUT                       0x25018203
+#define DIBUTTON_CADF_SELECT                    0x25000401
+#define DIBUTTON_CADF_SPECIAL1                  0x25000402
+#define DIBUTTON_CADF_SPECIAL                   0x25000403
+#define DIBUTTON_CADF_SPECIAL2                  0x25000404
+#define DIBUTTON_CADF_MENU                      0x250004FD
 
-
-#define DIHATSWITCH_CADF_HATSWITCH              0x25004601 
-#define DIAXIS_CADF_ROTATEX                     0x25034204 
-#define DIAXIS_CADF_ROTATEY                     0x2502C205 
-#define DIAXIS_CADF_ROTATEZ                     0x25024206 
-#define DIBUTTON_CADF_DISPLAY                   0x25004405 
-#define DIBUTTON_CADF_DEVICE                    0x250044FE 
-#define DIBUTTON_CADF_PAUSE                     0x250044FC 
-
-
+#define DIHATSWITCH_CADF_HATSWITCH              0x25004601
+#define DIAXIS_CADF_ROTATEX                     0x25034204
+#define DIAXIS_CADF_ROTATEY                     0x2502C205
+#define DIAXIS_CADF_ROTATEZ                     0x25024206
+#define DIBUTTON_CADF_DISPLAY                   0x25004405
+#define DIBUTTON_CADF_DEVICE                    0x250044FE
+#define DIBUTTON_CADF_PAUSE                     0x250044FC
 
 #define DIVIRTUAL_CAD_MODEL                     0x26000000
-#define DIAXIS_CADM_LATERAL                     0x26008201 
-#define DIAXIS_CADM_MOVE                        0x26010202 
-#define DIAXIS_CADM_INOUT                       0x26018203 
-#define DIBUTTON_CADM_SELECT                    0x26000401 
-#define DIBUTTON_CADM_SPECIAL1                  0x26000402 
-#define DIBUTTON_CADM_SPECIAL                   0x26000403 
-#define DIBUTTON_CADM_SPECIAL2                  0x26000404 
-#define DIBUTTON_CADM_MENU                      0x260004FD 
+#define DIAXIS_CADM_LATERAL                     0x26008201
+#define DIAXIS_CADM_MOVE                        0x26010202
+#define DIAXIS_CADM_INOUT                       0x26018203
+#define DIBUTTON_CADM_SELECT                    0x26000401
+#define DIBUTTON_CADM_SPECIAL1                  0x26000402
+#define DIBUTTON_CADM_SPECIAL                   0x26000403
+#define DIBUTTON_CADM_SPECIAL2                  0x26000404
+#define DIBUTTON_CADM_MENU                      0x260004FD
 
-
-#define DIHATSWITCH_CADM_HATSWITCH              0x26004601 
-#define DIAXIS_CADM_ROTATEX                     0x26034204 
-#define DIAXIS_CADM_ROTATEY                     0x2602C205 
-#define DIAXIS_CADM_ROTATEZ                     0x26024206 
-#define DIBUTTON_CADM_DISPLAY                   0x26004405 
-#define DIBUTTON_CADM_DEVICE                    0x260044FE 
-#define DIBUTTON_CADM_PAUSE                     0x260044FC 
-
-
+#define DIHATSWITCH_CADM_HATSWITCH              0x26004601
+#define DIAXIS_CADM_ROTATEX                     0x26034204
+#define DIAXIS_CADM_ROTATEY                     0x2602C205
+#define DIAXIS_CADM_ROTATEZ                     0x26024206
+#define DIBUTTON_CADM_DISPLAY                   0x26004405
+#define DIBUTTON_CADM_DEVICE                    0x260044FE
+#define DIBUTTON_CADM_PAUSE                     0x260044FC
 
 #define DIVIRTUAL_REMOTE_CONTROL                0x27000000
-#define DIAXIS_REMOTE_SLIDER                    0x27050201 
-#define DIBUTTON_REMOTE_MUTE                    0x27000401 
-#define DIBUTTON_REMOTE_SELECT                  0x27000402 
-#define DIBUTTON_REMOTE_PLAY                    0x27002403 
-#define DIBUTTON_REMOTE_CUE                     0x27002404 
-#define DIBUTTON_REMOTE_REVIEW                  0x27002405 
-#define DIBUTTON_REMOTE_CHANGE                  0x27002406 
-#define DIBUTTON_REMOTE_RECORD                  0x27002407 
-#define DIBUTTON_REMOTE_MENU                    0x270004FD 
+#define DIAXIS_REMOTE_SLIDER                    0x27050201
+#define DIBUTTON_REMOTE_MUTE                    0x27000401
+#define DIBUTTON_REMOTE_SELECT                  0x27000402
+#define DIBUTTON_REMOTE_PLAY                    0x27002403
+#define DIBUTTON_REMOTE_CUE                     0x27002404
+#define DIBUTTON_REMOTE_REVIEW                  0x27002405
+#define DIBUTTON_REMOTE_CHANGE                  0x27002406
+#define DIBUTTON_REMOTE_RECORD                  0x27002407
+#define DIBUTTON_REMOTE_MENU                    0x270004FD
 
-
-#define DIAXIS_REMOTE_SLIDER2                   0x27054202 
-#define DIBUTTON_REMOTE_TV                      0x27005C08 
-#define DIBUTTON_REMOTE_CABLE                   0x27005C09 
-#define DIBUTTON_REMOTE_CD                      0x27005C0A 
-#define DIBUTTON_REMOTE_VCR                     0x27005C0B 
-#define DIBUTTON_REMOTE_TUNER                   0x27005C0C 
-#define DIBUTTON_REMOTE_DVD                     0x27005C0D 
-#define DIBUTTON_REMOTE_ADJUST                  0x27005C0E 
-#define DIBUTTON_REMOTE_DIGIT0                  0x2700540F 
-#define DIBUTTON_REMOTE_DIGIT1                  0x27005410 
-#define DIBUTTON_REMOTE_DIGIT2                  0x27005411 
-#define DIBUTTON_REMOTE_DIGIT3                  0x27005412 
-#define DIBUTTON_REMOTE_DIGIT4                  0x27005413 
-#define DIBUTTON_REMOTE_DIGIT5                  0x27005414 
-#define DIBUTTON_REMOTE_DIGIT6                  0x27005415 
-#define DIBUTTON_REMOTE_DIGIT7                  0x27005416 
-#define DIBUTTON_REMOTE_DIGIT8                  0x27005417 
-#define DIBUTTON_REMOTE_DIGIT9                  0x27005418 
-#define DIBUTTON_REMOTE_DEVICE                  0x270044FE 
-#define DIBUTTON_REMOTE_PAUSE                   0x270044FC 
-
-
+#define DIAXIS_REMOTE_SLIDER2                   0x27054202
+#define DIBUTTON_REMOTE_TV                      0x27005C08
+#define DIBUTTON_REMOTE_CABLE                   0x27005C09
+#define DIBUTTON_REMOTE_CD                      0x27005C0A
+#define DIBUTTON_REMOTE_VCR                     0x27005C0B
+#define DIBUTTON_REMOTE_TUNER                   0x27005C0C
+#define DIBUTTON_REMOTE_DVD                     0x27005C0D
+#define DIBUTTON_REMOTE_ADJUST                  0x27005C0E
+#define DIBUTTON_REMOTE_DIGIT0                  0x2700540F
+#define DIBUTTON_REMOTE_DIGIT1                  0x27005410
+#define DIBUTTON_REMOTE_DIGIT2                  0x27005411
+#define DIBUTTON_REMOTE_DIGIT3                  0x27005412
+#define DIBUTTON_REMOTE_DIGIT4                  0x27005413
+#define DIBUTTON_REMOTE_DIGIT5                  0x27005414
+#define DIBUTTON_REMOTE_DIGIT6                  0x27005415
+#define DIBUTTON_REMOTE_DIGIT7                  0x27005416
+#define DIBUTTON_REMOTE_DIGIT8                  0x27005417
+#define DIBUTTON_REMOTE_DIGIT9                  0x27005418
+#define DIBUTTON_REMOTE_DEVICE                  0x270044FE
+#define DIBUTTON_REMOTE_PAUSE                   0x270044FC
 
 #define DIVIRTUAL_BROWSER_CONTROL               0x28000000
-#define DIAXIS_BROWSER_LATERAL                  0x28008201 
-#define DIAXIS_BROWSER_MOVE                     0x28010202 
-#define DIBUTTON_BROWSER_SELECT                 0x28000401 
-#define DIAXIS_BROWSER_VIEW                     0x28018203 
-#define DIBUTTON_BROWSER_REFRESH                0x28000402 
-#define DIBUTTON_BROWSER_MENU                   0x280004FD 
+#define DIAXIS_BROWSER_LATERAL                  0x28008201
+#define DIAXIS_BROWSER_MOVE                     0x28010202
+#define DIBUTTON_BROWSER_SELECT                 0x28000401
+#define DIAXIS_BROWSER_VIEW                     0x28018203
+#define DIBUTTON_BROWSER_REFRESH                0x28000402
+#define DIBUTTON_BROWSER_MENU                   0x280004FD
 
-
-#define DIBUTTON_BROWSER_SEARCH                 0x28004403 
-#define DIBUTTON_BROWSER_STOP                   0x28004404 
-#define DIBUTTON_BROWSER_HOME                   0x28004405 
-#define DIBUTTON_BROWSER_FAVORITES              0x28004406 
-#define DIBUTTON_BROWSER_NEXT                   0x28004407 
-#define DIBUTTON_BROWSER_PREVIOUS               0x28004408 
-#define DIBUTTON_BROWSER_HISTORY                0x28004409 
-#define DIBUTTON_BROWSER_PRINT                  0x2800440A 
-#define DIBUTTON_BROWSER_DEVICE                 0x280044FE 
-#define DIBUTTON_BROWSER_PAUSE                  0x280044FC 
-
-
+#define DIBUTTON_BROWSER_SEARCH                 0x28004403
+#define DIBUTTON_BROWSER_STOP                   0x28004404
+#define DIBUTTON_BROWSER_HOME                   0x28004405
+#define DIBUTTON_BROWSER_FAVORITES              0x28004406
+#define DIBUTTON_BROWSER_NEXT                   0x28004407
+#define DIBUTTON_BROWSER_PREVIOUS               0x28004408
+#define DIBUTTON_BROWSER_HISTORY                0x28004409
+#define DIBUTTON_BROWSER_PRINT                  0x2800440A
+#define DIBUTTON_BROWSER_DEVICE                 0x280044FE
+#define DIBUTTON_BROWSER_PAUSE                  0x280044FC
 
 #define DIVIRTUAL_DRIVING_MECHA                 0x29000000
-#define DIAXIS_MECHA_STEER                      0x29008201 
-#define DIAXIS_MECHA_TORSO                      0x29010202 
-#define DIAXIS_MECHA_ROTATE                     0x29020203 
-#define DIAXIS_MECHA_THROTTLE                   0x29038204 
-#define DIBUTTON_MECHA_FIRE                     0x29000401 
-#define DIBUTTON_MECHA_WEAPONS                  0x29000402 
-#define DIBUTTON_MECHA_TARGET                   0x29000403 
-#define DIBUTTON_MECHA_REVERSE                  0x29000404 
-#define DIBUTTON_MECHA_ZOOM                     0x29000405 
-#define DIBUTTON_MECHA_JUMP                     0x29000406 
-#define DIBUTTON_MECHA_MENU                     0x290004FD 
+#define DIAXIS_MECHA_STEER                      0x29008201
+#define DIAXIS_MECHA_TORSO                      0x29010202
+#define DIAXIS_MECHA_ROTATE                     0x29020203
+#define DIAXIS_MECHA_THROTTLE                   0x29038204
+#define DIBUTTON_MECHA_FIRE                     0x29000401
+#define DIBUTTON_MECHA_WEAPONS                  0x29000402
+#define DIBUTTON_MECHA_TARGET                   0x29000403
+#define DIBUTTON_MECHA_REVERSE                  0x29000404
+#define DIBUTTON_MECHA_ZOOM                     0x29000405
+#define DIBUTTON_MECHA_JUMP                     0x29000406
+#define DIBUTTON_MECHA_MENU                     0x290004FD
 
+#define DIBUTTON_MECHA_CENTER                   0x29004407
+#define DIHATSWITCH_MECHA_GLANCE                0x29004601
+#define DIBUTTON_MECHA_VIEW                     0x29004408
+#define DIBUTTON_MECHA_FIRESECONDARY            0x29004409
+#define DIBUTTON_MECHA_LEFT_LINK                0x2900C4E4
+#define DIBUTTON_MECHA_RIGHT_LINK               0x2900C4EC
+#define DIBUTTON_MECHA_FORWARD_LINK             0x290144E0
+#define DIBUTTON_MECHA_BACK_LINK                0x290144E8
+#define DIBUTTON_MECHA_ROTATE_LEFT_LINK         0x290244E4
+#define DIBUTTON_MECHA_ROTATE_RIGHT_LINK        0x290244EC
+#define DIBUTTON_MECHA_FASTER_LINK              0x2903C4E0
+#define DIBUTTON_MECHA_SLOWER_LINK              0x2903C4E8
+#define DIBUTTON_MECHA_DEVICE                   0x290044FE
+#define DIBUTTON_MECHA_PAUSE                    0x290044FC
 
-#define DIBUTTON_MECHA_CENTER                   0x29004407 
-#define DIHATSWITCH_MECHA_GLANCE                0x29004601 
-#define DIBUTTON_MECHA_VIEW                     0x29004408 
-#define DIBUTTON_MECHA_FIRESECONDARY            0x29004409 
-#define DIBUTTON_MECHA_LEFT_LINK                0x2900C4E4 
-#define DIBUTTON_MECHA_RIGHT_LINK               0x2900C4EC 
-#define DIBUTTON_MECHA_FORWARD_LINK             0x290144E0 
-#define DIBUTTON_MECHA_BACK_LINK                0x290144E8 
-#define DIBUTTON_MECHA_ROTATE_LEFT_LINK         0x290244E4 
-#define DIBUTTON_MECHA_ROTATE_RIGHT_LINK        0x290244EC 
-#define DIBUTTON_MECHA_FASTER_LINK              0x2903C4E0 
-#define DIBUTTON_MECHA_SLOWER_LINK              0x2903C4E8 
-#define DIBUTTON_MECHA_DEVICE                   0x290044FE 
-#define DIBUTTON_MECHA_PAUSE                    0x290044FC 
+#define DIAXIS_ANY_X_1                          0xFF00C201
+#define DIAXIS_ANY_X_2                          0xFF00C202
+#define DIAXIS_ANY_Y_1                          0xFF014201
+#define DIAXIS_ANY_Y_2                          0xFF014202
+#define DIAXIS_ANY_Z_1                          0xFF01C201
+#define DIAXIS_ANY_Z_2                          0xFF01C202
+#define DIAXIS_ANY_R_1                          0xFF024201
+#define DIAXIS_ANY_R_2                          0xFF024202
+#define DIAXIS_ANY_U_1                          0xFF02C201
+#define DIAXIS_ANY_U_2                          0xFF02C202
+#define DIAXIS_ANY_V_1                          0xFF034201
+#define DIAXIS_ANY_V_2                          0xFF034202
+#define DIAXIS_ANY_A_1                          0xFF03C201
+#define DIAXIS_ANY_A_2                          0xFF03C202
+#define DIAXIS_ANY_B_1                          0xFF044201
+#define DIAXIS_ANY_B_2                          0xFF044202
+#define DIAXIS_ANY_C_1                          0xFF04C201
+#define DIAXIS_ANY_C_2                          0xFF04C202
+#define DIAXIS_ANY_S_1                          0xFF054201
+#define DIAXIS_ANY_S_2                          0xFF054202
 
+#define DIAXIS_ANY_1                            0xFF004201
+#define DIAXIS_ANY_2                            0xFF004202
+#define DIAXIS_ANY_3                            0xFF004203
+#define DIAXIS_ANY_4                            0xFF004204
 
-
-
-
-
-
-
-#define DIAXIS_ANY_X_1                          0xFF00C201 
-#define DIAXIS_ANY_X_2                          0xFF00C202 
-#define DIAXIS_ANY_Y_1                          0xFF014201 
-#define DIAXIS_ANY_Y_2                          0xFF014202 
-#define DIAXIS_ANY_Z_1                          0xFF01C201 
-#define DIAXIS_ANY_Z_2                          0xFF01C202 
-#define DIAXIS_ANY_R_1                          0xFF024201 
-#define DIAXIS_ANY_R_2                          0xFF024202 
-#define DIAXIS_ANY_U_1                          0xFF02C201 
-#define DIAXIS_ANY_U_2                          0xFF02C202 
-#define DIAXIS_ANY_V_1                          0xFF034201 
-#define DIAXIS_ANY_V_2                          0xFF034202 
-#define DIAXIS_ANY_A_1                          0xFF03C201 
-#define DIAXIS_ANY_A_2                          0xFF03C202 
-#define DIAXIS_ANY_B_1                          0xFF044201 
-#define DIAXIS_ANY_B_2                          0xFF044202 
-#define DIAXIS_ANY_C_1                          0xFF04C201 
-#define DIAXIS_ANY_C_2                          0xFF04C202 
-#define DIAXIS_ANY_S_1                          0xFF054201 
-#define DIAXIS_ANY_S_2                          0xFF054202 
-
-#define DIAXIS_ANY_1                            0xFF004201 
-#define DIAXIS_ANY_2                            0xFF004202 
-#define DIAXIS_ANY_3                            0xFF004203 
-#define DIAXIS_ANY_4                            0xFF004204 
-
-#define DIPOV_ANY_1                             0xFF004601 
-#define DIPOV_ANY_2                             0xFF004602 
-#define DIPOV_ANY_3                             0xFF004603 
-#define DIPOV_ANY_4                             0xFF004604 
+#define DIPOV_ANY_1                             0xFF004601
+#define DIPOV_ANY_2                             0xFF004602
+#define DIPOV_ANY_3                             0xFF004603
+#define DIPOV_ANY_4                             0xFF004604
 
 #define DIBUTTON_ANY(instance)                  ( 0xFF004400 | instance )
-
 
 #ifdef __cplusplus
 };
 #endif
 
-#endif  
-
-
-
-
-
-
-
+#endif
 
 #ifdef _INC_MMSYSTEM
 #ifndef MMNOJOY
@@ -4306,76 +3827,28 @@ extern HRESULT WINAPI DirectInputCreateEx(HINSTANCE hinst, DWORD dwVersion, REFI
 extern "C" {
 #endif
 
-
-
-
-
-
 #define JOY_PASSDRIVERDATA          0x10000000l
-
-
-
-
-
 
 WINMMAPI MMRESULT WINAPI joyConfigChanged( DWORD dwFlags );
 
 #ifndef DIJ_RINGZERO
 
-
-
-
-
-
-
-
-
-
 void WINAPI ShowJoyCPL( HWND hWnd );
 typedef void (WINAPI* LPFNSHOWJOYCPL)( HWND hWnd );
-#endif 
-
-
-
-
+#endif
 
 #define JOY_HWS_ISHEADTRACKER       0x02000000l
 
-
-
-
-
 #define JOY_HWS_ISGAMEPORTDRIVER    0x04000000l
-
-
-
-
 
 #define JOY_HWS_ISANALOGPORTDRIVER  0x08000000l
 
-
-
-
-
-
 #define JOY_HWS_AUTOLOAD            0x10000000l
-
-
-
-
 
 #define JOY_HWS_NODEVNODE           0x20000000l
 
-
-
-
-
 #define JOY_HWS_ISGAMEPORTBUS       0x80000000l
 #define JOY_HWS_GAMEPORTBUSBUSY     0x00000001l
-
-
-
-
 
 #define JOY_US_VOLATILE             0x00000008L
 
@@ -4383,17 +3856,10 @@ typedef void (WINAPI* LPFNSHOWJOYCPL)( HWND hWnd );
 };
 #endif
 
-#endif  
+#endif
 
-#endif  
-#endif  
-
-
-
-
-
-
-
+#endif
+#endif
 
 #ifndef DIJ_RINGZERO
 
@@ -4403,15 +3869,11 @@ typedef void (WINAPI* LPFNSHOWJOYCPL)( HWND hWnd );
 #ifndef __VJOYDXD_INCLUDED__
 #define __VJOYDXD_INCLUDED__
 
-
-
-
 #define JOY_OEMPOLL_PASSDRIVERDATA  7
 
-#endif  
+#endif
 
-#endif  
-#endif  
+#endif
+#endif
 
-#endif 
-
+#endif

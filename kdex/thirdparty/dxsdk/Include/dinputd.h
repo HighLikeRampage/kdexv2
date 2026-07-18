@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 #ifndef __DINPUTD_INCLUDED__
 #define __DINPUTD_INCLUDED__
 
@@ -18,12 +10,6 @@
 extern "C" {
 #endif
 
-
-
-
-
-
-
 #ifndef DIJ_RINGZERO
 
 DEFINE_GUID(IID_IDirectInputEffectDriver,   0x02538130,0x898F,0x11D0,0x9A,0xD0,0x00,0xA0,0xC9,0xA0,0x6E,0x35);
@@ -32,14 +18,7 @@ DEFINE_GUID(IID_IDirectInputPIDDriver,      0xEEC6993A,0xB3FD,0x11D2,0xA9,0x16,0
 
 DEFINE_GUID(IID_IDirectInputJoyConfig8,     0xeb0d7dfa,0x1990,0x4f27,0xb4,0xd6,0xed,0xf2,0xee,0xc4,0xa4,0x4c);
 
-#endif 
-
-
-
-
-
-
-
+#endif
 
 typedef struct DIOBJECTATTRIBUTES {
     DWORD   dwFlags;
@@ -112,12 +91,11 @@ typedef struct DIHIDFFINITINFO {
 
 DECLARE_INTERFACE_(IDirectInputEffectDriver, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(DeviceID)(THIS_ DWORD,DWORD,DWORD,DWORD,LPVOID) PURE;
     STDMETHOD(GetVersions)(THIS_ LPDIDRIVERVERSIONS) PURE;
     STDMETHOD(Escape)(THIS_ DWORD,DWORD,LPDIEFFESCAPE) PURE;
@@ -165,24 +143,9 @@ typedef struct IDirectInputEffectDriver *LPDIRECTINPUTEFFECTDRIVER;
 #define IDirectInputEffectDriver_GetEffectStatus(p,a,b,c) (p)->GetEffectStatus(a,b,c)
 #endif
 
-
-#endif 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif
 
 #ifndef JOY_HW_NONE
-
 
 #define JOY_HW_NONE                     0
 #define JOY_HW_CUSTOM                   1
@@ -199,15 +162,12 @@ typedef struct IDirectInputEffectDriver *LPDIRECTINPUTEFFECTDRIVER;
 #define JOY_HW_TWO_2A_2B_WITH_Y         12
 #define JOY_HW_LASTENTRY                13
 
-
-
-#define JOY_ISCAL_XY            0x00000001l     
-#define JOY_ISCAL_Z             0x00000002l     
-#define JOY_ISCAL_R             0x00000004l     
-#define JOY_ISCAL_U             0x00000008l     
-#define JOY_ISCAL_V             0x00000010l     
-#define JOY_ISCAL_POV           0x00000020l     
-
+#define JOY_ISCAL_XY            0x00000001l
+#define JOY_ISCAL_Z             0x00000002l
+#define JOY_ISCAL_R             0x00000004l
+#define JOY_ISCAL_U             0x00000008l
+#define JOY_ISCAL_V             0x00000010l
+#define JOY_ISCAL_POV           0x00000020l
 
 #define JOY_POV_NUMDIRS          4
 #define JOY_POVVAL_FORWARD       0
@@ -215,71 +175,64 @@ typedef struct IDirectInputEffectDriver *LPDIRECTINPUTEFFECTDRIVER;
 #define JOY_POVVAL_LEFT          2
 #define JOY_POVVAL_RIGHT         3
 
+#define JOY_HWS_HASZ            0x00000001l
+#define JOY_HWS_HASPOV          0x00000002l
+#define JOY_HWS_POVISBUTTONCOMBOS 0x00000004l
+#define JOY_HWS_POVISPOLL       0x00000008l
+#define JOY_HWS_ISYOKE          0x00000010l
+#define JOY_HWS_ISGAMEPAD       0x00000020l
+#define JOY_HWS_ISCARCTRL       0x00000040l
 
-#define JOY_HWS_HASZ            0x00000001l     
-#define JOY_HWS_HASPOV          0x00000002l     
-#define JOY_HWS_POVISBUTTONCOMBOS 0x00000004l   
-#define JOY_HWS_POVISPOLL       0x00000008l     
-#define JOY_HWS_ISYOKE          0x00000010l     
-#define JOY_HWS_ISGAMEPAD       0x00000020l     
-#define JOY_HWS_ISCARCTRL       0x00000040l     
+#define JOY_HWS_XISJ1Y          0x00000080l
+#define JOY_HWS_XISJ2X          0x00000100l
+#define JOY_HWS_XISJ2Y          0x00000200l
 
-#define JOY_HWS_XISJ1Y          0x00000080l     
-#define JOY_HWS_XISJ2X          0x00000100l     
-#define JOY_HWS_XISJ2Y          0x00000200l     
+#define JOY_HWS_YISJ1X          0x00000400l
+#define JOY_HWS_YISJ2X          0x00000800l
+#define JOY_HWS_YISJ2Y          0x00001000l
 
-#define JOY_HWS_YISJ1X          0x00000400l     
-#define JOY_HWS_YISJ2X          0x00000800l     
-#define JOY_HWS_YISJ2Y          0x00001000l     
+#define JOY_HWS_ZISJ1X          0x00002000l
+#define JOY_HWS_ZISJ1Y          0x00004000l
+#define JOY_HWS_ZISJ2X          0x00008000l
 
-#define JOY_HWS_ZISJ1X          0x00002000l     
-#define JOY_HWS_ZISJ1Y          0x00004000l     
-#define JOY_HWS_ZISJ2X          0x00008000l     
+#define JOY_HWS_POVISJ1X        0x00010000l
+#define JOY_HWS_POVISJ1Y        0x00020000l
+#define JOY_HWS_POVISJ2X        0x00040000l
 
-#define JOY_HWS_POVISJ1X        0x00010000l     
-#define JOY_HWS_POVISJ1Y        0x00020000l     
-#define JOY_HWS_POVISJ2X        0x00040000l     
+#define JOY_HWS_HASR            0x00080000l
+#define JOY_HWS_RISJ1X          0x00100000l
+#define JOY_HWS_RISJ1Y          0x00200000l
+#define JOY_HWS_RISJ2Y          0x00400000l
 
-#define JOY_HWS_HASR            0x00080000l     
-#define JOY_HWS_RISJ1X          0x00100000l     
-#define JOY_HWS_RISJ1Y          0x00200000l     
-#define JOY_HWS_RISJ2Y          0x00400000l     
+#define JOY_HWS_HASU            0x00800000l
+#define JOY_HWS_HASV            0x01000000l
 
-#define JOY_HWS_HASU            0x00800000l     
-#define JOY_HWS_HASV            0x01000000l     
+#define JOY_US_HASRUDDER        0x00000001l
+#define JOY_US_PRESENT          0x00000002l
+#define JOY_US_ISOEM            0x00000004l
 
+#define JOY_US_RESERVED         0x80000000l
 
-#define JOY_US_HASRUDDER        0x00000001l     
-#define JOY_US_PRESENT          0x00000002l     
-#define JOY_US_ISOEM            0x00000004l     
+#define JOYTYPE_ZEROGAMEENUMOEMDATA     0x00000001l
+#define JOYTYPE_NOAUTODETECTGAMEPORT    0x00000002l
+#define JOYTYPE_NOHIDDIRECT             0x00000004l
+#define JOYTYPE_ANALOGCOMPAT            0x00000008l
+#define JOYTYPE_DEFAULTPROPSHEET        0x80000000l
 
-
-#define JOY_US_RESERVED         0x80000000l     
-
-
-
-#define JOYTYPE_ZEROGAMEENUMOEMDATA     0x00000001l 
-#define JOYTYPE_NOAUTODETECTGAMEPORT    0x00000002l 
-#define JOYTYPE_NOHIDDIRECT             0x00000004l 
-#define JOYTYPE_ANALOGCOMPAT            0x00000008l 
-#define JOYTYPE_DEFAULTPROPSHEET        0x80000000l 
-
-
-#define JOYTYPE_DEVICEHIDE              0x00010000l 
-#define JOYTYPE_MOUSEHIDE               0x00020000l 
-#define JOYTYPE_KEYBHIDE                0x00040000l 
-#define JOYTYPE_GAMEHIDE                0x00080000l 
-#define JOYTYPE_HIDEACTIVE              0x00100000l 
-#define JOYTYPE_INFOMASK                0x00E00000l 
-#define JOYTYPE_INFODEFAULT             0x00000000l 
-#define JOYTYPE_INFOYYPEDALS            0x00200000l 
-#define JOYTYPE_INFOZYPEDALS            0x00400000l 
-#define JOYTYPE_INFOYRPEDALS            0x00600000l 
-#define JOYTYPE_INFOZRPEDALS            0x00800000l 
-#define JOYTYPE_INFOZISSLIDER           0x00200000l 
-#define JOYTYPE_INFOZISZ                0x00400000l 
-#define JOYTYPE_ENABLEINPUTREPORT       0x01000000l 
-
+#define JOYTYPE_DEVICEHIDE              0x00010000l
+#define JOYTYPE_MOUSEHIDE               0x00020000l
+#define JOYTYPE_KEYBHIDE                0x00040000l
+#define JOYTYPE_GAMEHIDE                0x00080000l
+#define JOYTYPE_HIDEACTIVE              0x00100000l
+#define JOYTYPE_INFOMASK                0x00E00000l
+#define JOYTYPE_INFODEFAULT             0x00000000l
+#define JOYTYPE_INFOYYPEDALS            0x00200000l
+#define JOYTYPE_INFOZYPEDALS            0x00400000l
+#define JOYTYPE_INFOYRPEDALS            0x00600000l
+#define JOYTYPE_INFOZRPEDALS            0x00800000l
+#define JOYTYPE_INFOZISSLIDER           0x00200000l
+#define JOYTYPE_INFOZISZ                0x00400000l
+#define JOYTYPE_ENABLEINPUTREPORT       0x01000000l
 
 typedef struct joypos_tag {
     DWORD       dwX;
@@ -290,19 +243,11 @@ typedef struct joypos_tag {
     DWORD       dwV;
 } JOYPOS, FAR *LPJOYPOS;
 
-
 typedef struct joyrange_tag {
     JOYPOS      jpMin;
     JOYPOS      jpMax;
     JOYPOS      jpCenter;
 } JOYRANGE,FAR *LPJOYRANGE;
-
-
-
-
-
-
-
 
 typedef struct joyreguservalues_tag {
     DWORD       dwTimeOut;
@@ -315,25 +260,11 @@ typedef struct joyreghwsettings_tag {
     DWORD       dwNumButtons;
 } JOYREGHWSETTINGS, FAR *LPJOYHWSETTINGS;
 
-
-
-
-
-
-
 typedef struct joyreghwvalues_tag {
     JOYRANGE    jrvHardware;
     DWORD       dwPOVValues[JOY_POV_NUMDIRS];
     DWORD       dwCalFlags;
 } JOYREGHWVALUES, FAR *LPJOYREGHWVALUES;
-
-
-
-
-
-
-
-
 
 typedef struct joyreghwconfig_tag {
     JOYREGHWSETTINGS    hws;
@@ -342,7 +273,6 @@ typedef struct joyreghwconfig_tag {
     DWORD               dwType;
     DWORD               dwReserved;
 } JOYREGHWCONFIG, FAR *LPJOYREGHWCONFIG;
-
 
 typedef struct joycalibrate_tag {
     UINT    wXbase;
@@ -374,10 +304,6 @@ typedef BOOL (FAR PASCAL * LPDIJOYTYPECALLBACK)(LPCWSTR, LPVOID);
 #define DITC_FLAGS2                 0x00000040
 #define DITC_MAPFILE                0x00000080
 
-
-
-
-
 typedef struct DIJOYTYPEINFO_DX5 {
     DWORD dwSize;
     JOYREGHWSETTINGS hws;
@@ -386,7 +312,6 @@ typedef struct DIJOYTYPEINFO_DX5 {
     WCHAR wszCallout[MAX_JOYSTICKOEMVXDNAME];
 } DIJOYTYPEINFO_DX5, *LPDIJOYTYPEINFO_DX5;
 typedef const DIJOYTYPEINFO_DX5 *LPCDIJOYTYPEINFO_DX5;
-
 
 typedef struct DIJOYTYPEINFO_DX6 {
     DWORD dwSize;
@@ -411,8 +336,8 @@ typedef struct DIJOYTYPEINFO {
 #if(DIRECTINPUT_VERSION >= 0x0800)
     DWORD dwFlags2;
     WCHAR wszMapFile[MAX_JOYSTRING];
-#endif 
-#endif 
+#endif
+#endif
 } DIJOYTYPEINFO, *LPDIJOYTYPEINFO;
 typedef const DIJOYTYPEINFO *LPCDIJOYTYPEINFO;
 #define DIJC_GUIDINSTANCE           0x00000001
@@ -420,8 +345,6 @@ typedef const DIJOYTYPEINFO *LPCDIJOYTYPEINFO;
 #define DIJC_GAIN                   0x00000004
 #define DIJC_CALLOUT                0x00000008
 #define DIJC_WDMGAMEPORT            0x00000010
-
-
 
 typedef struct DIJOYCONFIG_DX5 {
     DWORD dwSize;
@@ -442,10 +365,9 @@ typedef struct DIJOYCONFIG {
     WCHAR wszCallout[MAX_JOYSTRING];
 #if(DIRECTINPUT_VERSION >= 0x05b2)
     GUID  guidGameport;
-#endif 
+#endif
     } DIJOYCONFIG, *LPDIJOYCONFIG;
 typedef const DIJOYCONFIG *LPCDIJOYCONFIG;
-
 
 #define DIJU_USERVALUES             0x00000001
 #define DIJU_GLOBALDRIVER           0x00000002
@@ -469,12 +391,11 @@ DEFINE_GUID(GUID_HIDClass,      0x745A17A0,0x74D3,0x11D0,0xB6,0xFE,0x00,0xA0,0xC
 
 DECLARE_INTERFACE_(IDirectInputJoyConfig, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(Acquire)(THIS) PURE;
     STDMETHOD(Unacquire)(THIS) PURE;
     STDMETHOD(SetCooperativeLevel)(THIS_ HWND,DWORD) PURE;
@@ -537,7 +458,7 @@ typedef struct IDirectInputJoyConfig *LPDIRECTINPUTJOYCONFIG;
 #define IDirectInputJoyConfig_OpenConfigKey(p,a,b,c) (p)->OpenConfigKey(a,b,c)
 #endif
 
-#endif 
+#endif
 
 #if(DIRECTINPUT_VERSION >= 0x0800)
 
@@ -548,12 +469,11 @@ typedef struct IDirectInputJoyConfig *LPDIRECTINPUTJOYCONFIG;
 
 DECLARE_INTERFACE_(IDirectInputJoyConfig8, IUnknown)
 {
-    
+
     STDMETHOD(QueryInterface)(THIS_ REFIID riid, LPVOID * ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)(THIS) PURE;
     STDMETHOD_(ULONG,Release)(THIS) PURE;
 
-    
     STDMETHOD(Acquire)(THIS) PURE;
     STDMETHOD(Unacquire)(THIS) PURE;
     STDMETHOD(SetCooperativeLevel)(THIS_ HWND,DWORD) PURE;
@@ -616,14 +536,7 @@ typedef struct IDirectInputJoyConfig8 *LPDIRECTINPUTJOYCONFIG8;
 #define IDirectInputJoyConfig8_OpenAppStatusKey(p,a) (p)->OpenAppStatusKey(a)
 #endif
 
-#endif 
-
-
-
-
-
-
-
+#endif
 
 #define DIRECTINPUT_NOTIFICATION_MSGSTRINGA  "DIRECTINPUT_NOTIFICATION_MSGSTRING"
 #define DIRECTINPUT_NOTIFICATION_MSGSTRINGW  L"DIRECTINPUT_NOTIFICATION_MSGSTRING"
@@ -638,7 +551,7 @@ typedef struct IDirectInputJoyConfig8 *LPDIRECTINPUTJOYCONFIG8;
 #define DIMSGWP_DX8APPSTART         0x00000002
 #define DIMSGWP_DX8MAPPERAPPSTART   0x00000003
 
-#endif 
+#endif
 
 #define DIAPPIDFLAG_NOTIME         0x00000001
 #define DIAPPIDFLAG_NOSIZE         0x00000002
@@ -681,70 +594,17 @@ typedef struct IDirectInputJoyConfig8 *LPDIRECTINPUTJOYCONFIG8;
 #define DIRECTINPUT_REGSTR_VAL_LASTSTART    DIRECTINPUT_REGSTR_VAL_LASTSTARTA
 #endif
 
-
-
-
-
-
-
-
 #define DIERR_NOMOREITEMS               \
     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_WIN32, ERROR_NO_MORE_ITEMS)
-
-
-
-
 
 #define DIERR_DRIVERFIRST               0x80040300L
 #define DIERR_DRIVERLAST                0x800403FFL
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #define DIERR_INVALIDCLASSINSTALLER     0x80040400L
-
-
-
 
 #define DIERR_CANCELLED                 0x80040401L
 
-
-
-
-
 #define DIERR_BADINF                    0x80040402L
-
-
-
-
-
-
-
-
-
 
 #define DIDIFT_DELETE                   0x01000000
 
@@ -752,4 +612,4 @@ typedef struct IDirectInputJoyConfig8 *LPDIRECTINPUTJOYCONFIG8;
 };
 #endif
 
-#endif  
+#endif

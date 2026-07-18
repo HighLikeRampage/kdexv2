@@ -1,23 +1,5 @@
-﻿
-
-
-
-
-
-
-
-
-#ifndef _HDE32_H_
+﻿#ifndef _HDE32_H_
 #define _HDE32_H_
-
-
-
-
-
-
-
-
-
 
 #include "pstdint.h"
 
@@ -95,11 +77,10 @@ typedef struct {
 extern "C" {
 #endif
 
-
 unsigned int hde32_disasm(const void *code, hde32s *hs);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif 
+#endif

@@ -1,61 +1,9 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
 #ifndef FTSTDLIB_H_
 #define FTSTDLIB_H_
-
 
 #include <stddef.h>
 
 #define ft_ptrdiff_t  ptrdiff_t
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #include <limits.h>
 
@@ -77,14 +25,6 @@
 #define FT_ULLONG_MAX  ULLONG_MAX
 #endif
 
-
-  
-
-
-
-
-
-
 #include <string.h>
 
 #define ft_memchr   memchr
@@ -101,14 +41,6 @@
 #define ft_strrchr  strrchr
 #define ft_strstr   strstr
 
-
-  
-
-
-
-
-
-
 #include <stdio.h>
 
 #define FT_FILE     FILE
@@ -119,67 +51,25 @@
 #define ft_ftell    ftell
 #define ft_sprintf  sprintf
 
-
-  
-
-
-
-
-
-
 #include <stdlib.h>
 
 #define ft_qsort  qsort
-
-
-  
-
-
-
-
-
 
 #define ft_scalloc   calloc
 #define ft_sfree     free
 #define ft_smalloc   malloc
 #define ft_srealloc  realloc
 
-
-  
-
-
-
-
-
-
 #define ft_strtol  strtol
 #define ft_getenv  getenv
 
-
-  
-
-
-
-
-
-
 #include <setjmp.h>
 
-#define ft_jmp_buf     jmp_buf  
-                                
-                                
+#define ft_jmp_buf     jmp_buf
 
 #define ft_longjmp     longjmp
-#define ft_setjmp( b ) setjmp( *(ft_jmp_buf*) &(b) ) 
-
-
-  
-  
+#define ft_setjmp( b ) setjmp( *(ft_jmp_buf*) &(b) )
 
 #include <stdarg.h>
 
-
-#endif 
-
-
-
+#endif

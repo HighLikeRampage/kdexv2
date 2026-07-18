@@ -677,7 +677,7 @@ void Core::Features::cEsp::Draw()
 
         ImColor activeColBox = ImColor(option->param.box_color[0], option->param.box_color[1], option->param.box_color[2], option->param.box_color[3]);
         ImColor activeColSkel = ImColor(option->param.skeleton_color[0], option->param.skeleton_color[1], option->param.skeleton_color[2], option->param.skeleton_color[3]);
-        
+
         if (option->param.team_check && IsFriend) {
             activeColBox = ImColor(option->param.team_check_color[0], option->param.team_check_color[1], option->param.team_check_color[2], option->param.team_check_color[3]);
             activeColSkel = activeColBox;

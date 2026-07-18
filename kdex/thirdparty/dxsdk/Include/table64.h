@@ -1,11 +1,4 @@
-﻿
-
-
-
-
-
-
-#define C_NONE    0x00
+﻿#define C_NONE    0x00
 #define C_MODRM   0x01
 #define C_IMM8    0x02
 #define C_IMM16   0x04

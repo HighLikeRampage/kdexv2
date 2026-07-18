@@ -1,34 +1,9 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
 #if defined(_MSC_VER) && (_MSC_VER > 1000)
 #pragma once
 #endif
 
 #ifndef __XNAMATHMISC_INL__
 #define __XNAMATHMISC_INL__
-
-
-
-
-
-
-
-
-
-
-
-
 
 XMFINLINE BOOL XMQuaternionEqual
 (
@@ -39,8 +14,6 @@ XMFINLINE BOOL XMQuaternionEqual
     return XMVector4Equal(Q1, Q2);
 }
 
-
-
 XMFINLINE BOOL XMQuaternionNotEqual
 (
     FXMVECTOR Q1,
@@ -50,8 +23,6 @@ XMFINLINE BOOL XMQuaternionNotEqual
     return XMVector4NotEqual(Q1, Q2);
 }
 
-
-
 XMFINLINE BOOL XMQuaternionIsNaN
 (
     FXMVECTOR Q
@@ -60,8 +31,6 @@ XMFINLINE BOOL XMQuaternionIsNaN
     return XMVector4IsNaN(Q);
 }
 
-
-
 XMFINLINE BOOL XMQuaternionIsInfinite
 (
     FXMVECTOR Q
@@ -69,8 +38,6 @@ XMFINLINE BOOL XMQuaternionIsInfinite
 {
     return XMVector4IsInfinite(Q);
 }
-
-
 
 XMFINLINE BOOL XMQuaternionIsIdentity
 (
@@ -84,15 +51,9 @@ XMFINLINE BOOL XMQuaternionIsIdentity
 #elif defined(_XM_SSE_INTRINSICS_)
     XMVECTOR vTemp = _mm_cmpeq_ps(Q,g_XMIdentityR3);
     return (_mm_movemask_ps(vTemp)==0x0f) ? true : false;
-#else 
-#endif 
+#else
+#endif
 }
-
-
-
-
-
-
 
 XMFINLINE XMVECTOR XMQuaternionDot
 (
@@ -102,8 +63,6 @@ XMFINLINE XMVECTOR XMQuaternionDot
 {
     return XMVector4Dot(Q1, Q2);
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionMultiply
 (
@@ -148,44 +107,42 @@ XMFINLINE XMVECTOR XMQuaternionMultiply
     static CONST XMVECTORF32 ControlWZYX = { 1.0f,-1.0f, 1.0f,-1.0f};
     static CONST XMVECTORF32 ControlZWXY = { 1.0f, 1.0f,-1.0f,-1.0f};
     static CONST XMVECTORF32 ControlYXWZ = {-1.0f, 1.0f, 1.0f,-1.0f};
-    
+
     XMVECTOR Q2X = Q2;
     XMVECTOR Q2Y = Q2;
     XMVECTOR Q2Z = Q2;
     XMVECTOR vResult = Q2;
-    
+
     vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(3,3,3,3));
     Q2X = _mm_shuffle_ps(Q2X,Q2X,_MM_SHUFFLE(0,0,0,0));
     Q2Y = _mm_shuffle_ps(Q2Y,Q2Y,_MM_SHUFFLE(1,1,1,1));
     Q2Z = _mm_shuffle_ps(Q2Z,Q2Z,_MM_SHUFFLE(2,2,2,2));
-    
+
     vResult = _mm_mul_ps(vResult,Q1);
     XMVECTOR Q1Shuffle = Q1;
-    
+
     Q1Shuffle = _mm_shuffle_ps(Q1Shuffle,Q1Shuffle,_MM_SHUFFLE(0,1,2,3));
-    
+
     Q2X = _mm_mul_ps(Q2X,Q1Shuffle);
     Q1Shuffle = _mm_shuffle_ps(Q1Shuffle,Q1Shuffle,_MM_SHUFFLE(2,3,0,1));
-    
+
     Q2X = _mm_mul_ps(Q2X,ControlWZYX);
-    
+
     Q2Y = _mm_mul_ps(Q2Y,Q1Shuffle);
     Q1Shuffle = _mm_shuffle_ps(Q1Shuffle,Q1Shuffle,_MM_SHUFFLE(0,1,2,3));
-    
+
     Q2Y = _mm_mul_ps(Q2Y,ControlZWXY);
-    
+
     Q2Z = _mm_mul_ps(Q2Z,Q1Shuffle);
     vResult = _mm_add_ps(vResult,Q2X);
-    
+
     Q2Z = _mm_mul_ps(Q2Z,ControlYXWZ);
     Q2Y = _mm_add_ps(Q2Y,Q2Z);
     vResult = _mm_add_ps(vResult,Q2Y);
     return vResult;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionLengthSq
 (
@@ -195,8 +152,6 @@ XMFINLINE XMVECTOR XMQuaternionLengthSq
     return XMVector4LengthSq(Q);
 }
 
-
-
 XMFINLINE XMVECTOR XMQuaternionReciprocalLength
 (
     FXMVECTOR Q
@@ -204,8 +159,6 @@ XMFINLINE XMVECTOR XMQuaternionReciprocalLength
 {
     return XMVector4ReciprocalLength(Q);
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionLength
 (
@@ -215,8 +168,6 @@ XMFINLINE XMVECTOR XMQuaternionLength
     return XMVector4Length(Q);
 }
 
-
-
 XMFINLINE XMVECTOR XMQuaternionNormalizeEst
 (
     FXMVECTOR Q
@@ -225,8 +176,6 @@ XMFINLINE XMVECTOR XMQuaternionNormalizeEst
     return XMVector4NormalizeEst(Q);
 }
 
-
-
 XMFINLINE XMVECTOR XMQuaternionNormalize
 (
     FXMVECTOR Q
@@ -234,8 +183,6 @@ XMFINLINE XMVECTOR XMQuaternionNormalize
 {
     return XMVector4Normalize(Q);
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionConjugate
 (
@@ -255,11 +202,9 @@ XMFINLINE XMVECTOR XMQuaternionConjugate
     static const XMVECTORF32 NegativeOne3 = {-1.0f,-1.0f,-1.0f,1.0f};
     XMVECTOR Result = _mm_mul_ps(Q,NegativeOne3);
     return Result;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionInverse
 (
@@ -299,11 +244,9 @@ XMFINLINE XMVECTOR XMQuaternionInverse
     Result = _mm_div_ps(Conjugate,L);
     Result = XMVectorSelect(Result, Zero, Control);
     return Result;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionLn
 (
@@ -341,37 +284,35 @@ XMFINLINE XMVECTOR XMQuaternionLn
 #elif defined(_XM_SSE_INTRINSICS_)
     static CONST XMVECTORF32 OneMinusEpsilon = {1.0f - 0.00001f, 1.0f - 0.00001f, 1.0f - 0.00001f, 1.0f - 0.00001f};
     static CONST XMVECTORF32 NegOneMinusEpsilon = {-(1.0f - 0.00001f), -(1.0f - 0.00001f),-(1.0f - 0.00001f),-(1.0f - 0.00001f)};
-    
+
     XMVECTOR QW = _mm_shuffle_ps(Q,Q,_MM_SHUFFLE(3,3,3,3));
-    
+
     XMVECTOR Q0 = _mm_and_ps(Q,g_XMMask3);
-    
+
     XMVECTOR ControlW = _mm_cmple_ps(QW,OneMinusEpsilon);
     XMVECTOR vTemp2 = _mm_cmpge_ps(QW,NegOneMinusEpsilon);
     ControlW = _mm_and_ps(ControlW,vTemp2);
-    
+
     XMVECTOR vTheta = XMVectorACos(QW);
-    
+
     vTemp2 = XMVectorSin(vTheta);
-    
+
     vTheta = _mm_div_ps(vTheta,vTemp2);
-    
+
     vTheta = _mm_mul_ps(vTheta,Q0);
-    
+
     vTheta = XMVectorSelect(Q0,vTheta,ControlW);
     return vTheta;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionExp
 (
     FXMVECTOR Q
 )
 {
-#if defined(_XM_NO_INTRINSICS_) 
+#if defined(_XM_NO_INTRINSICS_)
 
     XMVECTOR Theta;
     XMVECTOR SinTheta;
@@ -416,11 +357,9 @@ XMFINLINE XMVECTOR XMQuaternionExp
     CosTheta = _mm_and_ps(CosTheta,g_XMMaskW);
     Result = _mm_or_ps(Result,CosTheta);
     return Result;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMINLINE XMVECTOR XMQuaternionSlerp
 (
@@ -433,8 +372,6 @@ XMINLINE XMVECTOR XMQuaternionSlerp
     return XMQuaternionSlerpV(Q0, Q1, T);
 }
 
-
-
 XMINLINE XMVECTOR XMQuaternionSlerpV
 (
     FXMVECTOR Q0,
@@ -444,7 +381,6 @@ XMINLINE XMVECTOR XMQuaternionSlerpV
 {
 #if defined(_XM_NO_INTRINSICS_)
 
-    
     XMVECTOR Omega;
     XMVECTOR CosOmega;
     XMVECTOR SinOmega;
@@ -503,7 +439,7 @@ XMINLINE XMVECTOR XMQuaternionSlerpV
     return Result;
 
 #elif defined(_XM_SSE_INTRINSICS_)
-    
+
     XMVECTOR Omega;
     XMVECTOR CosOmega;
     XMVECTOR SinOmega;
@@ -555,11 +491,9 @@ XMINLINE XMVECTOR XMQuaternionSlerpV
     S1 = _mm_mul_ps(S1, Q1);
     Result = _mm_add_ps(Result,S1);
     return Result;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionSquad
 (
@@ -573,8 +507,6 @@ XMFINLINE XMVECTOR XMQuaternionSquad
     XMVECTOR T = XMVectorReplicate(t);
     return XMQuaternionSquadV(Q0, Q1, Q2, Q3, T);
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionSquadV
 (
@@ -607,8 +539,6 @@ XMFINLINE XMVECTOR XMQuaternionSquadV
     return Result;
 
 }
-
-
 
 XMINLINE VOID XMQuaternionSquadSetup
 (
@@ -675,8 +605,6 @@ XMINLINE VOID XMQuaternionSquadSetup
     *pC = SQ2;
 }
 
-
-
 XMFINLINE XMVECTOR XMQuaternionBaryCentric
 (
     FXMVECTOR Q0,
@@ -707,8 +635,6 @@ XMFINLINE XMVECTOR XMQuaternionBaryCentric
 
     return Result;
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionBaryCentricV
 (
@@ -749,23 +675,15 @@ XMFINLINE XMVECTOR XMQuaternionBaryCentricV
     return Result;
 }
 
-
-
-
-
-
-
 XMFINLINE XMVECTOR XMQuaternionIdentity()
 {
 #if defined(_XM_NO_INTRINSICS_)
     return g_XMIdentityR3.v;
 #elif defined(_XM_SSE_INTRINSICS_)
     return g_XMIdentityR3;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionRotationRollPitchYaw
 (
@@ -783,11 +701,9 @@ XMFINLINE XMVECTOR XMQuaternionRotationRollPitchYaw
     return Q;
 }
 
-
-
 XMFINLINE XMVECTOR XMQuaternionRotationRollPitchYawFromVector
 (
-    FXMVECTOR Angles 
+    FXMVECTOR Angles
 )
 {
 #if defined(_XM_NO_INTRINSICS_)
@@ -846,11 +762,9 @@ XMFINLINE XMVECTOR XMQuaternionRotationRollPitchYawFromVector
     Q = _mm_mul_ps(Q1, R1);
     Q = _mm_add_ps(Q,Q0);
     return Q;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionRotationNormal
 (
@@ -886,11 +800,9 @@ XMFINLINE XMVECTOR XMQuaternionRotationNormal
     Scale = _mm_or_ps(Scale,vCosine);
     N = _mm_mul_ps(N,Scale);
     return N;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMQuaternionRotationAxis
 (
@@ -921,11 +833,9 @@ XMFINLINE XMVECTOR XMQuaternionRotationAxis
     Normal = XMVector3Normalize(Axis);
     Q = XMQuaternionRotationNormal(Normal, Angle);
     return Q;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMINLINE XMVECTOR XMQuaternionRotationMatrix
 (
@@ -1016,9 +926,9 @@ XMINLINE XMVECTOR XMQuaternionRotationMatrix
 
     Scale = XMVectorPermute(SQ1, SQ1, PermuteSplat);
 
-    P = XMVectorPermute(M.r[1], M.r[2],PermuteC.v);  
-    A = XMVectorPermute(M.r[0], P, PermuteA.v);       
-    B = XMVectorPermute(M.r[0], P, PermuteB.v);       
+    P = XMVectorPermute(M.r[1], M.r[2],PermuteC.v);
+    A = XMVectorPermute(M.r[0], P, PermuteA.v);
+    B = XMVectorPermute(M.r[0], P, PermuteB.v);
 
     Q2 = XMVectorMultiplyAdd(SignB, B, A);
     Q2 = XMVectorMultiply(Q2, Scale);
@@ -1027,15 +937,9 @@ XMINLINE XMVECTOR XMQuaternionRotationMatrix
 
     return Result;
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
-
-
-
-
 
 XMFINLINE VOID XMQuaternionToAxisAngle
 (
@@ -1056,18 +960,6 @@ XMFINLINE VOID XMQuaternionToAxisAngle
 #endif
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 XMFINLINE BOOL XMPlaneEqual
 (
     FXMVECTOR P1,
@@ -1076,8 +968,6 @@ XMFINLINE BOOL XMPlaneEqual
 {
     return XMVector4Equal(P1, P2);
 }
-
-
 
 XMFINLINE BOOL XMPlaneNearEqual
 (
@@ -1091,8 +981,6 @@ XMFINLINE BOOL XMPlaneNearEqual
     return XMVector4NearEqual(NP1, NP2, Epsilon);
 }
 
-
-
 XMFINLINE BOOL XMPlaneNotEqual
 (
     FXMVECTOR P1,
@@ -1102,8 +990,6 @@ XMFINLINE BOOL XMPlaneNotEqual
     return XMVector4NotEqual(P1, P2);
 }
 
-
-
 XMFINLINE BOOL XMPlaneIsNaN
 (
     FXMVECTOR P
@@ -1112,8 +998,6 @@ XMFINLINE BOOL XMPlaneIsNaN
     return XMVector4IsNaN(P);
 }
 
-
-
 XMFINLINE BOOL XMPlaneIsInfinite
 (
     FXMVECTOR P
@@ -1121,12 +1005,6 @@ XMFINLINE BOOL XMPlaneIsInfinite
 {
     return XMVector4IsInfinite(P);
 }
-
-
-
-
-
-
 
 XMFINLINE XMVECTOR XMPlaneDot
 (
@@ -1141,16 +1019,14 @@ XMFINLINE XMVECTOR XMPlaneDot
 #elif defined(_XM_SSE_INTRINSICS_)
     __m128 vTemp2 = V;
     __m128 vTemp = _mm_mul_ps(P,vTemp2);
-    vTemp2 = _mm_shuffle_ps(vTemp2,vTemp,_MM_SHUFFLE(1,0,0,0)); 
-    vTemp2 = _mm_add_ps(vTemp2,vTemp);          
-    vTemp = _mm_shuffle_ps(vTemp,vTemp2,_MM_SHUFFLE(0,3,0,0));  
-    vTemp = _mm_add_ps(vTemp,vTemp2);           
-    return _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(2,2,2,2));    
-#else 
-#endif 
+    vTemp2 = _mm_shuffle_ps(vTemp2,vTemp,_MM_SHUFFLE(1,0,0,0));
+    vTemp2 = _mm_add_ps(vTemp2,vTemp);
+    vTemp = _mm_shuffle_ps(vTemp,vTemp2,_MM_SHUFFLE(0,3,0,0));
+    vTemp = _mm_add_ps(vTemp,vTemp2);
+    return _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(2,2,2,2));
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMPlaneDotCoord
 (
@@ -1163,7 +1039,6 @@ XMFINLINE XMVECTOR XMPlaneDotCoord
     XMVECTOR V3;
     XMVECTOR Result;
 
-    
     V3 = XMVectorSelect(g_XMOne.v, V, g_XMSelect1110.v);
     Result = XMVector4Dot(P, V3);
 
@@ -1173,16 +1048,14 @@ XMFINLINE XMVECTOR XMPlaneDotCoord
     XMVECTOR vTemp2 = _mm_and_ps(V,g_XMMask3);
     vTemp2 = _mm_or_ps(vTemp2,g_XMIdentityR3);
     XMVECTOR vTemp = _mm_mul_ps(P,vTemp2);
-    vTemp2 = _mm_shuffle_ps(vTemp2,vTemp,_MM_SHUFFLE(1,0,0,0)); 
-    vTemp2 = _mm_add_ps(vTemp2,vTemp);          
-    vTemp = _mm_shuffle_ps(vTemp,vTemp2,_MM_SHUFFLE(0,3,0,0));  
-    vTemp = _mm_add_ps(vTemp,vTemp2);           
-    return _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(2,2,2,2));    
-#else 
-#endif 
+    vTemp2 = _mm_shuffle_ps(vTemp2,vTemp,_MM_SHUFFLE(1,0,0,0));
+    vTemp2 = _mm_add_ps(vTemp2,vTemp);
+    vTemp = _mm_shuffle_ps(vTemp,vTemp2,_MM_SHUFFLE(0,3,0,0));
+    vTemp = _mm_add_ps(vTemp,vTemp2);
+    return _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(2,2,2,2));
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMPlaneDotNormal
 (
@@ -1192,10 +1065,6 @@ XMFINLINE XMVECTOR XMPlaneDotNormal
 {
     return XMVector3Dot(P, V);
 }
-
-
-
-
 
 XMFINLINE XMVECTOR XMPlaneNormalizeEst
 (
@@ -1210,28 +1079,26 @@ XMFINLINE XMVECTOR XMPlaneNormalizeEst
     return Result;
 
 #elif defined(_XM_SSE_INTRINSICS_)
-    
+
     XMVECTOR vDot = _mm_mul_ps(P,P);
-    
+
     XMVECTOR vTemp = _mm_shuffle_ps(vDot,vDot,_MM_SHUFFLE(2,1,2,1));
-    
+
     vDot = _mm_add_ss(vDot,vTemp);
-    
+
     vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(1,1,1,1));
-    
+
     vDot = _mm_add_ss(vDot,vTemp);
-    
+
 	vDot = _mm_shuffle_ps(vDot,vDot,_MM_SHUFFLE(0,0,0,0));
-    
+
     vDot = _mm_rsqrt_ps(vDot);
-    
+
     vDot = _mm_mul_ps(vDot,P);
     return vDot;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMPlaneNormalize
 (
@@ -1240,7 +1107,7 @@ XMFINLINE XMVECTOR XMPlaneNormalize
 {
 #if defined(_XM_NO_INTRINSICS_)
     FLOAT fLengthSq = sqrtf((P.vector4_f32[0]*P.vector4_f32[0])+(P.vector4_f32[1]*P.vector4_f32[1])+(P.vector4_f32[2]*P.vector4_f32[2]));
-    
+
     if (fLengthSq) {
         fLengthSq = 1.0f/fLengthSq;
     }
@@ -1254,28 +1121,25 @@ XMFINLINE XMVECTOR XMPlaneNormalize
     return vResult;
     }
 #elif defined(_XM_SSE_INTRINSICS_)
-    
+
     XMVECTOR vLengthSq = _mm_mul_ps(P,P);
     XMVECTOR vTemp = _mm_shuffle_ps(vLengthSq,vLengthSq,_MM_SHUFFLE(2,1,2,1));
     vLengthSq = _mm_add_ss(vLengthSq,vTemp);
     vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(1,1,1,1));
     vLengthSq = _mm_add_ss(vLengthSq,vTemp);
 	vLengthSq = _mm_shuffle_ps(vLengthSq,vLengthSq,_MM_SHUFFLE(0,0,0,0));
-    
+
     XMVECTOR vResult = _mm_sqrt_ps(vLengthSq);
-    
-    
+
     vLengthSq = _mm_cmpneq_ps(vLengthSq,g_XMInfinity);
-    
+
     vResult = _mm_div_ps(P,vResult);
-    
+
     vResult = _mm_and_ps(vResult,vLengthSq);
     return vResult;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMPlaneIntersectLine
 (
@@ -1338,11 +1202,9 @@ XMFINLINE XMVECTOR XMPlaneIntersectLine
     Control = XMVectorNearEqual(D, Zero, g_XMEpsilon);
     Result = XMVectorSelect(Point, g_XMQNaN, Control);
     return Result;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMINLINE VOID XMPlaneIntersectPlane
 (
@@ -1427,11 +1289,9 @@ XMINLINE VOID XMPlaneIntersectPlane
     Control = XMVectorLessOrEqual(LengthSq, g_XMEpsilon);
     *pLinePoint1 = XMVectorSelect(LinePoint1,g_XMQNaN, Control);
     *pLinePoint2 = XMVectorSelect(LinePoint2,g_XMQNaN, Control);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMPlaneTransform
 (
@@ -1472,11 +1332,9 @@ XMFINLINE XMVECTOR XMPlaneTransform
     Y = _mm_add_ps(Y,W);
     X = _mm_add_ps(X,Y);
     return X;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMFLOAT4* XMPlaneTransformStream
 (
@@ -1495,12 +1353,6 @@ XMFINLINE XMFLOAT4* XMPlaneTransformStream
                                     PlaneCount,
                                     M);
 }
-
-
-
-
-
-
 
 XMFINLINE XMVECTOR XMPlaneFromPointNormal
 (
@@ -1528,11 +1380,9 @@ XMFINLINE XMVECTOR XMPlaneFromPointNormal
     W = _mm_and_ps(W,g_XMMaskW);
     Result = _mm_or_ps(Result,W);
     return Result;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMPlaneFromPoints
 (
@@ -1581,21 +1431,9 @@ XMFINLINE XMVECTOR XMPlaneFromPoints
     D = _mm_and_ps(D,g_XMMaskW);
     Result = _mm_or_ps(D,N);
     return Result;
-#else 
-#endif 
+#else
+#endif
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 XMFINLINE BOOL XMColorEqual
 (
@@ -1606,8 +1444,6 @@ XMFINLINE BOOL XMColorEqual
     return XMVector4Equal(C1, C2);
 }
 
-
-
 XMFINLINE BOOL XMColorNotEqual
 (
     FXMVECTOR C1,
@@ -1616,8 +1452,6 @@ XMFINLINE BOOL XMColorNotEqual
 {
     return XMVector4NotEqual(C1, C2);
 }
-
-
 
 XMFINLINE BOOL XMColorGreater
 (
@@ -1628,8 +1462,6 @@ XMFINLINE BOOL XMColorGreater
     return XMVector4Greater(C1, C2);
 }
 
-
-
 XMFINLINE BOOL XMColorGreaterOrEqual
 (
     FXMVECTOR C1,
@@ -1638,8 +1470,6 @@ XMFINLINE BOOL XMColorGreaterOrEqual
 {
     return XMVector4GreaterOrEqual(C1, C2);
 }
-
-
 
 XMFINLINE BOOL XMColorLess
 (
@@ -1650,8 +1480,6 @@ XMFINLINE BOOL XMColorLess
     return XMVector4Less(C1, C2);
 }
 
-
-
 XMFINLINE BOOL XMColorLessOrEqual
 (
     FXMVECTOR C1,
@@ -1661,8 +1489,6 @@ XMFINLINE BOOL XMColorLessOrEqual
     return XMVector4LessOrEqual(C1, C2);
 }
 
-
-
 XMFINLINE BOOL XMColorIsNaN
 (
     FXMVECTOR C
@@ -1670,8 +1496,6 @@ XMFINLINE BOOL XMColorIsNaN
 {
     return XMVector4IsNaN(C);
 }
-
-
 
 XMFINLINE BOOL XMColorIsInfinite
 (
@@ -1681,19 +1505,12 @@ XMFINLINE BOOL XMColorIsInfinite
     return XMVector4IsInfinite(C);
 }
 
-
-
-
-
-
-
 XMFINLINE XMVECTOR XMColorNegative
 (
     FXMVECTOR vColor
 )
 {
 #if defined(_XM_NO_INTRINSICS_)
-
 
     XMVECTOR vResult = {
         1.0f - vColor.vector4_f32[0],
@@ -1704,15 +1521,13 @@ XMFINLINE XMVECTOR XMColorNegative
     return vResult;
 
 #elif defined(_XM_SSE_INTRINSICS_)
-    
+
     XMVECTOR vTemp = _mm_xor_ps(vColor,g_XMNegate3);
-    
+
 	return _mm_add_ps(vTemp,g_XMOne3);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMColorModulate
 (
@@ -1723,8 +1538,6 @@ XMFINLINE XMVECTOR XMColorModulate
     return XMVectorMultiply(C1, C2);
 }
 
-
-
 XMFINLINE XMVECTOR XMColorAdjustSaturation
 (
     FXMVECTOR vColor,
@@ -1733,9 +1546,6 @@ XMFINLINE XMVECTOR XMColorAdjustSaturation
 {
 #if defined(_XM_NO_INTRINSICS_)
     CONST XMVECTOR gvLuminance = {0.2125f, 0.7154f, 0.0721f, 0.0f};
-
-    
-    
 
     FLOAT fLuminance = (vColor.vector4_f32[0]*gvLuminance.vector4_f32[0])+(vColor.vector4_f32[1]*gvLuminance.vector4_f32[1])+(vColor.vector4_f32[2]*gvLuminance.vector4_f32[2]);
     XMVECTOR vResult = {
@@ -1748,11 +1558,10 @@ XMFINLINE XMVECTOR XMColorAdjustSaturation
 #elif defined(_XM_SSE_INTRINSICS_)
     static const XMVECTORF32 gvLuminance = {0.2125f, 0.7154f, 0.0721f, 0.0f};
 
-    XMVECTOR vLuminance = _mm_mul_ps(vColor,gvLuminance);      
-
+    XMVECTOR vLuminance = _mm_mul_ps(vColor,gvLuminance);
 
     XMVECTOR vResult = vLuminance;
-    vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(2,2,1,1)); 
+    vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(2,2,1,1));
 
     vLuminance = _mm_add_ss(vLuminance,vResult);
 
@@ -1768,14 +1577,12 @@ XMFINLINE XMVECTOR XMColorAdjustSaturation
     vResult = _mm_mul_ps(vResult,vSaturation);
     vResult = _mm_add_ps(vResult,vLuminance);
 
-    vLuminance = _mm_shuffle_ps(vResult,vColor,_MM_SHUFFLE(3,2,2,2));   
-    vResult = _mm_shuffle_ps(vResult,vLuminance,_MM_SHUFFLE(3,0,1,0));  
+    vLuminance = _mm_shuffle_ps(vResult,vColor,_MM_SHUFFLE(3,2,2,2));
+    vResult = _mm_shuffle_ps(vResult,vLuminance,_MM_SHUFFLE(3,0,1,0));
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMColorAdjustContrast
 (
@@ -1784,49 +1591,37 @@ XMFINLINE XMVECTOR XMColorAdjustContrast
 )
 {
 #if defined(_XM_NO_INTRINSICS_)
-    
+
     XMVECTOR vResult = {
         ((vColor.vector4_f32[0]-0.5f) * fContrast) + 0.5f,
         ((vColor.vector4_f32[1]-0.5f) * fContrast) + 0.5f,
         ((vColor.vector4_f32[2]-0.5f) * fContrast) + 0.5f,
-        vColor.vector4_f32[3]        
+        vColor.vector4_f32[3]
     };
     return vResult;
 
 #elif defined(_XM_SSE_INTRINSICS_)
-    XMVECTOR vScale = _mm_set_ps1(fContrast);           
-    XMVECTOR vResult = _mm_sub_ps(vColor,g_XMOneHalf);  
-    vResult = _mm_mul_ps(vResult,vScale);               
-    vResult = _mm_add_ps(vResult,g_XMOneHalf);          
+    XMVECTOR vScale = _mm_set_ps1(fContrast);
+    XMVECTOR vResult = _mm_sub_ps(vColor,g_XMOneHalf);
+    vResult = _mm_mul_ps(vResult,vScale);
+    vResult = _mm_add_ps(vResult,g_XMOneHalf);
 
-    vScale = _mm_shuffle_ps(vResult,vColor,_MM_SHUFFLE(3,2,2,2));   
-    vResult = _mm_shuffle_ps(vResult,vScale,_MM_SHUFFLE(3,0,1,0));  
+    vScale = _mm_shuffle_ps(vResult,vColor,_MM_SHUFFLE(3,2,2,2));
+    vResult = _mm_shuffle_ps(vResult,vScale,_MM_SHUFFLE(3,0,1,0));
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
-
-
-
-
-
-
 
 XMINLINE BOOL XMVerifyCPUSupport()
 {
 #if defined(_XM_NO_INTRINSICS_) || !defined(_XM_SSE_INTRINSICS_)
 	return TRUE;
-#else 
-	
-	
+#else
+
 	return ( IsProcessorFeaturePresent( PF_XMMI_INSTRUCTIONS_AVAILABLE ) && IsProcessorFeaturePresent( PF_XMMI64_INSTRUCTIONS_AVAILABLE ) );
 #endif
 }
-
-
-
 
 #define XMASSERT_LINE_STRING_SIZE 16
 
@@ -1865,8 +1660,6 @@ XMINLINE VOID XMAssert
     __debugbreak();
 }
 
-
-
 XMFINLINE XMVECTOR XMFresnelTerm
 (
     FXMVECTOR CosIncidentAngle,
@@ -1879,10 +1672,6 @@ XMFINLINE XMVECTOR XMFresnelTerm
     XMVECTOR D, S;
     XMVECTOR V0, V1, V2, V3;
     XMVECTOR Result;
-
-    
-    
-    
 
     XMASSERT(!XMVector4IsInfinite(CosIncidentAngle));
 
@@ -1914,34 +1703,28 @@ XMFINLINE XMVECTOR XMFresnelTerm
     return Result;
 
 #elif defined(_XM_SSE_INTRINSICS_)
-    
-    
-    
 
     XMASSERT(!XMVector4IsInfinite(CosIncidentAngle));
 
-    
     XMVECTOR G = _mm_mul_ps(RefractionIndex,RefractionIndex);
     XMVECTOR vTemp = _mm_mul_ps(CosIncidentAngle,CosIncidentAngle);
     G = _mm_sub_ps(G,g_XMOne);
     vTemp = _mm_add_ps(vTemp,G);
-    
-    
+
 	G = _mm_setzero_ps();
 	G = _mm_sub_ps(G,vTemp);
 	G = _mm_max_ps(G,vTemp);
-    
+
     G = _mm_sqrt_ps(G);
 
-    
     XMVECTOR GAddC = _mm_add_ps(G,CosIncidentAngle);
     XMVECTOR GSubC = _mm_sub_ps(G,CosIncidentAngle);
-    
+
     XMVECTOR vResult = _mm_mul_ps(GSubC,GSubC);
     vTemp = _mm_mul_ps(GAddC,GAddC);
     vResult = _mm_mul_ps(vResult,g_XMOneHalf);
     vResult = _mm_div_ps(vResult,vTemp);
-    
+
     GAddC = _mm_mul_ps(GAddC,CosIncidentAngle);
     GSubC = _mm_mul_ps(GSubC,CosIncidentAngle);
     GAddC = _mm_sub_ps(GAddC,g_XMOne);
@@ -1950,17 +1733,15 @@ XMFINLINE XMVECTOR XMFresnelTerm
     GSubC = _mm_mul_ps(GSubC,GSubC);
     GAddC = _mm_div_ps(GAddC,GSubC);
     GAddC = _mm_add_ps(GAddC,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,GAddC);
-    
+
     vResult = _mm_max_ps(vResult,g_XMZero);
     vResult = _mm_min_ps(vResult,g_XMOne);
     return vResult;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE BOOL XMScalarNearEqual
 (
@@ -1980,25 +1761,22 @@ XMFINLINE BOOL XMScalarNearEqual
 #endif
 }
 
-
-
 XMFINLINE FLOAT XMScalarModAngle
 (
     FLOAT Angle
 )
 {
-    
-    
+
     float fTemp;
 #if defined(_XM_NO_INTRINSICS_) || !defined(_XM_VMX128_INTRINSICS_)
-    
+
     Angle = Angle + XM_PI;
-    
+
     fTemp = fabsf(Angle);
     fTemp = fTemp - (XM_2PI * (FLOAT)((INT)(fTemp/XM_2PI)));
-    
+
     fTemp = fTemp - XM_PI;
-    
+
     if (Angle<0.0f) {
         fTemp = -fTemp;
     }
@@ -2006,8 +1784,6 @@ XMFINLINE FLOAT XMScalarModAngle
 #else
 #endif
 }
-
-
 
 XMINLINE FLOAT XMScalarSin
 (
@@ -2023,9 +1799,6 @@ XMINLINE FLOAT XMScalarSin
     XMVECTOR               R0, R1, R2;
 
     ValueMod = XMScalarModAngle(Value);
-
-    
-    
 
     ValueSq = ValueMod * ValueMod;
 
@@ -2046,11 +1819,9 @@ XMINLINE FLOAT XMScalarSin
 
 #elif defined(_XM_SSE_INTRINSICS_)
     return sinf( Value );
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMINLINE FLOAT XMScalarCos
 (
@@ -2066,9 +1837,6 @@ XMINLINE FLOAT XMScalarCos
     XMVECTOR               R0, R1, R2;
 
     ValueMod = XMScalarModAngle(Value);
-
-    
-    
 
     ValueSq = ValueMod * ValueMod;
 
@@ -2090,11 +1858,9 @@ XMINLINE FLOAT XMScalarCos
 
 #elif defined(_XM_SSE_INTRINSICS_)
     return cosf(Value);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMINLINE VOID XMScalarSinCos
 (
@@ -2115,11 +1881,6 @@ XMINLINE VOID XMScalarSinCos
     XMASSERT(pCos);
 
     ValueMod = XMScalarModAngle(Value);
-
-    
-    
-    
-    
 
     ValueSq = ValueMod * ValueMod;
 
@@ -2155,11 +1916,9 @@ XMINLINE VOID XMScalarSinCos
 
     *pSin = sinf(Value);
     *pCos = cosf(Value);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMINLINE FLOAT XMScalarASin
 (
@@ -2197,11 +1956,9 @@ XMINLINE FLOAT XMScalarASin
 
 #elif defined(_XM_SSE_INTRINSICS_)
     return asinf(Value);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMINLINE FLOAT XMScalarACos
 (
@@ -2214,11 +1971,9 @@ XMINLINE FLOAT XMScalarACos
 
 #elif defined(_XM_SSE_INTRINSICS_)
     return acosf(Value);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE FLOAT XMScalarSinEst
 (
@@ -2234,8 +1989,6 @@ XMFINLINE FLOAT XMScalarSinEst
 
     XMASSERT(Value >= -XM_PI);
     XMASSERT(Value < XM_PI);
-
-    
 
     ValueSq = Value * Value;
 
@@ -2253,26 +2006,24 @@ XMFINLINE FLOAT XMScalarSinEst
     XMASSERT(Value < XM_PI);
     float ValueSq = Value*Value;
     XMVECTOR vValue = _mm_set_ps1(Value);
-    XMVECTOR vTemp = _mm_set_ps(ValueSq * Value,ValueSq,Value,1.0f); 
+    XMVECTOR vTemp = _mm_set_ps(ValueSq * Value,ValueSq,Value,1.0f);
     vTemp = _mm_mul_ps(vTemp,vTemp);
     vTemp = _mm_mul_ps(vTemp,vValue);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMSinEstCoefficients);
-    vValue = _mm_shuffle_ps(vValue,vTemp,_MM_SHUFFLE(1,0,0,0)); 
-    vValue = _mm_add_ps(vValue,vTemp);          
-    vTemp = _mm_shuffle_ps(vTemp,vValue,_MM_SHUFFLE(0,3,0,0));  
-    vTemp = _mm_add_ps(vTemp,vValue);           
-    vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(2,2,2,2));    
+    vValue = _mm_shuffle_ps(vValue,vTemp,_MM_SHUFFLE(1,0,0,0));
+    vValue = _mm_add_ps(vValue,vTemp);
+    vTemp = _mm_shuffle_ps(vTemp,vValue,_MM_SHUFFLE(0,3,0,0));
+    vTemp = _mm_add_ps(vTemp,vValue);
+    vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(2,2,2,2));
 #if defined(_MSC_VER) && (_MSC_VER>=1500)
-    return _mm_cvtss_f32(vTemp);    
+    return _mm_cvtss_f32(vTemp);
 #else
     return vTemp.m128_f32[0];
 #endif
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE FLOAT XMScalarCosEst
 (
@@ -2285,7 +2036,7 @@ XMFINLINE FLOAT XMScalarCosEst
     XMVECTOR Result;
     XMASSERT(Value >= -XM_PI);
     XMASSERT(Value < XM_PI);
-    
+
     ValueSq = Value * Value;
     V = XMVectorSet(1.0f, Value, ValueSq, ValueSq * Value);
     V = XMVectorMultiply(V, V);
@@ -2296,25 +2047,23 @@ XMFINLINE FLOAT XMScalarCosEst
     XMASSERT(Value < XM_PI);
     float ValueSq = Value*Value;
     XMVECTOR vValue = _mm_setzero_ps();
-    XMVECTOR vTemp = _mm_set_ps(ValueSq * Value,ValueSq,Value,1.0f); 
+    XMVECTOR vTemp = _mm_set_ps(ValueSq * Value,ValueSq,Value,1.0f);
     vTemp = _mm_mul_ps(vTemp,vTemp);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMCosEstCoefficients);
-    vValue = _mm_shuffle_ps(vValue,vTemp,_MM_SHUFFLE(1,0,0,0)); 
-    vValue = _mm_add_ps(vValue,vTemp);          
-    vTemp = _mm_shuffle_ps(vTemp,vValue,_MM_SHUFFLE(0,3,0,0));  
-    vTemp = _mm_add_ps(vTemp,vValue);           
-    vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(2,2,2,2));    
+    vValue = _mm_shuffle_ps(vValue,vTemp,_MM_SHUFFLE(1,0,0,0));
+    vValue = _mm_add_ps(vValue,vTemp);
+    vTemp = _mm_shuffle_ps(vTemp,vValue,_MM_SHUFFLE(0,3,0,0));
+    vTemp = _mm_add_ps(vTemp,vValue);
+    vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(2,2,2,2));
 #if defined(_MSC_VER) && (_MSC_VER>=1500)
-    return _mm_cvtss_f32(vTemp);    
+    return _mm_cvtss_f32(vTemp);
 #else
     return vTemp.m128_f32[0];
 #endif
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMScalarSinCosEst
 (
@@ -2333,9 +2082,6 @@ XMFINLINE VOID XMScalarSinCosEst
     XMASSERT(pCos);
     XMASSERT(Value >= -XM_PI);
     XMASSERT(Value < XM_PI);
-
-    
-    
 
     ValueSq = Value * Value;
     V = XMVectorSet(1.0f, Value, ValueSq, Value * ValueSq);
@@ -2359,17 +2105,15 @@ XMFINLINE VOID XMScalarSinCosEst
     XMVECTOR Sin = _mm_set_ps1(Value);
     Cos = _mm_mul_ps(Cos,Cos);
     Sin = _mm_mul_ps(Sin,Cos);
-    
+
     Cos = XMVector4Dot(Cos,g_XMCosEstCoefficients);
     _mm_store_ss(pCos,Cos);
-    
+
     Sin = XMVector4Dot(Sin, g_XMSinEstCoefficients);
     _mm_store_ss(pSin,Sin);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE FLOAT XMScalarASinEst
 (
@@ -2398,7 +2142,7 @@ XMFINLINE FLOAT XMScalarASinEst
 #elif defined(_XM_SSE_INTRINSICS_)
     CONST FLOAT OnePlusEps = 1.00000011921f;
     FLOAT AbsV = fabsf(Value);
-    FLOAT V2 = Value * AbsV;    
+    FLOAT V2 = Value * AbsV;
     FLOAT D = OnePlusEps - AbsV;
 
     XMVECTOR Result = _mm_set_ps(V2,1.0f,1.0f,Value);
@@ -2406,15 +2150,13 @@ XMFINLINE FLOAT XMScalarASinEst
     Result = _mm_mul_ps(Result, g_XMASinEstCoefficients);
     Result = XMVector4Dot(VR,Result);
 #if defined(_MSC_VER) && (_MSC_VER>=1500)
-    return _mm_cvtss_f32(Result);    
+    return _mm_cvtss_f32(Result);
 #else
     return Result.m128_f32[0];
 #endif
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE FLOAT XMScalarACosEst
 (
@@ -2427,8 +2169,6 @@ XMFINLINE FLOAT XMScalarACosEst
     XMVECTOR Result;
     FLOAT AbsV, V2, D;
     CONST FLOAT OnePlusEps = 1.00000011921f;
-
-    
 
     *(UINT*)&AbsV = *(UINT*)&Value & 0x7FFFFFFF;
     V2 = Value * AbsV;
@@ -2445,20 +2185,19 @@ XMFINLINE FLOAT XMScalarACosEst
 #elif defined(_XM_SSE_INTRINSICS_)
     CONST FLOAT OnePlusEps = 1.00000011921f;
     FLOAT AbsV = fabsf(Value);
-    FLOAT V2 = Value * AbsV;    
+    FLOAT V2 = Value * AbsV;
     FLOAT D = OnePlusEps - AbsV;
     XMVECTOR Result = _mm_set_ps(V2,1.0f,1.0f,Value);
     XMVECTOR VR = _mm_set_ps(D * AbsV,V2,Value,sqrtf(D));
     Result = _mm_mul_ps(Result,g_XMASinEstCoefficients);
     Result = XMVector4Dot(VR,Result);
 #if defined(_MSC_VER) && (_MSC_VER>=1500)
-    return XM_PIDIV2 - _mm_cvtss_f32(Result);    
+    return XM_PIDIV2 - _mm_cvtss_f32(Result);
 #else
     return XM_PIDIV2 - Result.m128_f32[0];
 #endif
-#else 
-#endif 
+#else
+#endif
 }
 
-#endif 
-
+#endif

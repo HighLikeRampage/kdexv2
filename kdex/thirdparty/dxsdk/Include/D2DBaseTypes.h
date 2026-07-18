@@ -1,27 +1,13 @@
-
-
-
-
-
-
-
 #pragma once
-
 
 #ifndef _D2DBASETYPES_INCLUDED
 #define _D2DBASETYPES_INCLUDED
 
 #ifndef COM_NO_WINDOWS_H
 #include <windows.h>
-#endif 
+#endif
 
 #ifndef D3DCOLORVALUE_DEFINED
-
-
-
-
-
-
 
 typedef struct D3DCOLORVALUE
 {
@@ -35,13 +21,6 @@ typedef struct D3DCOLORVALUE
 #define D3DCOLORVALUE_DEFINED
 #endif
 
-
-
-
-
-
-
-
 typedef struct D2D_POINT_2U
 {
     UINT32 x;
@@ -49,26 +28,12 @@ typedef struct D2D_POINT_2U
 
 } D2D_POINT_2U;
 
-
-
-
-
-
-
-
 typedef struct D2D_POINT_2F
 {
     FLOAT x;
     FLOAT y;
 
 } D2D_POINT_2F;
-
-
-
-
-
-
-
 
 typedef struct D2D_RECT_F
 {
@@ -79,13 +44,6 @@ typedef struct D2D_RECT_F
 
 } D2D_RECT_F;
 
-
-
-
-
-
-
-
 typedef struct D2D_RECT_U
 {
     UINT32 left;
@@ -95,26 +53,12 @@ typedef struct D2D_RECT_U
 
 } D2D_RECT_U;
 
-
-
-
-
-
-
-
 typedef struct D2D_SIZE_F
 {
     FLOAT width;
     FLOAT height;
 
 } D2D_SIZE_F;
-
-
-
-
-
-
-
 
 typedef struct D2D_SIZE_U
 {
@@ -124,12 +68,6 @@ typedef struct D2D_SIZE_U
 } D2D_SIZE_U;
 
 typedef D3DCOLORVALUE D2D_COLOR_F;
-
-
-
-
-
-
 
 typedef struct D2D_MATRIX_3X2_F
 {
@@ -142,4 +80,4 @@ typedef struct D2D_MATRIX_3X2_F
 
 } D2D_MATRIX_3X2_F;
 
-#endif 
+#endif

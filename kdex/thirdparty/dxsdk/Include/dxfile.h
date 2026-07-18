@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 #ifndef __DXFILE_H__
 #define __DXFILE_H__
 
@@ -40,10 +30,6 @@ typedef struct _DXFILELOADMEMORY {
     DWORD dSize;
 }DXFILELOADMEMORY, *LPDXFILELOADMEMORY;
 
-
-
-
-
 #ifndef WIN_TYPES
 #define WIN_TYPES(itype, ptype) typedef interface itype *LP##ptype, **LPLP##ptype
 #endif
@@ -56,32 +42,16 @@ WIN_TYPES(IDirectXFileData,             DIRECTXFILEDATA);
 WIN_TYPES(IDirectXFileDataReference,    DIRECTXFILEDATAREFERENCE);
 WIN_TYPES(IDirectXFileBinary,           DIRECTXFILEBINARY);
 
-
-
-
-
 STDAPI DirectXFileCreate(LPDIRECTXFILE *lplpDirectXFile);
-
-
-
-
 
 #define IUNKNOWN_METHODS(kind) \
     STDMETHOD(QueryInterface)       (THIS_ REFIID riid, LPVOID *ppvObj) kind; \
     STDMETHOD_(ULONG, AddRef)       (THIS) kind; \
     STDMETHOD_(ULONG, Release)      (THIS) kind
 
-
-
-
-
 #define IDIRECTXFILEOBJECT_METHODS(kind) \
     STDMETHOD(GetName) (THIS_ LPSTR, LPDWORD) kind; \
     STDMETHOD(GetId) (THIS_ LPGUID) kind
-
-
-
-
 
 #undef INTERFACE
 #define INTERFACE IDirectXFile
@@ -118,7 +88,6 @@ DECLARE_INTERFACE_(IDirectXFileSaveObject, IUnknown)
                                  DWORD, LPVOID, LPDIRECTXFILEDATA *) PURE;
     STDMETHOD(SaveData) (THIS_ LPDIRECTXFILEDATA) PURE;
 };
-
 
 #undef INTERFACE
 #define INTERFACE IDirectXFileObject
@@ -169,15 +138,7 @@ DECLARE_INTERFACE_(IDirectXFileBinary, IDirectXFileObject)
     STDMETHOD(Read)         (THIS_ LPVOID, DWORD, LPDWORD) PURE;
 };
 
-
-
-
-
 DEFINE_GUID(CLSID_CDirectXFile, 0x4516ec43, 0x8f20, 0x11d0, 0x9b, 0x6d, 0x00, 0x00, 0xc0, 0x78, 0x1b, 0xc3);
-
-
-
-
 
 DEFINE_GUID(IID_IDirectXFile,               0x3d82ab40, 0x62da, 0x11cf, 0xab, 0x39, 0x0, 0x20, 0xaf, 0x71, 0xe4, 0x33);
 DEFINE_GUID(IID_IDirectXFileEnumObject,     0x3d82ab41, 0x62da, 0x11cf, 0xab, 0x39, 0x0, 0x20, 0xaf, 0x71, 0xe4, 0x33);
@@ -187,16 +148,7 @@ DEFINE_GUID(IID_IDirectXFileData,           0x3d82ab44, 0x62da, 0x11cf, 0xab, 0x
 DEFINE_GUID(IID_IDirectXFileDataReference,  0x3d82ab45, 0x62da, 0x11cf, 0xab, 0x39, 0x0, 0x20, 0xaf, 0x71, 0xe4, 0x33);
 DEFINE_GUID(IID_IDirectXFileBinary,         0x3d82ab46, 0x62da, 0x11cf, 0xab, 0x39, 0x0, 0x20, 0xaf, 0x71, 0xe4, 0x33);
 
-
-
-
-
 DEFINE_GUID(TID_DXFILEHeader,   0x3d82ab43, 0x62da, 0x11cf, 0xab, 0x39, 0x0, 0x20, 0xaf, 0x71, 0xe4, 0x33);
-
-
-
-
-
 
 #define _FACDD  0x876
 #define MAKE_DDHRESULT( code )  MAKE_HRESULT( 1, _FACDD, code )
@@ -231,9 +183,8 @@ DEFINE_GUID(TID_DXFILEHeader,   0x3d82ab43, 0x62da, 0x11cf, 0xab, 0x39, 0x0, 0x2
 #define DXFILEERR_BADCACHEFILE              MAKE_DDHRESULT(875)
 #define DXFILEERR_NOINTERNET                MAKE_DDHRESULT(876)
 
-
 #ifdef __cplusplus
 };
 #endif
 
-#endif 
+#endif

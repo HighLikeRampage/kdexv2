@@ -1,23 +1,5 @@
-﻿
-
-
-
-
-
-
-
-
-#ifndef _HDE64_H_
+﻿#ifndef _HDE64_H_
 #define _HDE64_H_
-
-
-
-
-
-
-
-
-
 
 #include "pstdint.h"
 
@@ -102,11 +84,10 @@ typedef struct {
 extern "C" {
 #endif
 
-
 unsigned int hde64_disasm(const void *code, hde64s *hs);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif 
+#endif

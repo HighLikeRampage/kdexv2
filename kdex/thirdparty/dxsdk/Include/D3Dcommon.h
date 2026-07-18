@@ -1,19 +1,8 @@
-
-
-
-
-
- 
-
-
-#pragma warning( disable: 4049 )  
-
-
+#pragma warning( disable: 4049 )
 
 #ifndef __REQUIRED_RPCNDR_H_VERSION__
 #define __REQUIRED_RPCNDR_H_VERSION__ 475
 #endif
-
 
 #ifndef __REQUIRED_RPCSAL_H_VERSION__
 #define __REQUIRED_RPCSAL_H_VERSION__ 100
@@ -24,12 +13,12 @@
 
 #ifndef __RPCNDR_H_VERSION__
 #error this stub requires an updated version of <rpcndr.h>
-#endif 
+#endif
 
 #ifndef COM_NO_WINDOWS_H
 #include "windows.h"
 #include "ole2.h"
-#endif 
+#endif
 
 #ifndef __d3dcommon_h__
 #define __d3dcommon_h__
@@ -38,37 +27,29 @@
 #pragma once
 #endif
 
- 
-
 #ifndef __ID3D10Blob_FWD_DEFINED__
 #define __ID3D10Blob_FWD_DEFINED__
 typedef interface ID3D10Blob ID3D10Blob;
-#endif 	
-
-
+#endif
 
 #include "oaidl.h"
 #include "ocidl.h"
 
 #ifdef __cplusplus
 extern "C"{
-#endif 
+#endif
 
-
-
- 
-
-typedef 
+typedef
 enum D3D_DRIVER_TYPE
     {	D3D_DRIVER_TYPE_UNKNOWN	= 0,
 	D3D_DRIVER_TYPE_HARDWARE	= ( D3D_DRIVER_TYPE_UNKNOWN + 1 ) ,
 	D3D_DRIVER_TYPE_REFERENCE	= ( D3D_DRIVER_TYPE_HARDWARE + 1 ) ,
 	D3D_DRIVER_TYPE_NULL	= ( D3D_DRIVER_TYPE_REFERENCE + 1 ) ,
 	D3D_DRIVER_TYPE_SOFTWARE	= ( D3D_DRIVER_TYPE_NULL + 1 ) ,
-	D3D_DRIVER_TYPE_WARP	= ( D3D_DRIVER_TYPE_SOFTWARE + 1 ) 
+	D3D_DRIVER_TYPE_WARP	= ( D3D_DRIVER_TYPE_SOFTWARE + 1 )
     } 	D3D_DRIVER_TYPE;
 
-typedef 
+typedef
 enum D3D_FEATURE_LEVEL
     {	D3D_FEATURE_LEVEL_9_1	= 0x9100,
 	D3D_FEATURE_LEVEL_9_2	= 0x9200,
@@ -78,7 +59,7 @@ enum D3D_FEATURE_LEVEL
 	D3D_FEATURE_LEVEL_11_0	= 0xb000
     } 	D3D_FEATURE_LEVEL;
 
-typedef 
+typedef
 enum D3D_PRIMITIVE_TOPOLOGY
     {	D3D_PRIMITIVE_TOPOLOGY_UNDEFINED	= 0,
 	D3D_PRIMITIVE_TOPOLOGY_POINTLIST	= 1,
@@ -176,7 +157,7 @@ enum D3D_PRIMITIVE_TOPOLOGY
 	D3D11_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST	= D3D_PRIMITIVE_TOPOLOGY_32_CONTROL_POINT_PATCHLIST
     } 	D3D_PRIMITIVE_TOPOLOGY;
 
-typedef 
+typedef
 enum D3D_PRIMITIVE
     {	D3D_PRIMITIVE_UNDEFINED	= 0,
 	D3D_PRIMITIVE_POINT	= 1,
@@ -262,7 +243,7 @@ enum D3D_PRIMITIVE
 	D3D11_PRIMITIVE_32_CONTROL_POINT_PATCH	= D3D_PRIMITIVE_32_CONTROL_POINT_PATCH
     } 	D3D_PRIMITIVE;
 
-typedef 
+typedef
 enum D3D_SRV_DIMENSION
     {	D3D_SRV_DIMENSION_UNKNOWN	= 0,
 	D3D_SRV_DIMENSION_BUFFER	= 1,
@@ -321,55 +302,50 @@ typedef struct _D3D_SHADER_MACRO *LPD3D_SHADER_MACRO;
 
 DEFINE_GUID(IID_ID3D10Blob, 0x8ba5fb08, 0x5195, 0x40e2, 0xac, 0x58, 0xd, 0x98, 0x9c, 0x3a, 0x1, 0x2);
 
-
 extern RPC_IF_HANDLE __MIDL_itf_d3dcommon_0000_0000_v0_0_c_ifspec;
 extern RPC_IF_HANDLE __MIDL_itf_d3dcommon_0000_0000_v0_0_s_ifspec;
 
 #ifndef __ID3D10Blob_INTERFACE_DEFINED__
 #define __ID3D10Blob_INTERFACE_DEFINED__
 
-
- 
-
-
 EXTERN_C const IID IID_ID3D10Blob;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
-    
+
     MIDL_INTERFACE("8BA5FB08-5195-40e2-AC58-0D989C3A0102")
     ID3D10Blob : public IUnknown
     {
     public:
         virtual LPVOID STDMETHODCALLTYPE GetBufferPointer( void) = 0;
-        
+
         virtual SIZE_T STDMETHODCALLTYPE GetBufferSize( void) = 0;
-        
+
     };
-    
-#else 	
+
+#else
 
     typedef struct ID3D10BlobVtbl
     {
         BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )(
             ID3D10Blob * This,
              REFIID riid,
-             
+
             __RPC__deref_out  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+
+        ULONG ( STDMETHODCALLTYPE *AddRef )(
             ID3D10Blob * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
+
+        ULONG ( STDMETHODCALLTYPE *Release )(
             ID3D10Blob * This);
-        
-        LPVOID ( STDMETHODCALLTYPE *GetBufferPointer )( 
+
+        LPVOID ( STDMETHODCALLTYPE *GetBufferPointer )(
             ID3D10Blob * This);
-        
-        SIZE_T ( STDMETHODCALLTYPE *GetBufferSize )( 
+
+        SIZE_T ( STDMETHODCALLTYPE *GetBufferSize )(
             ID3D10Blob * This);
-        
+
         END_INTERFACE
     } ID3D10BlobVtbl;
 
@@ -378,46 +354,34 @@ EXTERN_C const IID IID_ID3D10Blob;
         CONST_VTBL struct ID3D10BlobVtbl *lpVtbl;
     };
 
-    
-
 #ifdef COBJMACROS
 
-
 #define ID3D10Blob_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) )
 
 #define ID3D10Blob_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
+    ( (This)->lpVtbl -> AddRef(This) )
 
 #define ID3D10Blob_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
+    ( (This)->lpVtbl -> Release(This) )
 
 #define ID3D10Blob_GetBufferPointer(This)	\
-    ( (This)->lpVtbl -> GetBufferPointer(This) ) 
+    ( (This)->lpVtbl -> GetBufferPointer(This) )
 
 #define ID3D10Blob_GetBufferSize(This)	\
-    ( (This)->lpVtbl -> GetBufferSize(This) ) 
+    ( (This)->lpVtbl -> GetBufferSize(This) )
 
-#endif 
+#endif
 
+#endif
 
-#endif 	
-
-
-
-
-#endif 	
-
-
-
- 
+#endif
 
 typedef interface ID3D10Blob* LPD3D10BLOB;
 typedef ID3D10Blob ID3DBlob;
 typedef ID3DBlob* LPD3DBLOB;
 #define IID_ID3DBlob IID_ID3D10Blob
-typedef 
+typedef
 enum _D3D_INCLUDE_TYPE
     {	D3D_INCLUDE_LOCAL	= 0,
 	D3D_INCLUDE_SYSTEM	= ( D3D_INCLUDE_LOCAL + 1 ) ,
@@ -435,7 +399,7 @@ DECLARE_INTERFACE(ID3DInclude)
     STDMETHOD(Close)(THIS_ LPCVOID pData) PURE;
 };
 typedef ID3DInclude* LPD3DINCLUDE;
-typedef 
+typedef
 enum _D3D_SHADER_VARIABLE_CLASS
     {	D3D_SVC_SCALAR	= 0,
 	D3D_SVC_VECTOR	= ( D3D_SVC_SCALAR + 1 ) ,
@@ -456,7 +420,7 @@ enum _D3D_SHADER_VARIABLE_CLASS
 	D3D_SVC_FORCE_DWORD	= 0x7fffffff
     } 	D3D_SHADER_VARIABLE_CLASS;
 
-typedef 
+typedef
 enum _D3D_SHADER_VARIABLE_FLAGS
     {	D3D_SVF_USERPACKED	= 1,
 	D3D_SVF_USED	= 2,
@@ -469,7 +433,7 @@ enum _D3D_SHADER_VARIABLE_FLAGS
 	D3D_SVF_FORCE_DWORD	= 0x7fffffff
     } 	D3D_SHADER_VARIABLE_FLAGS;
 
-typedef 
+typedef
 enum _D3D_SHADER_VARIABLE_TYPE
     {	D3D_SVT_VOID	= 0,
 	D3D_SVT_BOOL	= 1,
@@ -578,7 +542,7 @@ enum _D3D_SHADER_VARIABLE_TYPE
 	D3D_SVT_FORCE_DWORD	= 0x7fffffff
     } 	D3D_SHADER_VARIABLE_TYPE;
 
-typedef 
+typedef
 enum _D3D_SHADER_INPUT_FLAGS
     {	D3D_SIF_USERPACKED	= 1,
 	D3D_SIF_COMPARISON_SAMPLER	= 2,
@@ -593,7 +557,7 @@ enum _D3D_SHADER_INPUT_FLAGS
 	D3D_SIF_FORCE_DWORD	= 0x7fffffff
     } 	D3D_SHADER_INPUT_FLAGS;
 
-typedef 
+typedef
 enum _D3D_SHADER_INPUT_TYPE
     {	D3D_SIT_CBUFFER	= 0,
 	D3D_SIT_TBUFFER	= ( D3D_SIT_CBUFFER + 1 ) ,
@@ -621,14 +585,14 @@ enum _D3D_SHADER_INPUT_TYPE
 	D3D11_SIT_UAV_RWSTRUCTURED_WITH_COUNTER	= D3D_SIT_UAV_RWSTRUCTURED_WITH_COUNTER
     } 	D3D_SHADER_INPUT_TYPE;
 
-typedef 
+typedef
 enum _D3D_SHADER_CBUFFER_FLAGS
     {	D3D_CBF_USERPACKED	= 1,
 	D3D10_CBF_USERPACKED	= D3D_CBF_USERPACKED,
 	D3D_CBF_FORCE_DWORD	= 0x7fffffff
     } 	D3D_SHADER_CBUFFER_FLAGS;
 
-typedef 
+typedef
 enum _D3D_CBUFFER_TYPE
     {	D3D_CT_CBUFFER	= 0,
 	D3D_CT_TBUFFER	= ( D3D_CT_CBUFFER + 1 ) ,
@@ -642,7 +606,7 @@ enum _D3D_CBUFFER_TYPE
 	D3D11_CT_RESOURCE_BIND_INFO	= D3D_CT_RESOURCE_BIND_INFO
     } 	D3D_CBUFFER_TYPE;
 
-typedef 
+typedef
 enum D3D_NAME
     {	D3D_NAME_UNDEFINED	= 0,
 	D3D_NAME_POSITION	= 1,
@@ -690,7 +654,7 @@ enum D3D_NAME
 	D3D11_NAME_DEPTH_LESS_EQUAL	= D3D_NAME_DEPTH_LESS_EQUAL
     } 	D3D_NAME;
 
-typedef 
+typedef
 enum D3D_RESOURCE_RETURN_TYPE
     {	D3D_RETURN_TYPE_UNORM	= 1,
 	D3D_RETURN_TYPE_SNORM	= 2,
@@ -716,7 +680,7 @@ enum D3D_RESOURCE_RETURN_TYPE
 	D3D11_RETURN_TYPE_CONTINUED	= D3D_RETURN_TYPE_CONTINUED
     } 	D3D_RESOURCE_RETURN_TYPE;
 
-typedef 
+typedef
 enum D3D_REGISTER_COMPONENT_TYPE
     {	D3D_REGISTER_COMPONENT_UNKNOWN	= 0,
 	D3D_REGISTER_COMPONENT_UINT32	= 1,
@@ -728,7 +692,7 @@ enum D3D_REGISTER_COMPONENT_TYPE
 	D3D10_REGISTER_COMPONENT_FLOAT32	= D3D_REGISTER_COMPONENT_FLOAT32
     } 	D3D_REGISTER_COMPONENT_TYPE;
 
-typedef 
+typedef
 enum D3D_TESSELLATOR_DOMAIN
     {	D3D_TESSELLATOR_DOMAIN_UNDEFINED	= 0,
 	D3D_TESSELLATOR_DOMAIN_ISOLINE	= 1,
@@ -740,7 +704,7 @@ enum D3D_TESSELLATOR_DOMAIN
 	D3D11_TESSELLATOR_DOMAIN_QUAD	= D3D_TESSELLATOR_DOMAIN_QUAD
     } 	D3D_TESSELLATOR_DOMAIN;
 
-typedef 
+typedef
 enum D3D_TESSELLATOR_PARTITIONING
     {	D3D_TESSELLATOR_PARTITIONING_UNDEFINED	= 0,
 	D3D_TESSELLATOR_PARTITIONING_INTEGER	= 1,
@@ -754,7 +718,7 @@ enum D3D_TESSELLATOR_PARTITIONING
 	D3D11_TESSELLATOR_PARTITIONING_FRACTIONAL_EVEN	= D3D_TESSELLATOR_PARTITIONING_FRACTIONAL_EVEN
     } 	D3D_TESSELLATOR_PARTITIONING;
 
-typedef 
+typedef
 enum D3D_TESSELLATOR_OUTPUT_PRIMITIVE
     {	D3D_TESSELLATOR_OUTPUT_UNDEFINED	= 0,
 	D3D_TESSELLATOR_OUTPUT_POINT	= 1,
@@ -770,18 +734,11 @@ enum D3D_TESSELLATOR_OUTPUT_PRIMITIVE
 
 DEFINE_GUID(WKPDID_D3DDebugObjectName,0x429b8c22,0x9188,0x4b0c,0x87,0x42,0xac,0xb0,0xbf,0x85,0xc2,0x00);
 
-
 extern RPC_IF_HANDLE __MIDL_itf_d3dcommon_0000_0001_v0_0_c_ifspec;
 extern RPC_IF_HANDLE __MIDL_itf_d3dcommon_0000_0001_v0_0_s_ifspec;
-
-
-
-
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-
-

@@ -1,98 +1,23 @@
-
-
-
-
-
-
-
-
-
 #ifndef __XAUDIO2FX_INCLUDED__
 #define __XAUDIO2FX_INCLUDED__
 
-
-
-
-
-
-
-
-#include "comdecl.h"        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "comdecl.h"
 
 DEFINE_CLSID(AudioVolumeMeter, cac1105f, 619b, 4d04, 83, 1a, 44, e1, cb, f1, 2d, 57);
 DEFINE_CLSID(AudioVolumeMeter_Debug, 2d9a0f9c, e67b, 4b24, ab, 44, 92, b3, e7, 70, c0, 20);
 DEFINE_CLSID(AudioReverb, 6a93130e, 1d53, 41d1, a9, cf, e7, 58, 80, 0b, b1, 79);
 DEFINE_CLSID(AudioReverb_Debug, c4f82dd4, cb4e, 4ce1, 8b, db, ee, 32, d4, 19, 82, 69);
 
-
 #ifndef GUID_DEFS_ONLY
 
 #ifdef _XBOX
-    #include <xobjbase.h>   
+    #include <xobjbase.h>
 #else
-    #include <objbase.h>    
+    #include <objbase.h>
 #endif
-#include <math.h>           
-
-
+#include <math.h>
 
 #pragma pack(push, 1)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifdef __cplusplus
     #define DEFAULT(x) =x
@@ -100,7 +25,7 @@ DEFINE_CLSID(AudioReverb_Debug, c4f82dd4, cb4e, 4ce1, 8b, db, ee, 32, d4, 19, 82
     #define DEFAULT(x)
 #endif
 
-#define XAUDIO2FX_DEBUG 1   
+#define XAUDIO2FX_DEBUG 1
 
 #ifdef _XBOX
 
@@ -117,7 +42,7 @@ DEFINE_CLSID(AudioReverb_Debug, c4f82dd4, cb4e, 4ce1, 8b, db, ee, 32, d4, 19, 82
         return CreateAudioReverb(ppApo);
     }
 
-#else 
+#else
 
     __inline HRESULT XAudio2CreateVolumeMeter(__deref_out IUnknown** ppApo, UINT32 Flags DEFAULT(0))
     {
@@ -145,91 +70,49 @@ DEFINE_CLSID(AudioReverb_Debug, c4f82dd4, cb4e, 4ce1, 8b, db, ee, 32, d4, 19, 82
         #endif
     }
 
-#endif 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif
 
 typedef struct XAUDIO2FX_VOLUMEMETER_LEVELS
 {
-    float* pPeakLevels;  
-                         
-                         
-    float* pRMSLevels;   
-                         
-                         
-    UINT32 ChannelCount; 
+    float* pPeakLevels;
+
+    float* pRMSLevels;
+
+    UINT32 ChannelCount;
 } XAUDIO2FX_VOLUMEMETER_LEVELS;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define XAUDIO2FX_REVERB_MIN_FRAMERATE 20000
 #define XAUDIO2FX_REVERB_MAX_FRAMERATE 48000
 
-
-
 typedef struct XAUDIO2FX_REVERB_PARAMETERS
 {
-    
-    float WetDryMix;            
 
-    
-    UINT32 ReflectionsDelay;    
-    BYTE ReverbDelay;           
-    BYTE RearDelay;             
+    float WetDryMix;
 
-    
-    BYTE PositionLeft;          
-    BYTE PositionRight;         
-    BYTE PositionMatrixLeft;    
-    BYTE PositionMatrixRight;   
-    BYTE EarlyDiffusion;        
-    BYTE LateDiffusion;         
-    BYTE LowEQGain;             
-    BYTE LowEQCutoff;           
-    BYTE HighEQGain;            
-    BYTE HighEQCutoff;          
+    UINT32 ReflectionsDelay;
+    BYTE ReverbDelay;
+    BYTE RearDelay;
 
-    
-    float RoomFilterFreq;       
-    float RoomFilterMain;       
-    float RoomFilterHF;         
-    float ReflectionsGain;      
-    float ReverbGain;           
-    float DecayTime;            
-    float Density;              
-    float RoomSize;             
+    BYTE PositionLeft;
+    BYTE PositionRight;
+    BYTE PositionMatrixLeft;
+    BYTE PositionMatrixRight;
+    BYTE EarlyDiffusion;
+    BYTE LateDiffusion;
+    BYTE LowEQGain;
+    BYTE LowEQCutoff;
+    BYTE HighEQGain;
+    BYTE HighEQCutoff;
+
+    float RoomFilterFreq;
+    float RoomFilterMain;
+    float RoomFilterHF;
+    float ReflectionsGain;
+    float ReverbGain;
+    float DecayTime;
+    float Density;
+    float RoomSize;
 } XAUDIO2FX_REVERB_PARAMETERS;
-
-
 
 #define XAUDIO2FX_REVERB_MIN_WET_DRY_MIX            0.0f
 #define XAUDIO2FX_REVERB_MIN_REFLECTIONS_DELAY      0
@@ -289,31 +172,24 @@ typedef struct XAUDIO2FX_REVERB_PARAMETERS
 #define XAUDIO2FX_REVERB_DEFAULT_DENSITY            100.0f
 #define XAUDIO2FX_REVERB_DEFAULT_ROOM_SIZE          100.0f
 
-
-
-
 typedef struct XAUDIO2FX_REVERB_I3DL2_PARAMETERS
 {
-    
-    float WetDryMix;            
 
-    
-    INT32 Room;                 
-    INT32 RoomHF;               
-    float RoomRolloffFactor;    
-    float DecayTime;            
-    float DecayHFRatio;         
-    INT32 Reflections;          
-    float ReflectionsDelay;     
-    INT32 Reverb;               
-    float ReverbDelay;          
-    float Diffusion;            
-    float Density;              
-    float HFReference;          
+    float WetDryMix;
+
+    INT32 Room;
+    INT32 RoomHF;
+    float RoomRolloffFactor;
+    float DecayTime;
+    float DecayHFRatio;
+    INT32 Reflections;
+    float ReflectionsDelay;
+    INT32 Reverb;
+    float ReverbDelay;
+    float Diffusion;
+    float Density;
+    float HFReference;
 } XAUDIO2FX_REVERB_I3DL2_PARAMETERS;
-
-
-
 
 __inline void ReverbConvertI3DL2ToNative
 (
@@ -324,19 +200,15 @@ __inline void ReverbConvertI3DL2ToNative
     float reflectionsDelay;
     float reverbDelay;
 
-    
-
-    
-    pNative->RearDelay = XAUDIO2FX_REVERB_DEFAULT_REAR_DELAY; 
-    pNative->PositionLeft = XAUDIO2FX_REVERB_DEFAULT_POSITION; 
-    pNative->PositionRight = XAUDIO2FX_REVERB_DEFAULT_POSITION; 
-    pNative->PositionMatrixLeft = XAUDIO2FX_REVERB_DEFAULT_POSITION_MATRIX; 
-    pNative->PositionMatrixRight = XAUDIO2FX_REVERB_DEFAULT_POSITION_MATRIX; 
-    pNative->RoomSize = XAUDIO2FX_REVERB_DEFAULT_ROOM_SIZE; 
+    pNative->RearDelay = XAUDIO2FX_REVERB_DEFAULT_REAR_DELAY;
+    pNative->PositionLeft = XAUDIO2FX_REVERB_DEFAULT_POSITION;
+    pNative->PositionRight = XAUDIO2FX_REVERB_DEFAULT_POSITION;
+    pNative->PositionMatrixLeft = XAUDIO2FX_REVERB_DEFAULT_POSITION_MATRIX;
+    pNative->PositionMatrixRight = XAUDIO2FX_REVERB_DEFAULT_POSITION_MATRIX;
+    pNative->RoomSize = XAUDIO2FX_REVERB_DEFAULT_ROOM_SIZE;
     pNative->LowEQCutoff = 4;
     pNative->HighEQCutoff = 6;
 
-    
     pNative->RoomFilterMain = (float)pI3DL2->Room / 100.0f;
     pNative->RoomFilterHF = (float)pI3DL2->RoomHF / 100.0f;
 
@@ -358,7 +230,7 @@ __inline void ReverbConvertI3DL2ToNative
     }
 
     reflectionsDelay = pI3DL2->ReflectionsDelay * 1000.0f;
-    if (reflectionsDelay >= XAUDIO2FX_REVERB_MAX_REFLECTIONS_DELAY) 
+    if (reflectionsDelay >= XAUDIO2FX_REVERB_MAX_REFLECTIONS_DELAY)
     {
         reflectionsDelay = (float)(XAUDIO2FX_REVERB_MAX_REFLECTIONS_DELAY - 1);
     }
@@ -369,7 +241,7 @@ __inline void ReverbConvertI3DL2ToNative
     pNative->ReflectionsDelay = (UINT32)reflectionsDelay;
 
     reverbDelay = pI3DL2->ReverbDelay * 1000.0f;
-    if (reverbDelay >= XAUDIO2FX_REVERB_MAX_REVERB_DELAY) 
+    if (reverbDelay >= XAUDIO2FX_REVERB_MAX_REVERB_DELAY)
     {
         reverbDelay = (float)(XAUDIO2FX_REVERB_MAX_REVERB_DELAY - 1);
     }
@@ -384,13 +256,6 @@ __inline void ReverbConvertI3DL2ToNative
 
     pNative->WetDryMix = pI3DL2->WetDryMix;
 }
-
-
-
-
-
-
-
 
 #define XAUDIO2FX_I3DL2_PRESET_DEFAULT         {100,-10000,    0,0.0f, 1.00f,0.50f,-10000,0.020f,-10000,0.040f,100.0f,100.0f,5000.0f}
 #define XAUDIO2FX_I3DL2_PRESET_GENERIC         {100, -1000, -100,0.0f, 1.49f,0.83f, -2602,0.007f,   200,0.011f,100.0f,100.0f,5000.0f}
@@ -423,9 +288,7 @@ __inline void ReverbConvertI3DL2ToNative
 #define XAUDIO2FX_I3DL2_PRESET_LARGEHALL       {100, -1000, -600,0.0f, 1.80f,0.70f, -2000,0.030f, -1400,0.060f,100.0f,100.0f,5000.0f}
 #define XAUDIO2FX_I3DL2_PRESET_PLATE           {100, -1000, -200,0.0f, 1.30f,0.90f,     0,0.002f,     0,0.010f,100.0f, 75.0f,5000.0f}
 
-
-
 #pragma pack(pop)
 
-#endif 
-#endif 
+#endif
+#endif

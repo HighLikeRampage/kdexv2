@@ -1,53 +1,17 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "imgui.h"
 #ifndef IMGUI_DISABLE
 #include "imgui_freetype.h"
-#include "imgui_internal.h"     
+#include "imgui_internal.h"
 #include <stdint.h>
 #include <ft2build.h>
-#include FT_FREETYPE_H          
-#include FT_MODULE_H            
-#include FT_GLYPH_H             
-#include FT_SYNTHESIS_H         
+#include FT_FREETYPE_H
+#include FT_MODULE_H
+#include FT_GLYPH_H
+#include FT_SYNTHESIS_H
 
 #ifdef IMGUI_ENABLE_FREETYPE_LUNASVG
-#include FT_OTSVG_H             
-#include FT_BBOX_H              
+#include FT_OTSVG_H
+#include FT_BBOX_H
 #include <lunasvg.h>
 #if !((FREETYPE_MAJOR >= 2) && (FREETYPE_MINOR >= 12))
 #error IMGUI_ENABLE_FREETYPE_LUNASVG requires FreeType version >= 2.12
@@ -56,32 +20,25 @@
 
 #ifdef _MSC_VER
 #pragma warning (push)
-#pragma warning (disable: 4505)     
-#pragma warning (disable: 26812)    
+#pragma warning (disable: 4505)
+#pragma warning (disable: 26812)
 #endif
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpragmas"                  
-#pragma GCC diagnostic ignored "-Wunused-function"          
+#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wunused-function"
 #ifndef __clang__
-#pragma GCC diagnostic ignored "-Wsubobject-linkage"        
+#pragma GCC diagnostic ignored "-Wsubobject-linkage"
 #endif
 #endif
-
-
-
-
-
 
 static void* ImGuiFreeTypeDefaultAllocFunc(size_t size, void* user_data) { IM_UNUSED(user_data); return IM_ALLOC(size); }
 static void  ImGuiFreeTypeDefaultFreeFunc(void* ptr, void* user_data) { IM_UNUSED(user_data); IM_FREE(ptr); }
 
-
 static void* (*GImGuiFreeTypeAllocFunc)(size_t size, void* user_data) = ImGuiFreeTypeDefaultAllocFunc;
 static void  (*GImGuiFreeTypeFreeFunc)(void* ptr, void* user_data) = ImGuiFreeTypeDefaultFreeFunc;
 static void* GImGuiFreeTypeAllocatorUserData = nullptr;
-
 
 #ifdef IMGUI_ENABLE_FREETYPE_LUNASVG
 static FT_Error ImGuiLunasvgPortInit(FT_Pointer* state);
@@ -90,88 +47,48 @@ static FT_Error ImGuiLunasvgPortRender(FT_GlyphSlot slot, FT_Pointer* _state);
 static FT_Error ImGuiLunasvgPortPresetSlot(FT_GlyphSlot slot, FT_Bool cache, FT_Pointer* _state);
 #endif
 
-
-
-
-
 namespace
 {
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
-    
     struct GlyphInfo
     {
-        int         Width;              
-        int         Height;             
-        FT_Int      OffsetX;            
-        FT_Int      OffsetY;            
-        float       AdvanceX;           
-        bool        IsColored;          
+        int         Width;
+        int         Height;
+        FT_Int      OffsetX;
+        FT_Int      OffsetY;
+        float       AdvanceX;
+        bool        IsColored;
     };
 
-    
     struct FontInfo
     {
-        uint32_t    PixelHeight;        
-        float       Ascender;           
-        float       Descender;          
-        float       LineSpacing;        
-        float       LineGap;            
-        float       MaxAdvanceWidth;    
+        uint32_t    PixelHeight;
+        float       Ascender;
+        float       Descender;
+        float       LineSpacing;
+        float       LineGap;
+        float       MaxAdvanceWidth;
     };
 
-    
-    
     struct FreeTypeFont
     {
-        bool                    InitFont(FT_Library ft_library, const ImFontConfig& cfg, unsigned int extra_user_flags); 
+        bool                    InitFont(FT_Library ft_library, const ImFontConfig& cfg, unsigned int extra_user_flags);
         void                    CloseFont();
-        void                    SetPixelHeight(int pixel_height); 
+        void                    SetPixelHeight(int pixel_height);
         const FT_Glyph_Metrics* LoadGlyph(uint32_t in_codepoint);
         const FT_Bitmap*        RenderGlyphAndGetInfo(GlyphInfo* out_glyph_info);
         void                    BlitGlyph(const FT_Bitmap* ft_bitmap, uint32_t* dst, uint32_t dst_pitch, unsigned char* multiply_table = nullptr);
         ~FreeTypeFont()         { CloseFont(); }
 
-        
-        FontInfo        Info;               
+        FontInfo        Info;
         FT_Face         Face;
-        unsigned int    UserFlags;          
+        unsigned int    UserFlags;
         FT_Int32        LoadFlags;
         FT_Render_Mode  RenderMode;
         float           RasterizationDensity;
         float           InvRasterizationDensity;
     };
 
-    
     #define FT_CEIL(X)  (((X + 63) & -64) / 64)
 
     bool FreeTypeFont::InitFont(FT_Library ft_library, const ImFontConfig& cfg, unsigned int extra_font_builder_flags)
@@ -183,7 +100,6 @@ namespace
         if (error != 0)
             return false;
 
-        
         UserFlags = cfg.FontBuilderFlags | extra_font_builder_flags;
 
         LoadFlags = 0;
@@ -231,9 +147,7 @@ namespace
 
     void FreeTypeFont::SetPixelHeight(int pixel_height)
     {
-        
-        
-        
+
         FT_Size_RequestRec req;
         req.type = (UserFlags & ImGuiFreeTypeBuilderFlags_Bitmap) ? FT_SIZE_REQUEST_TYPE_NOMINAL : FT_SIZE_REQUEST_TYPE_REAL_DIM;
         req.width = 0;
@@ -242,7 +156,6 @@ namespace
         req.vertResolution = 0;
         FT_Request_Size(Face, &req);
 
-        
         FT_Size_Metrics metrics = Face->size->metrics;
         Info.PixelHeight = (uint32_t)(pixel_height * InvRasterizationDensity);
         Info.Ascender = (float)FT_CEIL(metrics.ascender) * InvRasterizationDensity;
@@ -258,16 +171,10 @@ namespace
         if (glyph_index == 0)
             return nullptr;
 
-		
-		
-		
-		
-		
         FT_Error error = FT_Load_Glyph(Face, glyph_index, LoadFlags);
         if (error)
             return nullptr;
 
-        
         FT_GlyphSlot slot = Face->glyph;
 #ifdef IMGUI_ENABLE_FREETYPE_LUNASVG
         IM_ASSERT(slot->format == FT_GLYPH_FORMAT_OUTLINE || slot->format == FT_GLYPH_FORMAT_BITMAP || slot->format == FT_GLYPH_FORMAT_SVG);
@@ -276,18 +183,14 @@ namespace
         IM_ASSERT(slot->format != FT_GLYPH_FORMAT_SVG && IM_STR("The font contains SVG glyphs, you'll need to enable IMGUI_ENABLE_FREETYPE_LUNASVG in imconfig.h and install required libraries in order to use this font"));
 #endif
         IM_ASSERT(slot->format == FT_GLYPH_FORMAT_OUTLINE || slot->format == FT_GLYPH_FORMAT_BITMAP);
-#endif 
+#endif
 
-        
         if (UserFlags & ImGuiFreeTypeBuilderFlags_Bold)
             FT_GlyphSlot_Embolden(slot);
         if (UserFlags & ImGuiFreeTypeBuilderFlags_Oblique)
         {
             FT_GlyphSlot_Oblique(slot);
-            
-            
-            
-            
+
         }
 
         return &slot->metrics;
@@ -321,7 +224,7 @@ namespace
 
         switch (ft_bitmap->pixel_mode)
         {
-        case FT_PIXEL_MODE_GRAY: 
+        case FT_PIXEL_MODE_GRAY:
             {
                 if (multiply_table == nullptr)
                 {
@@ -337,7 +240,7 @@ namespace
                 }
                 break;
             }
-        case FT_PIXEL_MODE_MONO: 
+        case FT_PIXEL_MODE_MONO:
             {
                 uint8_t color0 = multiply_table ? multiply_table[0] : 0;
                 uint8_t color1 = multiply_table ? multiply_table[255] : 255;
@@ -356,7 +259,7 @@ namespace
             }
         case FT_PIXEL_MODE_BGRA:
             {
-                
+
                 #define DE_MULTIPLY(color, alpha) (ImU32)(255.0f * (float)color / (float)alpha + 0.5f)
                 if (multiply_table == nullptr)
                 {
@@ -385,9 +288,9 @@ namespace
             IM_ASSERT(0 && IM_STR("FreeTypeFont::BlitGlyph(): Unknown bitmap pixel mode!"));
         }
     }
-} 
+}
 
-#ifndef STB_RECT_PACK_IMPLEMENTATION                        
+#ifndef STB_RECT_PACK_IMPLEMENTATION
 #ifndef IMGUI_DISABLE_STB_RECT_PACK_IMPLEMENTATION
 #define STBRP_ASSERT(x)     do { IM_ASSERT(x); } while (0)
 #define STBRP_STATIC
@@ -404,7 +307,7 @@ struct ImFontBuildSrcGlyphFT
 {
     GlyphInfo           Info;
     uint32_t            Codepoint;
-    unsigned int*       BitmapData;         
+    unsigned int*       BitmapData;
 
     ImFontBuildSrcGlyphFT() { memset((void*)this, 0, sizeof(*this)); }
 };
@@ -412,22 +315,21 @@ struct ImFontBuildSrcGlyphFT
 struct ImFontBuildSrcDataFT
 {
     FreeTypeFont        Font;
-    stbrp_rect*         Rects;              
-    const ImWchar*      SrcRanges;          
-    int                 DstIndex;           
-    int                 GlyphsHighest;      
-    int                 GlyphsCount;        
-    ImBitVector         GlyphsSet;          
+    stbrp_rect*         Rects;
+    const ImWchar*      SrcRanges;
+    int                 DstIndex;
+    int                 GlyphsHighest;
+    int                 GlyphsCount;
+    ImBitVector         GlyphsSet;
     ImVector<ImFontBuildSrcGlyphFT>   GlyphsList;
 };
 
-
 struct ImFontBuildDstDataFT
 {
-    int                 SrcCount;           
+    int                 SrcCount;
     int                 GlyphsHighest;
     int                 GlyphsCount;
-    ImBitVector         GlyphsSet;          
+    ImBitVector         GlyphsSet;
 };
 
 bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, unsigned int extra_flags)
@@ -436,14 +338,12 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
 
     ImFontAtlasBuildInit(atlas);
 
-    
     atlas->TexID = 0;
     atlas->TexWidth = atlas->TexHeight = 0;
     atlas->TexUvScale = ImVec2(0.0f, 0.0f);
     atlas->TexUvWhitePixel = ImVec2(0.0f, 0.0f);
     atlas->ClearTexData();
 
-    
     bool src_load_color = false;
     ImVector<ImFontBuildSrcDataFT> src_tmp_array;
     ImVector<ImFontBuildDstDataFT> dst_tmp_array;
@@ -452,7 +352,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
     memset((void*)src_tmp_array.Data, 0, (size_t)src_tmp_array.size_in_bytes());
     memset((void*)dst_tmp_array.Data, 0, (size_t)dst_tmp_array.size_in_bytes());
 
-    
     for (int src_i = 0; src_i < atlas->ConfigData.Size; src_i++)
     {
         ImFontBuildSrcDataFT& src_tmp = src_tmp_array[src_i];
@@ -460,27 +359,23 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
         FreeTypeFont& font_face = src_tmp.Font;
         IM_ASSERT(cfg.DstFont && (!cfg.DstFont->IsLoaded() || cfg.DstFont->ContainerAtlas == atlas));
 
-        
         src_tmp.DstIndex = -1;
         for (int output_i = 0; output_i < atlas->Fonts.Size && src_tmp.DstIndex == -1; output_i++)
             if (cfg.DstFont == atlas->Fonts[output_i])
                 src_tmp.DstIndex = output_i;
-        IM_ASSERT(src_tmp.DstIndex != -1); 
+        IM_ASSERT(src_tmp.DstIndex != -1);
         if (src_tmp.DstIndex == -1)
             return false;
 
-        
         if (!font_face.InitFont(ft_library, cfg, extra_flags))
             return false;
 
-        
         src_load_color |= (cfg.FontBuilderFlags & ImGuiFreeTypeBuilderFlags_LoadColor) != 0;
         ImFontBuildDstDataFT& dst_tmp = dst_tmp_array[src_tmp.DstIndex];
         src_tmp.SrcRanges = cfg.GlyphRanges ? cfg.GlyphRanges : atlas->GetGlyphRangesDefault();
         for (const ImWchar* src_range = src_tmp.SrcRanges; src_range[0] && src_range[1]; src_range += 2)
         {
-            
-            
+
             IM_ASSERT(src_range[0] <= src_range[1]);
             src_tmp.GlyphsHighest = ImMax(src_tmp.GlyphsHighest, (int)src_range[1]);
         }
@@ -488,7 +383,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
         dst_tmp.GlyphsHighest = ImMax(dst_tmp.GlyphsHighest, src_tmp.GlyphsHighest);
     }
 
-    
     int total_glyphs_count = 0;
     for (int src_i = 0; src_i < src_tmp_array.Size; src_i++)
     {
@@ -501,13 +395,12 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
         for (const ImWchar* src_range = src_tmp.SrcRanges; src_range[0] && src_range[1]; src_range += 2)
             for (int codepoint = src_range[0]; codepoint <= (int)src_range[1]; codepoint++)
             {
-                if (dst_tmp.GlyphsSet.TestBit(codepoint))    
+                if (dst_tmp.GlyphsSet.TestBit(codepoint))
                     continue;
-                uint32_t glyph_index = FT_Get_Char_Index(src_tmp.Font.Face, codepoint); 
+                uint32_t glyph_index = FT_Get_Char_Index(src_tmp.Font.Face, codepoint);
                 if (glyph_index == 0)
                     continue;
 
-                
                 src_tmp.GlyphsCount++;
                 dst_tmp.GlyphsCount++;
                 src_tmp.GlyphsSet.SetBit(codepoint);
@@ -516,7 +409,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
             }
     }
 
-    
     for (int src_i = 0; src_i < src_tmp_array.Size; src_i++)
     {
         ImFontBuildSrcDataFT& src_tmp = src_tmp_array[src_i];
@@ -532,7 +424,7 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
                     {
                         ImFontBuildSrcGlyphFT src_glyph;
                         src_glyph.Codepoint = (ImWchar)(((it - it_begin) << 5) + bit_n);
-                        
+
                         src_tmp.GlyphsList.push_back(src_glyph);
                     }
         src_tmp.GlyphsSet.Clear();
@@ -542,23 +434,15 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
         dst_tmp_array[dst_i].GlyphsSet.Clear();
     dst_tmp_array.clear();
 
-    
-    
     ImVector<stbrp_rect> buf_rects;
     buf_rects.resize(total_glyphs_count);
     memset(buf_rects.Data, 0, (size_t)buf_rects.size_in_bytes());
 
-    
-    
-    
-    
     const int BITMAP_BUFFERS_CHUNK_SIZE = 256 * 1024;
     int buf_bitmap_current_used_bytes = 0;
     ImVector<unsigned char*> buf_bitmap_buffers;
     buf_bitmap_buffers.push_back((unsigned char*)IM_ALLOC(BITMAP_BUFFERS_CHUNK_SIZE));
 
-    
-    
     int total_surface = 0;
     int buf_rects_out_n = 0;
     for (int src_i = 0; src_i < src_tmp_array.Size; src_i++)
@@ -571,13 +455,11 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
         src_tmp.Rects = &buf_rects[buf_rects_out_n];
         buf_rects_out_n += src_tmp.GlyphsCount;
 
-        
         const bool multiply_enabled = (cfg.RasterizerMultiply != 1.0f);
         unsigned char multiply_table[256];
         if (multiply_enabled)
             ImFontAtlasBuildMultiplyCalcLookupTable(multiply_table, cfg.RasterizerMultiply);
 
-        
         const int padding = atlas->TexGlyphPadding;
         for (int glyph_i = 0; glyph_i < src_tmp.GlyphsList.Size; glyph_i++)
         {
@@ -587,21 +469,18 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
             if (metrics == nullptr)
                 continue;
 
-            
             const FT_Bitmap* ft_bitmap = src_tmp.Font.RenderGlyphAndGetInfo(&src_glyph.Info);
             if (ft_bitmap == nullptr)
                 continue;
 
-            
             const int bitmap_size_in_bytes = src_glyph.Info.Width * src_glyph.Info.Height * 4;
             if (buf_bitmap_current_used_bytes + bitmap_size_in_bytes > BITMAP_BUFFERS_CHUNK_SIZE)
             {
                 buf_bitmap_current_used_bytes = 0;
                 buf_bitmap_buffers.push_back((unsigned char*)IM_ALLOC(BITMAP_BUFFERS_CHUNK_SIZE));
             }
-            IM_ASSERT(buf_bitmap_current_used_bytes + bitmap_size_in_bytes <= BITMAP_BUFFERS_CHUNK_SIZE); 
+            IM_ASSERT(buf_bitmap_current_used_bytes + bitmap_size_in_bytes <= BITMAP_BUFFERS_CHUNK_SIZE);
 
-            
             src_glyph.BitmapData = (unsigned int*)(buf_bitmap_buffers.back() + buf_bitmap_current_used_bytes);
             buf_bitmap_current_used_bytes += bitmap_size_in_bytes;
             src_tmp.Font.BlitGlyph(ft_bitmap, src_glyph.BitmapData, src_glyph.Info.Width, multiply_enabled ? multiply_table : nullptr);
@@ -612,9 +491,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
         }
     }
 
-    
-    
-    
     const int surface_sqrt = (int)ImSqrt((float)total_surface) + 1;
     atlas->TexHeight = 0;
     if (atlas->TexDesiredWidth > 0)
@@ -622,8 +498,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
     else
         atlas->TexWidth = (surface_sqrt >= 4096 * 0.7f) ? 4096 : (surface_sqrt >= 2048 * 0.7f) ? 2048 : (surface_sqrt >= 1024 * 0.7f) ? 1024 : 512;
 
-    
-    
     const int TEX_HEIGHT_MAX = 1024 * 32;
     const int num_nodes_for_packing_algorithm = atlas->TexWidth - atlas->TexGlyphPadding;
     ImVector<stbrp_node> pack_nodes;
@@ -632,7 +506,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
     stbrp_init_target(&pack_context, atlas->TexWidth - atlas->TexGlyphPadding, TEX_HEIGHT_MAX - atlas->TexGlyphPadding, pack_nodes.Data, pack_nodes.Size);
     ImFontAtlasBuildPackCustomRects(atlas, &pack_context);
 
-    
     for (int src_i = 0; src_i < src_tmp_array.Size; src_i++)
     {
         ImFontBuildSrcDataFT& src_tmp = src_tmp_array[src_i];
@@ -641,14 +514,11 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
 
         stbrp_pack_rects(&pack_context, src_tmp.Rects, src_tmp.GlyphsCount);
 
-        
-        
         for (int glyph_i = 0; glyph_i < src_tmp.GlyphsCount; glyph_i++)
             if (src_tmp.Rects[glyph_i].was_packed)
                 atlas->TexHeight = ImMax(atlas->TexHeight, src_tmp.Rects[glyph_i].y + src_tmp.Rects[glyph_i].h);
     }
 
-    
     atlas->TexHeight = (atlas->Flags & ImFontAtlasFlags_NoPowerOfTwoHeight) ? (atlas->TexHeight + 1) : ImUpperPowerOfTwo(atlas->TexHeight);
     atlas->TexUvScale = ImVec2(1.0f / atlas->TexWidth, 1.0f / atlas->TexHeight);
     if (src_load_color)
@@ -664,8 +534,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
         memset(atlas->TexPixelsAlpha8, 0, tex_size);
     }
 
-    
-    
     bool tex_use_colors = false;
     for (int src_i = 0; src_i < src_tmp_array.Size; src_i++)
     {
@@ -673,9 +541,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
         if (src_tmp.GlyphsCount == 0)
             continue;
 
-        
-        
-        
         ImFontConfig& cfg = atlas->ConfigData[src_i];
         ImFont* dst_font = cfg.DstFont;
 
@@ -700,7 +565,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
             const int tx = pack_rect.x + padding;
             const int ty = pack_rect.y + padding;
 
-            
             float x0 = info.OffsetX * src_tmp.Font.InvRasterizationDensity + font_off_x;
             float y0 = info.OffsetY * src_tmp.Font.InvRasterizationDensity + font_off_y;
             float x1 = x0 + info.Width * src_tmp.Font.InvRasterizationDensity;
@@ -716,7 +580,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
             if (src_glyph.Info.IsColored)
                 dst_glyph->Colored = tex_use_colors = true;
 
-            
             size_t blit_src_stride = (size_t)src_glyph.Info.Width;
             size_t blit_dst_stride = (size_t)atlas->TexWidth;
             unsigned int* blit_src = src_glyph.BitmapData;
@@ -740,7 +603,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
     }
     atlas->TexPixelsUseColors = tex_use_colors;
 
-    
     for (int buf_i = 0; buf_i < buf_bitmap_buffers.Size; buf_i++)
         IM_FREE(buf_bitmap_buffers[buf_i]);
     src_tmp_array.clear_destruct();
@@ -749,7 +611,6 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
 
     return true;
 }
-
 
 static void* FreeType_Alloc(FT_Memory , long size)
 {
@@ -763,7 +624,7 @@ static void FreeType_Free(FT_Memory , void* block)
 
 static void* FreeType_Realloc(FT_Memory , long cur_size, long new_size, void* block)
 {
-    
+
     if (block == nullptr)
         return GImGuiFreeTypeAllocFunc((size_t)new_size, GImGuiFreeTypeAllocatorUserData);
 
@@ -786,29 +647,25 @@ static void* FreeType_Realloc(FT_Memory , long cur_size, long new_size, void* bl
 
 static bool ImFontAtlasBuildWithFreeType(ImFontAtlas* atlas)
 {
-    
+
     FT_MemoryRec_ memory_rec = {};
     memory_rec.user = nullptr;
     memory_rec.alloc = &FreeType_Alloc;
     memory_rec.free = &FreeType_Free;
     memory_rec.realloc = &FreeType_Realloc;
 
-    
     FT_Library ft_library;
     FT_Error error = FT_New_Library(&memory_rec, &ft_library);
     if (error != 0)
         return false;
 
-    
     FT_Add_Default_Modules(ft_library);
 
 #ifdef IMGUI_ENABLE_FREETYPE_LUNASVG
-    
-    
-    
+
     SVG_RendererHooks hooks = { ImGuiLunasvgPortInit, ImGuiLunasvgPortFree, ImGuiLunasvgPortRender, ImGuiLunasvgPortPresetSlot };
     FT_Property_Set(ft_library, xorstr_lite("ot-svg"), xorstr_lite("svg-hooks"), &hooks);
-#endif 
+#endif
 
     bool ret = ImFontAtlasBuildWithFreeTypeEx(ft_library, atlas, atlas->FontBuilderFlags);
     FT_Done_Library(ft_library);
@@ -832,7 +689,6 @@ void ImGuiFreeType::SetAllocatorFunctions(void* (*alloc_func)(size_t sz, void* u
 
 #ifdef IMGUI_ENABLE_FREETYPE_LUNASVG
 
-
 struct LunasvgPortState
 {
     FT_Error            err = FT_Err_Ok;
@@ -855,14 +711,12 @@ static FT_Error ImGuiLunasvgPortRender(FT_GlyphSlot slot, FT_Pointer* _state)
 {
     LunasvgPortState* state = *(LunasvgPortState**)_state;
 
-    
     if (state->err != FT_Err_Ok)
         return state->err;
 
-    
     lunasvg::Bitmap bitmap((uint8_t*)slot->bitmap.buffer, slot->bitmap.width, slot->bitmap.rows, slot->bitmap.pitch);
-    state->svg->setMatrix(state->svg->matrix().identity()); 
-    state->svg->render(bitmap, state->matrix);              
+    state->svg->setMatrix(state->svg->matrix().identity());
+    state->svg->render(bitmap, state->matrix);
     state->err = FT_Err_Ok;
     return state->err;
 }
@@ -873,8 +727,6 @@ static FT_Error ImGuiLunasvgPortPresetSlot(FT_GlyphSlot slot, FT_Bool cache, FT_
     LunasvgPortState* state = *(LunasvgPortState**)_state;
     FT_Size_Metrics&  metrics = document->metrics;
 
-    
-    
     if (cache)
         return state->err;
 
@@ -894,19 +746,15 @@ static FT_Error ImGuiLunasvgPortPresetSlot(FT_GlyphSlot slot, FT_Bool cache, FT_
     double x0 = (double)document->delta.x / 64 * box.w / metrics.x_ppem;
     double y0 = -(double)document->delta.y / 64 * box.h / metrics.y_ppem;
 
-    
     state->matrix.identity();
     state->matrix.scale(scale, scale);
     state->matrix.transform(xx, xy, yx, yy, x0, y0);
     state->svg->setMatrix(state->matrix);
 
-    
     state->matrix.translate(-box.x, -box.y);
 
-    
     box = state->svg->box();
 
-    
     slot->bitmap_left = FT_Int(box.x);
     slot->bitmap_top = FT_Int(-box.y);
     slot->bitmap.rows = (unsigned int)(ImCeil((float)box.h));
@@ -914,14 +762,13 @@ static FT_Error ImGuiLunasvgPortPresetSlot(FT_GlyphSlot slot, FT_Bool cache, FT_
     slot->bitmap.pitch = slot->bitmap.width * 4;
     slot->bitmap.pixel_mode = FT_PIXEL_MODE_BGRA;
 
-    
     double metrics_width = box.w;
     double metrics_height = box.h;
     double horiBearingX = box.x;
     double horiBearingY = -box.y;
     double vertBearingX = slot->metrics.horiBearingX / 64.0 - slot->metrics.horiAdvance / 64.0 / 2.0;
     double vertBearingY = (slot->metrics.vertAdvance / 64.0 - slot->metrics.height / 64.0) / 2.0;
-    slot->metrics.width = FT_Pos(IM_ROUND(metrics_width * 64.0));   
+    slot->metrics.width = FT_Pos(IM_ROUND(metrics_width * 64.0));
     slot->metrics.height = FT_Pos(IM_ROUND(metrics_height * 64.0));
     slot->metrics.horiBearingX = FT_Pos(horiBearingX * 64);
     slot->metrics.horiBearingY = FT_Pos(horiBearingY * 64);
@@ -935,9 +782,7 @@ static FT_Error ImGuiLunasvgPortPresetSlot(FT_GlyphSlot slot, FT_Bool cache, FT_
     return state->err;
 }
 
-#endif 
-
-
+#endif
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
@@ -947,4 +792,4 @@ static FT_Error ImGuiLunasvgPortPresetSlot(FT_GlyphSlot slot, FT_Bool cache, FT_
 #pragma warning (pop)
 #endif
 
-#endif 
+#endif

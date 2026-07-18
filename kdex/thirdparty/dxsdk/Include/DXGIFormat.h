@@ -1,4 +1,3 @@
-
 #ifndef __dxgiformat_h__
 #define __dxgiformat_h__
 
@@ -109,4 +108,4 @@ typedef enum DXGI_FORMAT
     DXGI_FORMAT_FORCE_UINT                  = 0xffffffff
 } DXGI_FORMAT;
 
-#endif 
+#endif

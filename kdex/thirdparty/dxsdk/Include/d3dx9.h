@@ -1,20 +1,9 @@
-
-
-
-
-
-
-
-
-
 #ifdef  __D3DX_INTERNAL__
 #error Incorrect D3DX header used
 #endif
 
 #ifndef __D3DX9_H__
 #define __D3DX9_H__
-
-
 
 #include <limits.h>
 
@@ -40,9 +29,6 @@
 #endif
 #endif
 
-
-
-
 #include "d3d9.h"
 #include "d3dx9math.h"
 #include "d3dx9core.h"
@@ -54,9 +40,6 @@
 #include "d3dx9tex.h"
 #include "d3dx9shape.h"
 #include "d3dx9anim.h"
-
-
-
 
 #define _FACDD  0x876
 #define MAKE_DDHRESULT( code )  MAKE_HRESULT( 1, _FACDD, code )
@@ -73,6 +56,4 @@ enum _D3DXERR {
 	D3DXERR_CANNOTREMOVELASTITEM		= MAKE_DDHRESULT(2908),
 };
 
-
-#endif 
-
+#endif

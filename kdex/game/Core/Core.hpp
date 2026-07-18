@@ -46,7 +46,6 @@ inline void StartNativeCaller() {
   }
 }
 
-
 inline void StartFakeFps() {
   FakeFps::g_FakeFps.Start();
   while (!g_Variables.g_Unload) {

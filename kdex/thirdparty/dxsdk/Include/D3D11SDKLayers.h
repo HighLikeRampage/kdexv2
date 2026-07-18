@@ -1,27 +1,8 @@
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-#pragma warning( disable: 4049 )  
-
-
+#pragma warning( disable: 4049 )
 
 #ifndef __REQUIRED_RPCNDR_H_VERSION__
 #define __REQUIRED_RPCNDR_H_VERSION__ 475
 #endif
-
 
 #ifndef __REQUIRED_RPCSAL_H_VERSION__
 #define __REQUIRED_RPCSAL_H_VERSION__ 100
@@ -32,12 +13,12 @@
 
 #ifndef __RPCNDR_H_VERSION__
 #error this stub requires an updated version of <rpcndr.h>
-#endif 
+#endif
 
 #ifndef COM_NO_WINDOWS_H
 #include "windows.h"
 #include "ole2.h"
-#endif 
+#endif
 
 #ifndef __d3d11sdklayers_h__
 #define __d3d11sdklayers_h__
@@ -46,26 +27,20 @@
 #pragma once
 #endif
 
- 
-
 #ifndef __ID3D11Debug_FWD_DEFINED__
 #define __ID3D11Debug_FWD_DEFINED__
 typedef interface ID3D11Debug ID3D11Debug;
-#endif 	
-
+#endif
 
 #ifndef __ID3D11SwitchToRef_FWD_DEFINED__
 #define __ID3D11SwitchToRef_FWD_DEFINED__
 typedef interface ID3D11SwitchToRef ID3D11SwitchToRef;
-#endif 	
-
+#endif
 
 #ifndef __ID3D11InfoQueue_FWD_DEFINED__
 #define __ID3D11InfoQueue_FWD_DEFINED__
 typedef interface ID3D11InfoQueue ID3D11InfoQueue;
-#endif 	
-
-
+#endif
 
 #include "oaidl.h"
 #include "ocidl.h"
@@ -73,11 +48,7 @@ typedef interface ID3D11InfoQueue ID3D11InfoQueue;
 
 #ifdef __cplusplus
 extern "C"{
-#endif 
-
-
-
- 
+#endif
 
 #define	D3D11_SDK_LAYERS_VERSION	( 1 )
 
@@ -87,7 +58,7 @@ extern "C"{
 
 #define	D3D11_DEBUG_FEATURE_PRESENT_PER_RENDER_OP	( 0x4 )
 
-typedef 
+typedef
 enum D3D11_RLDO_FLAGS
     {	D3D11_RLDO_SUMMARY	= 0x1,
 	D3D11_RLDO_DETAIL	= 0x2
@@ -112,112 +83,107 @@ inline D3D11_RLDO_FLAGS& operator^=( D3D11_RLDO_FLAGS& a, D3D11_RLDO_FLAGS b )
 extern "C"{
 #endif
 
-
 extern RPC_IF_HANDLE __MIDL_itf_d3d11sdklayers_0000_0000_v0_0_c_ifspec;
 extern RPC_IF_HANDLE __MIDL_itf_d3d11sdklayers_0000_0000_v0_0_s_ifspec;
 
 #ifndef __ID3D11Debug_INTERFACE_DEFINED__
 #define __ID3D11Debug_INTERFACE_DEFINED__
 
-
- 
-
-
 EXTERN_C const IID IID_ID3D11Debug;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
-    
+
     MIDL_INTERFACE("79cf2233-7536-4948-9d36-1e4692dc5760")
     ID3D11Debug : public IUnknown
     {
     public:
-        virtual HRESULT STDMETHODCALLTYPE SetFeatureMask( 
+        virtual HRESULT STDMETHODCALLTYPE SetFeatureMask(
             UINT Mask) = 0;
-        
+
         virtual UINT STDMETHODCALLTYPE GetFeatureMask( void) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE SetPresentPerRenderOpDelay( 
+
+        virtual HRESULT STDMETHODCALLTYPE SetPresentPerRenderOpDelay(
             UINT Milliseconds) = 0;
-        
+
         virtual UINT STDMETHODCALLTYPE GetPresentPerRenderOpDelay( void) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE SetSwapChain( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE SetSwapChain(
+
             __in_opt  IDXGISwapChain *pSwapChain) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetSwapChain( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE GetSwapChain(
+
             __out  IDXGISwapChain **ppSwapChain) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE ValidateContext( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE ValidateContext(
+
             __in  ID3D11DeviceContext *pContext) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE ReportLiveDeviceObjects( 
+
+        virtual HRESULT STDMETHODCALLTYPE ReportLiveDeviceObjects(
             D3D11_RLDO_FLAGS Flags) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE ValidateContextForDispatch( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE ValidateContextForDispatch(
+
             __in  ID3D11DeviceContext *pContext) = 0;
-        
+
     };
-    
-#else 	
+
+#else
 
     typedef struct ID3D11DebugVtbl
     {
         BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )(
             ID3D11Debug * This,
              REFIID riid,
-             
+
             __RPC__deref_out  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+
+        ULONG ( STDMETHODCALLTYPE *AddRef )(
             ID3D11Debug * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
+
+        ULONG ( STDMETHODCALLTYPE *Release )(
             ID3D11Debug * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *SetFeatureMask )( 
+
+        HRESULT ( STDMETHODCALLTYPE *SetFeatureMask )(
             ID3D11Debug * This,
             UINT Mask);
-        
-        UINT ( STDMETHODCALLTYPE *GetFeatureMask )( 
+
+        UINT ( STDMETHODCALLTYPE *GetFeatureMask )(
             ID3D11Debug * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *SetPresentPerRenderOpDelay )( 
+
+        HRESULT ( STDMETHODCALLTYPE *SetPresentPerRenderOpDelay )(
             ID3D11Debug * This,
             UINT Milliseconds);
-        
-        UINT ( STDMETHODCALLTYPE *GetPresentPerRenderOpDelay )( 
+
+        UINT ( STDMETHODCALLTYPE *GetPresentPerRenderOpDelay )(
             ID3D11Debug * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *SetSwapChain )( 
+
+        HRESULT ( STDMETHODCALLTYPE *SetSwapChain )(
             ID3D11Debug * This,
-             
+
             __in_opt  IDXGISwapChain *pSwapChain);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetSwapChain )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetSwapChain )(
             ID3D11Debug * This,
-             
+
             __out  IDXGISwapChain **ppSwapChain);
-        
-        HRESULT ( STDMETHODCALLTYPE *ValidateContext )( 
+
+        HRESULT ( STDMETHODCALLTYPE *ValidateContext )(
             ID3D11Debug * This,
-             
+
             __in  ID3D11DeviceContext *pContext);
-        
-        HRESULT ( STDMETHODCALLTYPE *ReportLiveDeviceObjects )( 
+
+        HRESULT ( STDMETHODCALLTYPE *ReportLiveDeviceObjects )(
             ID3D11Debug * This,
             D3D11_RLDO_FLAGS Flags);
-        
-        HRESULT ( STDMETHODCALLTYPE *ValidateContextForDispatch )( 
+
+        HRESULT ( STDMETHODCALLTYPE *ValidateContextForDispatch )(
             ID3D11Debug * This,
-             
+
             __in  ID3D11DeviceContext *pContext);
-        
+
         END_INTERFACE
     } ID3D11DebugVtbl;
 
@@ -226,106 +192,93 @@ EXTERN_C const IID IID_ID3D11Debug;
         CONST_VTBL struct ID3D11DebugVtbl *lpVtbl;
     };
 
-    
-
 #ifdef COBJMACROS
 
-
 #define ID3D11Debug_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) )
 
 #define ID3D11Debug_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
+    ( (This)->lpVtbl -> AddRef(This) )
 
 #define ID3D11Debug_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
+    ( (This)->lpVtbl -> Release(This) )
 
 #define ID3D11Debug_SetFeatureMask(This,Mask)	\
-    ( (This)->lpVtbl -> SetFeatureMask(This,Mask) ) 
+    ( (This)->lpVtbl -> SetFeatureMask(This,Mask) )
 
 #define ID3D11Debug_GetFeatureMask(This)	\
-    ( (This)->lpVtbl -> GetFeatureMask(This) ) 
+    ( (This)->lpVtbl -> GetFeatureMask(This) )
 
 #define ID3D11Debug_SetPresentPerRenderOpDelay(This,Milliseconds)	\
-    ( (This)->lpVtbl -> SetPresentPerRenderOpDelay(This,Milliseconds) ) 
+    ( (This)->lpVtbl -> SetPresentPerRenderOpDelay(This,Milliseconds) )
 
 #define ID3D11Debug_GetPresentPerRenderOpDelay(This)	\
-    ( (This)->lpVtbl -> GetPresentPerRenderOpDelay(This) ) 
+    ( (This)->lpVtbl -> GetPresentPerRenderOpDelay(This) )
 
 #define ID3D11Debug_SetSwapChain(This,pSwapChain)	\
-    ( (This)->lpVtbl -> SetSwapChain(This,pSwapChain) ) 
+    ( (This)->lpVtbl -> SetSwapChain(This,pSwapChain) )
 
 #define ID3D11Debug_GetSwapChain(This,ppSwapChain)	\
-    ( (This)->lpVtbl -> GetSwapChain(This,ppSwapChain) ) 
+    ( (This)->lpVtbl -> GetSwapChain(This,ppSwapChain) )
 
 #define ID3D11Debug_ValidateContext(This,pContext)	\
-    ( (This)->lpVtbl -> ValidateContext(This,pContext) ) 
+    ( (This)->lpVtbl -> ValidateContext(This,pContext) )
 
 #define ID3D11Debug_ReportLiveDeviceObjects(This,Flags)	\
-    ( (This)->lpVtbl -> ReportLiveDeviceObjects(This,Flags) ) 
+    ( (This)->lpVtbl -> ReportLiveDeviceObjects(This,Flags) )
 
 #define ID3D11Debug_ValidateContextForDispatch(This,pContext)	\
-    ( (This)->lpVtbl -> ValidateContextForDispatch(This,pContext) ) 
+    ( (This)->lpVtbl -> ValidateContextForDispatch(This,pContext) )
 
-#endif 
+#endif
 
+#endif
 
-#endif 	
-
-
-
-
-#endif 	
-
+#endif
 
 #ifndef __ID3D11SwitchToRef_INTERFACE_DEFINED__
 #define __ID3D11SwitchToRef_INTERFACE_DEFINED__
 
-
- 
-
-
 EXTERN_C const IID IID_ID3D11SwitchToRef;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
-    
+
     MIDL_INTERFACE("1ef337e3-58e7-4f83-a692-db221f5ed47e")
     ID3D11SwitchToRef : public IUnknown
     {
     public:
-        virtual BOOL STDMETHODCALLTYPE SetUseRef( 
+        virtual BOOL STDMETHODCALLTYPE SetUseRef(
             BOOL UseRef) = 0;
-        
+
         virtual BOOL STDMETHODCALLTYPE GetUseRef( void) = 0;
-        
+
     };
-    
-#else 	
+
+#else
 
     typedef struct ID3D11SwitchToRefVtbl
     {
         BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )(
             ID3D11SwitchToRef * This,
              REFIID riid,
-             
+
             __RPC__deref_out  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+
+        ULONG ( STDMETHODCALLTYPE *AddRef )(
             ID3D11SwitchToRef * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
+
+        ULONG ( STDMETHODCALLTYPE *Release )(
             ID3D11SwitchToRef * This);
-        
-        BOOL ( STDMETHODCALLTYPE *SetUseRef )( 
+
+        BOOL ( STDMETHODCALLTYPE *SetUseRef )(
             ID3D11SwitchToRef * This,
             BOOL UseRef);
-        
-        BOOL ( STDMETHODCALLTYPE *GetUseRef )( 
+
+        BOOL ( STDMETHODCALLTYPE *GetUseRef )(
             ID3D11SwitchToRef * This);
-        
+
         END_INTERFACE
     } ID3D11SwitchToRefVtbl;
 
@@ -334,42 +287,30 @@ EXTERN_C const IID IID_ID3D11SwitchToRef;
         CONST_VTBL struct ID3D11SwitchToRefVtbl *lpVtbl;
     };
 
-    
-
 #ifdef COBJMACROS
 
-
 #define ID3D11SwitchToRef_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) )
 
 #define ID3D11SwitchToRef_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
+    ( (This)->lpVtbl -> AddRef(This) )
 
 #define ID3D11SwitchToRef_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
+    ( (This)->lpVtbl -> Release(This) )
 
 #define ID3D11SwitchToRef_SetUseRef(This,UseRef)	\
-    ( (This)->lpVtbl -> SetUseRef(This,UseRef) ) 
+    ( (This)->lpVtbl -> SetUseRef(This,UseRef) )
 
 #define ID3D11SwitchToRef_GetUseRef(This)	\
-    ( (This)->lpVtbl -> GetUseRef(This) ) 
+    ( (This)->lpVtbl -> GetUseRef(This) )
 
-#endif 
+#endif
 
+#endif
 
-#endif 	
+#endif
 
-
-
-
-#endif 	
-
-
-
- 
-
-typedef 
+typedef
 enum D3D11_MESSAGE_CATEGORY
     {	D3D11_MESSAGE_CATEGORY_APPLICATION_DEFINED	= 0,
 	D3D11_MESSAGE_CATEGORY_MISCELLANEOUS	= ( D3D11_MESSAGE_CATEGORY_APPLICATION_DEFINED + 1 ) ,
@@ -380,18 +321,18 @@ enum D3D11_MESSAGE_CATEGORY
 	D3D11_MESSAGE_CATEGORY_STATE_SETTING	= ( D3D11_MESSAGE_CATEGORY_STATE_CREATION + 1 ) ,
 	D3D11_MESSAGE_CATEGORY_STATE_GETTING	= ( D3D11_MESSAGE_CATEGORY_STATE_SETTING + 1 ) ,
 	D3D11_MESSAGE_CATEGORY_RESOURCE_MANIPULATION	= ( D3D11_MESSAGE_CATEGORY_STATE_GETTING + 1 ) ,
-	D3D11_MESSAGE_CATEGORY_EXECUTION	= ( D3D11_MESSAGE_CATEGORY_RESOURCE_MANIPULATION + 1 ) 
+	D3D11_MESSAGE_CATEGORY_EXECUTION	= ( D3D11_MESSAGE_CATEGORY_RESOURCE_MANIPULATION + 1 )
     } 	D3D11_MESSAGE_CATEGORY;
 
-typedef 
+typedef
 enum D3D11_MESSAGE_SEVERITY
     {	D3D11_MESSAGE_SEVERITY_CORRUPTION	= 0,
 	D3D11_MESSAGE_SEVERITY_ERROR	= ( D3D11_MESSAGE_SEVERITY_CORRUPTION + 1 ) ,
 	D3D11_MESSAGE_SEVERITY_WARNING	= ( D3D11_MESSAGE_SEVERITY_ERROR + 1 ) ,
-	D3D11_MESSAGE_SEVERITY_INFO	= ( D3D11_MESSAGE_SEVERITY_WARNING + 1 ) 
+	D3D11_MESSAGE_SEVERITY_INFO	= ( D3D11_MESSAGE_SEVERITY_WARNING + 1 )
     } 	D3D11_MESSAGE_SEVERITY;
 
-typedef 
+typedef
 enum D3D11_MESSAGE_ID
     {	D3D11_MESSAGE_ID_UNKNOWN	= 0,
 	D3D11_MESSAGE_ID_DEVICE_IASETVERTEXBUFFERS_HAZARD	= ( D3D11_MESSAGE_ID_UNKNOWN + 1 ) ,
@@ -1135,7 +1076,7 @@ enum D3D11_MESSAGE_ID
 	D3D11_MESSAGE_ID_CLEARUNORDEREDACCESSVIEWFLOAT_INVALIDFORMAT	= ( D3D11_MESSAGE_ID_DEVICE_CSSETUNORDEREDACCESSVIEWS_TOOMANYVIEWS + 1 ) ,
 	D3D11_MESSAGE_ID_DEVICE_UNORDEREDACCESSVIEW_COUNTER_UNSUPPORTED	= ( D3D11_MESSAGE_ID_CLEARUNORDEREDACCESSVIEWFLOAT_INVALIDFORMAT + 1 ) ,
 	D3D11_MESSAGE_ID_REF_WARNING	= ( D3D11_MESSAGE_ID_DEVICE_UNORDEREDACCESSVIEW_COUNTER_UNSUPPORTED + 1 ) ,
-	D3D11_MESSAGE_ID_D3D11_MESSAGES_END	= ( D3D11_MESSAGE_ID_REF_WARNING + 1 ) 
+	D3D11_MESSAGE_ID_D3D11_MESSAGES_END	= ( D3D11_MESSAGE_ID_REF_WARNING + 1 )
     } 	D3D11_MESSAGE_ID;
 
 typedef struct D3D11_MESSAGE
@@ -1165,332 +1106,327 @@ typedef struct D3D11_INFO_QUEUE_FILTER
 
 #define D3D11_INFO_QUEUE_DEFAULT_MESSAGE_COUNT_LIMIT 1024
 
-
 extern RPC_IF_HANDLE __MIDL_itf_d3d11sdklayers_0000_0002_v0_0_c_ifspec;
 extern RPC_IF_HANDLE __MIDL_itf_d3d11sdklayers_0000_0002_v0_0_s_ifspec;
 
 #ifndef __ID3D11InfoQueue_INTERFACE_DEFINED__
 #define __ID3D11InfoQueue_INTERFACE_DEFINED__
 
-
- 
-
-
 EXTERN_C const IID IID_ID3D11InfoQueue;
 
 #if defined(__cplusplus) && !defined(CINTERFACE)
-    
+
     MIDL_INTERFACE("6543dbb6-1b48-42f5-ab82-e97ec74326f6")
     ID3D11InfoQueue : public IUnknown
     {
     public:
-        virtual HRESULT STDMETHODCALLTYPE SetMessageCountLimit( 
-             
+        virtual HRESULT STDMETHODCALLTYPE SetMessageCountLimit(
+
             __in  UINT64 MessageCountLimit) = 0;
-        
+
         virtual void STDMETHODCALLTYPE ClearStoredMessages( void) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetMessage( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE GetMessage(
+
             __in  UINT64 MessageIndex,
-             
+
             __out_bcount_opt(*pMessageByteLength)  D3D11_MESSAGE *pMessage,
-             
+
             __inout  SIZE_T *pMessageByteLength) = 0;
-        
+
         virtual UINT64 STDMETHODCALLTYPE GetNumMessagesAllowedByStorageFilter( void) = 0;
-        
+
         virtual UINT64 STDMETHODCALLTYPE GetNumMessagesDeniedByStorageFilter( void) = 0;
-        
+
         virtual UINT64 STDMETHODCALLTYPE GetNumStoredMessages( void) = 0;
-        
+
         virtual UINT64 STDMETHODCALLTYPE GetNumStoredMessagesAllowedByRetrievalFilter( void) = 0;
-        
+
         virtual UINT64 STDMETHODCALLTYPE GetNumMessagesDiscardedByMessageCountLimit( void) = 0;
-        
+
         virtual UINT64 STDMETHODCALLTYPE GetMessageCountLimit( void) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE AddStorageFilterEntries( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE AddStorageFilterEntries(
+
             __in  D3D11_INFO_QUEUE_FILTER *pFilter) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetStorageFilter( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE GetStorageFilter(
+
             __out_bcount_opt(*pFilterByteLength)  D3D11_INFO_QUEUE_FILTER *pFilter,
-             
+
             __inout  SIZE_T *pFilterByteLength) = 0;
-        
+
         virtual void STDMETHODCALLTYPE ClearStorageFilter( void) = 0;
-        
+
         virtual HRESULT STDMETHODCALLTYPE PushEmptyStorageFilter( void) = 0;
-        
+
         virtual HRESULT STDMETHODCALLTYPE PushCopyOfStorageFilter( void) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE PushStorageFilter( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE PushStorageFilter(
+
             __in  D3D11_INFO_QUEUE_FILTER *pFilter) = 0;
-        
+
         virtual void STDMETHODCALLTYPE PopStorageFilter( void) = 0;
-        
+
         virtual UINT STDMETHODCALLTYPE GetStorageFilterStackSize( void) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE AddRetrievalFilterEntries( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE AddRetrievalFilterEntries(
+
             __in  D3D11_INFO_QUEUE_FILTER *pFilter) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE GetRetrievalFilter( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE GetRetrievalFilter(
+
             __out_bcount_opt(*pFilterByteLength)  D3D11_INFO_QUEUE_FILTER *pFilter,
-             
+
             __inout  SIZE_T *pFilterByteLength) = 0;
-        
+
         virtual void STDMETHODCALLTYPE ClearRetrievalFilter( void) = 0;
-        
+
         virtual HRESULT STDMETHODCALLTYPE PushEmptyRetrievalFilter( void) = 0;
-        
+
         virtual HRESULT STDMETHODCALLTYPE PushCopyOfRetrievalFilter( void) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE PushRetrievalFilter( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE PushRetrievalFilter(
+
             __in  D3D11_INFO_QUEUE_FILTER *pFilter) = 0;
-        
+
         virtual void STDMETHODCALLTYPE PopRetrievalFilter( void) = 0;
-        
+
         virtual UINT STDMETHODCALLTYPE GetRetrievalFilterStackSize( void) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE AddMessage( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE AddMessage(
+
             __in  D3D11_MESSAGE_CATEGORY Category,
-             
+
             __in  D3D11_MESSAGE_SEVERITY Severity,
-             
+
             __in  D3D11_MESSAGE_ID ID,
-             
+
             __in  LPCSTR pDescription) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE AddApplicationMessage( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE AddApplicationMessage(
+
             __in  D3D11_MESSAGE_SEVERITY Severity,
-             
+
             __in  LPCSTR pDescription) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE SetBreakOnCategory( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE SetBreakOnCategory(
+
             __in  D3D11_MESSAGE_CATEGORY Category,
-             
+
             __in  BOOL bEnable) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE SetBreakOnSeverity( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE SetBreakOnSeverity(
+
             __in  D3D11_MESSAGE_SEVERITY Severity,
-             
+
             __in  BOOL bEnable) = 0;
-        
-        virtual HRESULT STDMETHODCALLTYPE SetBreakOnID( 
-             
+
+        virtual HRESULT STDMETHODCALLTYPE SetBreakOnID(
+
             __in  D3D11_MESSAGE_ID ID,
-             
+
             __in  BOOL bEnable) = 0;
-        
-        virtual BOOL STDMETHODCALLTYPE GetBreakOnCategory( 
-             
+
+        virtual BOOL STDMETHODCALLTYPE GetBreakOnCategory(
+
             __in  D3D11_MESSAGE_CATEGORY Category) = 0;
-        
-        virtual BOOL STDMETHODCALLTYPE GetBreakOnSeverity( 
-             
+
+        virtual BOOL STDMETHODCALLTYPE GetBreakOnSeverity(
+
             __in  D3D11_MESSAGE_SEVERITY Severity) = 0;
-        
-        virtual BOOL STDMETHODCALLTYPE GetBreakOnID( 
-             
+
+        virtual BOOL STDMETHODCALLTYPE GetBreakOnID(
+
             __in  D3D11_MESSAGE_ID ID) = 0;
-        
-        virtual void STDMETHODCALLTYPE SetMuteDebugOutput( 
-             
+
+        virtual void STDMETHODCALLTYPE SetMuteDebugOutput(
+
             __in  BOOL bMute) = 0;
-        
+
         virtual BOOL STDMETHODCALLTYPE GetMuteDebugOutput( void) = 0;
-        
+
     };
-    
-#else 	
+
+#else
 
     typedef struct ID3D11InfoQueueVtbl
     {
         BEGIN_INTERFACE
-        
-        HRESULT ( STDMETHODCALLTYPE *QueryInterface )( 
+
+        HRESULT ( STDMETHODCALLTYPE *QueryInterface )(
             ID3D11InfoQueue * This,
              REFIID riid,
-             
+
             __RPC__deref_out  void **ppvObject);
-        
-        ULONG ( STDMETHODCALLTYPE *AddRef )( 
+
+        ULONG ( STDMETHODCALLTYPE *AddRef )(
             ID3D11InfoQueue * This);
-        
-        ULONG ( STDMETHODCALLTYPE *Release )( 
+
+        ULONG ( STDMETHODCALLTYPE *Release )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *SetMessageCountLimit )( 
+
+        HRESULT ( STDMETHODCALLTYPE *SetMessageCountLimit )(
             ID3D11InfoQueue * This,
-             
+
             __in  UINT64 MessageCountLimit);
-        
-        void ( STDMETHODCALLTYPE *ClearStoredMessages )( 
+
+        void ( STDMETHODCALLTYPE *ClearStoredMessages )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetMessage )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetMessage )(
             ID3D11InfoQueue * This,
-             
+
             __in  UINT64 MessageIndex,
-             
+
             __out_bcount_opt(*pMessageByteLength)  D3D11_MESSAGE *pMessage,
-             
+
             __inout  SIZE_T *pMessageByteLength);
-        
-        UINT64 ( STDMETHODCALLTYPE *GetNumMessagesAllowedByStorageFilter )( 
+
+        UINT64 ( STDMETHODCALLTYPE *GetNumMessagesAllowedByStorageFilter )(
             ID3D11InfoQueue * This);
-        
-        UINT64 ( STDMETHODCALLTYPE *GetNumMessagesDeniedByStorageFilter )( 
+
+        UINT64 ( STDMETHODCALLTYPE *GetNumMessagesDeniedByStorageFilter )(
             ID3D11InfoQueue * This);
-        
-        UINT64 ( STDMETHODCALLTYPE *GetNumStoredMessages )( 
+
+        UINT64 ( STDMETHODCALLTYPE *GetNumStoredMessages )(
             ID3D11InfoQueue * This);
-        
-        UINT64 ( STDMETHODCALLTYPE *GetNumStoredMessagesAllowedByRetrievalFilter )( 
+
+        UINT64 ( STDMETHODCALLTYPE *GetNumStoredMessagesAllowedByRetrievalFilter )(
             ID3D11InfoQueue * This);
-        
-        UINT64 ( STDMETHODCALLTYPE *GetNumMessagesDiscardedByMessageCountLimit )( 
+
+        UINT64 ( STDMETHODCALLTYPE *GetNumMessagesDiscardedByMessageCountLimit )(
             ID3D11InfoQueue * This);
-        
-        UINT64 ( STDMETHODCALLTYPE *GetMessageCountLimit )( 
+
+        UINT64 ( STDMETHODCALLTYPE *GetMessageCountLimit )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *AddStorageFilterEntries )( 
+
+        HRESULT ( STDMETHODCALLTYPE *AddStorageFilterEntries )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_INFO_QUEUE_FILTER *pFilter);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetStorageFilter )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetStorageFilter )(
             ID3D11InfoQueue * This,
-             
+
             __out_bcount_opt(*pFilterByteLength)  D3D11_INFO_QUEUE_FILTER *pFilter,
-             
+
             __inout  SIZE_T *pFilterByteLength);
-        
-        void ( STDMETHODCALLTYPE *ClearStorageFilter )( 
+
+        void ( STDMETHODCALLTYPE *ClearStorageFilter )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *PushEmptyStorageFilter )( 
+
+        HRESULT ( STDMETHODCALLTYPE *PushEmptyStorageFilter )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *PushCopyOfStorageFilter )( 
+
+        HRESULT ( STDMETHODCALLTYPE *PushCopyOfStorageFilter )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *PushStorageFilter )( 
+
+        HRESULT ( STDMETHODCALLTYPE *PushStorageFilter )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_INFO_QUEUE_FILTER *pFilter);
-        
-        void ( STDMETHODCALLTYPE *PopStorageFilter )( 
+
+        void ( STDMETHODCALLTYPE *PopStorageFilter )(
             ID3D11InfoQueue * This);
-        
-        UINT ( STDMETHODCALLTYPE *GetStorageFilterStackSize )( 
+
+        UINT ( STDMETHODCALLTYPE *GetStorageFilterStackSize )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *AddRetrievalFilterEntries )( 
+
+        HRESULT ( STDMETHODCALLTYPE *AddRetrievalFilterEntries )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_INFO_QUEUE_FILTER *pFilter);
-        
-        HRESULT ( STDMETHODCALLTYPE *GetRetrievalFilter )( 
+
+        HRESULT ( STDMETHODCALLTYPE *GetRetrievalFilter )(
             ID3D11InfoQueue * This,
-             
+
             __out_bcount_opt(*pFilterByteLength)  D3D11_INFO_QUEUE_FILTER *pFilter,
-             
+
             __inout  SIZE_T *pFilterByteLength);
-        
-        void ( STDMETHODCALLTYPE *ClearRetrievalFilter )( 
+
+        void ( STDMETHODCALLTYPE *ClearRetrievalFilter )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *PushEmptyRetrievalFilter )( 
+
+        HRESULT ( STDMETHODCALLTYPE *PushEmptyRetrievalFilter )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *PushCopyOfRetrievalFilter )( 
+
+        HRESULT ( STDMETHODCALLTYPE *PushCopyOfRetrievalFilter )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *PushRetrievalFilter )( 
+
+        HRESULT ( STDMETHODCALLTYPE *PushRetrievalFilter )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_INFO_QUEUE_FILTER *pFilter);
-        
-        void ( STDMETHODCALLTYPE *PopRetrievalFilter )( 
+
+        void ( STDMETHODCALLTYPE *PopRetrievalFilter )(
             ID3D11InfoQueue * This);
-        
-        UINT ( STDMETHODCALLTYPE *GetRetrievalFilterStackSize )( 
+
+        UINT ( STDMETHODCALLTYPE *GetRetrievalFilterStackSize )(
             ID3D11InfoQueue * This);
-        
-        HRESULT ( STDMETHODCALLTYPE *AddMessage )( 
+
+        HRESULT ( STDMETHODCALLTYPE *AddMessage )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_MESSAGE_CATEGORY Category,
-             
+
             __in  D3D11_MESSAGE_SEVERITY Severity,
-             
+
             __in  D3D11_MESSAGE_ID ID,
-             
+
             __in  LPCSTR pDescription);
-        
-        HRESULT ( STDMETHODCALLTYPE *AddApplicationMessage )( 
+
+        HRESULT ( STDMETHODCALLTYPE *AddApplicationMessage )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_MESSAGE_SEVERITY Severity,
-             
+
             __in  LPCSTR pDescription);
-        
-        HRESULT ( STDMETHODCALLTYPE *SetBreakOnCategory )( 
+
+        HRESULT ( STDMETHODCALLTYPE *SetBreakOnCategory )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_MESSAGE_CATEGORY Category,
-             
+
             __in  BOOL bEnable);
-        
-        HRESULT ( STDMETHODCALLTYPE *SetBreakOnSeverity )( 
+
+        HRESULT ( STDMETHODCALLTYPE *SetBreakOnSeverity )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_MESSAGE_SEVERITY Severity,
-             
+
             __in  BOOL bEnable);
-        
-        HRESULT ( STDMETHODCALLTYPE *SetBreakOnID )( 
+
+        HRESULT ( STDMETHODCALLTYPE *SetBreakOnID )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_MESSAGE_ID ID,
-             
+
             __in  BOOL bEnable);
-        
-        BOOL ( STDMETHODCALLTYPE *GetBreakOnCategory )( 
+
+        BOOL ( STDMETHODCALLTYPE *GetBreakOnCategory )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_MESSAGE_CATEGORY Category);
-        
-        BOOL ( STDMETHODCALLTYPE *GetBreakOnSeverity )( 
+
+        BOOL ( STDMETHODCALLTYPE *GetBreakOnSeverity )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_MESSAGE_SEVERITY Severity);
-        
-        BOOL ( STDMETHODCALLTYPE *GetBreakOnID )( 
+
+        BOOL ( STDMETHODCALLTYPE *GetBreakOnID )(
             ID3D11InfoQueue * This,
-             
+
             __in  D3D11_MESSAGE_ID ID);
-        
-        void ( STDMETHODCALLTYPE *SetMuteDebugOutput )( 
+
+        void ( STDMETHODCALLTYPE *SetMuteDebugOutput )(
             ID3D11InfoQueue * This,
-             
+
             __in  BOOL bMute);
-        
-        BOOL ( STDMETHODCALLTYPE *GetMuteDebugOutput )( 
+
+        BOOL ( STDMETHODCALLTYPE *GetMuteDebugOutput )(
             ID3D11InfoQueue * This);
-        
+
         END_INTERFACE
     } ID3D11InfoQueueVtbl;
 
@@ -1499,139 +1435,127 @@ EXTERN_C const IID IID_ID3D11InfoQueue;
         CONST_VTBL struct ID3D11InfoQueueVtbl *lpVtbl;
     };
 
-    
-
 #ifdef COBJMACROS
 
-
 #define ID3D11InfoQueue_QueryInterface(This,riid,ppvObject)	\
-    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) ) 
+    ( (This)->lpVtbl -> QueryInterface(This,riid,ppvObject) )
 
 #define ID3D11InfoQueue_AddRef(This)	\
-    ( (This)->lpVtbl -> AddRef(This) ) 
+    ( (This)->lpVtbl -> AddRef(This) )
 
 #define ID3D11InfoQueue_Release(This)	\
-    ( (This)->lpVtbl -> Release(This) ) 
-
+    ( (This)->lpVtbl -> Release(This) )
 
 #define ID3D11InfoQueue_SetMessageCountLimit(This,MessageCountLimit)	\
-    ( (This)->lpVtbl -> SetMessageCountLimit(This,MessageCountLimit) ) 
+    ( (This)->lpVtbl -> SetMessageCountLimit(This,MessageCountLimit) )
 
 #define ID3D11InfoQueue_ClearStoredMessages(This)	\
-    ( (This)->lpVtbl -> ClearStoredMessages(This) ) 
+    ( (This)->lpVtbl -> ClearStoredMessages(This) )
 
 #define ID3D11InfoQueue_GetMessage(This,MessageIndex,pMessage,pMessageByteLength)	\
-    ( (This)->lpVtbl -> GetMessage(This,MessageIndex,pMessage,pMessageByteLength) ) 
+    ( (This)->lpVtbl -> GetMessage(This,MessageIndex,pMessage,pMessageByteLength) )
 
 #define ID3D11InfoQueue_GetNumMessagesAllowedByStorageFilter(This)	\
-    ( (This)->lpVtbl -> GetNumMessagesAllowedByStorageFilter(This) ) 
+    ( (This)->lpVtbl -> GetNumMessagesAllowedByStorageFilter(This) )
 
 #define ID3D11InfoQueue_GetNumMessagesDeniedByStorageFilter(This)	\
-    ( (This)->lpVtbl -> GetNumMessagesDeniedByStorageFilter(This) ) 
+    ( (This)->lpVtbl -> GetNumMessagesDeniedByStorageFilter(This) )
 
 #define ID3D11InfoQueue_GetNumStoredMessages(This)	\
-    ( (This)->lpVtbl -> GetNumStoredMessages(This) ) 
+    ( (This)->lpVtbl -> GetNumStoredMessages(This) )
 
 #define ID3D11InfoQueue_GetNumStoredMessagesAllowedByRetrievalFilter(This)	\
-    ( (This)->lpVtbl -> GetNumStoredMessagesAllowedByRetrievalFilter(This) ) 
+    ( (This)->lpVtbl -> GetNumStoredMessagesAllowedByRetrievalFilter(This) )
 
 #define ID3D11InfoQueue_GetNumMessagesDiscardedByMessageCountLimit(This)	\
-    ( (This)->lpVtbl -> GetNumMessagesDiscardedByMessageCountLimit(This) ) 
+    ( (This)->lpVtbl -> GetNumMessagesDiscardedByMessageCountLimit(This) )
 
 #define ID3D11InfoQueue_GetMessageCountLimit(This)	\
-    ( (This)->lpVtbl -> GetMessageCountLimit(This) ) 
+    ( (This)->lpVtbl -> GetMessageCountLimit(This) )
 
 #define ID3D11InfoQueue_AddStorageFilterEntries(This,pFilter)	\
-    ( (This)->lpVtbl -> AddStorageFilterEntries(This,pFilter) ) 
+    ( (This)->lpVtbl -> AddStorageFilterEntries(This,pFilter) )
 
 #define ID3D11InfoQueue_GetStorageFilter(This,pFilter,pFilterByteLength)	\
-    ( (This)->lpVtbl -> GetStorageFilter(This,pFilter,pFilterByteLength) ) 
+    ( (This)->lpVtbl -> GetStorageFilter(This,pFilter,pFilterByteLength) )
 
 #define ID3D11InfoQueue_ClearStorageFilter(This)	\
-    ( (This)->lpVtbl -> ClearStorageFilter(This) ) 
+    ( (This)->lpVtbl -> ClearStorageFilter(This) )
 
 #define ID3D11InfoQueue_PushEmptyStorageFilter(This)	\
-    ( (This)->lpVtbl -> PushEmptyStorageFilter(This) ) 
+    ( (This)->lpVtbl -> PushEmptyStorageFilter(This) )
 
 #define ID3D11InfoQueue_PushCopyOfStorageFilter(This)	\
-    ( (This)->lpVtbl -> PushCopyOfStorageFilter(This) ) 
+    ( (This)->lpVtbl -> PushCopyOfStorageFilter(This) )
 
 #define ID3D11InfoQueue_PushStorageFilter(This,pFilter)	\
-    ( (This)->lpVtbl -> PushStorageFilter(This,pFilter) ) 
+    ( (This)->lpVtbl -> PushStorageFilter(This,pFilter) )
 
 #define ID3D11InfoQueue_PopStorageFilter(This)	\
-    ( (This)->lpVtbl -> PopStorageFilter(This) ) 
+    ( (This)->lpVtbl -> PopStorageFilter(This) )
 
 #define ID3D11InfoQueue_GetStorageFilterStackSize(This)	\
-    ( (This)->lpVtbl -> GetStorageFilterStackSize(This) ) 
+    ( (This)->lpVtbl -> GetStorageFilterStackSize(This) )
 
 #define ID3D11InfoQueue_AddRetrievalFilterEntries(This,pFilter)	\
-    ( (This)->lpVtbl -> AddRetrievalFilterEntries(This,pFilter) ) 
+    ( (This)->lpVtbl -> AddRetrievalFilterEntries(This,pFilter) )
 
 #define ID3D11InfoQueue_GetRetrievalFilter(This,pFilter,pFilterByteLength)	\
-    ( (This)->lpVtbl -> GetRetrievalFilter(This,pFilter,pFilterByteLength) ) 
+    ( (This)->lpVtbl -> GetRetrievalFilter(This,pFilter,pFilterByteLength) )
 
 #define ID3D11InfoQueue_ClearRetrievalFilter(This)	\
-    ( (This)->lpVtbl -> ClearRetrievalFilter(This) ) 
+    ( (This)->lpVtbl -> ClearRetrievalFilter(This) )
 
 #define ID3D11InfoQueue_PushEmptyRetrievalFilter(This)	\
-    ( (This)->lpVtbl -> PushEmptyRetrievalFilter(This) ) 
+    ( (This)->lpVtbl -> PushEmptyRetrievalFilter(This) )
 
 #define ID3D11InfoQueue_PushCopyOfRetrievalFilter(This)	\
-    ( (This)->lpVtbl -> PushCopyOfRetrievalFilter(This) ) 
+    ( (This)->lpVtbl -> PushCopyOfRetrievalFilter(This) )
 
 #define ID3D11InfoQueue_PushRetrievalFilter(This,pFilter)	\
-    ( (This)->lpVtbl -> PushRetrievalFilter(This,pFilter) ) 
+    ( (This)->lpVtbl -> PushRetrievalFilter(This,pFilter) )
 
 #define ID3D11InfoQueue_PopRetrievalFilter(This)	\
-    ( (This)->lpVtbl -> PopRetrievalFilter(This) ) 
+    ( (This)->lpVtbl -> PopRetrievalFilter(This) )
 
 #define ID3D11InfoQueue_GetRetrievalFilterStackSize(This)	\
-    ( (This)->lpVtbl -> GetRetrievalFilterStackSize(This) ) 
+    ( (This)->lpVtbl -> GetRetrievalFilterStackSize(This) )
 
 #define ID3D11InfoQueue_AddMessage(This,Category,Severity,ID,pDescription)	\
-    ( (This)->lpVtbl -> AddMessage(This,Category,Severity,ID,pDescription) ) 
+    ( (This)->lpVtbl -> AddMessage(This,Category,Severity,ID,pDescription) )
 
 #define ID3D11InfoQueue_AddApplicationMessage(This,Severity,pDescription)	\
-    ( (This)->lpVtbl -> AddApplicationMessage(This,Severity,pDescription) ) 
+    ( (This)->lpVtbl -> AddApplicationMessage(This,Severity,pDescription) )
 
 #define ID3D11InfoQueue_SetBreakOnCategory(This,Category,bEnable)	\
-    ( (This)->lpVtbl -> SetBreakOnCategory(This,Category,bEnable) ) 
+    ( (This)->lpVtbl -> SetBreakOnCategory(This,Category,bEnable) )
 
 #define ID3D11InfoQueue_SetBreakOnSeverity(This,Severity,bEnable)	\
-    ( (This)->lpVtbl -> SetBreakOnSeverity(This,Severity,bEnable) ) 
+    ( (This)->lpVtbl -> SetBreakOnSeverity(This,Severity,bEnable) )
 
 #define ID3D11InfoQueue_SetBreakOnID(This,ID,bEnable)	\
-    ( (This)->lpVtbl -> SetBreakOnID(This,ID,bEnable) ) 
+    ( (This)->lpVtbl -> SetBreakOnID(This,ID,bEnable) )
 
 #define ID3D11InfoQueue_GetBreakOnCategory(This,Category)	\
-    ( (This)->lpVtbl -> GetBreakOnCategory(This,Category) ) 
+    ( (This)->lpVtbl -> GetBreakOnCategory(This,Category) )
 
 #define ID3D11InfoQueue_GetBreakOnSeverity(This,Severity)	\
-    ( (This)->lpVtbl -> GetBreakOnSeverity(This,Severity) ) 
+    ( (This)->lpVtbl -> GetBreakOnSeverity(This,Severity) )
 
 #define ID3D11InfoQueue_GetBreakOnID(This,ID)	\
-    ( (This)->lpVtbl -> GetBreakOnID(This,ID) ) 
+    ( (This)->lpVtbl -> GetBreakOnID(This,ID) )
 
 #define ID3D11InfoQueue_SetMuteDebugOutput(This,bMute)	\
-    ( (This)->lpVtbl -> SetMuteDebugOutput(This,bMute) ) 
+    ( (This)->lpVtbl -> SetMuteDebugOutput(This,bMute) )
 
 #define ID3D11InfoQueue_GetMuteDebugOutput(This)	\
-    ( (This)->lpVtbl -> GetMuteDebugOutput(This) ) 
+    ( (This)->lpVtbl -> GetMuteDebugOutput(This) )
 
-#endif 
+#endif
 
+#endif
 
-#endif 	
-
-
-
-
-#endif 	
-
-
-
- 
+#endif
 
 #define D3D11_REGKEY_PATH __TEXT("Software\\Microsoft\\Direct3D")
 #define D3D11_MUTE_DEBUG_OUTPUT __TEXT("MuteDebugOutput")
@@ -1652,18 +1576,11 @@ DEFINE_GUID(IID_ID3D11Debug,0x79cf2233,0x7536,0x4948,0x9d,0x36,0x1e,0x46,0x92,0x
 DEFINE_GUID(IID_ID3D11SwitchToRef,0x1ef337e3,0x58e7,0x4f83,0xa6,0x92,0xdb,0x22,0x1f,0x5e,0xd4,0x7e);
 DEFINE_GUID(IID_ID3D11InfoQueue,0x6543dbb6,0x1b48,0x42f5,0xab,0x82,0xe9,0x7e,0xc7,0x43,0x26,0xf6);
 
-
 extern RPC_IF_HANDLE __MIDL_itf_d3d11sdklayers_0000_0003_v0_0_c_ifspec;
 extern RPC_IF_HANDLE __MIDL_itf_d3d11sdklayers_0000_0003_v0_0_s_ifspec;
-
-
-
-
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-
-

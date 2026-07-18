@@ -1,117 +1,5 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef FTMODERR_H_
 #define FTMODERR_H_
-
-
-  
-  
-  
-  
-  
-  
-  
-
 
 #undef  FT_NEED_EXTERN_C
 
@@ -131,22 +19,11 @@
   extern "C" {
 #endif
 
-#endif 
-
-
-  
-  
-  
-  
-  
-  
-  
-
+#endif
 
 #ifdef FT_MODERR_START_LIST
   FT_MODERR_START_LIST
 #endif
-
 
   FT_MODERRDEF( Base,      0x000, "base module" )
   FT_MODERRDEF( Autofit,   0x100, "autofitter module" )
@@ -173,20 +50,9 @@
   FT_MODERRDEF( GXvalid,  0x1600, "GX validation module" )
   FT_MODERRDEF( Sdf,      0x1700, "Signed distance field raster module" )
 
-
 #ifdef FT_MODERR_END_LIST
   FT_MODERR_END_LIST
 #endif
-
-
-  
-  
-  
-  
-  
-  
-  
-
 
 #ifdef FT_NEED_EXTERN_C
   }
@@ -197,8 +63,4 @@
 #undef FT_MODERRDEF
 #undef FT_NEED_EXTERN_C
 
-
-#endif 
-
-
-
+#endif

@@ -10,7 +10,6 @@
 #include <fstream>
 #include <string>
 
-
 namespace Core {
 
 inline bool SetupOffsets() {

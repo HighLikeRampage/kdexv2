@@ -15,7 +15,7 @@
     #define hde_disasm hde32_disasm
 #endif
 
-int DetourASMlen(BYTE *src, int minlen)	
+int DetourASMlen(BYTE *src, int minlen)
 {
 	int i,len;
 	hde_struct hs;
@@ -40,7 +40,7 @@ void *DetourCreate(BYTE *src, const BYTE *dst, int minlen)
 	if (len==0) return 0;
 
 	org=jmp = (BYTE*)malloc(len+5+1);
-    jmp[0]=len;								
+    jmp[0]=len;
     jmp++;
 
 VirtualProtect(src,len,PAGE_READWRITE,&dwback);

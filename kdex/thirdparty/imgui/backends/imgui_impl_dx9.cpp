@@ -1,47 +1,8 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include "imgui.h"
 #ifndef IMGUI_DISABLE
 #include "imgui_impl_dx9.h"
 
-
 #include <d3d9.h>
-
 
 struct ImGui_ImplDX9_Data
 {
@@ -69,19 +30,15 @@ struct CUSTOMVERTEX
 #define IMGUI_COL_TO_DX9_ARGB(_COL)     (((_COL) & 0xFF00FF00) | (((_COL) & 0xFF0000) >> 16) | (((_COL) & 0xFF) << 16))
 #endif
 
-
-
 static ImGui_ImplDX9_Data* ImGui_ImplDX9_GetBackendData()
 {
     return ImGui::GetCurrentContext() ? (ImGui_ImplDX9_Data*)ImGui::GetIO().BackendRendererUserData : nullptr;
 }
 
-
 static void ImGui_ImplDX9_SetupRenderState(ImDrawData* draw_data)
 {
     ImGui_ImplDX9_Data* bd = ImGui_ImplDX9_GetBackendData();
 
-    
     D3DVIEWPORT9 vp;
     vp.X = vp.Y = 0;
     vp.Width = (DWORD)draw_data->DisplaySize.x;
@@ -90,7 +47,6 @@ static void ImGui_ImplDX9_SetupRenderState(ImDrawData* draw_data)
     vp.MaxZ = 1.0f;
     bd->pd3dDevice->SetViewport(&vp);
 
-    
     bd->pd3dDevice->SetPixelShader(nullptr);
     bd->pd3dDevice->SetVertexShader(nullptr);
     bd->pd3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
@@ -124,9 +80,6 @@ static void ImGui_ImplDX9_SetupRenderState(ImDrawData* draw_data)
     bd->pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
     bd->pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
-    
-    
-    
     {
         float L = draw_data->DisplayPos.x + 0.5f;
         float R = draw_data->DisplayPos.x + draw_data->DisplaySize.x + 0.5f;
@@ -146,14 +99,12 @@ static void ImGui_ImplDX9_SetupRenderState(ImDrawData* draw_data)
     }
 }
 
-
 void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
 {
-    
+
     if (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f)
         return;
 
-    
     ImGui_ImplDX9_Data* bd = ImGui_ImplDX9_GetBackendData();
     if (!bd->pVB || bd->VertexBufferSize < draw_data->TotalVtxCount)
     {
@@ -170,7 +121,6 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
             return;
     }
 
-    
     IDirect3DStateBlock9* d3d9_state_block = nullptr;
     if (bd->pd3dDevice->CreateStateBlock(D3DSBT_ALL, &d3d9_state_block) < 0)
         return;
@@ -180,13 +130,11 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
         return;
     }
 
-    
     D3DMATRIX last_world, last_view, last_projection;
     bd->pd3dDevice->GetTransform(D3DTS_WORLD, &last_world);
     bd->pd3dDevice->GetTransform(D3DTS_VIEW, &last_view);
     bd->pd3dDevice->GetTransform(D3DTS_PROJECTION, &last_projection);
 
-    
     CUSTOMVERTEX* vtx_dst;
     ImDrawIdx* idx_dst;
     if (bd->pVB->Lock(0, (UINT)(draw_data->TotalVtxCount * sizeof(CUSTOMVERTEX)), (void**)&vtx_dst, D3DLOCK_DISCARD) < 0)
@@ -201,10 +149,6 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
         return;
     }
 
-    
-    
-    
-    
     for (int n = 0; n < draw_data->CmdListsCount; n++)
     {
         const ImDrawList* cmd_list = draw_data->CmdLists[n];
@@ -229,11 +173,8 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
     bd->pd3dDevice->SetIndices(bd->pIB);
     bd->pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
 
-    
     ImGui_ImplDX9_SetupRenderState(draw_data);
 
-    
-    
     int global_vtx_offset = 0;
     int global_idx_offset = 0;
     ImVec2 clip_off = draw_data->DisplayPos;
@@ -245,8 +186,7 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
             const ImDrawCmd* pcmd = &cmd_list->CmdBuffer[cmd_i];
             if (pcmd->UserCallback != nullptr)
             {
-                
-                
+
                 if (pcmd->UserCallback == ImDrawCallback_ResetRenderState)
                     ImGui_ImplDX9_SetupRenderState(draw_data);
                 else
@@ -254,13 +194,12 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
             }
             else
             {
-                
+
                 ImVec2 clip_min(pcmd->ClipRect.x - clip_off.x, pcmd->ClipRect.y - clip_off.y);
                 ImVec2 clip_max(pcmd->ClipRect.z - clip_off.x, pcmd->ClipRect.w - clip_off.y);
                 if (clip_max.x <= clip_min.x || clip_max.y <= clip_min.y)
                     continue;
 
-                
                 const RECT r = { (LONG)clip_min.x, (LONG)clip_min.y, (LONG)clip_max.x, (LONG)clip_max.y };
                 const LPDIRECT3DTEXTURE9 texture = (LPDIRECT3DTEXTURE9)pcmd->GetTexID();
                 bd->pd3dDevice->SetTexture(0, texture);
@@ -272,12 +211,10 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
         global_vtx_offset += cmd_list->VtxBuffer.Size;
     }
 
-    
     bd->pd3dDevice->SetTransform(D3DTS_WORLD, &last_world);
     bd->pd3dDevice->SetTransform(D3DTS_VIEW, &last_view);
     bd->pd3dDevice->SetTransform(D3DTS_PROJECTION, &last_projection);
 
-    
     d3d9_state_block->Apply();
     d3d9_state_block->Release();
 }
@@ -288,11 +225,10 @@ bool ImGui_ImplDX9_Init(IDirect3DDevice9* device)
     IMGUI_CHECKVERSION();
     IM_ASSERT(io.BackendRendererUserData == nullptr && IM_STR("Already initialized a renderer backend!"));
 
-    
     ImGui_ImplDX9_Data* bd = IM_NEW(ImGui_ImplDX9_Data)();
     io.BackendRendererUserData = (void*)bd;
     io.BackendRendererName = xorstr_lite("imgui_impl_dx9");
-    io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;  
+    io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;
 
     bd->pd3dDevice = device;
     bd->pd3dDevice->AddRef();
@@ -326,7 +262,7 @@ static bool ImGui_ImplDX9_CheckFormatSupport(IDirect3DDevice9* pDevice, D3DFORMA
         pd3d->Release();
         return false;
     }
-    
+
     bool support = (pd3d->CheckDeviceFormat(param.AdapterOrdinal, param.DeviceType, mode.Format, D3DUSAGE_DYNAMIC | D3DUSAGE_QUERY_FILTER | D3DUSAGE_QUERY_POSTPIXELSHADER_BLENDING, D3DRTYPE_TEXTURE, format)) == D3D_OK;
     pd3d->Release();
     return support;
@@ -334,14 +270,13 @@ static bool ImGui_ImplDX9_CheckFormatSupport(IDirect3DDevice9* pDevice, D3DFORMA
 
 static bool ImGui_ImplDX9_CreateFontsTexture()
 {
-    
+
     ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplDX9_Data* bd = ImGui_ImplDX9_GetBackendData();
     unsigned char* pixels;
     int width, height, bytes_per_pixel;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
 
-    
 #ifndef IMGUI_USE_BGRA_PACKED_COLOR
     const bool rgba_support = ImGui_ImplDX9_CheckFormatSupport(bd->pd3dDevice, D3DFMT_A8B8G8R8);
     if (!rgba_support && io.Fonts->TexPixelsUseColors)
@@ -355,7 +290,6 @@ static bool ImGui_ImplDX9_CreateFontsTexture()
     const bool rgba_support = false;
 #endif
 
-    
     bd->FontTexture = nullptr;
     if (bd->pd3dDevice->CreateTexture(width, height, 1, D3DUSAGE_DYNAMIC, rgba_support ? D3DFMT_A8B8G8R8 : D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &bd->FontTexture, nullptr) < 0)
         return false;
@@ -366,7 +300,6 @@ static bool ImGui_ImplDX9_CreateFontsTexture()
         memcpy((unsigned char*)tex_locked_rect.pBits + (size_t)tex_locked_rect.Pitch * y, pixels + (size_t)width * bytes_per_pixel * y, (size_t)width * bytes_per_pixel);
     bd->FontTexture->UnlockRect(0);
 
-    
     io.Fonts->SetTexID((ImTextureID)bd->FontTexture);
 
 #ifndef IMGUI_USE_BGRA_PACKED_COLOR
@@ -394,7 +327,7 @@ void ImGui_ImplDX9_InvalidateDeviceObjects()
         return;
     if (bd->pVB) { bd->pVB->Release(); bd->pVB = nullptr; }
     if (bd->pIB) { bd->pIB->Release(); bd->pIB = nullptr; }
-    if (bd->FontTexture) { bd->FontTexture->Release(); bd->FontTexture = nullptr; ImGui::GetIO().Fonts->SetTexID(0); } 
+    if (bd->FontTexture) { bd->FontTexture->Release(); bd->FontTexture = nullptr; ImGui::GetIO().Fonts->SetTexID(0); }
 }
 
 void ImGui_ImplDX9_NewFrame()
@@ -406,6 +339,4 @@ void ImGui_ImplDX9_NewFrame()
         ImGui_ImplDX9_CreateDeviceObjects();
 }
 
-
-
-#endif 
+#endif

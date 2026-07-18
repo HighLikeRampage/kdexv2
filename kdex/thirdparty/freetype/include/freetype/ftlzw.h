@@ -1,21 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef FTLZW_H_
 #define FTLZW_H_
 
@@ -27,74 +9,12 @@
 #error "so that freetype.h of FreeType 2 is found first."
 #endif
 
-
 FT_BEGIN_HEADER
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   FT_EXPORT( FT_Error )
   FT_Stream_OpenLZW( FT_Stream  stream,
                      FT_Stream  source );
 
-  
-
-
 FT_END_HEADER
 
-#endif 
-
-
-
+#endif

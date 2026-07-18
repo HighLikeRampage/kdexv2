@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 #ifndef __XACT3WB_H__
 #define __XACT3WB_H__
 
@@ -21,7 +12,7 @@
 
 #pragma warning(push)
 #pragma warning(disable:4201)
-#pragma warning(disable:4214)   
+#pragma warning(disable:4214)
 
 #pragma pack(push, 1)
 #if !defined(_X86_)
@@ -34,92 +25,61 @@
 #pragma bitfield_order(push, lsb_to_msb)
 #endif
 
-#define WAVEBANK_HEADER_SIGNATURE               'DNBW'      
-#define WAVEBANK_HEADER_VERSION                 44          
+#define WAVEBANK_HEADER_SIGNATURE               'DNBW'
+#define WAVEBANK_HEADER_VERSION                 44
 
-#define WAVEBANK_BANKNAME_LENGTH                64          
-#define WAVEBANK_ENTRYNAME_LENGTH               64          
+#define WAVEBANK_BANKNAME_LENGTH                64
+#define WAVEBANK_ENTRYNAME_LENGTH               64
 
-#define WAVEBANK_MAX_DATA_SEGMENT_SIZE          0xFFFFFFFF  
-#define WAVEBANK_MAX_COMPACT_DATA_SEGMENT_SIZE  0x001FFFFF  
+#define WAVEBANK_MAX_DATA_SEGMENT_SIZE          0xFFFFFFFF
+#define WAVEBANK_MAX_COMPACT_DATA_SEGMENT_SIZE  0x001FFFFF
 
 typedef DWORD WAVEBANKOFFSET;
 
-
-
-
-
-#define WAVEBANK_TYPE_BUFFER         0x00000000      
-#define WAVEBANK_TYPE_STREAMING      0x00000001      
+#define WAVEBANK_TYPE_BUFFER         0x00000000
+#define WAVEBANK_TYPE_STREAMING      0x00000001
 #define WAVEBANK_TYPE_MASK           0x00000001
 
-#define WAVEBANK_FLAGS_ENTRYNAMES    0x00010000      
-#define WAVEBANK_FLAGS_COMPACT       0x00020000      
-#define WAVEBANK_FLAGS_SYNC_DISABLED 0x00040000      
-#define WAVEBANK_FLAGS_SEEKTABLES    0x00080000      
+#define WAVEBANK_FLAGS_ENTRYNAMES    0x00010000
+#define WAVEBANK_FLAGS_COMPACT       0x00020000
+#define WAVEBANK_FLAGS_SYNC_DISABLED 0x00040000
+#define WAVEBANK_FLAGS_SEEKTABLES    0x00080000
 #define WAVEBANK_FLAGS_MASK          0x000F0000
 
-
-
-
-
-#define WAVEBANKENTRY_FLAGS_READAHEAD       0x00000001  
-#define WAVEBANKENTRY_FLAGS_LOOPCACHE       0x00000002  
-#define WAVEBANKENTRY_FLAGS_REMOVELOOPTAIL  0x00000004  
-#define WAVEBANKENTRY_FLAGS_IGNORELOOP      0x00000008  
+#define WAVEBANKENTRY_FLAGS_READAHEAD       0x00000001
+#define WAVEBANKENTRY_FLAGS_LOOPCACHE       0x00000002
+#define WAVEBANKENTRY_FLAGS_REMOVELOOPTAIL  0x00000004
+#define WAVEBANKENTRY_FLAGS_IGNORELOOP      0x00000008
 #define WAVEBANKENTRY_FLAGS_MASK            0x00000008
 
+#define WAVEBANKMINIFORMAT_TAG_PCM      0x0
+#define WAVEBANKMINIFORMAT_TAG_XMA      0x1
+#define WAVEBANKMINIFORMAT_TAG_ADPCM    0x2
+#define WAVEBANKMINIFORMAT_TAG_WMA      0x3
 
+#define WAVEBANKMINIFORMAT_BITDEPTH_8   0x0
+#define WAVEBANKMINIFORMAT_BITDEPTH_16  0x1
 
-
-
-#define WAVEBANKMINIFORMAT_TAG_PCM      0x0     
-#define WAVEBANKMINIFORMAT_TAG_XMA      0x1     
-#define WAVEBANKMINIFORMAT_TAG_ADPCM    0x2     
-#define WAVEBANKMINIFORMAT_TAG_WMA      0x3     
-
-#define WAVEBANKMINIFORMAT_BITDEPTH_8   0x0     
-#define WAVEBANKMINIFORMAT_BITDEPTH_16  0x1     
-
-
-
-
-#define WAVEBANKENTRY_XMASTREAMS_MAX          3   
-#define WAVEBANKENTRY_XMACHANNELS_MAX         6   
-
-
-
-
+#define WAVEBANKENTRY_XMASTREAMS_MAX          3
+#define WAVEBANKENTRY_XMACHANNELS_MAX         6
 
 #define WAVEBANK_DVD_SECTOR_SIZE    2048
 #define WAVEBANK_DVD_BLOCK_SIZE     (WAVEBANK_DVD_SECTOR_SIZE * 16)
 
-
-
-
-
-#define WAVEBANK_ALIGNMENT_MIN  4                           
-#define WAVEBANK_ALIGNMENT_DVD  WAVEBANK_DVD_SECTOR_SIZE    
-
-
-
-
+#define WAVEBANK_ALIGNMENT_MIN  4
+#define WAVEBANK_ALIGNMENT_DVD  WAVEBANK_DVD_SECTOR_SIZE
 
 typedef enum WAVEBANKSEGIDX
 {
-    WAVEBANK_SEGIDX_BANKDATA = 0,       
-    WAVEBANK_SEGIDX_ENTRYMETADATA,      
-    WAVEBANK_SEGIDX_SEEKTABLES,         
-    WAVEBANK_SEGIDX_ENTRYNAMES,         
-    WAVEBANK_SEGIDX_ENTRYWAVEDATA,      
+    WAVEBANK_SEGIDX_BANKDATA = 0,
+    WAVEBANK_SEGIDX_ENTRYMETADATA,
+    WAVEBANK_SEGIDX_SEEKTABLES,
+    WAVEBANK_SEGIDX_ENTRYNAMES,
+    WAVEBANK_SEGIDX_ENTRYWAVEDATA,
     WAVEBANK_SEGIDX_COUNT
 } WAVEBANKSEGIDX, *LPWAVEBANKSEGIDX;
 
 typedef const WAVEBANKSEGIDX *LPCWAVEBANKSEGIDX;
-
-
-
-
 
 #ifdef __cplusplus
 
@@ -138,11 +98,11 @@ namespace XACTWaveBank
             mov [edi], eax
         }
 
-#else 
+#else
 
         dw = _byteswap_ulong(dw);
 
-#endif 
+#endif
 
     }
 
@@ -159,26 +119,22 @@ namespace XACTWaveBank
             mov [edi], ax
         }
 
-#else 
+#else
 
         w = _byteswap_ushort(w);
 
-#endif 
+#endif
 
     }
 
 }
 
-#endif 
-
-
-
-
+#endif
 
 typedef struct WAVEBANKREGION
 {
-    DWORD       dwOffset;               
-    DWORD       dwLength;               
+    DWORD       dwOffset;
+    DWORD       dwLength;
 
 #ifdef __cplusplus
 
@@ -188,21 +144,16 @@ typedef struct WAVEBANKREGION
         XACTWaveBank::SwapBytes(dwLength);
     }
 
-#endif 
+#endif
 
 } WAVEBANKREGION, *LPWAVEBANKREGION;
 
 typedef const WAVEBANKREGION *LPCWAVEBANKREGION;
 
-
-
-
-
-
 typedef struct WAVEBANKSAMPLEREGION
 {
-    DWORD       dwStartSample;          
-    DWORD       dwTotalSamples;         
+    DWORD       dwStartSample;
+    DWORD       dwTotalSamples;
 
 #ifdef __cplusplus
 
@@ -212,23 +163,18 @@ typedef struct WAVEBANKSAMPLEREGION
         XACTWaveBank::SwapBytes(dwTotalSamples);
     }
 
-#endif 
+#endif
 
 } WAVEBANKSAMPLEREGION, *LPWAVEBANKSAMPLEREGION;
 
 typedef const WAVEBANKSAMPLEREGION *LPCWAVEBANKSAMPLEREGION;
 
-
-
-
-
-
 typedef struct WAVEBANKHEADER
 {
-    DWORD           dwSignature;                        
-    DWORD           dwVersion;                          
-    DWORD           dwHeaderVersion;                    
-    WAVEBANKREGION  Segments[WAVEBANK_SEGIDX_COUNT];    
+    DWORD           dwSignature;
+    DWORD           dwVersion;
+    DWORD           dwHeaderVersion;
+    WAVEBANKREGION  Segments[WAVEBANK_SEGIDX_COUNT];
 
 #ifdef __cplusplus
 
@@ -244,16 +190,11 @@ typedef struct WAVEBANKHEADER
         }
     }
 
-#endif 
+#endif
 
 } WAVEBANKHEADER, *LPWAVEBANKHEADER;
 
 typedef const WAVEBANKHEADER *LPCWAVEBANKHEADER;
-
-
-
-
-
 
 #define MAX_WMA_AVG_BYTES_PER_SEC_ENTRIES 7
 
@@ -267,12 +208,6 @@ static const DWORD aWMAAvgBytesPerSec[] =
     20000,
     2500
 };
-
-
-
-
-
-
 
 #define MAX_WMA_BLOCK_ALIGN_ENTRIES 17
 
@@ -299,19 +234,15 @@ static const DWORD aWMABlockAlign[] =
 
 struct WAVEBANKENTRY;
 
-
-
-
-
 typedef union WAVEBANKMINIWAVEFORMAT
 {
     struct
     {
-        DWORD       wFormatTag      : 2;        
-        DWORD       nChannels       : 3;        
-        DWORD       nSamplesPerSec  : 18;       
-        DWORD       wBlockAlign     : 8;        
-        DWORD       wBitsPerSample  : 1;        
+        DWORD       wFormatTag      : 2;
+        DWORD       nChannels       : 3;
+        DWORD       nSamplesPerSec  : 18;
+        DWORD       wBlockAlign     : 8;
+        DWORD       wBitsPerSample  : 1;
     };
 
     DWORD           dwValue;
@@ -326,13 +257,12 @@ typedef union WAVEBANKMINIWAVEFORMAT
     WORD BitsPerSample() const
     {
         if (wFormatTag == WAVEBANKMINIFORMAT_TAG_XMA)
-            return XMA_OUTPUT_SAMPLE_BITS; 
+            return XMA_OUTPUT_SAMPLE_BITS;
         if (wFormatTag == WAVEBANKMINIFORMAT_TAG_WMA)
             return 16;
         if (wFormatTag == WAVEBANKMINIFORMAT_TAG_ADPCM)
-            return 4; 
+            return 4;
 
-        
         return (wBitsPerSample == WAVEBANKMINIFORMAT_BITDEPTH_16) ? 16 : 8;
     }
 
@@ -419,7 +349,6 @@ typedef union WAVEBANKMINIWAVEFORMAT
         return dwReturn;
     }
 
-
     void XMA2FillFormatEx(XMA2WAVEFORMATEX *fmt, WORD blockCount, const struct WAVEBANKENTRY* entry) const;
 
     DWORD AdpcmSamplesPerBlock() const
@@ -430,22 +359,18 @@ typedef union WAVEBANKMINIWAVEFORMAT
 
     void AdpcmFillCoefficientTable(ADPCMWAVEFORMAT *fmt) const
     {
-        
-        fmt->wNumCoef = 7; 
+
+        fmt->wNumCoef = 7;
 
         static ADPCMCOEFSET aCoef[7] = { { 256, 0}, {512, -256}, {0,0}, {192,64}, {240,0}, {460, -208}, {392,-232} };
         memcpy( &fmt->aCoef, aCoef, sizeof(aCoef) );
     }
 
-#endif 
+#endif
 
 } WAVEBANKMINIWAVEFORMAT, *LPWAVEBANKMINIWAVEFORMAT;
 
 typedef const WAVEBANKMINIWAVEFORMAT *LPCWAVEBANKMINIWAVEFORMAT;
-
-
-
-
 
 typedef struct WAVEBANKENTRY
 {
@@ -453,23 +378,17 @@ typedef struct WAVEBANKENTRY
     {
         struct
         {
-            
+
             DWORD                   dwFlags  :  4;
 
-            
-            
-            
-            
-            
-            
             DWORD                   Duration : 28;
         };
         DWORD dwFlagsAndDuration;
     };
 
-    WAVEBANKMINIWAVEFORMAT  Format;         
-    WAVEBANKREGION          PlayRegion;     
-    WAVEBANKSAMPLEREGION    LoopRegion;     
+    WAVEBANKMINIWAVEFORMAT  Format;
+    WAVEBANKREGION          PlayRegion;
+    WAVEBANKSAMPLEREGION    LoopRegion;
 
 #ifdef __cplusplus
 
@@ -481,20 +400,16 @@ typedef struct WAVEBANKENTRY
         LoopRegion.SwapBytes();
     }
 
-#endif 
+#endif
 
 } WAVEBANKENTRY, *LPWAVEBANKENTRY;
 
 typedef const WAVEBANKENTRY *LPCWAVEBANKENTRY;
 
-
-
-
-
 typedef struct WAVEBANKENTRYCOMPACT
 {
-    DWORD       dwOffset            : 21;       
-    DWORD       dwLengthDeviation   : 11;       
+    DWORD       dwOffset            : 21;
+    DWORD       dwLengthDeviation   : 11;
 
 #ifdef __cplusplus
 
@@ -503,26 +418,22 @@ typedef struct WAVEBANKENTRYCOMPACT
         XACTWaveBank::SwapBytes(*(LPDWORD)this);
     }
 
-#endif 
+#endif
 
 } WAVEBANKENTRYCOMPACT, *LPWAVEBANKENTRYCOMPACT;
 
 typedef const WAVEBANKENTRYCOMPACT *LPCWAVEBANKENTRYCOMPACT;
 
-
-
-
-
 typedef struct WAVEBANKDATA
 {
-    DWORD                   dwFlags;                                
-    DWORD                   dwEntryCount;                           
-    CHAR                    szBankName[WAVEBANK_BANKNAME_LENGTH];   
-    DWORD                   dwEntryMetaDataElementSize;             
-    DWORD                   dwEntryNameElementSize;                 
-    DWORD                   dwAlignment;                            
-    WAVEBANKMINIWAVEFORMAT  CompactFormat;                          
-    FILETIME                BuildTime;                              
+    DWORD                   dwFlags;
+    DWORD                   dwEntryCount;
+    CHAR                    szBankName[WAVEBANK_BANKNAME_LENGTH];
+    DWORD                   dwEntryMetaDataElementSize;
+    DWORD                   dwEntryNameElementSize;
+    DWORD                   dwAlignment;
+    WAVEBANKMINIWAVEFORMAT  CompactFormat;
+    FILETIME                BuildTime;
 
 #ifdef __cplusplus
 
@@ -538,7 +449,7 @@ typedef struct WAVEBANKDATA
         XACTWaveBank::SwapBytes(BuildTime.dwHighDateTime);
     }
 
-#endif 
+#endif
 
 } WAVEBANKDATA, *LPWAVEBANKDATA;
 
@@ -546,7 +457,6 @@ typedef const WAVEBANKDATA *LPCWAVEBANKDATA;
 
 inline void WAVEBANKMINIWAVEFORMAT::XMA2FillFormatEx(XMA2WAVEFORMATEX *fmt, WORD blockCount, const WAVEBANKENTRY* entry) const
 {
-    
 
     fmt->NumStreams = (WORD)( (nChannels + 1) / 2 );
 
@@ -564,7 +474,7 @@ inline void WAVEBANKMINIWAVEFORMAT::XMA2FillFormatEx(XMA2WAVEFORMATEX *fmt, WORD
     }
 
     fmt->SamplesEncoded = entry->Duration;
-    fmt->BytesPerBlock = 65536; 
+    fmt->BytesPerBlock = 65536;
 
     fmt->PlayBegin = entry->PlayRegion.dwOffset;
     fmt->PlayLength = entry->PlayRegion.dwLength;
@@ -573,7 +483,7 @@ inline void WAVEBANKMINIWAVEFORMAT::XMA2FillFormatEx(XMA2WAVEFORMATEX *fmt, WORD
     {
         fmt->LoopBegin = entry->LoopRegion.dwStartSample;
         fmt->LoopLength = entry->LoopRegion.dwTotalSamples;
-        fmt->LoopCount = 0xff; 
+        fmt->LoopCount = 0xff;
     }
     else
     {
@@ -582,7 +492,7 @@ inline void WAVEBANKMINIWAVEFORMAT::XMA2FillFormatEx(XMA2WAVEFORMATEX *fmt, WORD
         fmt->LoopCount = 0;
     }
 
-    fmt->EncoderVersion = 4; 
+    fmt->EncoderVersion = 4;
 
     fmt->BlockCount = blockCount;
 }
@@ -594,5 +504,4 @@ inline void WAVEBANKMINIWAVEFORMAT::XMA2FillFormatEx(XMA2WAVEFORMATEX *fmt, WORD
 #pragma warning(pop)
 #pragma pack(pop)
 
-#endif 
-
+#endif

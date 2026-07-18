@@ -1,32 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef FTOTVAL_H_
 #define FTOTVAL_H_
 
@@ -38,65 +9,7 @@
 #error "so that freetype.h of FreeType 2 is found first."
 #endif
 
-
 FT_BEGIN_HEADER
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define FT_VALIDATE_BASE  0x0100
 #define FT_VALIDATE_GDEF  0x0200
@@ -112,54 +25,6 @@ FT_BEGIN_HEADER
                           FT_VALIDATE_JSTF | \
                           FT_VALIDATE_MATH )
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_Error )
   FT_OpenType_Validate( FT_Face    face,
                         FT_UInt    validation_flags,
@@ -169,38 +34,10 @@ FT_BEGIN_HEADER
                         FT_Bytes  *GSUB_table,
                         FT_Bytes  *JSTF_table );
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( void )
   FT_OpenType_Free( FT_Face   face,
                     FT_Bytes  table );
 
-
-  
-
-
 FT_END_HEADER
 
-#endif 
-
-
-
+#endif

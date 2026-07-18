@@ -1,88 +1,44 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef __AUDIODEFS_INCLUDED__
 #define __AUDIODEFS_INCLUDED__
 
-#include <windef.h>  
+#include <windef.h>
 
-#pragma pack(push, 1)  
-
-
-
-
-
-
-
-
-
+#pragma pack(push, 1)
 
 #ifndef _WAVEFORMATEX_
 
     #define _WAVEFORMATEX_
     typedef struct tWAVEFORMATEX
     {
-        WORD wFormatTag;        
-        WORD nChannels;         
-        DWORD nSamplesPerSec;   
-        DWORD nAvgBytesPerSec;  
-        WORD nBlockAlign;       
-        WORD wBitsPerSample;    
-        WORD cbSize;            
+        WORD wFormatTag;
+        WORD nChannels;
+        DWORD nSamplesPerSec;
+        DWORD nAvgBytesPerSec;
+        WORD nBlockAlign;
+        WORD wBitsPerSample;
+        WORD cbSize;
     } WAVEFORMATEX;
 
 #endif
 
-
-
-
 typedef WAVEFORMATEX *PWAVEFORMATEX, *NPWAVEFORMATEX, *LPWAVEFORMATEX;
 typedef const WAVEFORMATEX *PCWAVEFORMATEX, *LPCWAVEFORMATEX;
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef _WAVEFORMATEXTENSIBLE_
 
     #define _WAVEFORMATEXTENSIBLE_
     typedef struct
     {
-        WAVEFORMATEX Format;          
+        WAVEFORMATEX Format;
         union
         {
-            WORD wValidBitsPerSample; 
-            WORD wSamplesPerBlock;    
-                                      
-            WORD wReserved;           
+            WORD wValidBitsPerSample;
+            WORD wSamplesPerBlock;
+
+            WORD wReserved;
         } Samples;
-        DWORD dwChannelMask;          
-        GUID SubFormat;               
+        DWORD dwChannelMask;
+        GUID SubFormat;
     } WAVEFORMATEXTENSIBLE;
 
 #endif
@@ -90,20 +46,8 @@ typedef const WAVEFORMATEX *PCWAVEFORMATEX, *LPCWAVEFORMATEX;
 typedef WAVEFORMATEXTENSIBLE *PWAVEFORMATEXTENSIBLE, *LPWAVEFORMATEXTENSIBLE;
 typedef const WAVEFORMATEXTENSIBLE *PCWAVEFORMATEXTENSIBLE, *LPCWAVEFORMATEXTENSIBLE;
 
+#ifndef WAVE_FORMAT_PCM
 
-
-
-
-
-
-
-
-#ifndef WAVE_FORMAT_PCM  
-
-    
-    
-
-    
     typedef struct waveformat_tag
     {
         WORD wFormatTag;
@@ -113,7 +57,6 @@ typedef const WAVEFORMATEXTENSIBLE *PCWAVEFORMATEXTENSIBLE, *LPCWAVEFORMATEXTENS
         WORD nBlockAlign;
     } WAVEFORMAT, *PWAVEFORMAT, NEAR *NPWAVEFORMAT, FAR *LPWAVEFORMAT;
 
-    
     typedef struct pcmwaveformat_tag
     {
         WAVEFORMAT wf;
@@ -124,9 +67,7 @@ typedef const WAVEFORMATEXTENSIBLE *PCWAVEFORMATEXTENSIBLE, *LPCWAVEFORMATEXTENS
 
 #endif
 
-#ifndef WAVE_FORMAT_ADPCM  
-
-    
+#ifndef WAVE_FORMAT_ADPCM
 
     typedef struct adpcmcoef_tag
     {
@@ -135,13 +76,13 @@ typedef const WAVEFORMATEXTENSIBLE *PCWAVEFORMATEXTENSIBLE, *LPCWAVEFORMATEXTENS
     } ADPCMCOEFSET;
 
     #pragma warning(push)
-    #pragma warning(disable:4200)  
+    #pragma warning(disable:4200)
 
     typedef struct adpcmwaveformat_tag {
         WAVEFORMATEX wfx;
         WORD wSamplesPerBlock;
         WORD wNumCoef;
-        ADPCMCOEFSET aCoef[];  
+        ADPCMCOEFSET aCoef[];
     } ADPCMWAVEFORMAT;
 
     #pragma warning(pop)
@@ -150,51 +91,39 @@ typedef const WAVEFORMATEXTENSIBLE *PCWAVEFORMATEXTENSIBLE, *LPCWAVEFORMATEXTENS
 
 #endif
 
-
-
 #ifndef WAVE_FORMAT_UNKNOWN
-    #define WAVE_FORMAT_UNKNOWN         0x0000 
+    #define WAVE_FORMAT_UNKNOWN         0x0000
 #endif
 
 #ifndef WAVE_FORMAT_IEEE_FLOAT
-    #define WAVE_FORMAT_IEEE_FLOAT      0x0003 
+    #define WAVE_FORMAT_IEEE_FLOAT      0x0003
 #endif
 
 #ifndef WAVE_FORMAT_MPEGLAYER3
-    #define WAVE_FORMAT_MPEGLAYER3      0x0055 
+    #define WAVE_FORMAT_MPEGLAYER3      0x0055
 #endif
 
 #ifndef WAVE_FORMAT_DOLBY_AC3_SPDIF
-    #define WAVE_FORMAT_DOLBY_AC3_SPDIF 0x0092 
+    #define WAVE_FORMAT_DOLBY_AC3_SPDIF 0x0092
 #endif
 
 #ifndef WAVE_FORMAT_WMAUDIO2
-    #define WAVE_FORMAT_WMAUDIO2        0x0161 
+    #define WAVE_FORMAT_WMAUDIO2        0x0161
 #endif
 
 #ifndef WAVE_FORMAT_WMAUDIO3
-    #define WAVE_FORMAT_WMAUDIO3        0x0162 
+    #define WAVE_FORMAT_WMAUDIO3        0x0162
 #endif
 
 #ifndef WAVE_FORMAT_WMASPDIF
-    #define WAVE_FORMAT_WMASPDIF        0x0164 
+    #define WAVE_FORMAT_WMASPDIF        0x0164
 #endif
 
 #ifndef WAVE_FORMAT_EXTENSIBLE
-    #define WAVE_FORMAT_EXTENSIBLE      0xFFFE 
+    #define WAVE_FORMAT_EXTENSIBLE      0xFFFE
 #endif
 
-
-
-
-
-
-
-
-
-
-
-#ifdef __cplusplus 
+#ifdef __cplusplus
 
     #ifndef KSDATAFORMAT_SUBTYPE_PCM
         struct __declspec(uuid("00000001-0000-0010-8000-00aa00389b71")) KSDATAFORMAT_SUBTYPE_PCM_STRUCT;
@@ -212,13 +141,6 @@ typedef const WAVEFORMATEXTENSIBLE *PCWAVEFORMATEXTENSIBLE, *LPCWAVEFORMATEXTENS
     #endif
 
 #endif
-
-
-
-
-
-
-
 
 #ifndef SPEAKER_FRONT_LEFT
     #define SPEAKER_FRONT_LEFT            0x00000001
@@ -257,7 +179,6 @@ typedef const WAVEFORMATEXTENSIBLE *PCWAVEFORMATEXTENSIBLE, *LPCWAVEFORMATEXTENS
     #define SPEAKER_7POINT1_SURROUND (SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT  | SPEAKER_SIDE_RIGHT)
 #endif
 
-
 #pragma pack(pop)
 
-#endif 
+#endif

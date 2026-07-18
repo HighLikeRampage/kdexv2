@@ -1,33 +1,6 @@
-﻿
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#pragma once
+﻿#pragma once
 
 #include <windows.h>
-
 
 typedef INT8   int8_t;
 typedef INT16  int16_t;

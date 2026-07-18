@@ -1,20 +1,9 @@
-
-
-
-
-
-
-
-
-
 #ifdef  __D3DX10_INTERNAL__
 #error Incorrect D3DX10 header used
 #endif
 
 #ifndef __D3DX10_H__
 #define __D3DX10_H__
-
-
 
 #include <limits.h>
 #include <float.h>
@@ -39,9 +28,6 @@
 #endif
 #endif
 
-
-
-
 #include "d3d10.h"
 #include "d3dx10.h"
 #include "d3dx10math.h"
@@ -49,8 +35,6 @@
 #include "d3dx10tex.h"
 #include "d3dx10mesh.h"
 #include "d3dx10async.h"
-
-
 
 #define _FACDD  0x876
 #define MAKE_DDHRESULT( code )  MAKE_HRESULT( 1, _FACDD, code )
@@ -67,6 +51,4 @@ enum _D3DX10_ERR {
     D3DX10_ERR_CANNOT_REMOVE_LAST_ITEM		    = MAKE_DDHRESULT(2908),
 };
 
-
-#endif 
-
+#endif

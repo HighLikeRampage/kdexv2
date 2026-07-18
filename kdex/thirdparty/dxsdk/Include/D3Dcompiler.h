@@ -1,98 +1,20 @@
-
-
-
-
-
-
-
-
-
 #ifndef __D3DCOMPILER_H__
 #define __D3DCOMPILER_H__
-
-
-
 
 #define D3DCOMPILER_DLL_W L"d3dcompiler_43.dll"
 #define D3DCOMPILER_DLL_A "d3dcompiler_43.dll"
 
 #ifdef UNICODE
-    #define D3DCOMPILER_DLL D3DCOMPILER_DLL_W 
+    #define D3DCOMPILER_DLL D3DCOMPILER_DLL_W
 #else
     #define D3DCOMPILER_DLL D3DCOMPILER_DLL_A
 #endif
 
 #include "d3d11shader.h"
 
-
-
-
-
 #ifdef __cplusplus
 extern "C" {
-#endif 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif
 
 #define D3DCOMPILE_DEBUG                          (1 << 0)
 #define D3DCOMPILE_SKIP_VALIDATION                (1 << 1)
@@ -116,34 +38,8 @@ extern "C" {
 #define D3DCOMPILE_RESERVED17                     (1 << 17)
 #define D3DCOMPILE_WARNINGS_ARE_ERRORS            (1 << 18)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #define D3DCOMPILE_EFFECT_CHILD_EFFECT              (1 << 0)
 #define D3DCOMPILE_EFFECT_ALLOW_SLOW_OPS            (1 << 1)
-
-
-
-
-
-
 
 HRESULT WINAPI
 D3DCompile(__in_bcount(SrcDataSize) LPCVOID pSrcData,
@@ -170,13 +66,6 @@ typedef HRESULT (WINAPI *pD3DCompile)
      UINT                            Flags2,
      ID3DBlob**                      ppCode,
      ID3DBlob**                      ppErrorMsgs);
-     
-
-
-
-
-
-
 
 HRESULT WINAPI
 D3DPreprocess(__in_bcount(SrcDataSize) LPCVOID pSrcData,
@@ -196,24 +85,10 @@ typedef HRESULT (WINAPI *pD3DPreprocess)
      ID3DBlob**                   ppCodeText,
      ID3DBlob**                   ppErrorMsgs);
 
-
-
-
-
-
-
-
 HRESULT WINAPI
 D3DGetDebugInfo(__in_bcount(SrcDataSize) LPCVOID pSrcData,
                 __in SIZE_T SrcDataSize,
                 __out ID3DBlob** ppDebugInfo);
-
-
-
-
-
-
-
 
 HRESULT WINAPI
 D3DReflect(__in_bcount(SrcDataSize) LPCVOID pSrcData,
@@ -221,19 +96,13 @@ D3DReflect(__in_bcount(SrcDataSize) LPCVOID pSrcData,
 	   __in REFIID pInterface,
            __out void** ppReflector);
 
-
-
-
-
-
-
 #define D3D_DISASM_ENABLE_COLOR_CODE            0x00000001
 #define D3D_DISASM_ENABLE_DEFAULT_VALUE_PRINTS  0x00000002
 #define D3D_DISASM_ENABLE_INSTRUCTION_NUMBERING 0x00000004
 #define D3D_DISASM_ENABLE_INSTRUCTION_CYCLE     0x00000008
 #define D3D_DISASM_DISABLE_DEBUG_INFO           0x00000010
 
-HRESULT WINAPI 
+HRESULT WINAPI
 D3DDisassemble(__in_bcount(SrcDataSize) LPCVOID pSrcData,
                __in SIZE_T SrcDataSize,
                __in UINT Flags,
@@ -247,56 +116,25 @@ typedef HRESULT (WINAPI *pD3DDisassemble)
      __in_opt LPCSTR szComments,
      __out ID3DBlob** ppDisassembly);
 
-
-
-
-
-
-
-
 HRESULT WINAPI
-D3DDisassemble10Effect(__in interface ID3D10Effect *pEffect, 
+D3DDisassemble10Effect(__in interface ID3D10Effect *pEffect,
                        __in UINT Flags,
                        __out ID3DBlob** ppDisassembly);
-
-
-
-
-
-
 
 HRESULT WINAPI
 D3DGetInputSignatureBlob(__in_bcount(SrcDataSize) LPCVOID pSrcData,
                          __in SIZE_T SrcDataSize,
                          __out ID3DBlob** ppSignatureBlob);
 
-
-
-
-
-
-
 HRESULT WINAPI
 D3DGetOutputSignatureBlob(__in_bcount(SrcDataSize) LPCVOID pSrcData,
                           __in SIZE_T SrcDataSize,
                           __out ID3DBlob** ppSignatureBlob);
 
-
-
-
-
-
-
 HRESULT WINAPI
 D3DGetInputAndOutputSignatureBlob(__in_bcount(SrcDataSize) LPCVOID pSrcData,
                                   __in SIZE_T SrcDataSize,
                                   __out ID3DBlob** ppSignatureBlob);
-
-
-
-
-
-
 
 typedef enum D3DCOMPILER_STRIP_FLAGS
 {
@@ -312,12 +150,6 @@ D3DStripShader(__in_bcount(BytecodeLength) LPCVOID pShaderBytecode,
                __in UINT uStripFlags,
                __out ID3DBlob** ppStrippedBlob);
 
-
-
-
-
-
-
 typedef enum D3D_BLOB_PART
 {
     D3D_BLOB_INPUT_SIGNATURE_BLOB,
@@ -330,25 +162,17 @@ typedef enum D3D_BLOB_PART
     D3D_BLOB_XNA_PREPASS_SHADER,
     D3D_BLOB_XNA_SHADER,
 
-    
-    
     D3D_BLOB_TEST_ALTERNATE_SHADER = 0x8000,
     D3D_BLOB_TEST_COMPILE_DETAILS,
     D3D_BLOB_TEST_COMPILE_PERF,
 } D3D_BLOB_PART;
 
-HRESULT WINAPI 
+HRESULT WINAPI
 D3DGetBlobPart(__in_bcount(SrcDataSize) LPCVOID pSrcData,
                __in SIZE_T SrcDataSize,
                __in D3D_BLOB_PART Part,
                __in UINT Flags,
                __out ID3DBlob** ppPart);
-
-
-
-
-
-
 
 typedef struct _D3D_SHADER_DATA
 {
@@ -364,27 +188,15 @@ D3DCompressShaders(__in UINT uNumShaders,
                    __in UINT uFlags,
                    __out ID3DBlob** ppCompressedData);
 
-
-
-
-
-
-
 HRESULT WINAPI
 D3DDecompressShaders(__in_bcount(SrcDataSize) LPCVOID pSrcData,
                      __in SIZE_T SrcDataSize,
-                     __in UINT uNumShaders,	      
+                     __in UINT uNumShaders,
                      __in UINT uStartIndex,
                      __in_ecount_opt(uNumShaders) UINT* pIndices,
                      __in UINT uFlags,
                      __out_ecount(uNumShaders) ID3DBlob** ppShaders,
 		     __out_opt UINT* pTotalShaders);
-
-
-
-
-
-
 
 HRESULT WINAPI
 D3DCreateBlob(__in SIZE_T Size,
@@ -392,6 +204,6 @@ D3DCreateBlob(__in SIZE_T Size,
 
 #ifdef __cplusplus
 }
-#endif 
-    
-#endif 
+#endif
+
+#endif

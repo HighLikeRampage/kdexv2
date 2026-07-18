@@ -11,10 +11,7 @@
 #define JM_XORSTR_DISABLE_AVX_INTRINSICS
 
 #if !defined(JM_XORSTR_CIPHER)
-// Cipher 0 is the only mode with a constexpr string_storage constructor,
-// so it is the only mode that keeps the plaintext literal out of .rdata.
-// The salt + second-layer key added below make its XOR much harder to peel
-// back statically without switching to a runtime-only cipher.
+
 #define JM_XORSTR_CIPHER 0
 #endif
 
@@ -575,16 +572,6 @@ namespace jm
 
 }
 
-// Lightweight xorstr variant. Same compile-time-encrypt / runtime-decrypt
-// principle as xorstr(), but the template only depends on the string LENGTH,
-// not the content. That collapses N unique instantiations to O(distinct
-// lengths), so a header with tens of thousands of entries (native patterns,
-// hash names) compiles in seconds instead of hours.
-//
-// Each call site gets a distinct salt via __COUNTER__ + __LINE__, so identical
-// strings at different sites still encrypt to different bytes. The decrypt
-// buffer is thread_local so returned pointers stay valid until the next
-// xorstr_lite call in the same thread.
 #define JM_XORSTR_LITE_SALT_ (static_cast<std::uint32_t>((__COUNTER__ + 1u) * 2246822519u) ^ static_cast<std::uint32_t>(__LINE__ * 40503u) ^ 0xBF58476Du)
 
 #define xorstr_lite(str) ([]() -> const char* {                            \

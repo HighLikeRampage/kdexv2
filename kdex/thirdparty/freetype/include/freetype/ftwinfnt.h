@@ -1,21 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef FTWINFNT_H_
 #define FTWINFNT_H_
 
@@ -27,129 +9,7 @@
 #error "so that freetype.h of FreeType 2 is found first."
 #endif
 
-
 FT_BEGIN_HEADER
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define FT_WinFNT_ID_CP1252    0
 #define FT_WinFNT_ID_DEFAULT   1
@@ -170,15 +30,6 @@ FT_BEGIN_HEADER
 #define FT_WinFNT_ID_CP874   222
 #define FT_WinFNT_ID_CP1250  238
 #define FT_WinFNT_ID_OEM     255
-
-
-  
-
-
-
-
-
-
 
   typedef struct  FT_WinFNT_HeaderRec_
   {
@@ -221,56 +72,12 @@ FT_BEGIN_HEADER
 
   } FT_WinFNT_HeaderRec;
 
-
-  
-
-
-
-
-
-
-
   typedef struct FT_WinFNT_HeaderRec_*  FT_WinFNT_Header;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   FT_EXPORT( FT_Error )
   FT_Get_WinFNT_Header( FT_Face               face,
                         FT_WinFNT_HeaderRec  *aheader );
 
-  
-
-
 FT_END_HEADER
 
-#endif 
-
-
-
-
-
-
-
-
+#endif

@@ -1,39 +1,17 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #pragma once
 
 #ifndef _XACT3_H_
 #define _XACT3_H_
 
-
-
-
-#ifndef _XBOX 
-    #include <comdecl.h> 
+#ifndef _XBOX
+    #include <comdecl.h>
     DEFINE_CLSID(XACTEngine,         bcc782bc, 6492, 4c22, 8c, 35, f5, d7, 2f, e7, 3c, 6e);
     DEFINE_CLSID(XACTAuditionEngine, 9ecdd80d, 0e81, 40d8, 89, 03, 2b, f7, b1, 31, ac, 43);
     DEFINE_CLSID(XACTDebugEngine,    02860630, bf3b, 42a8, b1, 4e, 91, ed, a2, f5, 1e, a5);
     DEFINE_IID(IXACT3Engine,         b1ee676a, d9cd, 4d2a, 89, a8, fa, 53, eb, 9e, 48, 0b);
 #endif
 
-
 #ifndef GUID_DEFS_ONLY
-
-
-
-
 
 #ifndef _XBOX
     #include <windows.h>
@@ -44,10 +22,6 @@
 #include <xact3wb.h>
 #include <xaudio2.h>
 
-
-
-
-
 typedef struct IXACT3SoundBank       IXACT3SoundBank;
 typedef struct IXACT3WaveBank        IXACT3WaveBank;
 typedef struct IXACT3Cue             IXACT3Cue;
@@ -55,27 +29,19 @@ typedef struct IXACT3Wave            IXACT3Wave;
 typedef struct IXACT3Engine          IXACT3Engine;
 typedef struct XACT_NOTIFICATION     XACT_NOTIFICATION;
 
-
-
-
-
-
-typedef WORD  XACTINDEX;            
-typedef BYTE  XACTNOTIFICATIONTYPE; 
-typedef FLOAT XACTVARIABLEVALUE;    
-typedef WORD  XACTVARIABLEINDEX;    
-typedef WORD  XACTCATEGORY;         
-typedef BYTE  XACTCHANNEL;          
-typedef FLOAT XACTVOLUME;           
-typedef LONG  XACTTIME;             
-typedef SHORT XACTPITCH;            
-typedef BYTE  XACTLOOPCOUNT;        
-typedef BYTE  XACTVARIATIONWEIGHT;  
-typedef BYTE  XACTPRIORITY;         
-typedef BYTE  XACTINSTANCELIMIT;    
-
-
-
+typedef WORD  XACTINDEX;
+typedef BYTE  XACTNOTIFICATIONTYPE;
+typedef FLOAT XACTVARIABLEVALUE;
+typedef WORD  XACTVARIABLEINDEX;
+typedef WORD  XACTCATEGORY;
+typedef BYTE  XACTCHANNEL;
+typedef FLOAT XACTVOLUME;
+typedef LONG  XACTTIME;
+typedef SHORT XACTPITCH;
+typedef BYTE  XACTLOOPCOUNT;
+typedef BYTE  XACTVARIATIONWEIGHT;
+typedef BYTE  XACTPRIORITY;
+typedef BYTE  XACTINSTANCELIMIT;
 
 #ifndef WAVE_FORMAT_IEEE_FLOAT
     #define  WAVE_FORMAT_IEEE_FLOAT 0x0003
@@ -90,13 +56,13 @@ typedef BYTE  XACTINSTANCELIMIT;
     #pragma pack(push, 1)
     typedef struct tWAVEFORMATEX
     {
-        WORD    wFormatTag;      
-        WORD    nChannels;       
-        DWORD   nSamplesPerSec;  
-        DWORD   nAvgBytesPerSec; 
-        WORD    nBlockAlign;     
-        WORD    wBitsPerSample;  
-        WORD    cbSize;          
+        WORD    wFormatTag;
+        WORD    nChannels;
+        DWORD   nSamplesPerSec;
+        DWORD   nAvgBytesPerSec;
+        WORD    nBlockAlign;
+        WORD    wBitsPerSample;
+        WORD    cbSize;
 
     } WAVEFORMATEX, *PWAVEFORMATEX;
     typedef WAVEFORMATEX NEAR *NPWAVEFORMATEX;
@@ -109,30 +75,27 @@ typedef BYTE  XACTINSTANCELIMIT;
     #pragma pack(push, 1)
     typedef struct
     {
-        WAVEFORMATEX    Format;              
+        WAVEFORMATEX    Format;
 
         union
         {
-            WORD        wValidBitsPerSample; 
-            WORD        wSamplesPerBlock;    
-            WORD        wReserved;           
+            WORD        wValidBitsPerSample;
+            WORD        wSamplesPerBlock;
+            WORD        wReserved;
         } Samples;
 
-        DWORD           dwChannelMask;       
-        GUID            SubFormat;           
+        DWORD           dwChannelMask;
+        GUID            SubFormat;
     } WAVEFORMATEXTENSIBLE, *PWAVEFORMATEXTENSIBLE;
     #pragma pack(pop)
 #endif
 
-
-
-
 static const XACTTIME               XACTTIME_MIN                    = LONG_MIN;
-static const XACTTIME               XACTTIME_MAX                    = LONG_MAX; 
+static const XACTTIME               XACTTIME_MAX                    = LONG_MAX;
 static const XACTTIME               XACTTIME_INFINITE               = LONG_MAX;
 static const XACTINSTANCELIMIT      XACTINSTANCELIMIT_INFINITE      = 0xff;
-static const XACTINSTANCELIMIT      XACTINSTANCELIMIT_MIN           = 0x00; 
-static const XACTINSTANCELIMIT      XACTINSTANCELIMIT_MAX           = 0xfe; 
+static const XACTINSTANCELIMIT      XACTINSTANCELIMIT_MIN           = 0x00;
+static const XACTINSTANCELIMIT      XACTINSTANCELIMIT_MAX           = 0xfe;
 static const XACTINDEX              XACTINDEX_MIN                   = 0x0;
 static const XACTINDEX              XACTINDEX_MAX                   = 0xfffe;
 static const XACTINDEX              XACTINDEX_INVALID               = 0xffff;
@@ -148,12 +111,12 @@ static const XACTCATEGORY           XACTCATEGORY_MAX                = 0xfffe;
 static const XACTCATEGORY           XACTCATEGORY_INVALID            = 0xffff;
 static const XACTCHANNEL            XACTCHANNEL_MIN                 = 0;
 static const XACTCHANNEL            XACTCHANNEL_MAX                 = 0xFF;
-static const XACTPITCH              XACTPITCH_MIN                   = -1200; 
+static const XACTPITCH              XACTPITCH_MIN                   = -1200;
 static const XACTPITCH              XACTPITCH_MAX                   = 1200;
-static const XACTPITCH              XACTPITCH_MIN_TOTAL             = -2400; 
+static const XACTPITCH              XACTPITCH_MIN_TOTAL             = -2400;
 static const XACTPITCH              XACTPITCH_MAX_TOTAL             = 2400;
 static const XACTVOLUME             XACTVOLUME_MIN                  = 0.0f;
-static const XACTVOLUME             XACTVOLUME_MAX                  = 16777216.0f;   
+static const XACTVOLUME             XACTVOLUME_MAX                  = 16777216.0f;
 static const XACTVARIABLEVALUE      XACTPARAMETERVALUE_MIN          = -FLT_MAX;
 static const XACTVARIABLEVALUE      XACTPARAMETERVALUE_MAX          = FLT_MAX;
 static const XACTLOOPCOUNT          XACTLOOPCOUNT_MIN               = 0x0;
@@ -162,58 +125,32 @@ static const XACTLOOPCOUNT          XACTLOOPCOUNT_INFINITE          = 0xff;
 static const DWORD                  XACTWAVEALIGNMENT_MIN           = 2048;
 #ifdef _XBOX
 static const BYTE                   XACTMAXOUTPUTVOICECOUNT         = 3;
-#endif 
-
-
-
-
+#endif
 
 #define XACT_CUE_NAME_LENGTH        0xFF
 
-
-
-
 #define XACT_CONTENT_VERSION        46
 
-
-
-
-static const DWORD XACT_FLAG_STOP_RELEASE       = 0x00000000; 
-static const DWORD XACT_FLAG_STOP_IMMEDIATE     = 0x00000001; 
-
-
-
+static const DWORD XACT_FLAG_STOP_RELEASE       = 0x00000000;
+static const DWORD XACT_FLAG_STOP_IMMEDIATE     = 0x00000001;
 
 static const DWORD XACT_FLAG_MANAGEDATA         = 0x00000001;
 
+static const DWORD XACT_FLAG_BACKGROUND_MUSIC   = 0x00000002;
+static const DWORD XACT_FLAG_UNITS_MS           = 0x00000004;
+static const DWORD XACT_FLAG_UNITS_SAMPLES      = 0x00000008;
 
-
-
-static const DWORD XACT_FLAG_BACKGROUND_MUSIC   = 0x00000002; 
-static const DWORD XACT_FLAG_UNITS_MS           = 0x00000004; 
-static const DWORD XACT_FLAG_UNITS_SAMPLES      = 0x00000008; 
-
-
-
-
-static const DWORD XACT_STATE_CREATED           = 0x00000001; 
-static const DWORD XACT_STATE_PREPARING         = 0x00000002; 
-static const DWORD XACT_STATE_PREPARED          = 0x00000004; 
-static const DWORD XACT_STATE_PLAYING           = 0x00000008; 
-static const DWORD XACT_STATE_STOPPING          = 0x00000010; 
-static const DWORD XACT_STATE_STOPPED           = 0x00000020; 
-static const DWORD XACT_STATE_PAUSED            = 0x00000040; 
-static const DWORD XACT_STATE_INUSE             = 0x00000080; 
-static const DWORD XACT_STATE_PREPAREFAILED     = 0x80000000; 
-
-
-
-
+static const DWORD XACT_STATE_CREATED           = 0x00000001;
+static const DWORD XACT_STATE_PREPARING         = 0x00000002;
+static const DWORD XACT_STATE_PREPARED          = 0x00000004;
+static const DWORD XACT_STATE_PLAYING           = 0x00000008;
+static const DWORD XACT_STATE_STOPPING          = 0x00000010;
+static const DWORD XACT_STATE_STOPPED           = 0x00000020;
+static const DWORD XACT_STATE_PAUSED            = 0x00000040;
+static const DWORD XACT_STATE_INUSE             = 0x00000080;
+static const DWORD XACT_STATE_PREPAREFAILED     = 0x80000000;
 
 #define XACT_FLAG_GLOBAL_SETTINGS_MANAGEDATA    XACT_FLAG_MANAGEDATA
-
-
-
 
 typedef BOOL (__stdcall * XACT_READFILE_CALLBACK)(__in HANDLE hFile, __out_bcount(nNumberOfBytesToRead) LPVOID lpBuffer, DWORD nNumberOfBytesToRead, __out LPDWORD lpNumberOfBytesRead, __inout LPOVERLAPPED lpOverlapped);
 typedef BOOL (__stdcall * XACT_GETOVERLAPPEDRESULT_CALLBACK)(__in HANDLE hFile, __inout LPOVERLAPPED lpOverlapped, __out LPDWORD lpNumberOfBytesTransferred, BOOL bWait);
@@ -226,153 +163,123 @@ typedef struct XACT_FILEIO_CALLBACKS
 } XACT_FILEIO_CALLBACKS, *PXACT_FILEIO_CALLBACKS;
 typedef const XACT_FILEIO_CALLBACKS *PCXACT_FILEIO_CALLBACKS;
 
-
-
-
 typedef void (__stdcall * XACT_NOTIFICATION_CALLBACK)(__in const XACT_NOTIFICATION* pNotification);
 
-#define XACT_RENDERER_ID_LENGTH                 0xff    
-#define XACT_RENDERER_NAME_LENGTH               0xff    
-
-
-
+#define XACT_RENDERER_ID_LENGTH                 0xff
+#define XACT_RENDERER_NAME_LENGTH               0xff
 
 typedef struct XACT_RENDERER_DETAILS
 {
-    WCHAR rendererID[XACT_RENDERER_ID_LENGTH];          
-    WCHAR displayName[XACT_RENDERER_NAME_LENGTH];       
-    BOOL  defaultDevice;                                
+    WCHAR rendererID[XACT_RENDERER_ID_LENGTH];
+    WCHAR displayName[XACT_RENDERER_NAME_LENGTH];
+    BOOL  defaultDevice;
 
 } XACT_RENDERER_DETAILS, *LPXACT_RENDERER_DETAILS;
 
-
-
-
-#define XACT_ENGINE_LOOKAHEAD_DEFAULT           250     
-
-
-
+#define XACT_ENGINE_LOOKAHEAD_DEFAULT           250
 
 typedef struct XACT_RUNTIME_PARAMETERS
 {
-    DWORD                           lookAheadTime;                  
-    void*                           pGlobalSettingsBuffer;          
-    DWORD                           globalSettingsBufferSize;       
-    DWORD                           globalSettingsFlags;            
-    DWORD                           globalSettingsAllocAttributes;  
-    XACT_FILEIO_CALLBACKS           fileIOCallbacks;                
-    XACT_NOTIFICATION_CALLBACK      fnNotificationCallback;         
-    PWSTR                           pRendererID;                    
-    IXAudio2*                       pXAudio2;                       
-    IXAudio2MasteringVoice*         pMasteringVoice;                
+    DWORD                           lookAheadTime;
+    void*                           pGlobalSettingsBuffer;
+    DWORD                           globalSettingsBufferSize;
+    DWORD                           globalSettingsFlags;
+    DWORD                           globalSettingsAllocAttributes;
+    XACT_FILEIO_CALLBACKS           fileIOCallbacks;
+    XACT_NOTIFICATION_CALLBACK      fnNotificationCallback;
+    PWSTR                           pRendererID;
+    IXAudio2*                       pXAudio2;
+    IXAudio2MasteringVoice*         pMasteringVoice;
 
 } XACT_RUNTIME_PARAMETERS, *LPXACT_RUNTIME_PARAMETERS;
 typedef const XACT_RUNTIME_PARAMETERS *LPCXACT_RUNTIME_PARAMETERS;
 
-
-
-
-
 typedef struct XACT_STREAMING_PARAMETERS
 {
-    HANDLE  file;            
-    DWORD   offset;          
-    DWORD   flags;           
-    WORD    packetSize;      
-                             
-                             
+    HANDLE  file;
+    DWORD   offset;
+    DWORD   flags;
+    WORD    packetSize;
 
 } XACT_WAVEBANK_STREAMING_PARAMETERS, *LPXACT_WAVEBANK_STREAMING_PARAMETERS, XACT_STREAMING_PARAMETERS, *LPXACT_STREAMING_PARAMETERS;
 typedef const XACT_STREAMING_PARAMETERS *LPCXACT_STREAMING_PARAMETERS;
 typedef const XACT_WAVEBANK_STREAMING_PARAMETERS *LPCXACT_WAVEBANK_STREAMING_PARAMETERS;
 
-
 typedef struct XACT_CUE_PROPERTIES
 {
-    CHAR                friendlyName[XACT_CUE_NAME_LENGTH]; 
-    BOOL                interactive;                        
-    XACTINDEX           iaVariableIndex;                    
-    XACTINDEX           numVariations;                      
-    XACTINSTANCELIMIT   maxInstances;                       
-    XACTINSTANCELIMIT   currentInstances;                   
+    CHAR                friendlyName[XACT_CUE_NAME_LENGTH];
+    BOOL                interactive;
+    XACTINDEX           iaVariableIndex;
+    XACTINDEX           numVariations;
+    XACTINSTANCELIMIT   maxInstances;
+    XACTINSTANCELIMIT   currentInstances;
 
 } XACT_CUE_PROPERTIES, *LPXACT_CUE_PROPERTIES;
 
-
 typedef struct XACT_TRACK_PROPERTIES
 {
-    XACTTIME        duration;                   
-    XACTINDEX       numVariations;              
-    XACTCHANNEL     numChannels;                
-    XACTINDEX       waveVariation;              
-    XACTLOOPCOUNT   loopCount;                  
+    XACTTIME        duration;
+    XACTINDEX       numVariations;
+    XACTCHANNEL     numChannels;
+    XACTINDEX       waveVariation;
+    XACTLOOPCOUNT   loopCount;
 
 } XACT_TRACK_PROPERTIES, *LPXACT_TRACK_PROPERTIES;
 
-
 typedef struct XACT_VARIATION_PROPERTIES
 {
-    XACTINDEX               index;              
-    XACTVARIATIONWEIGHT     weight;             
-    XACTVARIABLEVALUE       iaVariableMin;      
-    XACTVARIABLEVALUE       iaVariableMax;      
-    BOOL                    linger;             
+    XACTINDEX               index;
+    XACTVARIATIONWEIGHT     weight;
+    XACTVARIABLEVALUE       iaVariableMin;
+    XACTVARIABLEVALUE       iaVariableMax;
+    BOOL                    linger;
 
 } XACT_VARIATION_PROPERTIES, *LPXACT_VARIATION_PROPERTIES;
 
-
 typedef struct XACT_SOUND_PROPERTIES
 {
-    XACTCATEGORY            category;               
-    BYTE                    priority;               
-    XACTPITCH               pitch;                  
-    XACTVOLUME              volume;                 
-    XACTINDEX               numTracks;              
-    XACT_TRACK_PROPERTIES   arrTrackProperties[1];  
+    XACTCATEGORY            category;
+    BYTE                    priority;
+    XACTPITCH               pitch;
+    XACTVOLUME              volume;
+    XACTINDEX               numTracks;
+    XACT_TRACK_PROPERTIES   arrTrackProperties[1];
 
 } XACT_SOUND_PROPERTIES, *LPXACT_SOUND_PROPERTIES;
-
 
 typedef struct XACT_SOUND_VARIATION_PROPERTIES
 {
     XACT_VARIATION_PROPERTIES   variationProperties;
-    XACT_SOUND_PROPERTIES       soundProperties;    
+    XACT_SOUND_PROPERTIES       soundProperties;
 
 } XACT_SOUND_VARIATION_PROPERTIES, *LPXACT_SOUND_VARIATION_PROPERTIES;
 
-
 typedef struct XACT_CUE_INSTANCE_PROPERTIES
 {
-    DWORD                            allocAttributes;            
-    XACT_CUE_PROPERTIES              cueProperties;              
-    XACT_SOUND_VARIATION_PROPERTIES  activeVariationProperties;  
+    DWORD                            allocAttributes;
+    XACT_CUE_PROPERTIES              cueProperties;
+    XACT_SOUND_VARIATION_PROPERTIES  activeVariationProperties;
 
 } XACT_CUE_INSTANCE_PROPERTIES, *LPXACT_CUE_INSTANCE_PROPERTIES;
 
-
 typedef struct XACT_WAVE_PROPERTIES
 {
-    char                    friendlyName[WAVEBANK_ENTRYNAME_LENGTH];   
-    WAVEBANKMINIWAVEFORMAT  format;                                    
-    DWORD                   durationInSamples;                         
-    WAVEBANKSAMPLEREGION    loopRegion;                                
-    BOOL                    streaming;                                 
+    char                    friendlyName[WAVEBANK_ENTRYNAME_LENGTH];
+    WAVEBANKMINIWAVEFORMAT  format;
+    DWORD                   durationInSamples;
+    WAVEBANKSAMPLEREGION    loopRegion;
+    BOOL                    streaming;
 
 } XACT_WAVE_PROPERTIES, *LPXACT_WAVE_PROPERTIES;
 typedef const XACT_WAVE_PROPERTIES* LPCXACT_WAVE_PROPERTIES;
 
-
 typedef struct XACT_WAVE_INSTANCE_PROPERTIES
 {
-    XACT_WAVE_PROPERTIES    properties;                                 
-    BOOL                    backgroundMusic;                            
+    XACT_WAVE_PROPERTIES    properties;
+    BOOL                    backgroundMusic;
 
 } XACT_WAVE_INSTANCE_PROPERTIES, *LPXACT_WAVE_INSTANCE_PROPERTIES;
 typedef const XACT_WAVE_INSTANCE_PROPERTIES* LPCXACT_WAVE_INSTANCE_PROPERTIES;
-
-
-
-
 
 typedef struct XACTCHANNELMAPENTRY
 {
@@ -407,145 +314,127 @@ typedef struct XACTCHANNELVOLUME
 } XACTCHANNELVOLUME, *LPXACTCHANNELVOLUME;
 typedef const XACTCHANNELVOLUME *LPCXACTCHANNELVOLUME;
 
-
-
-
-
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEPREPARED                      = 1;  
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEPLAY                          = 2;  
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUESTOP                          = 3;  
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEDESTROYED                     = 4;  
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_MARKER                           = 5;  
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED               = 6;  
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKDESTROYED                = 7;  
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_LOCALVARIABLECHANGED             = 8;  
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GLOBALVARIABLECHANGED            = 9;  
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GUICONNECTED                     = 10; 
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GUIDISCONNECTED                  = 11; 
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEPREPARED                     = 12; 
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEPLAY                         = 13; 
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVESTOP                         = 14; 
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVELOOPED                       = 15; 
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEDESTROYED                    = 16; 
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKPREPARED                 = 17; 
-static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKSTREAMING_INVALIDCONTENT = 18; 
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEPREPARED                      = 1;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEPLAY                          = 2;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUESTOP                          = 3;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_CUEDESTROYED                     = 4;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_MARKER                           = 5;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_SOUNDBANKDESTROYED               = 6;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKDESTROYED                = 7;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_LOCALVARIABLECHANGED             = 8;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GLOBALVARIABLECHANGED            = 9;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GUICONNECTED                     = 10;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_GUIDISCONNECTED                  = 11;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEPREPARED                     = 12;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEPLAY                         = 13;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVESTOP                         = 14;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVELOOPED                       = 15;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEDESTROYED                    = 16;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKPREPARED                 = 17;
+static const XACTNOTIFICATIONTYPE XACTNOTIFICATIONTYPE_WAVEBANKSTREAMING_INVALIDCONTENT = 18;
 
 static const BYTE XACT_FLAG_NOTIFICATION_PERSIST = 0x01;
 
-
 #pragma pack(push, 1)
-
 
 typedef struct XACT_NOTIFICATION_DESCRIPTION
 {
-    XACTNOTIFICATIONTYPE type;          
-    BYTE                 flags;         
-    IXACT3SoundBank*      pSoundBank;    
-    IXACT3WaveBank*       pWaveBank;     
-    IXACT3Cue*            pCue;          
-    IXACT3Wave*           pWave;         
-    XACTINDEX            cueIndex;      
-    XACTINDEX            waveIndex;     
-    PVOID                pvContext;     
+    XACTNOTIFICATIONTYPE type;
+    BYTE                 flags;
+    IXACT3SoundBank*      pSoundBank;
+    IXACT3WaveBank*       pWaveBank;
+    IXACT3Cue*            pCue;
+    IXACT3Wave*           pWave;
+    XACTINDEX            cueIndex;
+    XACTINDEX            waveIndex;
+    PVOID                pvContext;
 
 } XACT_NOTIFICATION_DESCRIPTION, *LPXACT_NOTIFICATION_DESCRIPTION;
 typedef const XACT_NOTIFICATION_DESCRIPTION *LPCXACT_NOTIFICATION_DESCRIPTION;
 
-
 typedef struct XACT_NOTIFICATION_CUE
 {
-    XACTINDEX       cueIndex;   
-    IXACT3SoundBank* pSoundBank; 
-    IXACT3Cue*       pCue;       
+    XACTINDEX       cueIndex;
+    IXACT3SoundBank* pSoundBank;
+    IXACT3Cue*       pCue;
 
 } XACT_NOTIFICATION_CUE, *LPXACT_NOTIFICATION_CUE;
 typedef const XACT_NOTIFICATION_CUE *LPCXACT_NOTIFICATION_CUE;
 
-
 typedef struct XACT_NOTIFICATION_MARKER
 {
-    XACTINDEX       cueIndex;   
-    IXACT3SoundBank* pSoundBank; 
-    IXACT3Cue*       pCue;       
-    DWORD           marker;     
+    XACTINDEX       cueIndex;
+    IXACT3SoundBank* pSoundBank;
+    IXACT3Cue*       pCue;
+    DWORD           marker;
 
 } XACT_NOTIFICATION_MARKER, *LPXACT_NOTIFICATION_MARKER;
 typedef const XACT_NOTIFICATION_MARKER *LPCXACT_NOTIFICATION_MARKER;
 
-
 typedef struct XACT_NOTIFICATION_SOUNDBANK
 {
-    IXACT3SoundBank* pSoundBank; 
+    IXACT3SoundBank* pSoundBank;
 
 } XACT_NOTIFICATION_SOUNDBANK, *LPXACT_NOTIFICATION_SOUNDBANK;
 typedef const XACT_NOTIFICATION_SOUNDBANK *LPCXACT_NOTIFICATION_SOUNDBANK;
 
-
 typedef struct XACT_NOTIFICATION_WAVEBANK
 {
-    IXACT3WaveBank*  pWaveBank;  
+    IXACT3WaveBank*  pWaveBank;
 
 } XACT_NOTIFICATION_WAVEBANK, *LPXACT_NOTIFICATION_WAVEBANK;
 typedef const XACT_NOTIFICATION_WAVEBANK *LPCXACT_NOTIFICATION_WAVEBANK;
 
-
 typedef struct XACT_NOTIFICATION_VARIABLE
 {
-    XACTINDEX           cueIndex;       
-    IXACT3SoundBank*     pSoundBank;     
-    IXACT3Cue*           pCue;           
-    XACTVARIABLEINDEX   variableIndex;  
-    XACTVARIABLEVALUE   variableValue;  
-    BOOL                local;          
+    XACTINDEX           cueIndex;
+    IXACT3SoundBank*     pSoundBank;
+    IXACT3Cue*           pCue;
+    XACTVARIABLEINDEX   variableIndex;
+    XACTVARIABLEVALUE   variableValue;
+    BOOL                local;
 
 } XACT_NOTIFICATION_VARIABLE, *LPXACT_NOTIFICATION_VARIABLE;
 typedef const XACT_NOTIFICATION_VARIABLE *LPCXACT_NOTIFICATION_VARIABLE;
 
-
 typedef struct XACT_NOTIFICATION_GUI
 {
-    DWORD   reserved; 
+    DWORD   reserved;
 } XACT_NOTIFICATION_GUI, *LPXACT_NOTIFICATION_GUI;
 typedef const XACT_NOTIFICATION_GUI *LPCXACT_NOTIFICATION_GUI;
 
-
 typedef struct XACT_NOTIFICATION_WAVE
 {
-    IXACT3WaveBank*  pWaveBank;  
-    XACTINDEX       waveIndex;  
-    XACTINDEX       cueIndex;   
-    IXACT3SoundBank* pSoundBank; 
-    IXACT3Cue*       pCue;       
-    IXACT3Wave*      pWave;      
+    IXACT3WaveBank*  pWaveBank;
+    XACTINDEX       waveIndex;
+    XACTINDEX       cueIndex;
+    IXACT3SoundBank* pSoundBank;
+    IXACT3Cue*       pCue;
+    IXACT3Wave*      pWave;
 
 } XACT_NOTIFICATION_WAVE, *LPXACT_NOTIFICATION_WAVE;
 typedef const XACT_NOTIFICATION_WAVE *LPCXACT_NOTIFICATION_WAVE;
 
-
 typedef struct XACT_NOTIFICATION
 {
-    XACTNOTIFICATIONTYPE    type;        
-    LONG                    timeStamp;   
-    PVOID                   pvContext;   
+    XACTNOTIFICATIONTYPE    type;
+    LONG                    timeStamp;
+    PVOID                   pvContext;
     union
     {
-        XACT_NOTIFICATION_CUE       cue;        
-        XACT_NOTIFICATION_MARKER    marker;     
-        XACT_NOTIFICATION_SOUNDBANK soundBank;  
-        XACT_NOTIFICATION_WAVEBANK  waveBank;   
-        XACT_NOTIFICATION_VARIABLE  variable;   
-        XACT_NOTIFICATION_GUI       gui;        
-        XACT_NOTIFICATION_WAVE      wave;       
+        XACT_NOTIFICATION_CUE       cue;
+        XACT_NOTIFICATION_MARKER    marker;
+        XACT_NOTIFICATION_SOUNDBANK soundBank;
+        XACT_NOTIFICATION_WAVEBANK  waveBank;
+        XACT_NOTIFICATION_VARIABLE  variable;
+        XACT_NOTIFICATION_GUI       gui;
+        XACT_NOTIFICATION_WAVE      wave;
     };
 
 } XACT_NOTIFICATION, *LPXACT_NOTIFICATION;
 typedef const XACT_NOTIFICATION *LPCXACT_NOTIFICATION;
 
 #pragma pack(pop)
-
-
-
-
 
 #define XACT_FLAG_SOUNDBANK_STOP_IMMEDIATE  XACT_FLAG_STOP_IMMEDIATE
 #define XACT_SOUNDBANKSTATE_INUSE           XACT_STATE_INUSE
@@ -616,7 +505,7 @@ __inline HRESULT __stdcall IXACT3SoundBank_GetState(__in IXACT3SoundBank* pSound
     return pSoundBank->GetState(pdwState);
 }
 
-#else 
+#else
 
 __inline HRESULT __stdcall IXACT3SoundBank_Destroy(__in IXACT3SoundBank* pSoundBank)
 {
@@ -658,15 +547,11 @@ __inline HRESULT __stdcall IXACT3SoundBank_GetState(__in IXACT3SoundBank* pSound
     return pSoundBank->lpVtbl->GetState(pSoundBank, pdwState);
 }
 
-#endif 
+#endif
 
-
-
-
-#define XACT_WAVEBANKSTATE_INUSE            XACT_STATE_INUSE         
-#define XACT_WAVEBANKSTATE_PREPARED         XACT_STATE_PREPARED      
-#define XACT_WAVEBANKSTATE_PREPAREFAILED    XACT_STATE_PREPAREFAILED 
-
+#define XACT_WAVEBANKSTATE_INUSE            XACT_STATE_INUSE
+#define XACT_WAVEBANKSTATE_PREPARED         XACT_STATE_PREPARED
+#define XACT_WAVEBANKSTATE_PREPAREFAILED    XACT_STATE_PREPAREFAILED
 
 STDAPI IXACT3WaveBank_Destroy(__in IXACT3WaveBank* pWaveBank);
 STDAPI IXACT3WaveBank_GetState(__in IXACT3WaveBank* pWaveBank, __out DWORD* pdwState);
@@ -734,7 +619,7 @@ __inline HRESULT __stdcall IXACT3WaveBank_GetState(__in IXACT3WaveBank* pWaveBan
     return pWaveBank->GetState(pdwState);
 }
 
-#else 
+#else
 
 __inline HRESULT __stdcall IXACT3WaveBank_Destroy(__in IXACT3WaveBank* pWaveBank)
 {
@@ -775,12 +660,7 @@ __inline HRESULT __stdcall IXACT3WaveBank_GetState(__in IXACT3WaveBank* pWaveBan
 {
     return pWaveBank->lpVtbl->GetState(pWaveBank, pdwState);
 }
-#endif 
-
-
-
-
-
+#endif
 
 STDAPI IXACT3Wave_Destroy(__in IXACT3Wave* pWave);
 STDAPI IXACT3Wave_Play(__in IXACT3Wave* pWave);
@@ -855,7 +735,7 @@ __inline HRESULT __stdcall IXACT3Wave_GetProperties(__in IXACT3Wave* pWave, __ou
     return pWave->GetProperties(pProperties);
 }
 
-#else 
+#else
 
 __inline HRESULT __stdcall IXACT3Wave_Destroy(__in IXACT3Wave* pWave)
 {
@@ -901,24 +781,18 @@ __inline HRESULT __stdcall IXACT3Wave_GetProperties(__in IXACT3Wave* pWave, __ou
 {
     return pWave->lpVtbl->GetProperties(pWave, pProperties);
 }
-#endif 
-
-
-
-
-
+#endif
 
 #define XACT_FLAG_CUE_STOP_RELEASE      XACT_FLAG_STOP_RELEASE
 #define XACT_FLAG_CUE_STOP_IMMEDIATE    XACT_FLAG_STOP_IMMEDIATE
 
-
-#define XACT_CUESTATE_CREATED           XACT_STATE_CREATED   
-#define XACT_CUESTATE_PREPARING         XACT_STATE_PREPARING 
-#define XACT_CUESTATE_PREPARED          XACT_STATE_PREPARED  
-#define XACT_CUESTATE_PLAYING           XACT_STATE_PLAYING   
-#define XACT_CUESTATE_STOPPING          XACT_STATE_STOPPING  
-#define XACT_CUESTATE_STOPPED           XACT_STATE_STOPPED   
-#define XACT_CUESTATE_PAUSED            XACT_STATE_PAUSED    
+#define XACT_CUESTATE_CREATED           XACT_STATE_CREATED
+#define XACT_CUESTATE_PREPARING         XACT_STATE_PREPARING
+#define XACT_CUESTATE_PREPARED          XACT_STATE_PREPARED
+#define XACT_CUESTATE_PLAYING           XACT_STATE_PLAYING
+#define XACT_CUESTATE_STOPPING          XACT_STATE_STOPPING
+#define XACT_CUESTATE_STOPPED           XACT_STATE_STOPPED
+#define XACT_CUESTATE_PAUSED            XACT_STATE_PAUSED
 
 STDAPI IXACT3Cue_Destroy(__in IXACT3Cue* pCue);
 STDAPI IXACT3Cue_Play(__in IXACT3Cue* pCue);
@@ -1014,7 +888,7 @@ __inline HRESULT __stdcall IXACT3Cue_SetOutputVoiceMatrix(__in IXACT3Cue* pCue, 
     return pCue->SetOutputVoiceMatrix(pDestinationVoice, SourceChannels, DestinationChannels, pLevelMatrix);
 }
 
-#else 
+#else
 
 __inline HRESULT __stdcall IXACT3Cue_Play(__in IXACT3Cue* pCue)
 {
@@ -1076,12 +950,7 @@ __inline HRESULT __stdcall IXACT3Cue_SetOutputVoiceMatrix(__in IXACT3Cue* pCue, 
     return pCue->lpVtbl->SetOutputVoiceMatrix(pDestinationVoice, SourceChannels, DestinationChannels, pLevelMatrix);
 }
 
-#endif 
-
-
-
-
-
+#endif
 
 #define XACT_FLAG_ENGINE_CREATE_MANAGEDATA    XACT_FLAG_MANAGEDATA
 #define XACT_FLAG_ENGINE_STOP_IMMEDIATE       XACT_FLAG_STOP_IMMEDIATE
@@ -1272,7 +1141,7 @@ __inline HRESULT __stdcall IXACT3Engine_GetGlobalVariable(__in IXACT3Engine* pEn
     return pEngine->GetGlobalVariable(nIndex, nValue);
 }
 
-#else 
+#else
 
 __inline ULONG __stdcall IXACT3Engine_AddRef(__in IXACT3Engine* pEngine)
 {
@@ -1344,7 +1213,6 @@ __inline HRESULT __stdcall IXACT3Engine_PrepareStreamingWave(__in IXACT3Engine* 
     return pEngine->lpVtbl->PrepareStreamingWave(pEngine, dwFlags, entry, streamingParams, dwAlignment, pdwSeekTable, dwPlayOffset, nLoopCount, ppWave);
 }
 
-
 __inline HRESULT __stdcall IXACT3Engine_RegisterNotification(__in IXACT3Engine* pEngine, __in const XACT_NOTIFICATION_DESCRIPTION* pNotificationDesc)
 {
     return pEngine->lpVtbl->RegisterNotification(pEngine, pNotificationDesc);
@@ -1390,14 +1258,7 @@ __inline HRESULT __stdcall IXACT3Engine_GetGlobalVariable(__in IXACT3Engine* pEn
     return pEngine->lpVtbl->GetGlobalVariable(pEngine, nIndex, nValue);
 }
 
-#endif 
-
-
-
-
-
-
-
+#endif
 
 static const DWORD XACT_FLAG_API_AUDITION_MODE = 0x00000001;
 static const DWORD XACT_FLAG_API_DEBUG_MODE    = 0x00000002;
@@ -1406,11 +1267,10 @@ static const DWORD XACT_FLAG_API_DEBUG_MODE    = 0x00000002;
 
 STDAPI XACT3CreateEngine(DWORD dwCreationFlags, __deref_out IXACT3Engine** ppEngine);
 
-#else 
+#else
 
 #define XACT_DEBUGENGINE_REGISTRY_KEY   TEXT("Software\\Microsoft\\XACT")
 #define XACT_DEBUGENGINE_REGISTRY_VALUE TEXT("DebugEngine")
-
 
 #ifdef __cplusplus
 
@@ -1424,7 +1284,6 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, __deref_out 
     BOOL    debug    = (dwCreationFlags & XACT_FLAG_API_DEBUG_MODE) ? TRUE : FALSE;
     BOOL    audition = (dwCreationFlags & XACT_FLAG_API_AUDITION_MODE) ? TRUE : FALSE;
 
-    
     if(!debug && !audition &&
        (RegOpenKeyEx(HKEY_LOCAL_MACHINE, XACT_DEBUGENGINE_REGISTRY_KEY, 0, KEY_READ, &key) == ERROR_SUCCESS))
     {
@@ -1438,12 +1297,10 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, __deref_out 
         RegCloseKey(key);
     }
 
-    
     hr = CoCreateInstance(audition ? __uuidof(XACTAuditionEngine)
                           : (debug ? __uuidof(XACTDebugEngine) : __uuidof(XACTEngine)),
                           NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACT3Engine), (void**)ppEngine);
 
-    
     if(FAILED(hr) && debug && !audition)
     {
         hr = CoCreateInstance(__uuidof(XACTEngine), NULL, CLSCTX_INPROC_SERVER, __uuidof(IXACT3Engine), (void**)ppEngine);
@@ -1452,7 +1309,7 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, __deref_out 
     return hr;
 }
 
-#else 
+#else
 
 __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, __deref_out IXACT3Engine** ppEngine)
 {
@@ -1464,7 +1321,6 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, __deref_out 
     BOOL    debug    = (dwCreationFlags & XACT_FLAG_API_DEBUG_MODE) ? TRUE : FALSE;
     BOOL    audition = (dwCreationFlags & XACT_FLAG_API_AUDITION_MODE) ? TRUE : FALSE;
 
-    
     if(!debug && !audition &&
        (RegOpenKeyEx(HKEY_LOCAL_MACHINE, XACT_DEBUGENGINE_REGISTRY_KEY, 0, KEY_READ, &key) == ERROR_SUCCESS))
     {
@@ -1478,12 +1334,10 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, __deref_out 
         RegCloseKey(key);
     }
 
-    
     hr = CoCreateInstance(audition ? &CLSID_XACTAuditionEngine
                           : (debug ? &CLSID_XACTDebugEngine : &CLSID_XACTEngine),
                           NULL, CLSCTX_INPROC_SERVER, &IID_IXACT3Engine, (void**)ppEngine);
 
-    
     if(FAILED(hr) && debug && !audition)
     {
         hr = CoCreateInstance(&CLSID_XACTEngine, NULL, CLSCTX_INPROC_SERVER, &IID_IXACT3Engine, (void**)ppEngine);
@@ -1492,60 +1346,56 @@ __inline HRESULT __stdcall XACT3CreateEngine(DWORD dwCreationFlags, __deref_out 
     return hr;
 }
 
-#endif 
+#endif
 
-#endif 
-
-
-
-
+#endif
 
 #define FACILITY_XACTENGINE 0xAC7
 #define XACTENGINEERROR(n) MAKE_HRESULT(SEVERITY_ERROR, FACILITY_XACTENGINE, n)
 
-#define XACTENGINE_E_OUTOFMEMORY               E_OUTOFMEMORY      
-#define XACTENGINE_E_INVALIDARG                E_INVALIDARG       
-#define XACTENGINE_E_NOTIMPL                   E_NOTIMPL          
-#define XACTENGINE_E_FAIL                      E_FAIL             
+#define XACTENGINE_E_OUTOFMEMORY               E_OUTOFMEMORY
+#define XACTENGINE_E_INVALIDARG                E_INVALIDARG
+#define XACTENGINE_E_NOTIMPL                   E_NOTIMPL
+#define XACTENGINE_E_FAIL                      E_FAIL
 
-#define XACTENGINE_E_ALREADYINITIALIZED        XACTENGINEERROR(0x001)   
-#define XACTENGINE_E_NOTINITIALIZED            XACTENGINEERROR(0x002)   
-#define XACTENGINE_E_EXPIRED                   XACTENGINEERROR(0x003)   
-#define XACTENGINE_E_NONOTIFICATIONCALLBACK    XACTENGINEERROR(0x004)   
-#define XACTENGINE_E_NOTIFICATIONREGISTERED    XACTENGINEERROR(0x005)   
-#define XACTENGINE_E_INVALIDUSAGE              XACTENGINEERROR(0x006)   
-#define XACTENGINE_E_INVALIDDATA               XACTENGINEERROR(0x007)   
-#define XACTENGINE_E_INSTANCELIMITFAILTOPLAY   XACTENGINEERROR(0x008)   
-#define XACTENGINE_E_NOGLOBALSETTINGS          XACTENGINEERROR(0x009)   
-#define XACTENGINE_E_INVALIDVARIABLEINDEX      XACTENGINEERROR(0x00a)   
-#define XACTENGINE_E_INVALIDCATEGORY           XACTENGINEERROR(0x00b)   
-#define XACTENGINE_E_INVALIDCUEINDEX           XACTENGINEERROR(0x00c)   
-#define XACTENGINE_E_INVALIDWAVEINDEX          XACTENGINEERROR(0x00d)   
-#define XACTENGINE_E_INVALIDTRACKINDEX         XACTENGINEERROR(0x00e)   
-#define XACTENGINE_E_INVALIDSOUNDOFFSETORINDEX XACTENGINEERROR(0x00f)   
-#define XACTENGINE_E_READFILE                  XACTENGINEERROR(0x010)   
-#define XACTENGINE_E_UNKNOWNEVENT              XACTENGINEERROR(0x011)   
-#define XACTENGINE_E_INCALLBACK                XACTENGINEERROR(0x012)   
-#define XACTENGINE_E_NOWAVEBANK                XACTENGINEERROR(0x013)   
-#define XACTENGINE_E_SELECTVARIATION           XACTENGINEERROR(0x014)   
-#define XACTENGINE_E_MULTIPLEAUDITIONENGINES   XACTENGINEERROR(0x015)   
-#define XACTENGINE_E_WAVEBANKNOTPREPARED       XACTENGINEERROR(0x016)   
-#define XACTENGINE_E_NORENDERER                XACTENGINEERROR(0x017)   
-#define XACTENGINE_E_INVALIDENTRYCOUNT         XACTENGINEERROR(0x018)   
-#define XACTENGINE_E_SEEKTIMEBEYONDCUEEND      XACTENGINEERROR(0x019)   
-#define XACTENGINE_E_SEEKTIMEBEYONDWAVEEND     XACTENGINEERROR(0x01a)   
-#define XACTENGINE_E_NOFRIENDLYNAMES           XACTENGINEERROR(0x01b)   
+#define XACTENGINE_E_ALREADYINITIALIZED        XACTENGINEERROR(0x001)
+#define XACTENGINE_E_NOTINITIALIZED            XACTENGINEERROR(0x002)
+#define XACTENGINE_E_EXPIRED                   XACTENGINEERROR(0x003)
+#define XACTENGINE_E_NONOTIFICATIONCALLBACK    XACTENGINEERROR(0x004)
+#define XACTENGINE_E_NOTIFICATIONREGISTERED    XACTENGINEERROR(0x005)
+#define XACTENGINE_E_INVALIDUSAGE              XACTENGINEERROR(0x006)
+#define XACTENGINE_E_INVALIDDATA               XACTENGINEERROR(0x007)
+#define XACTENGINE_E_INSTANCELIMITFAILTOPLAY   XACTENGINEERROR(0x008)
+#define XACTENGINE_E_NOGLOBALSETTINGS          XACTENGINEERROR(0x009)
+#define XACTENGINE_E_INVALIDVARIABLEINDEX      XACTENGINEERROR(0x00a)
+#define XACTENGINE_E_INVALIDCATEGORY           XACTENGINEERROR(0x00b)
+#define XACTENGINE_E_INVALIDCUEINDEX           XACTENGINEERROR(0x00c)
+#define XACTENGINE_E_INVALIDWAVEINDEX          XACTENGINEERROR(0x00d)
+#define XACTENGINE_E_INVALIDTRACKINDEX         XACTENGINEERROR(0x00e)
+#define XACTENGINE_E_INVALIDSOUNDOFFSETORINDEX XACTENGINEERROR(0x00f)
+#define XACTENGINE_E_READFILE                  XACTENGINEERROR(0x010)
+#define XACTENGINE_E_UNKNOWNEVENT              XACTENGINEERROR(0x011)
+#define XACTENGINE_E_INCALLBACK                XACTENGINEERROR(0x012)
+#define XACTENGINE_E_NOWAVEBANK                XACTENGINEERROR(0x013)
+#define XACTENGINE_E_SELECTVARIATION           XACTENGINEERROR(0x014)
+#define XACTENGINE_E_MULTIPLEAUDITIONENGINES   XACTENGINEERROR(0x015)
+#define XACTENGINE_E_WAVEBANKNOTPREPARED       XACTENGINEERROR(0x016)
+#define XACTENGINE_E_NORENDERER                XACTENGINEERROR(0x017)
+#define XACTENGINE_E_INVALIDENTRYCOUNT         XACTENGINEERROR(0x018)
+#define XACTENGINE_E_SEEKTIMEBEYONDCUEEND      XACTENGINEERROR(0x019)
+#define XACTENGINE_E_SEEKTIMEBEYONDWAVEEND     XACTENGINEERROR(0x01a)
+#define XACTENGINE_E_NOFRIENDLYNAMES           XACTENGINEERROR(0x01b)
 
-#define XACTENGINE_E_AUDITION_WRITEFILE             XACTENGINEERROR(0x101)  
-#define XACTENGINE_E_AUDITION_NOSOUNDBANK           XACTENGINEERROR(0x102)  
-#define XACTENGINE_E_AUDITION_INVALIDRPCINDEX       XACTENGINEERROR(0x103)  
-#define XACTENGINE_E_AUDITION_MISSINGDATA           XACTENGINEERROR(0x104)  
-#define XACTENGINE_E_AUDITION_UNKNOWNCOMMAND        XACTENGINEERROR(0x105)  
-#define XACTENGINE_E_AUDITION_INVALIDDSPINDEX       XACTENGINEERROR(0x106)  
-#define XACTENGINE_E_AUDITION_MISSINGWAVE           XACTENGINEERROR(0x107)  
-#define XACTENGINE_E_AUDITION_CREATEDIRECTORYFAILED XACTENGINEERROR(0x108)  
-#define XACTENGINE_E_AUDITION_INVALIDSESSION        XACTENGINEERROR(0x109)  
+#define XACTENGINE_E_AUDITION_WRITEFILE             XACTENGINEERROR(0x101)
+#define XACTENGINE_E_AUDITION_NOSOUNDBANK           XACTENGINEERROR(0x102)
+#define XACTENGINE_E_AUDITION_INVALIDRPCINDEX       XACTENGINEERROR(0x103)
+#define XACTENGINE_E_AUDITION_MISSINGDATA           XACTENGINEERROR(0x104)
+#define XACTENGINE_E_AUDITION_UNKNOWNCOMMAND        XACTENGINEERROR(0x105)
+#define XACTENGINE_E_AUDITION_INVALIDDSPINDEX       XACTENGINEERROR(0x106)
+#define XACTENGINE_E_AUDITION_MISSINGWAVE           XACTENGINEERROR(0x107)
+#define XACTENGINE_E_AUDITION_CREATEDIRECTORYFAILED XACTENGINEERROR(0x108)
+#define XACTENGINE_E_AUDITION_INVALIDSESSION        XACTENGINEERROR(0x109)
 
-#endif 
+#endif
 
-#endif 
+#endif

@@ -7,7 +7,6 @@
 #include <unordered_map>
 #include <vector>
 
-
 namespace {
 
 inline void kd_decrypt_blob(const unsigned char* in, size_t n, unsigned char* out, uint32_t key) noexcept {
@@ -36,7 +35,6 @@ struct kd_blob_reader {
 };
 
 }
-
 
 namespace {
 

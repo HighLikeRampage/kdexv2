@@ -1,21 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef FTCOLOR_H_
 #define FTCOLOR_H_
 
@@ -27,53 +9,7 @@
 #error "so that freetype.h of FreeType 2 is found first."
 #endif
 
-
 FT_BEGIN_HEADER
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_Color_
   {
@@ -84,89 +20,8 @@ FT_BEGIN_HEADER
 
   } FT_Color;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #define FT_PALETTE_FOR_LIGHT_BACKGROUND  0x01
 #define FT_PALETTE_FOR_DARK_BACKGROUND   0x02
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_Palette_Data_ {
     FT_UShort         num_palettes;
@@ -178,167 +33,18 @@ FT_BEGIN_HEADER
 
   } FT_Palette_Data;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_Error )
   FT_Palette_Data_Get( FT_Face           face,
                        FT_Palette_Data  *apalette );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   FT_EXPORT( FT_Error )
   FT_Palette_Select( FT_Face     face,
                      FT_UShort   palette_index,
                      FT_Color*  *apalette );
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_Error )
   FT_Palette_Set_Foreground_Color( FT_Face   face,
                                    FT_Color  foreground_color );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_LayerIterator_
   {
@@ -348,150 +54,12 @@ FT_BEGIN_HEADER
 
   } FT_LayerIterator;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_Bool )
   FT_Get_Color_Glyph_Layer( FT_Face            face,
                             FT_UInt            base_glyph,
                             FT_UInt           *aglyph_index,
                             FT_UInt           *acolor_index,
                             FT_LayerIterator*  iterator );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef enum  FT_PaintFormat_
   {
@@ -513,35 +81,6 @@ FT_BEGIN_HEADER
 
   } FT_PaintFormat;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_ColorStopIterator_
   {
     FT_UInt  num_color_stops;
@@ -551,28 +90,6 @@ FT_BEGIN_HEADER
 
   } FT_ColorStopIterator;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_ColorIndex_
   {
     FT_UInt16   palette_index;
@@ -580,50 +97,12 @@ FT_BEGIN_HEADER
 
   } FT_ColorIndex;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_ColorStop_
   {
     FT_F2Dot14     stop_offset;
     FT_ColorIndex  color;
 
   } FT_ColorStop;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef enum  FT_PaintExtend_
   {
@@ -633,30 +112,6 @@ FT_BEGIN_HEADER
 
   } FT_PaintExtend;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_ColorLine_
   {
     FT_PaintExtend        extend;
@@ -664,67 +119,12 @@ FT_BEGIN_HEADER
 
   } FT_ColorLine;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_Affine_23_
   {
     FT_Fixed  xx, xy, dx;
     FT_Fixed  yx, yy, dy;
 
   } FT_Affine23;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef enum  FT_Composite_Mode_
   {
@@ -760,64 +160,11 @@ FT_BEGIN_HEADER
 
   } FT_Composite_Mode;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_Opaque_Paint_
   {
     FT_Byte*  p;
     FT_Bool   insert_root_transform;
   } FT_OpaquePaint;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_PaintColrLayers_
   {
@@ -825,117 +172,21 @@ FT_BEGIN_HEADER
 
   } FT_PaintColrLayers;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_PaintSolid_
   {
     FT_ColorIndex  color;
 
   } FT_PaintSolid;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_PaintLinearGradient_
   {
     FT_ColorLine  colorline;
 
-    
     FT_Vector  p0;
     FT_Vector  p1;
     FT_Vector  p2;
 
   } FT_PaintLinearGradient;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_PaintRadialGradient_
   {
@@ -948,45 +199,6 @@ FT_BEGIN_HEADER
 
   } FT_PaintRadialGradient;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_PaintSweepGradient_
   {
     FT_ColorLine  colorline;
@@ -997,29 +209,6 @@ FT_BEGIN_HEADER
 
   } FT_PaintSweepGradient;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_PaintGlyph_
   {
     FT_OpaquePaint  paint;
@@ -1027,52 +216,11 @@ FT_BEGIN_HEADER
 
   } FT_PaintGlyph;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_PaintColrGlyph_
   {
     FT_UInt  glyphID;
 
   } FT_PaintColrGlyph;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_PaintTransform_
   {
@@ -1080,34 +228,6 @@ FT_BEGIN_HEADER
     FT_Affine23     affine;
 
   } FT_PaintTransform;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_PaintTranslate_
   {
@@ -1117,48 +237,6 @@ FT_BEGIN_HEADER
     FT_Fixed  dy;
 
   } FT_PaintTranslate;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_PaintScale_
   {
@@ -1172,40 +250,6 @@ FT_BEGIN_HEADER
 
   } FT_PaintScale;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_PaintRotate_
   {
     FT_OpaquePaint  paint;
@@ -1216,45 +260,6 @@ FT_BEGIN_HEADER
     FT_Fixed  center_y;
 
   } FT_PaintRotate;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_PaintSkew_
   {
@@ -1268,35 +273,6 @@ FT_BEGIN_HEADER
 
   } FT_PaintSkew;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef struct  FT_PaintComposite_
   {
     FT_OpaquePaint     source_paint;
@@ -1304,44 +280,6 @@ FT_BEGIN_HEADER
     FT_OpaquePaint     backdrop_paint;
 
   } FT_PaintComposite;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_COLR_Paint_
   {
@@ -1367,29 +305,6 @@ FT_BEGIN_HEADER
 
   } FT_COLR_Paint;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   typedef enum  FT_Color_Root_Transform_
   {
     FT_COLOR_INCLUDE_ROOT_TRANSFORM,
@@ -1398,40 +313,6 @@ FT_BEGIN_HEADER
     FT_COLOR_ROOT_TRANSFORM_MAX
 
   } FT_Color_Root_Transform;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  FT_ClipBox_
   {
@@ -1442,277 +323,32 @@ FT_BEGIN_HEADER
 
   } FT_ClipBox;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_Bool )
   FT_Get_Color_Glyph_Paint( FT_Face                  face,
                             FT_UInt                  base_glyph,
                             FT_Color_Root_Transform  root_transform,
                             FT_OpaquePaint*          paint );
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_Bool )
   FT_Get_Color_Glyph_ClipBox( FT_Face      face,
                               FT_UInt      base_glyph,
                               FT_ClipBox*  clip_box );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   FT_EXPORT( FT_Bool )
   FT_Get_Paint_Layers( FT_Face            face,
                        FT_LayerIterator*  iterator,
                        FT_OpaquePaint*    paint );
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_Bool )
   FT_Get_Colorline_Stops( FT_Face                face,
                           FT_ColorStop*          color_stop,
                           FT_ColorStopIterator*  iterator );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   FT_EXPORT( FT_Bool )
   FT_Get_Paint( FT_Face         face,
                 FT_OpaquePaint  opaque_paint,
                 FT_COLR_Paint*  paint );
 
-  
-
-
 FT_END_HEADER
 
-#endif 
-
-
-
+#endif

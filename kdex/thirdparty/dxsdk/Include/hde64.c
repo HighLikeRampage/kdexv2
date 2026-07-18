@@ -1,11 +1,4 @@
-﻿
-
-
-
-
-
-
-#if defined(_M_X64) || defined(__x86_64__)
+﻿#if defined(_M_X64) || defined(__x86_64__)
 
 #include <string.h>
 #include "hde64.h"
@@ -39,7 +32,7 @@ unsigned int hde64_disasm(const void *code, hde64s *hs)
                 pref |= PRE_SEG;
                 break;
             case 0x66:
-                hs->p_66 = c;   
+                hs->p_66 = c;
                 pref |= PRE_66;
                 break;
             case 0x67:
@@ -300,7 +293,6 @@ unsigned int hde64_disasm(const void *code, hde64s *hs)
             goto imm16_ok;
     }
 
-
     if (cflags & C_IMM16) {
       imm16_ok:
         hs->flags |= F_IMM16;
@@ -332,4 +324,4 @@ unsigned int hde64_disasm(const void *code, hde64s *hs)
     return (unsigned int)hs->len;
 }
 
-#endif 
+#endif

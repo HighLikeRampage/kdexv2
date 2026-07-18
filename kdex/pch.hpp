@@ -1,9 +1,5 @@
 #pragma once
 
-// Do NOT define WIN32_LEAN_AND_MEAN — several project sources
-// (game/Security/Api/api.hpp with HCRYPTPROV/HCRYPTHASH etc.) rely on
-// the full Windows.h expansion pulling in wincrypt.h, tchar.h and
-// friends implicitly.
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif

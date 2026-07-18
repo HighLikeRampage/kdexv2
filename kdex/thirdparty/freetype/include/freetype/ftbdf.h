@@ -1,21 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef FTBDF_H_
 #define FTBDF_H_
 
@@ -27,48 +9,7 @@
 #error "so that freetype.h of FreeType 2 is found first."
 #endif
 
-
 FT_BEGIN_HEADER
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef enum  BDF_PropertyType_
   {
@@ -79,40 +20,7 @@ FT_BEGIN_HEADER
 
   } BDF_PropertyType;
 
-
-  
-
-
-
-
-
-
-
-
   typedef struct BDF_PropertyRec_*  BDF_Property;
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   typedef struct  BDF_PropertyRec_
   {
@@ -126,87 +34,16 @@ FT_BEGIN_HEADER
 
   } BDF_PropertyRec;
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   FT_EXPORT( FT_Error )
   FT_Get_BDF_Charset_ID( FT_Face       face,
                          const char*  *acharset_encoding,
                          const char*  *acharset_registry );
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   FT_EXPORT( FT_Error )
   FT_Get_BDF_Property( FT_Face           face,
                        const char*       prop_name,
                        BDF_PropertyRec  *aproperty );
 
-  
-
 FT_END_HEADER
 
-#endif 
-
-
-
+#endif

@@ -1,7 +1,5 @@
-
 #ifndef __dxgitype_h__
 #define __dxgitype_h__
-
 
 #include "dxgiformat.h"
 
@@ -16,7 +14,6 @@
 #define DXGI_STATUS_GRAPHICS_VIDPN_SOURCE_IN_USE MAKE_DXGI_STATUS(6)
 #define DXGI_STATUS_MODE_CHANGED                MAKE_DXGI_STATUS(7)
 #define DXGI_STATUS_MODE_CHANGE_IN_PROGRESS     MAKE_DXGI_STATUS(8)
-
 
 #define DXGI_ERROR_INVALID_CALL                 MAKE_DXGI_HRESULT(1)
 #define DXGI_ERROR_NOT_FOUND                    MAKE_DXGI_HRESULT(2)
@@ -33,8 +30,6 @@
 #define DXGI_ERROR_NOT_CURRENTLY_AVAILABLE      MAKE_DXGI_HRESULT(34)
 #define DXGI_ERROR_REMOTE_CLIENT_DISCONNECTED   MAKE_DXGI_HRESULT(35)
 #define DXGI_ERROR_REMOTE_OUTOFMEMORY           MAKE_DXGI_HRESULT(36)
-
-
 
 #define DXGI_CPU_ACCESS_NONE                    ( 0 )
 #define DXGI_CPU_ACCESS_DYNAMIC                 ( 1 )
@@ -119,5 +114,4 @@ typedef struct DXGI_SAMPLE_DESC
     UINT Quality;
 } DXGI_SAMPLE_DESC;
 
-#endif 
-
+#endif

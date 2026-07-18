@@ -1,201 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef __D3DX_DXGI_FORMAT_CONVERT_INL___
 #define __D3DX_DXGI_FORMAT_CONVERT_INL___
 
@@ -220,7 +22,7 @@ typedef uint4 XMUINT4;
 #define D3DX_IsNan(_V) isnan(_V)
 #define D3DX_Truncate_FLOAT(_V) trunc(_V)
 
-#else 
+#else
 
 #ifndef __cplusplus
 #error C++ compilation required
@@ -244,20 +46,17 @@ D3DX11INLINE FLOAT D3DX_Truncate_FLOAT(FLOAT _V)
     return _V >= 0 ? floor(_V) : ceil(_V);
 }
 
-
 typedef struct _XMINT2
 {
     INT x;
     INT y;
 } XMINT2;
 
-
 typedef struct _XMUINT2
 {
     UINT x;
     UINT y;
 } XMUINT2;
-
 
 typedef struct _XMINT4
 {
@@ -267,7 +66,6 @@ typedef struct _XMINT4
     INT w;
 } XMINT4;
 
-
 typedef struct _XMUINT4
 {
     UINT x;
@@ -276,13 +74,7 @@ typedef struct _XMUINT4
     UINT w;
 } XMUINT4;
 
-#endif 
-
-
-
-
-
-
+#endif
 
 D3DX11INLINE FLOAT D3DX_SRGB_to_FLOAT_inexact(hlsl_precise FLOAT val)
 {
@@ -293,7 +85,7 @@ D3DX11INLINE FLOAT D3DX_SRGB_to_FLOAT_inexact(hlsl_precise FLOAT val)
     return val;
 }
 
-static const UINT D3DX_SRGBTable[] = 
+static const UINT D3DX_SRGBTable[] =
 {
     0x00000000,0x399f22b4,0x3a1f22b4,0x3a6eb40e,0x3a9f22b4,0x3ac6eb61,0x3aeeb40e,0x3b0b3e5d,
     0x3b1f22b4,0x3b33070b,0x3b46eb61,0x3b5b518d,0x3b70f18d,0x3b83e1c6,0x3b8fe616,0x3b9c87fd,
@@ -339,7 +131,7 @@ D3DX11INLINE FLOAT D3DX_SRGB_to_FLOAT(UINT val)
 }
 
 D3DX11INLINE FLOAT D3DX_FLOAT_to_SRGB(hlsl_precise FLOAT val)
-{ 
+{
     if( val < 0.0031308f )
         val *= 12.92f;
     else
@@ -353,7 +145,7 @@ D3DX11INLINE FLOAT D3DX_SaturateSigned_FLOAT(FLOAT _V)
     {
         return 0;
     }
-    
+
     return min(max(_V, -1), 1);
 }
 
@@ -367,11 +159,7 @@ D3DX11INLINE FLOAT D3DX_INT_to_FLOAT(INT _V,
                                      FLOAT _Scale)
 {
     FLOAT Scaled = (FLOAT)_V / _Scale;
-    
-    
-    
-    
-    
+
     return max(Scaled, -1.0f);
 }
 
@@ -380,12 +168,6 @@ D3DX11INLINE INT D3DX_FLOAT_to_INT(FLOAT _V,
 {
     return (INT)D3DX_Truncate_FLOAT(_V * _Scale + (_V >= 0 ? 0.5f : -0.5f));
 }
-
-
-
-
-
-
 
 D3DX11INLINE XMFLOAT4 D3DX_R10G10B10A2_UNORM_to_FLOAT4(UINT packedInput)
 {
@@ -406,9 +188,6 @@ D3DX11INLINE UINT D3DX_FLOAT4_to_R10G10B10A2_UNORM(hlsl_precise XMFLOAT4 unpacke
                      (D3DX_FLOAT_to_UINT(D3DX_Saturate_FLOAT(unpackedInput.w), 3)<<30) );
     return packedOutput;
 }
-
-
-
 
 D3DX11INLINE XMUINT4 D3DX_R10G10B10A2_UINT_to_UINT4(UINT packedInput)
 {
@@ -434,9 +213,6 @@ D3DX11INLINE UINT D3DX_UINT4_to_R10G10B10A2_UINT(XMUINT4 unpackedInput)
     return packedOutput;
 }
 
-
-
-
 D3DX11INLINE XMFLOAT4 D3DX_R8G8B8A8_UNORM_to_FLOAT4(UINT packedInput)
 {
     hlsl_precise XMFLOAT4 unpackedOutput;
@@ -456,9 +232,6 @@ D3DX11INLINE UINT D3DX_FLOAT4_to_R8G8B8A8_UNORM(hlsl_precise XMFLOAT4 unpackedIn
                      (D3DX_FLOAT_to_UINT(D3DX_Saturate_FLOAT(unpackedInput.w), 255)<<24) );
     return packedOutput;
 }
-
-
-
 
 D3DX11INLINE XMFLOAT4 D3DX_R8G8B8A8_UNORM_SRGB_to_FLOAT4_inexact(UINT packedInput)
 {
@@ -494,9 +267,6 @@ D3DX11INLINE UINT D3DX_FLOAT4_to_R8G8B8A8_UNORM_SRGB(hlsl_precise XMFLOAT4 unpac
     return packedOutput;
 }
 
-
-
-
 D3DX11INLINE XMUINT4 D3DX_R8G8B8A8_UINT_to_UINT4(UINT packedInput)
 {
     XMUINT4 unpackedOutput;
@@ -520,9 +290,6 @@ D3DX11INLINE UINT D3DX_UINT4_to_R8G8B8A8_UINT(XMUINT4 unpackedInput)
                     (unpackedInput.w<<24) );
     return packedOutput;
 }
-
-
-
 
 D3DX11INLINE XMFLOAT4 D3DX_R8G8B8A8_SNORM_to_FLOAT4(UINT packedInput)
 {
@@ -549,9 +316,6 @@ D3DX11INLINE UINT D3DX_FLOAT4_to_R8G8B8A8_SNORM(hlsl_precise XMFLOAT4 unpackedIn
     return packedOutput;
 }
 
-
-
-
 D3DX11INLINE XMINT4 D3DX_R8G8B8A8_SINT_to_INT4(UINT packedInput)
 {
     XMINT4 unpackedOutput;
@@ -576,9 +340,6 @@ D3DX11INLINE UINT D3DX_INT4_to_R8G8B8A8_SINT(XMINT4 unpackedInput)
     return packedOutput;
 }
 
-
-
-
 D3DX11INLINE XMFLOAT4 D3DX_B8G8R8A8_UNORM_to_FLOAT4(UINT packedInput)
 {
     hlsl_precise XMFLOAT4 unpackedOutput;
@@ -598,9 +359,6 @@ D3DX11INLINE UINT D3DX_FLOAT4_to_B8G8R8A8_UNORM(hlsl_precise XMFLOAT4 unpackedIn
                      (D3DX_FLOAT_to_UINT(D3DX_Saturate_FLOAT(unpackedInput.w), 255)<<24) );
     return packedOutput;
 }
-
-
-
 
 D3DX11INLINE XMFLOAT4 D3DX_B8G8R8A8_UNORM_SRGB_to_FLOAT4_inexact(UINT packedInput)
 {
@@ -636,9 +394,6 @@ D3DX11INLINE UINT D3DX_FLOAT4_to_B8G8R8A8_UNORM_SRGB(hlsl_precise XMFLOAT4 unpac
     return packedOutput;
 }
 
-
-
-
 D3DX11INLINE XMFLOAT3 D3DX_B8G8R8X8_UNORM_to_FLOAT3(UINT packedInput)
 {
     hlsl_precise XMFLOAT3 unpackedOutput;
@@ -656,9 +411,6 @@ D3DX11INLINE UINT D3DX_FLOAT3_to_B8G8R8X8_UNORM(hlsl_precise XMFLOAT3 unpackedIn
                      (D3DX_FLOAT_to_UINT(D3DX_Saturate_FLOAT(unpackedInput.x), 255)<<16) );
     return packedOutput;
 }
-
-
-
 
 D3DX11INLINE XMFLOAT3 D3DX_B8G8R8X8_UNORM_SRGB_to_FLOAT3_inexact(UINT packedInput)
 {
@@ -690,10 +442,6 @@ D3DX11INLINE UINT D3DX_FLOAT3_to_B8G8R8X8_UNORM_SRGB(hlsl_precise XMFLOAT3 unpac
     return packedOutput;
 }
 
-
-
-
-
 #if HLSL_VERSION > 0
 
 D3DX11INLINE XMFLOAT2 D3DX_R16G16_FLOAT_to_FLOAT2(UINT packedInput)
@@ -712,10 +460,7 @@ D3DX11INLINE UINT D3DX_FLOAT2_to_R16G16_FLOAT(hlsl_precise XMFLOAT2 unpackedInpu
     return packedOutput;
 }
 
-#endif 
-
-
-
+#endif
 
 D3DX11INLINE XMFLOAT2 D3DX_R16G16_UNORM_to_FLOAT2(UINT packedInput)
 {
@@ -732,9 +477,6 @@ D3DX11INLINE UINT D3DX_FLOAT2_to_R16G16_UNORM(hlsl_precise XMFLOAT2 unpackedInpu
                      (D3DX_FLOAT_to_UINT(D3DX_Saturate_FLOAT(unpackedInput.y), 65535)<< 16) );
     return packedOutput;
 }
-
-
-
 
 D3DX11INLINE XMUINT2 D3DX_R16G16_UINT_to_UINT2(UINT packedInput)
 {
@@ -753,9 +495,6 @@ D3DX11INLINE UINT D3DX_UINT2_to_R16G16_UINT(XMUINT2 unpackedInput)
                     (unpackedInput.y<<16) );
     return packedOutput;
 }
-
-
-
 
 D3DX11INLINE XMFLOAT2 D3DX_R16G16_SNORM_to_FLOAT2(UINT packedInput)
 {
@@ -776,9 +515,6 @@ D3DX11INLINE UINT D3DX_FLOAT2_to_R16G16_SNORM(hlsl_precise XMFLOAT2 unpackedInpu
     return packedOutput;
 }
 
-
-
-
 D3DX11INLINE XMINT2 D3DX_R16G16_SINT_to_INT2(UINT packedInput)
 {
     XMINT2 unpackedOutput;
@@ -797,4 +533,4 @@ D3DX11INLINE UINT D3DX_INT2_to_R16G16_SINT(XMINT2 unpackedInput)
     return packedOutput;
 }
 
-#endif 
+#endif

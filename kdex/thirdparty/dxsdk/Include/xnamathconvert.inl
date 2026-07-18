@@ -1,16 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
 #if defined(_MSC_VER) && (_MSC_VER > 1000)
 #pragma once
 #endif
@@ -40,12 +27,6 @@
                                          -XM_UNPACK_FACTOR_SIGNED / (FLOAT)((1 << ((BitsZ) - 1)) - 1), \
                                          -XM_UNPACK_FACTOR_SIGNED / (FLOAT)((1 << ((BitsW) - 1)) - 1)}
 
-
-
-
-
-
-
 #define XM_PACK_UNSIGNEDN_SCALE(BitsX, BitsY, BitsZ, BitsW) \
                                         {-(FLOAT)((1 << (BitsX)) - 1) / XM_PACK_FACTOR, \
                                          -(FLOAT)((1 << (BitsY)) - 1) / XM_PACK_FACTOR, \
@@ -60,15 +41,6 @@
 
 #define XM_PACK_OFFSET                  XMVectorSplatConstant(3, 0)
 
-
-
-
-
-
-
-
-
-
 XMFINLINE FLOAT XMConvertHalfToFloat
 (
     HALF Value
@@ -82,13 +54,13 @@ XMFINLINE FLOAT XMConvertHalfToFloat
 
     Mantissa = (UINT)(Value & 0x03FF);
 
-    if ((Value & 0x7C00) != 0)  
+    if ((Value & 0x7C00) != 0)
     {
         Exponent = (UINT)((Value >> 10) & 0x1F);
     }
-    else if (Mantissa != 0)     
+    else if (Mantissa != 0)
     {
-        
+
         Exponent = 1;
 
         do
@@ -99,14 +71,14 @@ XMFINLINE FLOAT XMConvertHalfToFloat
 
         Mantissa &= 0x03FF;
     }
-    else                        
+    else
     {
         Exponent = (UINT)-112;
     }
 
-    Result = ((Value & 0x8000) << 16) | 
-             ((Exponent + 112) << 23) | 
-             (Mantissa << 13);          
+    Result = ((Value & 0x8000) << 16) |
+             ((Exponent + 112) << 23) |
+             (Mantissa << 13);
 
     return *(FLOAT*)&Result;
 
@@ -114,14 +86,12 @@ XMFINLINE FLOAT XMConvertHalfToFloat
 #endif
 }
 
-
-
 XMINLINE FLOAT* XMConvertHalfToFloatStream
 (
-    FLOAT*      pOutputStream, 
-    UINT        OutputStride, 
-    CONST HALF* pInputStream, 
-    UINT        InputStride, 
+    FLOAT*      pOutputStream,
+    UINT        OutputStride,
+    CONST HALF* pInputStream,
+    UINT        InputStride,
     UINT        HalfCount
 )
 {
@@ -138,16 +108,14 @@ XMINLINE FLOAT* XMConvertHalfToFloatStream
     {
         *(FLOAT*)pFloat = XMConvertHalfToFloat(*(HALF*)pHalf);
         pHalf += InputStride;
-        pFloat += OutputStride; 
+        pFloat += OutputStride;
     }
 
     return pOutputStream;
 
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE HALF XMConvertFloatToHalf
 (
@@ -159,29 +127,28 @@ XMFINLINE HALF XMConvertFloatToHalf
 
     UINT IValue = ((UINT *)(&Value))[0];
     UINT Sign = (IValue & 0x80000000U) >> 16U;
-    IValue = IValue & 0x7FFFFFFFU;      
+    IValue = IValue & 0x7FFFFFFFU;
 
     if (IValue > 0x47FFEFFFU)
     {
-        
+
         Result = 0x7FFFU;
     }
     else
     {
         if (IValue < 0x38800000U)
         {
-            
-            
+
             UINT Shift = 113U - (IValue >> 23U);
             IValue = (0x800000U | (IValue & 0x7FFFFFU)) >> Shift;
         }
         else
         {
-            
+
             IValue += 0xC8000000U;
         }
 
-        Result = ((IValue + 0x0FFFU + ((IValue >> 13U) & 1U)) >> 13U)&0x7FFFU; 
+        Result = ((IValue + 0x0FFFU + ((IValue >> 13U) & 1U)) >> 13U)&0x7FFFU;
     }
     return (HALF)(Result|Sign);
 
@@ -189,14 +156,12 @@ XMFINLINE HALF XMConvertFloatToHalf
 #endif
 }
 
-
-
 XMINLINE HALF* XMConvertFloatToHalfStream
 (
-    HALF*        pOutputStream, 
-    UINT         OutputStride, 
-    CONST FLOAT* pInputStream, 
-    UINT         InputStride, 
+    HALF*        pOutputStream,
+    UINT         OutputStride,
+    CONST FLOAT* pInputStream,
+    UINT         InputStride,
     UINT         FloatCount
 )
 {
@@ -212,21 +177,18 @@ XMINLINE HALF* XMConvertFloatToHalfStream
     for (i = 0; i < FloatCount; i++)
     {
         *(HALF*)pHalf = XMConvertFloatToHalf(*(FLOAT*)pFloat);
-        pFloat += InputStride; 
+        pFloat += InputStride;
         pHalf += OutputStride;
     }
     return pOutputStream;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 #if defined(_XM_NO_INTRINSICS_) || defined(_XM_SSE_INTRINSICS_)
 
-
 #pragma warning(push)
-#pragma warning(disable:4701) 
+#pragma warning(disable:4701)
 
 XMINLINE XMVECTOR XMConvertVectorIntToFloat
 (
@@ -246,20 +208,18 @@ XMINLINE XMVECTOR XMConvertVectorIntToFloat
         Result.vector4_f32[ElementIndex] = ((FLOAT)iTemp) * fScale;
     } while (++ElementIndex<4);
     return Result;
-#else 
+#else
     XMASSERT(DivExponent<32);
-    
+
     XMVECTOR vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&VInt)[0]);
-    
+
     UINT uScale = 0x3F800000U - (DivExponent << 23);
-    
+
     __m128i vScale = _mm_set1_epi32(uScale);
     vResult = _mm_mul_ps(vResult,reinterpret_cast<const __m128 *>(&vScale)[0]);
     return vResult;
 #endif
 }
-
-
 
 XMINLINE XMVECTOR XMConvertVectorFloatToInt
 (
@@ -272,7 +232,7 @@ XMINLINE XMVECTOR XMConvertVectorFloatToInt
     XMVECTOR Result;
     FLOAT fScale;
     XMASSERT(MulExponent<32);
-    
+
     fScale = (FLOAT)(1U << MulExponent);
     ElementIndex = 0;
     do {
@@ -288,24 +248,22 @@ XMINLINE XMVECTOR XMConvertVectorFloatToInt
         Result.vector4_u32[ElementIndex] = (UINT)iResult;
     } while (++ElementIndex<4);
     return Result;
-#else 
+#else
     XMASSERT(MulExponent<32);
     static const XMVECTORF32 MaxInt = {65536.0f*32768.0f-128.0f,65536.0f*32768.0f-128.0f,65536.0f*32768.0f-128.0f,65536.0f*32768.0f-128.0f};
     XMVECTOR vResult = _mm_set_ps1((FLOAT)(1U << MulExponent));
     vResult = _mm_mul_ps(vResult,VFloat);
-    
+
     XMVECTOR vOverflow = _mm_cmpgt_ps(vResult,MaxInt);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResult = _mm_and_ps(vOverflow,g_XMAbsMask);
     vOverflow = _mm_andnot_ps(vOverflow,reinterpret_cast<const __m128 *>(&vResulti)[0]);
     vOverflow = _mm_or_ps(vOverflow,vResult);
     return vOverflow;
 #endif
 }
-
-
 
 XMINLINE XMVECTOR XMConvertVectorUIntToFloat
 (
@@ -324,31 +282,28 @@ XMINLINE XMVECTOR XMConvertVectorUIntToFloat
         Result.vector4_f32[ElementIndex] = (FLOAT)VUInt.vector4_u32[ElementIndex] * fScale;
     } while (++ElementIndex<4);
     return Result;
-#else 
+#else
     XMASSERT(DivExponent<32);
     static const XMVECTORF32 FixUnsigned = {32768.0f*65536.0f,32768.0f*65536.0f,32768.0f*65536.0f,32768.0f*65536.0f};
-    
-    
+
     XMVECTOR vMask = _mm_and_ps(VUInt,g_XMNegativeZero);
-    
+
     XMVECTOR vResult = _mm_xor_ps(VUInt,vMask);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     __m128i iMask = _mm_srai_epi32(reinterpret_cast<const __m128i *>(&vMask)[0],31);
-    
+
     vMask = _mm_and_ps(reinterpret_cast<const __m128 *>(&iMask)[0],FixUnsigned);
     vResult = _mm_add_ps(vResult,vMask);
-    
+
     UINT uScale = 0x3F800000U - (DivExponent << 23);
-    
+
     iMask = _mm_set1_epi32(uScale);
     vResult = _mm_mul_ps(vResult,reinterpret_cast<const __m128 *>(&iMask)[0]);
     return vResult;
 #endif
 }
-
-
 
 XMINLINE XMVECTOR XMConvertVectorFloatToUInt
 (
@@ -361,7 +316,7 @@ XMINLINE XMVECTOR XMConvertVectorFloatToUInt
     XMVECTOR Result;
     FLOAT fScale;
     XMASSERT(MulExponent<32);
-    
+
     fScale = (FLOAT)(1U << MulExponent);
     ElementIndex = 0;
     do {
@@ -377,28 +332,28 @@ XMINLINE XMVECTOR XMConvertVectorFloatToUInt
         Result.vector4_u32[ElementIndex] = uResult;
     } while (++ElementIndex<4);
     return Result;
-#else 
+#else
     XMASSERT(MulExponent<32);
     static const XMVECTORF32 MaxUInt = {65536.0f*65536.0f-256.0f,65536.0f*65536.0f-256.0f,65536.0f*65536.0f-256.0f,65536.0f*65536.0f-256.0f};
     static const XMVECTORF32 UnsignedFix = {32768.0f*65536.0f,32768.0f*65536.0f,32768.0f*65536.0f,32768.0f*65536.0f};
     XMVECTOR vResult = _mm_set_ps1(static_cast<float>(1U << MulExponent));
     vResult = _mm_mul_ps(vResult,VFloat);
-    
+
     vResult = _mm_max_ps(vResult,g_XMZero);
-    
+
     XMVECTOR vOverflow = _mm_cmpgt_ps(vResult,MaxUInt);
     XMVECTOR vValue = UnsignedFix;
-    
+
     XMVECTOR vMask = _mm_cmpge_ps(vResult,vValue);
-    
+
     vValue = _mm_and_ps(vValue,vMask);
-    
+
     vResult = _mm_sub_ps(vResult,vValue);
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vMask = _mm_and_ps(vMask,g_XMNegativeZero);
     vResult = _mm_xor_ps(reinterpret_cast<const __m128 *>(&vResulti)[0],vMask);
-    
+
     vResult = _mm_or_ps(vResult,vOverflow);
     return vResult;
 #endif
@@ -406,15 +361,7 @@ XMINLINE XMVECTOR XMConvertVectorFloatToUInt
 
 #pragma warning(pop)
 
-#endif 
-
-
-
-
-
-
-
-
+#endif
 
 XMFINLINE XMVECTOR XMLoadInt(CONST UINT* pSource)
 {
@@ -434,10 +381,8 @@ XMFINLINE XMVECTOR XMLoadInt(CONST UINT* pSource)
 
     return _mm_load_ss( (const float*)pSource );
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadFloat(CONST FLOAT* pSource)
 {
@@ -457,10 +402,8 @@ XMFINLINE XMVECTOR XMLoadFloat(CONST FLOAT* pSource)
 
     return _mm_load_ss( pSource );
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadInt2
 (
@@ -485,10 +428,8 @@ XMFINLINE XMVECTOR XMLoadInt2
     __m128 y = _mm_load_ss( (const float*)(pSource+1) );
     return _mm_unpacklo_ps( x, y );
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadInt2A
 (
@@ -515,11 +456,9 @@ XMFINLINE XMVECTOR XMLoadInt2A
     __m128i V = _mm_loadl_epi64( (const __m128i*)pSource );
     return reinterpret_cast<__m128 *>(&V)[0];
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadFloat2
 (
@@ -540,10 +479,8 @@ XMFINLINE XMVECTOR XMLoadFloat2
     __m128 y = _mm_load_ss( &pSource->y );
     return _mm_unpacklo_ps( x, y );
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadFloat2A
 (
@@ -568,11 +505,9 @@ XMFINLINE XMVECTOR XMLoadFloat2A
 
     __m128i V = _mm_loadl_epi64( (const __m128i*)pSource );
     return reinterpret_cast<__m128 *>(&V)[0];
-#else 
-#endif 
+#else
+#endif
 }
-    
-
 
 XMFINLINE XMVECTOR XMLoadHalf2
 (
@@ -601,10 +536,8 @@ XMFINLINE XMVECTOR XMLoadHalf2
     return vResult;
 
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadShortN2
 (
@@ -629,24 +562,21 @@ XMFINLINE XMVECTOR XMLoadShortN2
     XMASSERT(pSource);
     XMASSERT(pSource->x != -32768);
     XMASSERT(pSource->y != -32768);
-    
-    
+
     __m128 vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->x));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskX16Y16);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipX16Y16);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMFixX16Y16);
-    
+
     return _mm_mul_ps(vTemp,g_XMNormalizeX16Y16);
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadShort2
 (
@@ -670,24 +600,21 @@ XMFINLINE XMVECTOR XMLoadShort2
     XMASSERT(pSource);
     XMASSERT(pSource->x != -32768);
     XMASSERT(pSource->y != -32768);
-    
-    
+
     __m128 vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->x));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskX16Y16);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipX16Y16);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMFixX16Y16);
-    
+
     return _mm_mul_ps(vTemp,g_XMFixupY16);
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUShortN2
 (
@@ -709,25 +636,22 @@ XMFINLINE XMVECTOR XMLoadUShortN2
     static const XMVECTORF32 FixupY16 = {1.0f/65535.0f,1.0f/(65535.0f*65536.0f),0.0f,0.0f};
     static const XMVECTORF32 FixaddY16 = {0,32768.0f*65536.0f,0,0};
     XMASSERT(pSource);
-    
-    
+
     __m128 vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->x));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskX16Y16);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipY);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,FixaddY16);
-    
+
     vTemp = _mm_mul_ps(vTemp,FixupY16);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUShort2
 (
@@ -748,25 +672,22 @@ XMFINLINE XMVECTOR XMLoadUShort2
 #elif defined(_XM_SSE_INTRINSICS_)
     static const XMVECTORF32 FixaddY16 = {0,32768.0f,0,0};
     XMASSERT(pSource);
-    
-    
+
     __m128 vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->x));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskX16Y16);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipY);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMFixupY16);
-    
+
     vTemp = _mm_add_ps(vTemp,FixaddY16);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadInt3
 (
@@ -797,12 +718,10 @@ XMFINLINE XMVECTOR XMLoadInt3
     __m128 z = _mm_load_ss( (const float*)(pSource+2) );
     __m128 xy = _mm_unpacklo_ps( x, y );
     return _mm_movelh_ps( xy, z );
-#endif 
+#endif
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadInt3A
 (
@@ -825,15 +744,11 @@ XMFINLINE XMVECTOR XMLoadInt3A
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSource);
 
-    
-
     __m128i V = _mm_load_si128( (const __m128i*)pSource );
     return reinterpret_cast<__m128 *>(&V)[0];
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadFloat3
 (
@@ -852,9 +767,7 @@ XMFINLINE XMVECTOR XMLoadFloat3
     XMASSERT(pSource);
 
 #ifdef _XM_ISVS2005_
-    
-    
-    
+
     return _mm_loadu_ps( &pSource->x );
 #else
     __m128 x = _mm_load_ss( &pSource->x );
@@ -862,12 +775,10 @@ XMFINLINE XMVECTOR XMLoadFloat3
     __m128 z = _mm_load_ss( &pSource->z );
     __m128 xy = _mm_unpacklo_ps( x, y );
     return _mm_movelh_ps( xy, z );
-#endif 
+#endif
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadFloat3A
 (
@@ -891,13 +802,10 @@ XMFINLINE XMVECTOR XMLoadFloat3A
     XMASSERT(pSource);
     XMASSERT(((UINT_PTR)pSource & 0xF) == 0);
 
-    
     return _mm_load_ps( &pSource->x );
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUHenDN3
 (
@@ -923,24 +831,22 @@ XMFINLINE XMVECTOR XMLoadUHenDN3
 #elif defined(_XM_SSE_INTRINSICS_)
     static const XMVECTORF32 UHenDN3Mul = {1.0f/2047.0f,1.0f/(2047.0f*2048.0f),1.0f/(1023.0f*2048.0f*2048.0f),0};
     XMASSERT(pSource);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,g_XMMaskHenD3);
-    
+
     vResult = _mm_xor_ps(vResult,g_XMFlipZ);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_add_ps(vResult,g_XMAddUHenD3);
-    
+
     vResult = _mm_mul_ps(vResult,UHenDN3Mul);
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUHenD3
 (
@@ -965,24 +871,22 @@ XMFINLINE XMVECTOR XMLoadUHenD3
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSource);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,g_XMMaskHenD3);
-    
+
     vResult = _mm_xor_ps(vResult,g_XMFlipZ);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_add_ps(vResult,g_XMAddUHenD3);
-    
+
     vResult = _mm_mul_ps(vResult,g_XMMulHenD3);
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadHenDN3
 (
@@ -1016,24 +920,22 @@ XMFINLINE XMVECTOR XMLoadHenDN3
     XMASSERT((pSource->v & 0x7FF) != 0x400);
     XMASSERT(((pSource->v >> 11) & 0x7FF) != 0x400);
     XMASSERT(((pSource->v >> 22) & 0x3FF) != 0x200);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,g_XMMaskHenD3);
-    
+
     vResult = _mm_xor_ps(vResult,g_XMXorHenD3);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_add_ps(vResult,g_XMAddHenD3);
-    
+
     vResult = _mm_mul_ps(vResult,HenDN3Mul);
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadHenD3
 (
@@ -1066,24 +968,22 @@ XMFINLINE XMVECTOR XMLoadHenD3
     XMASSERT((pSource->v & 0x7FF) != 0x400);
     XMASSERT(((pSource->v >> 11) & 0x7FF) != 0x400);
     XMASSERT(((pSource->v >> 22) & 0x3FF) != 0x200);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,g_XMMaskHenD3);
-    
+
     vResult = _mm_xor_ps(vResult,g_XMXorHenD3);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_add_ps(vResult,g_XMAddHenD3);
-    
+
     vResult = _mm_mul_ps(vResult,g_XMMulHenD3);
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUDHenN3
 (
@@ -1109,24 +1009,22 @@ XMFINLINE XMVECTOR XMLoadUDHenN3
 #elif defined(_XM_SSE_INTRINSICS_)
     static const XMVECTORF32 UDHenN3Mul = {1.0f/1023.0f,1.0f/(2047.0f*1024.0f),1.0f/(2047.0f*1024.0f*2048.0f),0};
     XMASSERT(pSource);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,g_XMMaskDHen3);
-    
+
     vResult = _mm_xor_ps(vResult,g_XMFlipZ);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_add_ps(vResult,g_XMAddUHenD3);
-    
+
     vResult = _mm_mul_ps(vResult,UDHenN3Mul);
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUDHen3
 (
@@ -1151,24 +1049,22 @@ XMFINLINE XMVECTOR XMLoadUDHen3
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSource);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,g_XMMaskDHen3);
-    
+
     vResult = _mm_xor_ps(vResult,g_XMFlipZ);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_add_ps(vResult,g_XMAddUHenD3);
-    
+
     vResult = _mm_mul_ps(vResult,g_XMMulDHen3);
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadDHenN3
 (
@@ -1202,24 +1098,22 @@ XMFINLINE XMVECTOR XMLoadDHenN3
     XMASSERT((pSource->v & 0x3FF) != 0x200);
     XMASSERT(((pSource->v >> 10) & 0x7FF) != 0x400);
     XMASSERT(((pSource->v >> 21) & 0x7FF) != 0x400);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,g_XMMaskDHen3);
-    
+
     vResult = _mm_xor_ps(vResult,g_XMXorDHen3);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_add_ps(vResult,g_XMAddDHen3);
-    
+
     vResult = _mm_mul_ps(vResult,DHenN3Mul);
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadDHen3
 (
@@ -1252,24 +1146,22 @@ XMFINLINE XMVECTOR XMLoadDHen3
     XMASSERT((pSource->v & 0x3FF) != 0x200);
     XMASSERT(((pSource->v >> 10) & 0x7FF) != 0x400);
     XMASSERT(((pSource->v >> 21) & 0x7FF) != 0x400);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,g_XMMaskDHen3);
-    
+
     vResult = _mm_xor_ps(vResult,g_XMXorDHen3);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_add_ps(vResult,g_XMAddDHen3);
-    
+
     vResult = _mm_mul_ps(vResult,g_XMMulDHen3);
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadU565
 (
@@ -1280,13 +1172,13 @@ XMFINLINE XMVECTOR XMLoadU565
     static const XMVECTORI32 U565And = {0x1F,0x3F<<5,0x1F<<11,0};
     static const XMVECTORF32 U565Mul = {1.0f,1.0f/32.0f,1.0f/2048.f,0};
     XMASSERT(pSource);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,U565And);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_mul_ps(vResult,U565Mul);
     return vResult;
 #else
@@ -1303,10 +1195,8 @@ XMFINLINE XMVECTOR XMLoadU565
     V.vector4_f32[2] = (FLOAT)Element;
 
     return V;
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadFloat3PK
 (
@@ -1319,101 +1209,98 @@ XMFINLINE XMVECTOR XMLoadFloat3PK
 
     XMASSERT(pSource);
 
-    
     Mantissa = pSource->xm;
 
-    if ( pSource->xe == 0x1f ) 
+    if ( pSource->xe == 0x1f )
     {
         Result[0] = 0x7f800000 | (pSource->xm << 17);
     }
     else
     {
-        if ( pSource->xe != 0 ) 
+        if ( pSource->xe != 0 )
         {
             Exponent = pSource->xe;
         }
-        else if (Mantissa != 0) 
+        else if (Mantissa != 0)
         {
-            
+
             Exponent = 1;
-    
+
             do
             {
                 Exponent--;
                 Mantissa <<= 1;
             } while ((Mantissa & 0x40) == 0);
-    
+
             Mantissa &= 0x3F;
         }
-        else 
+        else
         {
             Exponent = (UINT)-112;
         }
-    
+
         Result[0] = ((Exponent + 112) << 23) | (Mantissa << 17);
     }
 
-    
     Mantissa = pSource->ym;
 
-    if ( pSource->ye == 0x1f ) 
+    if ( pSource->ye == 0x1f )
     {
         Result[1] = 0x7f800000 | (pSource->ym << 17);
     }
     else
     {
-        if ( pSource->ye != 0 ) 
+        if ( pSource->ye != 0 )
         {
             Exponent = pSource->ye;
         }
-        else if (Mantissa != 0) 
+        else if (Mantissa != 0)
         {
-            
+
             Exponent = 1;
-    
+
             do
             {
                 Exponent--;
                 Mantissa <<= 1;
             } while ((Mantissa & 0x40) == 0);
-    
+
             Mantissa &= 0x3F;
         }
-        else 
+        else
         {
             Exponent = (UINT)-112;
         }
-    
+
         Result[1] = ((Exponent + 112) << 23) | (Mantissa << 17);
     }
 
-    
     Mantissa = pSource->zm;
 
-    if ( pSource->ze == 0x1f ) 
+    if ( pSource->ze == 0x1f )
     {
         Result[2] = 0x7f800000 | (pSource->zm << 17);
     }
     else
     {
-        if ( pSource->ze != 0 ) 
+        if ( pSource->ze != 0 )
         {
             Exponent = pSource->ze;
         }
-        else if (Mantissa != 0) 
+        else if (Mantissa != 0)
         {
-            
+
             Exponent = 1;
-    
+
             do
             {
                 Exponent--;
                 Mantissa <<= 1;
             } while ((Mantissa & 0x20) == 0);
-    
+
             Mantissa &= 0x1F;
         }
-        else 
+        else
         {
             Exponent = (UINT)-112;
         }
@@ -1423,8 +1310,6 @@ XMFINLINE XMVECTOR XMLoadFloat3PK
 
     return XMLoadFloat3A( (XMFLOAT3A*)&Result );
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadFloat3SE
 (
@@ -1437,13 +1322,13 @@ XMFINLINE XMVECTOR XMLoadFloat3SE
 
     XMASSERT(pSource);
 
-    if ( pSource->e == 0x1f ) 
+    if ( pSource->e == 0x1f )
     {
         Result[0] = 0x7f800000 | (pSource->xm << 14);
         Result[1] = 0x7f800000 | (pSource->ym << 14);
         Result[2] = 0x7f800000 | (pSource->zm << 14);
     }
-    else if ( pSource->e != 0 ) 
+    else if ( pSource->e != 0 )
     {
         Exponent = pSource->e;
 
@@ -1460,12 +1345,12 @@ XMFINLINE XMVECTOR XMLoadFloat3SE
     }
     else
     {
-        
+
         Mantissa = pSource->xm;
 
-        if (Mantissa != 0) 
+        if (Mantissa != 0)
         {
-            
+
             Exponent = 1;
 
             do
@@ -1476,19 +1361,18 @@ XMFINLINE XMVECTOR XMLoadFloat3SE
 
             Mantissa &= 0x1FF;
         }
-        else 
+        else
         {
             Exponent = (UINT)-112;
         }
 
         Result[0] = ((Exponent + 112) << 23) | (Mantissa << 14);
 
-        
         Mantissa = pSource->ym;
 
-        if (Mantissa != 0) 
+        if (Mantissa != 0)
         {
-            
+
             Exponent = 1;
 
             do
@@ -1499,19 +1383,18 @@ XMFINLINE XMVECTOR XMLoadFloat3SE
 
             Mantissa &= 0x1FF;
         }
-        else 
+        else
         {
             Exponent = (UINT)-112;
         }
 
         Result[1] = ((Exponent + 112) << 23) | (Mantissa << 14);
 
-        
         Mantissa = pSource->zm;
 
-        if (Mantissa != 0) 
+        if (Mantissa != 0)
         {
-            
+
             Exponent = 1;
 
             do
@@ -1522,7 +1405,7 @@ XMFINLINE XMVECTOR XMLoadFloat3SE
 
             Mantissa &= 0x1FF;
         }
-        else 
+        else
         {
             Exponent = (UINT)-112;
         }
@@ -1532,8 +1415,6 @@ XMFINLINE XMVECTOR XMLoadFloat3SE
 
     return XMLoadFloat3A( (XMFLOAT3A*)&Result );
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadInt4
 (
@@ -1561,10 +1442,8 @@ XMFINLINE XMVECTOR XMLoadInt4
     return reinterpret_cast<__m128 *>(&V)[0];
 
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadInt4A
 (
@@ -1593,11 +1472,9 @@ XMFINLINE XMVECTOR XMLoadInt4A
     __m128i V = _mm_load_si128( (const __m128i*)pSource );
     return reinterpret_cast<__m128 *>(&V)[0];
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadFloat4
 (
@@ -1618,10 +1495,8 @@ XMFINLINE XMVECTOR XMLoadFloat4
 
     return _mm_loadu_ps( &pSource->x );
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadFloat4A
 (
@@ -1649,11 +1524,9 @@ XMFINLINE XMVECTOR XMLoadFloat4A
 
     return _mm_load_ps( &pSource->x );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadHalf4
 (
@@ -1681,10 +1554,8 @@ XMFINLINE XMVECTOR XMLoadHalf4
     };
     return vResult;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadShortN4
 (
@@ -1712,26 +1583,24 @@ XMFINLINE XMVECTOR XMLoadShortN4
     XMASSERT(pSource->y != -32768);
     XMASSERT(pSource->z != -32768);
     XMASSERT(pSource->w != -32768);
-    
+
     __m128d vIntd = _mm_load1_pd(reinterpret_cast<const double *>(&pSource->x));
-    
+
     __m128 vTemp = _mm_and_ps(reinterpret_cast<const __m128 *>(&vIntd)[0],g_XMMaskX16Y16Z16W16);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipX16Y16Z16W16);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMFixX16Y16Z16W16);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMNormalizeX16Y16Z16W16);
-    
+
     vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(3,1,2,0));
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadShort4
 (
@@ -1761,25 +1630,23 @@ XMFINLINE XMVECTOR XMLoadShort4
     XMASSERT(pSource->y != -32768);
     XMASSERT(pSource->z != -32768);
     XMASSERT(pSource->w != -32768);
-    
+
     __m128d vIntd = _mm_load1_pd(reinterpret_cast<const double *>(&pSource->x));
-    
+
     __m128 vTemp = _mm_and_ps(reinterpret_cast<const __m128 *>(&vIntd)[0],g_XMMaskX16Y16Z16W16);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipX16Y16Z16W16);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMFixX16Y16Z16W16);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMFixupY16W16);
-    
+
     return _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(3,1,2,0));
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUShortN4
 (
@@ -1804,25 +1671,23 @@ XMFINLINE XMVECTOR XMLoadUShortN4
     static const XMVECTORF32 FixupY16W16 = {1.0f/65535.0f,1.0f/65535.0f,1.0f/(65535.0f*65536.0f),1.0f/(65535.0f*65536.0f)};
     static const XMVECTORF32 FixaddY16W16  = {0,0,32768.0f*65536.0f,32768.0f*65536.0f};
 	XMASSERT(pSource);
-    
+
     __m128d vIntd = _mm_load1_pd(reinterpret_cast<const double *>(&pSource->x));
-    
+
     __m128 vTemp = _mm_and_ps(reinterpret_cast<const __m128 *>(&vIntd)[0],g_XMMaskX16Y16Z16W16);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipZW);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,FixaddY16W16);
-    
+
     vTemp = _mm_mul_ps(vTemp,FixupY16W16);
-    
+
     return _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(3,1,2,0));
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUShort4
 (
@@ -1846,25 +1711,23 @@ XMFINLINE XMVECTOR XMLoadUShort4
     XMASSERT(pSource);
     static const XMVECTORF32 FixaddY16W16  = {0,0,32768.0f,32768.0f};
 	XMASSERT(pSource);
-    
+
     __m128d vIntd = _mm_load1_pd(reinterpret_cast<const double *>(&pSource->x));
-    
+
     __m128 vTemp = _mm_and_ps(reinterpret_cast<const __m128 *>(&vIntd)[0],g_XMMaskX16Y16Z16W16);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipZW);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMFixupY16W16);
-    
+
     vTemp = _mm_add_ps(vTemp,FixaddY16W16);
-    
+
     return _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(3,1,2,0));
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadXIcoN4
 (
@@ -1898,30 +1761,28 @@ XMFINLINE XMVECTOR XMLoadXIcoN4
     XMASSERT(((pSource->v >> 40) & 0xFFFFFull) != 0x80000ull);
     static const XMVECTORF32 LoadXIcoN4Mul = {1.0f/524287.0f,1.0f/(524287.0f*4096.0f),1.0f/524287.0f,1.0f/(15.0f*4096.0f*65536.0f)};
 	XMASSERT(pSource);
-    
+
     __m128d vResultd = _mm_load_sd(reinterpret_cast<const double *>(&pSource->v));
-    
+
     __m128i vResulti = _mm_srli_si128(reinterpret_cast<const __m128i *>(&vResultd)[0],8/8);
-    
+
     XMVECTOR vTemp = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResultd)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(1,0,1,0));
-    
+
     vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(1,3,2,0));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskIco4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMXorXIco4);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddXIco4);
-    
+
     vTemp = _mm_mul_ps(vTemp,LoadXIcoN4Mul);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadXIco4
 (
@@ -1954,30 +1815,28 @@ XMFINLINE XMVECTOR XMLoadXIco4
     XMASSERT(((pSource->v >> 20) & 0xFFFFFull) != 0x80000ull);
     XMASSERT(((pSource->v >> 40) & 0xFFFFFull) != 0x80000ull);
     XMASSERT(pSource);
-    
+
     __m128d vResultd = _mm_load_sd(reinterpret_cast<const double *>(&pSource->v));
-    
+
     __m128i vResulti = _mm_srli_si128(reinterpret_cast<const __m128i *>(&vResultd)[0],8/8);
-    
+
     XMVECTOR vTemp = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResultd)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(1,0,1,0));
-    
+
     vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(1,3,2,0));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskIco4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMXorXIco4);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddXIco4);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMMulIco4);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUIcoN4
 (
@@ -2000,30 +1859,28 @@ XMFINLINE XMVECTOR XMLoadUIcoN4
 #elif defined(_XM_SSE_INTRINSICS_)
     static const XMVECTORF32 LoadUIcoN4Mul = {1.0f/1048575.0f,1.0f/(1048575.0f*4096.0f),1.0f/1048575.0f,1.0f/(15.0f*4096.0f*65536.0f)};
     XMASSERT(pSource);
-    
+
     __m128d vResultd = _mm_load_sd(reinterpret_cast<const double *>(&pSource->v));
-    
+
     __m128i vResulti = _mm_srli_si128(reinterpret_cast<const __m128i *>(&vResultd)[0],8/8);
-    
+
     XMVECTOR vTemp = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResultd)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(1,0,1,0));
-    
+
     vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(1,3,2,0));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskIco4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipYW);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddUIco4);
-    
+
     vTemp = _mm_mul_ps(vTemp,LoadUIcoN4Mul);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUIco4
 (
@@ -2045,30 +1902,28 @@ XMFINLINE XMVECTOR XMLoadUIco4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSource);
-    
+
     __m128d vResultd = _mm_load_sd(reinterpret_cast<const double *>(&pSource->v));
-    
+
     __m128i vResulti = _mm_srli_si128(reinterpret_cast<const __m128i *>(&vResultd)[0],8/8);
-    
+
     XMVECTOR vTemp = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResultd)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(1,0,1,0));
-    
+
     vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(1,3,2,0));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskIco4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipYW);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddUIco4);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMMulIco4);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadIcoN4
 (
@@ -2098,30 +1953,28 @@ XMFINLINE XMVECTOR XMLoadIcoN4
 #elif defined(_XM_SSE_INTRINSICS_)
     static const XMVECTORF32 LoadIcoN4Mul = {1.0f/524287.0f,1.0f/(524287.0f*4096.0f),1.0f/524287.0f,1.0f/(7.0f*4096.0f*65536.0f)};
     XMASSERT(pSource);
-    
+
     __m128d vResultd = _mm_load_sd(reinterpret_cast<const double *>(&pSource->v));
-    
+
     __m128i vResulti = _mm_srli_si128(reinterpret_cast<const __m128i *>(&vResultd)[0],8/8);
-    
+
     XMVECTOR vTemp = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResultd)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(1,0,1,0));
-    
+
     vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(1,3,2,0));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskIco4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMXorIco4);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddIco4);
-    
+
     vTemp = _mm_mul_ps(vTemp,LoadIcoN4Mul);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadIco4
 (
@@ -2150,31 +2003,28 @@ XMFINLINE XMVECTOR XMLoadIco4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSource);
-    
+
     __m128d vResultd = _mm_load_sd(reinterpret_cast<const double *>(&pSource->v));
-    
+
     __m128i vResulti = _mm_srli_si128(reinterpret_cast<const __m128i *>(&vResultd)[0],8/8);
-    
+
     XMVECTOR vTemp = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResultd)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(1,0,1,0));
-    
+
     vTemp = _mm_shuffle_ps(vTemp,vTemp,_MM_SHUFFLE(1,3,2,0));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskIco4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMXorIco4);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddIco4);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMMulIco4);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
-
 
 XMFINLINE XMVECTOR XMLoadXDecN4
 (
@@ -2203,23 +2053,21 @@ XMFINLINE XMVECTOR XMLoadXDecN4
 
 #elif defined(_XM_SSE_INTRINSICS_)
 	XMASSERT(pSource);
-    
+
     __m128 vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskA2B10G10R10);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipA2B10G10R10);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMFixAA2B10G10R10);
-    
+
     return _mm_mul_ps(vTemp,g_XMNormalizeA2B10G10R10);
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadXDec4
 (
@@ -2254,24 +2102,22 @@ XMFINLINE XMVECTOR XMLoadXDec4
     static const XMVECTORI32 XDec4Xor = {0x200, 0x200<<10, 0x200<<20, 0x80000000};
     static const XMVECTORF32 XDec4Add = {-512.0f,-512.0f*1024.0f,-512.0f*1024.0f*1024.0f,32768*65536.0f};
     XMASSERT(pSource);
-    
+
     XMVECTOR vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskDec4);
-    
+
     vTemp = _mm_xor_ps(vTemp,XDec4Xor);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,XDec4Add);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMMulDec4);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUDecN4
 (
@@ -2298,24 +2144,22 @@ XMFINLINE XMVECTOR XMLoadUDecN4
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSource);
     static const XMVECTORF32 UDecN4Mul = {1.0f/1023.0f,1.0f/(1023.0f*1024.0f),1.0f/(1023.0f*1024.0f*1024.0f),1.0f/(3.0f*1024.0f*1024.0f*1024.0f)};
-    
+
     XMVECTOR vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskDec4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipW);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddUDec4);
-    
+
     vTemp = _mm_mul_ps(vTemp,UDecN4Mul);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUDec4
 (
@@ -2341,24 +2185,22 @@ XMFINLINE XMVECTOR XMLoadUDec4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSource);
-    
+
     XMVECTOR vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskDec4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipW);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddUDec4);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMMulDec4);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadDecN4
 (
@@ -2396,24 +2238,22 @@ XMFINLINE XMVECTOR XMLoadDecN4
     XMASSERT(((pSource->v >> 20) & 0x3FF) != 0x200);
     XMASSERT(((pSource->v >> 30) & 0x3) != 0x2);
     static const XMVECTORF32 DecN4Mul = {1.0f/511.0f,1.0f/(511.0f*1024.0f),1.0f/(511.0f*1024.0f*1024.0f),1.0f/(1024.0f*1024.0f*1024.0f)};
-    
+
     XMVECTOR vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskDec4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMXorDec4);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddDec4);
-    
+
     vTemp = _mm_mul_ps(vTemp,DecN4Mul);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadDec4
 (
@@ -2450,24 +2290,22 @@ XMFINLINE XMVECTOR XMLoadDec4
     XMASSERT(((pSource->v >> 20) & 0x3FF) != 0x200);
     XMASSERT(((pSource->v >> 30) & 0x3) != 0x2);
     XMASSERT(pSource);
-    
+
     XMVECTOR vTemp = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskDec4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMXorDec4);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddDec4);
-    
+
     vTemp = _mm_mul_ps(vTemp,g_XMMulDec4);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUByteN4
 (
@@ -2490,24 +2328,22 @@ XMFINLINE XMVECTOR XMLoadUByteN4
 #elif defined(_XM_SSE_INTRINSICS_)
     static const XMVECTORF32 LoadUByteN4Mul = {1.0f/255.0f,1.0f/(255.0f*256.0f),1.0f/(255.0f*65536.0f),1.0f/(255.0f*65536.0f*256.0f)};
 	XMASSERT(pSource);
-    
+
     XMVECTOR vTemp = _mm_load1_ps(reinterpret_cast<const float *>(&pSource->x));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskByte4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipW);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddUDec4);
-    
+
     vTemp = _mm_mul_ps(vTemp,LoadUByteN4Mul);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUByte4
 (
@@ -2530,24 +2366,22 @@ XMFINLINE XMVECTOR XMLoadUByte4
 #elif defined(_XM_SSE_INTRINSICS_)
     static const XMVECTORF32 LoadUByte4Mul = {1.0f,1.0f/256.0f,1.0f/65536.0f,1.0f/(65536.0f*256.0f)};
 	XMASSERT(pSource);
-    
+
     XMVECTOR vTemp = _mm_load1_ps(reinterpret_cast<const float *>(&pSource->x));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskByte4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMFlipW);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddUDec4);
-    
+
     vTemp = _mm_mul_ps(vTemp,LoadUByte4Mul);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadByteN4
 (
@@ -2578,24 +2412,22 @@ XMFINLINE XMVECTOR XMLoadByteN4
     XMASSERT(pSource->y != -128);
     XMASSERT(pSource->z != -128);
     XMASSERT(pSource->w != -128);
-    
+
     XMVECTOR vTemp = _mm_load1_ps(reinterpret_cast<const float *>(&pSource->x));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskByte4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMXorByte4);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddByte4);
-    
+
     vTemp = _mm_mul_ps(vTemp,LoadByteN4Mul);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadByte4
 (
@@ -2626,24 +2458,22 @@ XMFINLINE XMVECTOR XMLoadByte4
     XMASSERT(pSource->y != -128);
     XMASSERT(pSource->z != -128);
     XMASSERT(pSource->w != -128);
-    
+
     XMVECTOR vTemp = _mm_load1_ps(reinterpret_cast<const float *>(&pSource->x));
-    
+
     vTemp = _mm_and_ps(vTemp,g_XMMaskByte4);
-    
+
     vTemp = _mm_xor_ps(vTemp,g_XMXorByte4);
-    
+
     vTemp = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vTemp)[0]);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMAddByte4);
-    
+
     vTemp = _mm_mul_ps(vTemp,LoadByte4Mul);
     return vTemp;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadUNibble4
 (
@@ -2654,13 +2484,13 @@ XMFINLINE XMVECTOR XMLoadUNibble4
     static const XMVECTORI32 UNibble4And = {0xF,0xF0,0xF00,0xF000};
     static const XMVECTORF32 UNibble4Mul = {1.0f,1.0f/16.f,1.0f/256.f,1.0f/4096.f};
     XMASSERT(pSource);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,UNibble4And);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_mul_ps(vResult,UNibble4Mul);
     return vResult;
 #else
@@ -2679,10 +2509,8 @@ XMFINLINE XMVECTOR XMLoadUNibble4
     V.vector4_f32[3] = (FLOAT)Element;
 
     return V;
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadU555
 (
@@ -2693,13 +2521,13 @@ XMFINLINE XMVECTOR XMLoadU555
     static const XMVECTORI32 U555And = {0x1F,0x1F<<5,0x1F<<10,0x8000};
     static const XMVECTORF32 U555Mul = {1.0f,1.0f/32.f,1.0f/1024.f,1.0f/32768.f};
     XMASSERT(pSource);
-    
+
     XMVECTOR vResult = _mm_load_ps1(reinterpret_cast<const float *>(&pSource->v));
-    
+
     vResult = _mm_and_ps(vResult,U555And);
-    
+
     vResult = _mm_cvtepi32_ps(reinterpret_cast<const __m128i *>(&vResult)[0]);
-    
+
     vResult = _mm_mul_ps(vResult,U555Mul);
     return vResult;
 #else
@@ -2718,10 +2546,8 @@ XMFINLINE XMVECTOR XMLoadU555
     V.vector4_f32[3] = (FLOAT)Element;
 
     return V;
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMVECTOR XMLoadColor
 (
@@ -2731,8 +2557,7 @@ XMFINLINE XMVECTOR XMLoadColor
 #if defined(_XM_NO_INTRINSICS_)
     XMASSERT(pSource);
     {
-    
-    
+
     INT iColor = (INT)(pSource->c);
     XMVECTOR vColor = {
         (FLOAT)((iColor >> 16) & 0xFF) * (1.0f/255.0f),
@@ -2744,23 +2569,21 @@ XMFINLINE XMVECTOR XMLoadColor
     }
 #elif defined(_XM_SSE_INTRINSICS_)
 	XMASSERT(pSource);
-    
+
     __m128i vInt = _mm_set1_epi32(pSource->c);
-    
+
     vInt = _mm_and_si128(vInt,g_XMMaskA8R8G8B8);
-    
+
     vInt = _mm_xor_si128(vInt,g_XMFlipA8R8G8B8);
-    
+
     XMVECTOR vTemp = _mm_cvtepi32_ps(vInt);
-    
+
     vTemp = _mm_add_ps(vTemp,g_XMFixAA8R8G8B8);
-    
+
     return _mm_mul_ps(vTemp,g_XMNormalizeA8R8G8B8);
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMMATRIX XMLoadFloat3x3
 (
@@ -2811,7 +2634,7 @@ XMFINLINE XMMATRIX XMLoadFloat3x3
 	T2 = _mm_unpacklo_ps( V2, Z );
 	T3 = _mm_shuffle_ps( V3, T2, _MM_SHUFFLE( 0, 1, 0, 0 ) );
 	T4 = _mm_movehl_ps( T2, T3 );
-	T5 = _mm_movehl_ps( Z, T1 );  
+	T5 = _mm_movehl_ps( Z, T1 );
 
 	M.r[0] = _mm_movelh_ps( V1, T1 );
 	M.r[1] = _mm_add_ps( T4, T5 );
@@ -2820,10 +2643,8 @@ XMFINLINE XMMATRIX XMLoadFloat3x3
 
 	return M;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMMATRIX XMLoadFloat4x3
 (
@@ -2858,29 +2679,27 @@ XMFINLINE XMMATRIX XMLoadFloat4x3
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pSource);
-    
-    
-    
+
     XMVECTOR vTemp1 = _mm_loadu_ps(&pSource->m[0][0]);
-    
+
     XMVECTOR vTemp2 = _mm_loadu_ps(&pSource->m[1][1]);
-    
+
     XMVECTOR vTemp4 = _mm_loadu_ps(&pSource->m[2][2]);
-    
+
     XMVECTOR vTemp3 = _mm_shuffle_ps(vTemp2,vTemp4,_MM_SHUFFLE(0,0,3,2));
-    
+
     vTemp2 = _mm_shuffle_ps(vTemp2,vTemp1,_MM_SHUFFLE(3,3,1,0));
-    
+
     vTemp2 = _mm_shuffle_ps(vTemp2,vTemp2,_MM_SHUFFLE(1,1,0,2));
-    
+
     vTemp1 = _mm_and_ps(vTemp1,g_XMMask3);
-    
+
     vTemp2 = _mm_and_ps(vTemp2,g_XMMask3);
-    
+
     vTemp3 = _mm_and_ps(vTemp3,g_XMMask3);
-    
+
     __m128i vTemp4i = _mm_srli_si128(reinterpret_cast<const __m128i *>(&vTemp4)[0],32/8);
-    
+
     vTemp4i = _mm_or_si128(vTemp4i,g_XMIdentityR3);
     XMMATRIX M(vTemp1,
             vTemp2,
@@ -2888,10 +2707,8 @@ XMFINLINE XMMATRIX XMLoadFloat4x3
             reinterpret_cast<const __m128 *>(&vTemp4i)[0]);
     return M;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMMATRIX XMLoadFloat4x3A
 (
@@ -2929,40 +2746,36 @@ XMFINLINE XMMATRIX XMLoadFloat4x3A
 
 #elif defined(_XM_SSE_INTRINSICS_)
 	XMASSERT(pSource);
-    
-    
-    
+
     XMVECTOR vTemp1 = _mm_load_ps(&pSource->m[0][0]);
-    
+
     XMVECTOR vTemp2 = _mm_load_ps(&pSource->m[1][1]);
-    
+
     XMVECTOR vTemp4 = _mm_load_ps(&pSource->m[2][2]);
-    
+
     XMVECTOR vTemp3 = _mm_shuffle_ps(vTemp2,vTemp4,_MM_SHUFFLE(0,0,3,2));
-    
+
     vTemp2 = _mm_shuffle_ps(vTemp2,vTemp1,_MM_SHUFFLE(3,3,1,0));
-    
+
     vTemp2 = _mm_shuffle_ps(vTemp2,vTemp2,_MM_SHUFFLE(1,1,0,2));
-    
+
     vTemp1 = _mm_and_ps(vTemp1,g_XMMask3);
-    
+
     vTemp2 = _mm_and_ps(vTemp2,g_XMMask3);
-    
+
     vTemp3 = _mm_and_ps(vTemp3,g_XMMask3);
-    
+
     __m128i vTemp4i = _mm_srli_si128(reinterpret_cast<const __m128i *>(&vTemp4)[0],32/8);
-    
+
     vTemp4i = _mm_or_si128(vTemp4i,g_XMIdentityR3);
     XMMATRIX M(vTemp1,
             vTemp2,
             vTemp3,
             reinterpret_cast<const __m128 *>(&vTemp4i)[0]);
     return M;
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE XMMATRIX XMLoadFloat4x4
 (
@@ -3006,10 +2819,8 @@ XMFINLINE XMMATRIX XMLoadFloat4x4
 
     return M;
 #elif defined(XM_NO_MISALIGNED_VECTOR_ACCESS)
-#endif 
+#endif
 }
-
-
 
 XMFINLINE XMMATRIX XMLoadFloat4x4A
 (
@@ -3056,15 +2867,9 @@ XMFINLINE XMMATRIX XMLoadFloat4x4A
 	M.r[3] = _mm_load_ps( &pSource->_41 );
 
 	return M;
-#else 
-#endif 
+#else
+#endif
 }
-
-
-
-
-
-
 
 XMFINLINE VOID XMStoreInt
 (
@@ -3084,11 +2889,9 @@ XMFINLINE VOID XMStoreInt
     XMASSERT(((UINT_PTR)pDestination & 3) == 0);
 
     _mm_store_ss( (float*)pDestination, V );
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat
 (
@@ -3108,15 +2911,13 @@ XMFINLINE VOID XMStoreFloat
     XMASSERT(((UINT_PTR)pDestination & 3) == 0);
 
     _mm_store_ss( pDestination, V );
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreInt2
 (
-    UINT*    pDestination, 
+    UINT*    pDestination,
     FXMVECTOR V
 )
 {
@@ -3135,15 +2936,13 @@ XMFINLINE VOID XMStoreInt2
     XMVECTOR T = _mm_shuffle_ps( V, V, _MM_SHUFFLE( 1, 1, 1, 1 ) );
     _mm_store_ss( (float*)&pDestination[0], V );
     _mm_store_ss( (float*)&pDestination[1], T );
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreInt2A
 (
-    UINT*    pDestination, 
+    UINT*    pDestination,
     FXMVECTOR V
 )
 {
@@ -3162,15 +2961,13 @@ XMFINLINE VOID XMStoreInt2A
 
     _mm_storel_epi64( (__m128i*)pDestination, reinterpret_cast<const __m128i *>(&V)[0] );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat2
 (
-    XMFLOAT2* pDestination, 
+    XMFLOAT2* pDestination,
     FXMVECTOR  V
 )
 {
@@ -3189,15 +2986,13 @@ XMFINLINE VOID XMStoreFloat2
     XMVECTOR T = _mm_shuffle_ps( V, V, _MM_SHUFFLE( 1, 1, 1, 1 ) );
     _mm_store_ss( &pDestination->x, V );
     _mm_store_ss( &pDestination->y, T );
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat2A
 (
-    XMFLOAT2A*   pDestination, 
+    XMFLOAT2A*   pDestination,
     FXMVECTOR     V
 )
 {
@@ -3216,15 +3011,13 @@ XMFINLINE VOID XMStoreFloat2A
 
     _mm_storel_epi64( (__m128i*)pDestination, reinterpret_cast<const __m128i *>(&V)[0] );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreHalf2
 (
-    XMHALF2* pDestination, 
+    XMHALF2* pDestination,
     FXMVECTOR V
 )
 {
@@ -3239,15 +3032,13 @@ XMFINLINE VOID XMStoreHalf2
     XMASSERT(pDestination);
     pDestination->x = XMConvertFloatToHalf(XMVectorGetX(V));
     pDestination->y = XMConvertFloatToHalf(XMVectorGetY(V));
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreShortN2
 (
-    XMSHORTN2* pDestination, 
+    XMSHORTN2* pDestination,
     FXMVECTOR   V
 )
 {
@@ -3275,15 +3066,13 @@ XMFINLINE VOID XMStoreShortN2
     __m128i vResulti = _mm_cvtps_epi32(vResult);
     vResulti = _mm_packs_epi32(vResulti,vResulti);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->x),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreShort2
 (
-    XMSHORT2* pDestination, 
+    XMSHORT2* pDestination,
     FXMVECTOR  V
 )
 {
@@ -3305,23 +3094,21 @@ XMFINLINE VOID XMStoreShort2
     XMASSERT(pDestination);
     static CONST XMVECTORF32 Min = {-32767.0f, -32767.0f, -32767.0f, -32767.0f};
     static CONST XMVECTORF32 Max = {32767.0f, 32767.0f, 32767.0f, 32767.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,Min);
     vResult = _mm_min_ps(vResult,Max);
-     
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
+
     vInt = _mm_packs_epi32(vInt,vInt);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->x),reinterpret_cast<const __m128 *>(&vInt)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUShortN2
 (
-    XMUSHORTN2* pDestination, 
+    XMUSHORTN2* pDestination,
     FXMVECTOR    V
 )
 {
@@ -3342,25 +3129,22 @@ XMFINLINE VOID XMStoreUShortN2
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
     static CONST XMVECTORF32 Scale = {65535.0f, 65535.0f, 65535.0f, 65535.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,g_XMOne);
     vResult = _mm_mul_ps(vResult,Scale);
-     
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
-    
+
     pDestination->x = static_cast<SHORT>(_mm_extract_epi16(vInt,0));
     pDestination->y = static_cast<SHORT>(_mm_extract_epi16(vInt,2));
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUShort2
 (
-    XMUSHORT2* pDestination, 
+    XMUSHORT2* pDestination,
     FXMVECTOR   V
 )
 {
@@ -3380,24 +3164,21 @@ XMFINLINE VOID XMStoreUShort2
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
     static CONST XMVECTORF32  Max = {65535.0f, 65535.0f, 65535.0f, 65535.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,Max);
-     
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
-    
+
     pDestination->x = static_cast<SHORT>(_mm_extract_epi16(vInt,0));
     pDestination->y = static_cast<SHORT>(_mm_extract_epi16(vInt,2));
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreInt3
 (
-    UINT*    pDestination, 
+    UINT*    pDestination,
     FXMVECTOR V
 )
 {
@@ -3421,15 +3202,13 @@ XMFINLINE VOID XMStoreInt3
     _mm_store_ss( (float*)&pDestination[1], T1 );
     _mm_store_ss( (float*)&pDestination[2], T2 );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreInt3A
 (
-    UINT*    pDestination, 
+    UINT*    pDestination,
     FXMVECTOR V
 )
 {
@@ -3451,15 +3230,13 @@ XMFINLINE VOID XMStoreInt3A
     _mm_storel_epi64( (__m128i*)pDestination, reinterpret_cast<const __m128i *>(&V)[0] );
     _mm_store_ss( (float*)&pDestination[2], T );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat3
 (
-    XMFLOAT3* pDestination, 
+    XMFLOAT3* pDestination,
     FXMVECTOR V
 )
 {
@@ -3483,15 +3260,13 @@ XMFINLINE VOID XMStoreFloat3
     _mm_store_ss( &pDestination->y, T1 );
     _mm_store_ss( &pDestination->z, T2 );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat3A
 (
-    XMFLOAT3A*   pDestination, 
+    XMFLOAT3A*   pDestination,
     FXMVECTOR     V
 )
 {
@@ -3513,15 +3288,13 @@ XMFINLINE VOID XMStoreFloat3A
     _mm_storel_epi64( (__m128i*)pDestination, reinterpret_cast<const __m128i *>(&V)[0] );
     _mm_store_ss( &pDestination->z, T );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUHenDN3
 (
-    XMUHENDN3* pDestination, 
+    XMUHENDN3* pDestination,
     FXMVECTOR   V
 )
 {
@@ -3543,35 +3316,33 @@ XMFINLINE VOID XMStoreUHenDN3
     XMASSERT(pDestination);
     static const XMVECTORF32 ScaleUHenDN3 = {2047.0f, 2047.0f*2048.0f,1023.0f*(2048.0f*2048.0f)/2.0f,1.0f};
     static const XMVECTORI32 MaskUHenDN3 = {0x7FF,0x7FF<<11,0x3FF<<(22-1),0};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUHenDN3);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUHenDN3);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(0,3,2,1));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti2,_MM_SHUFFLE(0,3,2,1));
-    
+
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUHenD3
 (
-    XMUHEND3* pDestination, 
+    XMUHEND3* pDestination,
     FXMVECTOR  V
 )
 {
@@ -3593,35 +3364,33 @@ XMFINLINE VOID XMStoreUHenD3
     static const XMVECTORF32 MaxUHenD3 = { 2047.0f, 2047.0f, 1023.0f, 1.0f};
     static const XMVECTORF32 ScaleUHenD3 = {1.0f, 2048.0f,(2048.0f*2048.0f)/2.0f,1.0f};
     static const XMVECTORI32 MaskUHenD3 = {0x7FF,0x7FF<<11,0x3FF<<(22-1),0};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,MaxUHenD3);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUHenD3);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUHenD3);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(0,3,2,1));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti2,_MM_SHUFFLE(0,3,2,1));
-    
+
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreHenDN3
 (
-    XMHENDN3* pDestination, 
+    XMHENDN3* pDestination,
     FXMVECTOR V
 )
 {
@@ -3642,30 +3411,28 @@ XMFINLINE VOID XMStoreHenDN3
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
     static const XMVECTORF32 ScaleHenDN3 = {1023.0f, 1023.0f*2048.0f,511.0f*(2048.0f*2048.0f),1.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMNegativeOne);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleHenDN3);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,g_XMMaskHenD3);
-    
+
     vResult = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResulti)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreHenD3
 (
-    XMHEND3* pDestination, 
+    XMHEND3* pDestination,
     FXMVECTOR V
 )
 {
@@ -3688,30 +3455,28 @@ XMFINLINE VOID XMStoreHenD3
     static const XMVECTORF32 MinHenD3 = {-1023.0f,-1023.0f,-511.0f,-1.0f};
     static const XMVECTORF32 MaxHenD3 = { 1023.0f, 1023.0f, 511.0f, 1.0f};
     static const XMVECTORF32 ScaleHenD3 = {1.0f, 2048.0f,(2048.0f*2048.0f),1.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,MinHenD3);
     vResult = _mm_min_ps(vResult,MaxHenD3);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleHenD3);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,g_XMMaskHenD3);
-    
+
     vResult = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResulti)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUDHenN3
 (
-    XMUDHENN3* pDestination, 
+    XMUDHENN3* pDestination,
     FXMVECTOR   V
 )
 {
@@ -3733,35 +3498,33 @@ XMFINLINE VOID XMStoreUDHenN3
     XMASSERT(pDestination);
     static const XMVECTORF32 ScaleUDHenN3 = {1023.0f,2047.0f*1024.0f,2047.0f*(1024.0f*2048.0f)/2.0f,1.0f};
     static const XMVECTORI32 MaskUDHenN3 = {0x3FF,0x7FF<<10,0x7FF<<(21-1),0};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUDHenN3);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUDHenN3);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(0,3,2,1));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti2,_MM_SHUFFLE(0,3,2,1));
-    
+
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUDHen3
 (
-    XMUDHEN3* pDestination, 
+    XMUDHEN3* pDestination,
     FXMVECTOR  V
 )
 {
@@ -3783,35 +3546,33 @@ XMFINLINE VOID XMStoreUDHen3
     static const XMVECTORF32 MaxUDHen3 = { 1023.0f, 2047.0f, 2047.0f, 1.0f};
     static const XMVECTORF32 ScaleUDHen3 = {1.0f, 1024.0f,(1024.0f*2048.0f)/2.0f,1.0f};
     static const XMVECTORI32 MaskUDHen3 = {0x3FF,0x7FF<<10,0x7FF<<(21-1),0};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,MaxUDHen3);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUDHen3);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUDHen3);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(0,3,2,1));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti2,_MM_SHUFFLE(0,3,2,1));
-    
+
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreDHenN3
 (
-    XMDHENN3* pDestination, 
+    XMDHENN3* pDestination,
     FXMVECTOR V
 )
 {
@@ -3832,30 +3593,28 @@ XMFINLINE VOID XMStoreDHenN3
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
     static const XMVECTORF32 ScaleDHenN3 = {511.0f, 1023.0f*1024.0f,1023.0f*(1024.0f*2048.0f),1.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMNegativeOne);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleDHenN3);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,g_XMMaskDHen3);
-    
+
     vResult = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResulti)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreDHen3
 (
-    XMDHEN3* pDestination, 
+    XMDHEN3* pDestination,
     FXMVECTOR V
 )
 {
@@ -3878,26 +3637,24 @@ XMFINLINE VOID XMStoreDHen3
     static const XMVECTORF32 MinDHen3 = {-511.0f,-1023.0f,-1023.0f,-1.0f};
     static const XMVECTORF32 MaxDHen3 = { 511.0f, 1023.0f, 1023.0f, 1.0f};
     static const XMVECTORF32 ScaleDHen3 = {1.0f, 1024.0f,(1024.0f*2048.0f),1.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,MinDHen3);
     vResult = _mm_min_ps(vResult,MaxDHen3);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleDHen3);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,g_XMMaskDHen3);
-    
+
     vResult = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResulti)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreU565
 (
@@ -3908,12 +3665,12 @@ XMFINLINE VOID XMStoreU565
 #if defined(_XM_SSE_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
     XMASSERT(pDestination);
     static CONST XMVECTORF32  Max = {31.0f, 63.0f, 31.0f, 0.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,Max);
-     
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
+
     USHORT x = static_cast<USHORT>(_mm_extract_epi16(vInt,0));
     USHORT y = static_cast<USHORT>(_mm_extract_epi16(vInt,2));
     USHORT z = static_cast<USHORT>(_mm_extract_epi16(vInt,4));
@@ -3935,8 +3692,6 @@ XMFINLINE VOID XMStoreU565
 #endif !_XM_SSE_INTRINSICS_
 }
 
-
-
 XMFINLINE VOID XMStoreFloat3PK
 (
     XMFLOAT3PK* pDestination,
@@ -3951,7 +3706,6 @@ XMFINLINE VOID XMStoreFloat3PK
 
     XMStoreFloat3A( (XMFLOAT3A*)&IValue, V );
 
-    
     for(j=0; j < 2; ++j)
     {
         Sign = IValue[j] & 0x80000000;
@@ -3959,7 +3713,7 @@ XMFINLINE VOID XMStoreFloat3PK
 
         if ((I & 0x7F800000) == 0x7F800000)
         {
-            
+
             Result[j] = 0x7c0;
             if (( I & 0x7FFFFF ) != 0)
             {
@@ -3967,46 +3721,44 @@ XMFINLINE VOID XMStoreFloat3PK
             }
             else if ( Sign )
             {
-                
+
                 Result[j] = 0;
             }
         }
         else if ( Sign )
         {
-            
+
             Result[j] = 0;
         }
         else if (I > 0x477E0000U)
         {
-            
+
             Result[j] = 0x7BF;
         }
         else
         {
             if (I < 0x38800000U)
             {
-                
-                
+
                 UINT Shift = 113U - (I >> 23U);
                 I = (0x800000U | (I & 0x7FFFFFU)) >> Shift;
             }
             else
             {
-                
+
                 I += 0xC8000000U;
             }
-     
+
             Result[j] = ((I + 0xFFFFU + ((I >> 17U) & 1U)) >> 17U)&0x7ffU;
         }
     }
 
-    
     Sign = IValue[2] & 0x80000000;
     I = IValue[2] & 0x7FFFFFFF;
 
     if ((I & 0x7F800000) == 0x7F800000)
     {
-        
+
         Result[2] = 0x3e0;
         if ( I & 0x7FFFFF )
         {
@@ -4014,46 +3766,41 @@ XMFINLINE VOID XMStoreFloat3PK
         }
         else if ( Sign )
         {
-            
+
             Result[2] = 0;
         }
     }
     else if ( Sign )
     {
-        
+
         Result[2] = 0;
     }
     else if (I > 0x477C0000U)
     {
-        
+
         Result[2] = 0x3df;
     }
     else
     {
         if (I < 0x38800000U)
         {
-            
-            
+
             UINT Shift = 113U - (I >> 23U);
             I = (0x800000U | (I & 0x7FFFFFU)) >> Shift;
         }
         else
         {
-            
+
             I += 0xC8000000U;
         }
-     
+
         Result[2] = ((I + 0x1FFFFU + ((I >> 18U) & 1U)) >> 18U)&0x3ffU;
     }
 
-    
     pDestination->v = (Result[0] & 0x7ff)
                       | ( (Result[1] & 0x7ff) << 11 )
                       | ( (Result[2] & 0x3ff) << 22 );
 }
-
-
-
 
 XMFINLINE VOID XMStoreFloat3SE
 (
@@ -4065,13 +3812,11 @@ XMFINLINE VOID XMStoreFloat3SE
     UINT I, Sign, j, T;
     UINT Frac[3];
     UINT Exp[3];
-    
 
     XMASSERT(pDestination);
 
     XMStoreFloat3A( (XMFLOAT3A*)&IValue, V );
 
-    
     for(j=0; j < 3; ++j)
     {
         Sign = IValue[j] & 0x80000000;
@@ -4079,7 +3824,7 @@ XMFINLINE VOID XMStoreFloat3SE
 
         if ((I & 0x7F800000) == 0x7F800000)
         {
-            
+
             Exp[j] = 0x1f;
             if (( I & 0x7FFFFF ) != 0)
             {
@@ -4087,18 +3832,18 @@ XMFINLINE VOID XMStoreFloat3SE
             }
             else if ( Sign )
             {
-                
+
                 Exp[j] = Frac[j] = 0;
             }
         }
         else if ( Sign )
         {
-            
+
             Exp[j] = Frac[j] = 0;
         }
         else if (I > 0x477FC000U)
         {
-            
+
             Exp[j] = 0x1e;
             Frac[j] = 0x1ff;
         }
@@ -4106,17 +3851,16 @@ XMFINLINE VOID XMStoreFloat3SE
         {
             if (I < 0x38800000U)
             {
-                
-                
+
                 UINT Shift = 113U - (I >> 23U);
                 I = (0x800000U | (I & 0x7FFFFFU)) >> Shift;
             }
             else
             {
-                
+
                 I += 0xC8000000U;
             }
-     
+
             T = ((I + 0x1FFFU + ((I >> 14U) & 1U)) >> 14U)&0x3fffU;
 
             Exp[j] = (T & 0x3E00) >> 9;
@@ -4124,25 +3868,21 @@ XMFINLINE VOID XMStoreFloat3SE
         }
     }
 
-    
     T = XMMax( Exp[0], XMMax( Exp[1], Exp[2] ) );
 
     Frac[0] = Frac[0] >> (T - Exp[0]);
     Frac[1] = Frac[1] >> (T - Exp[1]);
     Frac[2] = Frac[2] >> (T - Exp[2]);
 
-    
     pDestination->xm = Frac[0];
     pDestination->ym = Frac[1];
     pDestination->zm = Frac[2];
     pDestination->e = T;
 }
 
-
-
 XMFINLINE VOID XMStoreInt4
 (
-    UINT*    pDestination, 
+    UINT*    pDestination,
     FXMVECTOR V
 )
 {
@@ -4157,18 +3897,16 @@ XMFINLINE VOID XMStoreInt4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
-    
+
     _mm_storeu_si128( (__m128i*)pDestination, reinterpret_cast<const __m128i *>(&V)[0] );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreInt4A
 (
-    UINT*    pDestination, 
+    UINT*    pDestination,
     FXMVECTOR V
 )
 {
@@ -4188,15 +3926,13 @@ XMFINLINE VOID XMStoreInt4A
 
     _mm_store_si128( (__m128i*)pDestination, reinterpret_cast<const __m128i *>(&V)[0] );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreInt4NC
 (
-    UINT*    pDestination, 
+    UINT*    pDestination,
     FXMVECTOR V
 )
 {
@@ -4204,7 +3940,7 @@ XMFINLINE VOID XMStoreInt4NC
 
     XMASSERT(pDestination);
     XMASSERT(((UINT_PTR)pDestination & 3) == 0);
-    
+
     pDestination[0] = V.vector4_u32[0];
     pDestination[1] = V.vector4_u32[1];
     pDestination[2] = V.vector4_u32[2];
@@ -4213,25 +3949,23 @@ XMFINLINE VOID XMStoreInt4NC
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
     XMASSERT(((UINT_PTR)pDestination & 3) == 0);
-    
+
     _mm_storeu_si128( (__m128i*)pDestination, reinterpret_cast<const __m128i *>(&V)[0] );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat4
 (
-    XMFLOAT4* pDestination, 
+    XMFLOAT4* pDestination,
     FXMVECTOR  V
 )
 {
 #if defined(_XM_NO_INTRINSICS_)
 
     XMASSERT(pDestination);
-    
+
     pDestination->x = V.vector4_f32[0];
     pDestination->y = V.vector4_f32[1];
     pDestination->z = V.vector4_f32[2];
@@ -4239,18 +3973,16 @@ XMFINLINE VOID XMStoreFloat4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
-    
+
     _mm_storeu_ps( &pDestination->x, V );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat4A
 (
-    XMFLOAT4A*   pDestination, 
+    XMFLOAT4A*   pDestination,
     FXMVECTOR     V
 )
 {
@@ -4269,15 +4001,13 @@ XMFINLINE VOID XMStoreFloat4A
     XMASSERT(((UINT_PTR)pDestination & 0xF) == 0);
 
     _mm_store_ps( &pDestination->x, V );
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat4NC
 (
-    XMFLOAT4* pDestination, 
+    XMFLOAT4* pDestination,
     FXMVECTOR  V
 )
 {
@@ -4285,7 +4015,7 @@ XMFINLINE VOID XMStoreFloat4NC
 
     XMASSERT(pDestination);
     XMASSERT(((UINT_PTR)pDestination & 3) == 0);
-    
+
     pDestination->x = V.vector4_f32[0];
     pDestination->y = V.vector4_f32[1];
     pDestination->z = V.vector4_f32[2];
@@ -4294,22 +4024,20 @@ XMFINLINE VOID XMStoreFloat4NC
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
     XMASSERT(((UINT_PTR)pDestination & 3) == 0);
-    
+
     _mm_storeu_ps( &pDestination->x, V );
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreHalf4
 (
-    XMHALF4* pDestination, 
+    XMHALF4* pDestination,
     FXMVECTOR V
 )
 {
-#if defined(_XM_NO_INTRINSICS_) 
+#if defined(_XM_NO_INTRINSICS_)
 
     XMASSERT(pDestination);
 
@@ -4324,15 +4052,13 @@ XMFINLINE VOID XMStoreHalf4
     pDestination->y = XMConvertFloatToHalf(XMVectorGetY(V));
     pDestination->z = XMConvertFloatToHalf(XMVectorGetZ(V));
     pDestination->w = XMConvertFloatToHalf(XMVectorGetW(V));
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreShortN4
 (
-    XMSHORTN4* pDestination, 
+    XMSHORTN4* pDestination,
     FXMVECTOR   V
 )
 {
@@ -4362,15 +4088,13 @@ XMFINLINE VOID XMStoreShortN4
     __m128i vResulti = _mm_cvtps_epi32(vResult);
     vResulti = _mm_packs_epi32(vResulti,vResulti);
     _mm_store_sd(reinterpret_cast<double *>(&pDestination->x),reinterpret_cast<const __m128d *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreShort4
 (
-    XMSHORT4* pDestination, 
+    XMSHORT4* pDestination,
     FXMVECTOR  V
 )
 {
@@ -4394,23 +4118,21 @@ XMFINLINE VOID XMStoreShort4
     XMASSERT(pDestination);
     static CONST XMVECTORF32 Min = {-32767.0f, -32767.0f, -32767.0f, -32767.0f};
     static CONST XMVECTORF32  Max = {32767.0f, 32767.0f, 32767.0f, 32767.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,Min);
     vResult = _mm_min_ps(vResult,Max);
-     
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
+
     vInt = _mm_packs_epi32(vInt,vInt);
     _mm_store_sd(reinterpret_cast<double *>(&pDestination->x),reinterpret_cast<const __m128d *>(&vInt)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUShortN4
 (
-    XMUSHORTN4* pDestination, 
+    XMUSHORTN4* pDestination,
     FXMVECTOR    V
 )
 {
@@ -4433,27 +4155,24 @@ XMFINLINE VOID XMStoreUShortN4
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
     static CONST XMVECTORF32 Scale = {65535.0f, 65535.0f, 65535.0f, 65535.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,g_XMOne);
     vResult = _mm_mul_ps(vResult,Scale);
-    
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
-    
+
     pDestination->x = static_cast<SHORT>(_mm_extract_epi16(vInt,0));
     pDestination->y = static_cast<SHORT>(_mm_extract_epi16(vInt,2));
     pDestination->z = static_cast<SHORT>(_mm_extract_epi16(vInt,4));
     pDestination->w = static_cast<SHORT>(_mm_extract_epi16(vInt,6));
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUShort4
 (
-    XMUSHORT4* pDestination, 
+    XMUSHORT4* pDestination,
     FXMVECTOR   V
 )
 {
@@ -4475,26 +4194,23 @@ XMFINLINE VOID XMStoreUShort4
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
     static CONST XMVECTORF32  Max = {65535.0f, 65535.0f, 65535.0f, 65535.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,Max);
-     
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
-    
+
     pDestination->x = static_cast<SHORT>(_mm_extract_epi16(vInt,0));
     pDestination->y = static_cast<SHORT>(_mm_extract_epi16(vInt,2));
     pDestination->z = static_cast<SHORT>(_mm_extract_epi16(vInt,4));
     pDestination->w = static_cast<SHORT>(_mm_extract_epi16(vInt,6));
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreXIcoN4
 (
-    XMXICON4*  pDestination, 
+    XMXICON4*  pDestination,
     FXMVECTOR   V
 )
 {
@@ -4517,41 +4233,38 @@ XMFINLINE VOID XMStoreXIcoN4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
-    
+
     static const XMVECTORF32 MinXIcoN4 = {-1.0f, 0.0f,-1.0f,-1.0f};
     static const XMVECTORF32 ScaleXIcoN4 = {524287.0f,15.0f*4096.0f*65536.0f*0.5f,524287.0f*4096.0f,524287.0f};
     static const XMVECTORI32 MaskXIcoN4 = {0xFFFFF,0xF<<((60-32)-1),0xFFFFF000,0xFFFFF};
 
-    
     XMVECTOR vResult = _mm_shuffle_ps(V,V,_MM_SHUFFLE(2,1,3,0));
     vResult = _mm_max_ps(vResult,MinXIcoN4);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleXIcoN4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskXIcoN4);
-    
+
     __m128i vResulti2 = _mm_and_si128(vResulti,g_XMMaskY);
-    
+
     vResulti = _mm_add_epi32(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_srli_si128(vResulti,(64+12)/8);
-    
+
     vResulti2 = _mm_slli_si128(vResulti2,20/8);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_sd(reinterpret_cast<double *>(&pDestination->v),reinterpret_cast<const __m128d *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreXIco4
 (
-    XMXICO4*  pDestination, 
+    XMXICO4*  pDestination,
     FXMVECTOR  V
 )
 {
@@ -4570,41 +4283,39 @@ XMFINLINE VOID XMStoreXIco4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
-    
+
     static const XMVECTORF32 MinXIco4 = {-524287.0f, 0.0f,-524287.0f,-524287.0f};
     static const XMVECTORF32 MaxXIco4 = { 524287.0f,15.0f, 524287.0f, 524287.0f};
     static const XMVECTORF32 ScaleXIco4 = {1.0f,4096.0f*65536.0f*0.5f,4096.0f,1.0f};
     static const XMVECTORI32 MaskXIco4 = {0xFFFFF,0xF<<((60-1)-32),0xFFFFF000,0xFFFFF};
-    
+
     XMVECTOR vResult = _mm_shuffle_ps(V,V,_MM_SHUFFLE(2,1,3,0));
     vResult = _mm_max_ps(vResult,MinXIco4);
     vResult = _mm_min_ps(vResult,MaxXIco4);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleXIco4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskXIco4);
-    
+
     __m128i vResulti2 = _mm_and_si128(vResulti,g_XMMaskY);
-    
+
     vResulti = _mm_add_epi32(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_srli_si128(vResulti,(64+12)/8);
-    
+
     vResulti2 = _mm_slli_si128(vResulti2,20/8);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_sd(reinterpret_cast<double *>(&pDestination->v),reinterpret_cast<const __m128d *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUIcoN4
 (
-    XMUICON4*  pDestination, 
+    XMUICON4*  pDestination,
     FXMVECTOR   V
 )
 {
@@ -4634,33 +4345,33 @@ XMFINLINE VOID XMStoreUIcoN4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
-    
+
     static const XMVECTORF32 ScaleUIcoN4 = {1048575.0f,15.0f*4096.0f*65536.0f,1048575.0f*4096.0f,1048575.0f};
     static const XMVECTORI32 MaskUIcoN4 = {0xFFFFF,0xF<<(60-32),0xFFFFF000,0xFFFFF};
     static const XMVECTORF32 AddUIcoN4 = {0.0f,-32768.0f*65536.0f,-32768.0f*65536.0f,0.0f};
-    
+
     XMVECTOR vResult = _mm_shuffle_ps(V,V,_MM_SHUFFLE(2,1,3,0));
     vResult = _mm_max_ps(vResult,g_XMZero);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUIcoN4);
-    
+
     vResult = _mm_add_ps(vResult,AddUIcoN4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_xor_si128(vResulti,g_XMFlipYZ);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUIcoN4);
-    
+
     __m128i vResulti2 = _mm_srli_si128(vResulti,(64+12)/8);
-    
+
     vResulti2 = _mm_slli_si128(vResulti2,20/8);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_sd(reinterpret_cast<double *>(&pDestination->v),reinterpret_cast<const __m128d *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 
     #undef XM_URange
     #undef XM_URangeDiv2
@@ -4672,11 +4383,9 @@ XMFINLINE VOID XMStoreUIcoN4
     #undef XM_Offset
 }
 
-
-
 XMFINLINE VOID XMStoreUIco4
 (
-    XMUICO4*  pDestination, 
+    XMUICO4*  pDestination,
     FXMVECTOR  V
 )
 {
@@ -4701,43 +4410,41 @@ XMFINLINE VOID XMStoreUIco4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
-    
+
     static const XMVECTORF32 MaxUIco4 = { 1048575.0f, 15.0f, 1048575.0f, 1048575.0f};
     static const XMVECTORF32 ScaleUIco4 = {1.0f,4096.0f*65536.0f,4096.0f,1.0f};
     static const XMVECTORI32 MaskUIco4 = {0xFFFFF,0xF<<(60-32),0xFFFFF000,0xFFFFF};
     static const XMVECTORF32 AddUIco4 = {0.0f,-32768.0f*65536.0f,-32768.0f*65536.0f,0.0f};
-    
+
     XMVECTOR vResult = _mm_shuffle_ps(V,V,_MM_SHUFFLE(2,1,3,0));
     vResult = _mm_max_ps(vResult,g_XMZero);
     vResult = _mm_min_ps(vResult,MaxUIco4);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUIco4);
     vResult = _mm_add_ps(vResult,AddUIco4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
     vResulti = _mm_xor_si128(vResulti,g_XMFlipYZ);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUIco4);
-    
+
     __m128i vResulti2 = _mm_srli_si128(vResulti,(64+12)/8);
-    
+
     vResulti2 = _mm_slli_si128(vResulti2,20/8);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_sd(reinterpret_cast<double *>(&pDestination->v),reinterpret_cast<const __m128d *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 
     #undef XM_Scale
     #undef XM_URange
     #undef XM_URangeDiv2
 }
 
-
-
 XMFINLINE VOID XMStoreIcoN4
 (
-    XMICON4*  pDestination, 
+    XMICON4*  pDestination,
     FXMVECTOR  V
 )
 {
@@ -4765,28 +4472,28 @@ XMFINLINE VOID XMStoreIcoN4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
-    
+
     static const XMVECTORF32 ScaleIcoN4 = {524287.0f,7.0f*4096.0f*65536.0f,524287.0f*4096.0f,524287.0f};
     static const XMVECTORI32 MaskIcoN4 = {0xFFFFF,0xF<<(60-32),0xFFFFF000,0xFFFFF};
-    
+
     XMVECTOR vResult = _mm_shuffle_ps(V,V,_MM_SHUFFLE(2,1,3,0));
     vResult = _mm_max_ps(vResult,g_XMNegativeOne);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleIcoN4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskIcoN4);
-    
+
     __m128i vResulti2 = _mm_srli_si128(vResulti,(64+12)/8);
-    
+
     vResulti2 = _mm_slli_si128(vResulti2,20/8);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_sd(reinterpret_cast<double *>(&pDestination->v),reinterpret_cast<const __m128d *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 
     #undef XM_Scale
     #undef XM_URange
@@ -4795,11 +4502,9 @@ XMFINLINE VOID XMStoreIcoN4
     #undef XM_UMaxW
 }
 
-
-
 XMFINLINE VOID XMStoreIco4
 (
-    XMICO4*  pDestination, 
+    XMICO4*  pDestination,
     FXMVECTOR V
 )
 {
@@ -4825,41 +4530,39 @@ XMFINLINE VOID XMStoreIco4
 
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
-    
+
     static const XMVECTORF32 MinIco4 = {-524287.0f,-7.0f,-524287.0f,-524287.0f};
     static const XMVECTORF32 MaxIco4 = { 524287.0f, 7.0f, 524287.0f, 524287.0f};
     static const XMVECTORF32 ScaleIco4 = {1.0f,4096.0f*65536.0f,4096.0f,1.0f};
     static const XMVECTORI32 MaskIco4 = {0xFFFFF,0xF<<(60-32),0xFFFFF000,0xFFFFF};
-    
+
     XMVECTOR vResult = _mm_shuffle_ps(V,V,_MM_SHUFFLE(2,1,3,0));
     vResult = _mm_max_ps(vResult,MinIco4);
     vResult = _mm_min_ps(vResult,MaxIco4);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleIco4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskIco4);
-    
+
     __m128i vResulti2 = _mm_srli_si128(vResulti,(64+12)/8);
-    
+
     vResulti2 = _mm_slli_si128(vResulti2,20/8);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_sd(reinterpret_cast<double *>(&pDestination->v),reinterpret_cast<const __m128d *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 
     #undef XM_Scale
     #undef XM_URange
     #undef XM_Offset
 }
 
-
-
 XMFINLINE VOID XMStoreXDecN4
 (
-    XMXDECN4* pDestination, 
+    XMXDECN4* pDestination,
     FXMVECTOR  V
 )
 {
@@ -4887,16 +4590,16 @@ XMFINLINE VOID XMStoreXDecN4
     XMASSERT(pDestination);
     XMVECTOR vResult = _mm_max_ps(V,Min);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,Scale);
-    
+
     __m128i vResulti = _mm_cvtps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,ScaleMask);
-    
+
     __m128i vResultw = _mm_and_si128(vResulti,g_XMMaskW);
     vResulti = _mm_add_epi32(vResulti,vResultw);
-    
+
     vResult = _mm_shuffle_ps(reinterpret_cast<const __m128 *>(&vResulti)[0],reinterpret_cast<const __m128 *>(&vResulti)[0],_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(0,3,2,1));
@@ -4904,15 +4607,13 @@ XMFINLINE VOID XMStoreXDecN4
     vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(0,3,2,1));
     vResulti = _mm_or_si128(vResulti,reinterpret_cast<const __m128i *>(&vResult)[0]);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreXDec4
 (
-    XMXDEC4* pDestination, 
+    XMXDEC4* pDestination,
     FXMVECTOR  V
 )
 {
@@ -4937,35 +4638,33 @@ XMFINLINE VOID XMStoreXDec4
     static const XMVECTORF32 MaxXDec4 = { 511.0f, 511.0f, 511.0f, 3.0f};
     static const XMVECTORF32 ScaleXDec4 = {1.0f,1024.0f/2.0f,1024.0f*1024.0f,1024.0f*1024.0f*1024.0f/2.0f};
     static const XMVECTORI32 MaskXDec4= {0x3FF,0x3FF<<(10-1),0x3FF<<20,0x3<<(30-1)};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,MinXDec4);
     vResult = _mm_min_ps(vResult,MaxXDec4);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleXDec4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskXDec4);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(3,2,3,2));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    
+
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUDecN4
 (
-    XMUDECN4* pDestination, 
+    XMUDECN4* pDestination,
     FXMVECTOR  V
 )
 {
@@ -4988,35 +4687,33 @@ XMFINLINE VOID XMStoreUDecN4
     XMASSERT(pDestination);
     static const XMVECTORF32 ScaleUDecN4 = {1023.0f,1023.0f*1024.0f*0.5f,1023.0f*1024.0f*1024.0f,3.0f*1024.0f*1024.0f*1024.0f*0.5f};
     static const XMVECTORI32 MaskUDecN4= {0x3FF,0x3FF<<(10-1),0x3FF<<20,0x3<<(30-1)};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUDecN4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUDecN4);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(3,2,3,2));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    
+
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUDec4
 (
-    XMUDEC4* pDestination, 
+    XMUDEC4* pDestination,
     FXMVECTOR  V
 )
 {
@@ -5039,35 +4736,33 @@ XMFINLINE VOID XMStoreUDec4
     static const XMVECTORF32 MaxUDec4 = { 1023.0f, 1023.0f, 1023.0f, 3.0f};
     static const XMVECTORF32 ScaleUDec4 = {1.0f,1024.0f/2.0f,1024.0f*1024.0f,1024.0f*1024.0f*1024.0f/2.0f};
     static const XMVECTORI32 MaskUDec4= {0x3FF,0x3FF<<(10-1),0x3FF<<20,0x3<<(30-1)};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,MaxUDec4);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUDec4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUDec4);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(3,2,3,2));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    
+
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreDecN4
 (
-    XMDECN4* pDestination, 
+    XMDECN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -5090,33 +4785,31 @@ XMFINLINE VOID XMStoreDecN4
     XMASSERT(pDestination);
     static const XMVECTORF32 ScaleDecN4 = {511.0f,511.0f*1024.0f,511.0f*1024.0f*1024.0f,1.0f*1024.0f*1024.0f*1024.0f};
     static const XMVECTORI32 MaskDecN4= {0x3FF,0x3FF<<10,0x3FF<<20,0x3<<30};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMNegativeOne);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleDecN4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskDecN4);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(3,2,3,2));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreDec4
 (
-    XMDEC4*  pDestination, 
+    XMDEC4*  pDestination,
     FXMVECTOR V
 )
 {
@@ -5141,33 +4834,31 @@ XMFINLINE VOID XMStoreDec4
     static const XMVECTORF32 MaxDec4 = { 511.0f, 511.0f, 511.0f, 1.0f};
     static const XMVECTORF32 ScaleDec4 = {1.0f,1024.0f,1024.0f*1024.0f,1024.0f*1024.0f*1024.0f};
     static const XMVECTORI32 MaskDec4= {0x3FF,0x3FF<<10,0x3FF<<20,0x3<<30};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,MinDec4);
     vResult = _mm_min_ps(vResult,MaxDec4);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleDec4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskDec4);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(3,2,3,2));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUByteN4
 (
-    XMUBYTEN4* pDestination, 
+    XMUBYTEN4* pDestination,
     FXMVECTOR V
 )
 {
@@ -5191,35 +4882,33 @@ XMFINLINE VOID XMStoreUByteN4
     XMASSERT(pDestination);
     static const XMVECTORF32 ScaleUByteN4 = {255.0f,255.0f*256.0f*0.5f,255.0f*256.0f*256.0f,255.0f*256.0f*256.0f*256.0f*0.5f};
     static const XMVECTORI32 MaskUByteN4 = {0xFF,0xFF<<(8-1),0xFF<<16,0xFF<<(24-1)};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUByteN4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUByteN4);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(3,2,3,2));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    
+
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUByte4
 (
-    XMUBYTE4* pDestination, 
+    XMUBYTE4* pDestination,
     FXMVECTOR  V
 )
 {
@@ -5243,35 +4932,33 @@ XMFINLINE VOID XMStoreUByte4
     static const XMVECTORF32 MaxUByte4 = { 255.0f, 255.0f, 255.0f, 255.0f};
     static const XMVECTORF32 ScaleUByte4 = {1.0f,256.0f*0.5f,256.0f*256.0f,256.0f*256.0f*256.0f*0.5f};
     static const XMVECTORI32 MaskUByte4 = {0xFF,0xFF<<(8-1),0xFF<<16,0xFF<<(24-1)};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,MaxUByte4);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleUByte4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskUByte4);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(3,2,3,2));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    
+
     vResulti2 = _mm_add_epi32(vResulti2,vResulti2);
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreByteN4
 (
-    XMBYTEN4* pDestination, 
+    XMBYTEN4* pDestination,
     FXMVECTOR  V
 )
 {
@@ -5294,33 +4981,31 @@ XMFINLINE VOID XMStoreByteN4
 	XMASSERT(pDestination);
     static const XMVECTORF32 ScaleByteN4 = {127.0f,127.0f*256.0f,127.0f*256.0f*256.0f,127.0f*256.0f*256.0f*256.0f};
     static const XMVECTORI32 MaskByteN4 = {0xFF,0xFF<<8,0xFF<<16,0xFF<<24};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMNegativeOne);
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleByteN4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskByteN4);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(3,2,3,2));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreByte4
 (
-    XMBYTE4*  pDestination, 
+    XMBYTE4*  pDestination,
     FXMVECTOR  V
 )
 {
@@ -5346,29 +5031,27 @@ XMFINLINE VOID XMStoreByte4
     static const XMVECTORF32 MaxByte4 = { 127.0f, 127.0f, 127.0f, 127.0f};
     static const XMVECTORF32 ScaleByte4 = {1.0f,256.0f,256.0f*256.0f,256.0f*256.0f*256.0f};
     static const XMVECTORI32 MaskByte4 = {0xFF,0xFF<<8,0xFF<<16,0xFF<<24};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,MinByte4);
     vResult = _mm_min_ps(vResult,MaxByte4);
-    
+
     vResult = _mm_mul_ps(vResult,ScaleByte4);
-    
+
     __m128i vResulti = _mm_cvttps_epi32(vResult);
-    
+
     vResulti = _mm_and_si128(vResulti,MaskByte4);
-    
+
     __m128i vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(3,2,3,2));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
-    
+
     vResulti2 = _mm_shuffle_epi32(vResulti,_MM_SHUFFLE(1,1,1,1));
-    
+
     vResulti = _mm_or_si128(vResulti,vResulti2);
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->v),reinterpret_cast<const __m128 *>(&vResulti)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreUNibble4
 (
@@ -5379,12 +5062,12 @@ XMFINLINE VOID XMStoreUNibble4
 #if defined(_XM_SSE_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
     XMASSERT(pDestination);
     static CONST XMVECTORF32  Max = {15.0f,15.0f,15.0f,15.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,Max);
-     
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
+
     USHORT x = static_cast<USHORT>(_mm_extract_epi16(vInt,0));
     USHORT y = static_cast<USHORT>(_mm_extract_epi16(vInt,2));
     USHORT z = static_cast<USHORT>(_mm_extract_epi16(vInt,4));
@@ -5409,8 +5092,6 @@ XMFINLINE VOID XMStoreUNibble4
 #endif !_XM_SSE_INTRINSICS_
 }
 
-
-
 XMFINLINE VOID XMStoreU555(
      XMU555* pDestination,
      FXMVECTOR V
@@ -5419,12 +5100,12 @@ XMFINLINE VOID XMStoreU555(
 #if defined(_XM_SSE_INTRINSICS_) && !defined(_XM_NO_INTRINSICS_)
     XMASSERT(pDestination);
     static CONST XMVECTORF32  Max = {31.0f, 31.0f, 31.0f, 1.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
     vResult = _mm_min_ps(vResult,Max);
-     
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
+
     USHORT x = static_cast<USHORT>(_mm_extract_epi16(vInt,0));
     USHORT y = static_cast<USHORT>(_mm_extract_epi16(vInt,2));
     USHORT z = static_cast<USHORT>(_mm_extract_epi16(vInt,4));
@@ -5449,11 +5130,9 @@ XMFINLINE VOID XMStoreU555(
 #endif !_XM_SSE_INTRINSICS_
 }
 
-
-
 XMFINLINE VOID XMStoreColor
 (
-    XMCOLOR* pDestination, 
+    XMCOLOR* pDestination,
     FXMVECTOR V
 )
 {
@@ -5476,31 +5155,29 @@ XMFINLINE VOID XMStoreColor
 #elif defined(_XM_SSE_INTRINSICS_)
     XMASSERT(pDestination);
     static CONST XMVECTORF32  Scale = {255.0f,255.0f,255.0f,255.0f};
-    
+
     XMVECTOR vResult = _mm_max_ps(V,g_XMZero);
-    
+
     vResult = _mm_min_ps(vResult,g_XMOne);
-    
+
     vResult = _mm_mul_ps(vResult,Scale);
-    
+
     vResult = _mm_shuffle_ps(vResult,vResult,_MM_SHUFFLE(3,0,1,2));
-    
+
     __m128i vInt = _mm_cvtps_epi32(vResult);
-    
+
     vInt = _mm_packs_epi32(vInt,vInt);
-    
+
     vInt = _mm_packus_epi16(vInt,vInt);
-    
+
     _mm_store_ss(reinterpret_cast<float *>(&pDestination->c),reinterpret_cast<__m128 *>(&vInt)[0]);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat3x3
 (
-    XMFLOAT3X3*	pDestination, 
+    XMFLOAT3X3*	pDestination,
     CXMMATRIX	M
 )
 {
@@ -5508,15 +5185,13 @@ XMFINLINE VOID XMStoreFloat3x3
 
     XMStoreFloat3x3NC(pDestination, M);
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat3x3NC
 (
-    XMFLOAT3X3* pDestination, 
+    XMFLOAT3X3* pDestination,
     CXMMATRIX M
 )
 {
@@ -5548,15 +5223,13 @@ XMFINLINE VOID XMStoreFloat3x3NC
     _mm_storeu_ps(&pDestination->m[1][1],vTemp2);
     vTemp3 = _mm_shuffle_ps(vTemp3,vTemp3,_MM_SHUFFLE(2,2,2,2));
     _mm_store_ss(&pDestination->m[2][2],vTemp3);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat4x3
 (
-    XMFLOAT4X3* pDestination, 
+    XMFLOAT4X3* pDestination,
     CXMMATRIX M
 )
 {
@@ -5564,15 +5237,13 @@ XMFINLINE VOID XMStoreFloat4x3
 
     XMStoreFloat4x3NC(pDestination, M);
 
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat4x3A
 (
-    XMFLOAT4X3A*	pDestination, 
+    XMFLOAT4X3A*	pDestination,
     CXMMATRIX		M
 )
 {
@@ -5600,37 +5271,35 @@ XMFINLINE VOID XMStoreFloat4x3A
 #elif defined(_XM_SSE_INTRINSICS_)
 	XMASSERT(pDestination);
     XMASSERT(((UINT_PTR)pDestination & 0xF) == 0);
-    
+
     XMVECTOR vTemp1 = M.r[0];
-    
+
     XMVECTOR vTemp2 = M.r[1];
-    
+
     XMVECTOR vTemp3 = M.r[2];
-    
+
     XMVECTOR vTemp4 = M.r[3];
-    
+
     XMVECTOR vTemp = _mm_shuffle_ps(vTemp1,vTemp2,_MM_SHUFFLE(1,0,2,2));
-    
+
     vTemp2 = _mm_shuffle_ps(vTemp2,vTemp3,_MM_SHUFFLE(1,0,2,1));
-    
+
     vTemp1 = _mm_shuffle_ps(vTemp1,vTemp,_MM_SHUFFLE(2,0,1,0));
-    
+
     vTemp3 = _mm_shuffle_ps(vTemp3,vTemp4,_MM_SHUFFLE(0,0,2,2));
-    
+
     vTemp3 = _mm_shuffle_ps(vTemp3,vTemp4,_MM_SHUFFLE(2,1,2,0));
-    
+
     _mm_store_ps(&pDestination->m[0][0],vTemp1);
     _mm_store_ps(&pDestination->m[1][1],vTemp2);
     _mm_store_ps(&pDestination->m[2][2],vTemp3);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat4x3NC
 (
-    XMFLOAT4X3* pDestination, 
+    XMFLOAT4X3* pDestination,
     CXMMATRIX M
 )
 {
@@ -5668,15 +5337,13 @@ XMFINLINE VOID XMStoreFloat4x3NC
     _mm_storeu_ps(&pDestination->m[0][0],vTemp1);
     _mm_storeu_ps(&pDestination->m[1][1],vTemp2x);
     _mm_storeu_ps(&pDestination->m[2][2],vTemp3);
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat4x4
 (
-    XMFLOAT4X4* pDestination, 
+    XMFLOAT4X4* pDestination,
     CXMMATRIX M
 )
 {
@@ -5691,15 +5358,13 @@ XMFINLINE VOID XMStoreFloat4x4
 	_mm_storeu_ps( &pDestination->_21, M.r[1] );
 	_mm_storeu_ps( &pDestination->_31, M.r[2] );
 	_mm_storeu_ps( &pDestination->_41, M.r[3] );
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat4x4A
 (
-    XMFLOAT4X4A*	pDestination, 
+    XMFLOAT4X4A*	pDestination,
     CXMMATRIX		M
 )
 {
@@ -5735,15 +5400,13 @@ XMFINLINE VOID XMStoreFloat4x4A
     _mm_store_ps( &pDestination->_21, M.r[1] );
     _mm_store_ps( &pDestination->_31, M.r[2] );
     _mm_store_ps( &pDestination->_41, M.r[3] );
-#else 
-#endif 
+#else
+#endif
 }
-
-
 
 XMFINLINE VOID XMStoreFloat4x4NC
 (
-    XMFLOAT4X4* pDestination, 
+    XMFLOAT4X4* pDestination,
     CXMMATRIX M
 )
 {
@@ -5777,9 +5440,8 @@ XMFINLINE VOID XMStoreFloat4x4NC
     _mm_storeu_ps(&pDestination->m[1][0],M.r[1]);
     _mm_storeu_ps(&pDestination->m[2][0],M.r[2]);
     _mm_storeu_ps(&pDestination->m[3][0],M.r[3]);
-#else 
-#endif 
+#else
+#endif
 }
 
-#endif 
-
+#endif

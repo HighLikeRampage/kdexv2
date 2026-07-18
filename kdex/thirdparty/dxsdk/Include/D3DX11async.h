@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 #ifndef __D3DX11ASYNC_H__
 #define __D3DX11ASYNC_H__
 
@@ -15,62 +5,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif
 
 HRESULT WINAPI D3DX11CompileFromFileA(LPCSTR pSrcFile,CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude,
         LPCSTR pFunctionName, LPCSTR pProfile, UINT Flags1, UINT Flags2, ID3DX11ThreadPump* pPump, ID3D10Blob** ppShader, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
@@ -84,10 +19,10 @@ HRESULT WINAPI D3DX11CompileFromFileW(LPCWSTR pSrcFile, CONST D3D10_SHADER_MACRO
 #define D3DX11CompileFromFile D3DX11CompileFromFileA
 #endif
 
-HRESULT WINAPI D3DX11CompileFromResourceA(HMODULE hSrcModule, LPCSTR pSrcResource, LPCSTR pSrcFileName, CONST D3D10_SHADER_MACRO* pDefines, 
+HRESULT WINAPI D3DX11CompileFromResourceA(HMODULE hSrcModule, LPCSTR pSrcResource, LPCSTR pSrcFileName, CONST D3D10_SHADER_MACRO* pDefines,
     LPD3D10INCLUDE pInclude, LPCSTR pFunctionName, LPCSTR pProfile, UINT Flags1, UINT Flags2, ID3DX11ThreadPump* pPump, ID3D10Blob** ppShader, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
-HRESULT WINAPI D3DX11CompileFromResourceW(HMODULE hSrcModule, LPCWSTR pSrcResource, LPCWSTR pSrcFileName, CONST D3D10_SHADER_MACRO* pDefines, 
+HRESULT WINAPI D3DX11CompileFromResourceW(HMODULE hSrcModule, LPCWSTR pSrcResource, LPCWSTR pSrcFileName, CONST D3D10_SHADER_MACRO* pDefines,
     LPD3D10INCLUDE pInclude, LPCSTR pFunctionName, LPCSTR pProfile, UINT Flags1, UINT Flags2, ID3DX11ThreadPump* pPump, ID3D10Blob** ppShader, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
 #ifdef UNICODE
@@ -96,22 +31,22 @@ HRESULT WINAPI D3DX11CompileFromResourceW(HMODULE hSrcModule, LPCWSTR pSrcResour
 #define D3DX11CompileFromResource D3DX11CompileFromResourceA
 #endif
 
-HRESULT WINAPI D3DX11CompileFromMemory(LPCSTR pSrcData, SIZE_T SrcDataLen, LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude, 
+HRESULT WINAPI D3DX11CompileFromMemory(LPCSTR pSrcData, SIZE_T SrcDataLen, LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude,
     LPCSTR pFunctionName, LPCSTR pProfile, UINT Flags1, UINT Flags2, ID3DX11ThreadPump* pPump, ID3D10Blob** ppShader, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
-HRESULT WINAPI D3DX11PreprocessShaderFromFileA(LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, 
+HRESULT WINAPI D3DX11PreprocessShaderFromFileA(LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines,
     LPD3D10INCLUDE pInclude, ID3DX11ThreadPump *pPump, ID3D10Blob** ppShaderText, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
-HRESULT WINAPI D3DX11PreprocessShaderFromFileW(LPCWSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, 
+HRESULT WINAPI D3DX11PreprocessShaderFromFileW(LPCWSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines,
     LPD3D10INCLUDE pInclude, ID3DX11ThreadPump *pPump, ID3D10Blob** ppShaderText, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
-HRESULT WINAPI D3DX11PreprocessShaderFromMemory(LPCSTR pSrcData, SIZE_T SrcDataSize, LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, 
+HRESULT WINAPI D3DX11PreprocessShaderFromMemory(LPCSTR pSrcData, SIZE_T SrcDataSize, LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines,
     LPD3D10INCLUDE pInclude, ID3DX11ThreadPump *pPump, ID3D10Blob** ppShaderText, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
-HRESULT WINAPI D3DX11PreprocessShaderFromResourceA(HMODULE hModule, LPCSTR pResourceName, LPCSTR pSrcFileName, CONST D3D10_SHADER_MACRO* pDefines, 
+HRESULT WINAPI D3DX11PreprocessShaderFromResourceA(HMODULE hModule, LPCSTR pResourceName, LPCSTR pSrcFileName, CONST D3D10_SHADER_MACRO* pDefines,
     LPD3D10INCLUDE pInclude, ID3DX11ThreadPump *pPump, ID3D10Blob** ppShaderText, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
-HRESULT WINAPI D3DX11PreprocessShaderFromResourceW(HMODULE hModule, LPCWSTR pResourceName, LPCWSTR pSrcFileName, CONST D3D10_SHADER_MACRO* pDefines, 
+HRESULT WINAPI D3DX11PreprocessShaderFromResourceW(HMODULE hModule, LPCWSTR pResourceName, LPCWSTR pSrcFileName, CONST D3D10_SHADER_MACRO* pDefines,
     LPD3D10INCLUDE pInclude, ID3DX11ThreadPump *pPump, ID3D10Blob** ppShaderText, ID3D10Blob** ppErrorMsgs, HRESULT* pHResult);
 
 #ifdef UNICODE
@@ -122,20 +57,12 @@ HRESULT WINAPI D3DX11PreprocessShaderFromResourceW(HMODULE hModule, LPCWSTR pRes
 #define D3DX11PreprocessShaderFromResource  D3DX11PreprocessShaderFromResourceA
 #endif
 
-
-
-
-
-HRESULT WINAPI D3DX11CreateAsyncCompilerProcessor(LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude, 
+HRESULT WINAPI D3DX11CreateAsyncCompilerProcessor(LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude,
         LPCSTR pFunctionName, LPCSTR pProfile, UINT Flags1, UINT Flags2,
         ID3D10Blob **ppCompiledShader, ID3D10Blob **ppErrorBuffer, ID3DX11DataProcessor **ppProcessor);
 
-HRESULT WINAPI D3DX11CreateAsyncShaderPreprocessProcessor(LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude, 
+HRESULT WINAPI D3DX11CreateAsyncShaderPreprocessProcessor(LPCSTR pFileName, CONST D3D10_SHADER_MACRO* pDefines, LPD3D10INCLUDE pInclude,
         ID3D10Blob** ppShaderText, ID3D10Blob **ppErrorBuffer, ID3DX11DataProcessor **ppProcessor);
-
-
-
-
 
 HRESULT WINAPI D3DX11CreateAsyncFileLoaderW(LPCWSTR pFileName, ID3DX11DataLoader **ppDataLoader);
 HRESULT WINAPI D3DX11CreateAsyncFileLoaderA(LPCSTR pFileName, ID3DX11DataLoader **ppDataLoader);
@@ -157,8 +84,6 @@ HRESULT WINAPI D3DX11CreateAsyncShaderResourceViewProcessor(ID3D11Device *pDevic
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
-#endif 
-
-
+#endif

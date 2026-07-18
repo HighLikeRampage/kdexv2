@@ -1,39 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef FTCONFIG_H_
 #define FTCONFIG_H_
 
@@ -45,7 +9,4 @@
 #include <freetype/config/public-macros.h>
 #include <freetype/config/mac-support.h>
 
-#endif 
-
-
-
+#endif

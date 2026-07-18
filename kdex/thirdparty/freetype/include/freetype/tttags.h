@@ -1,24 +1,5 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef TTAGS_H_
 #define TTAGS_H_
-
 
 #include <freetype/freetype.h>
 
@@ -28,9 +9,7 @@
 #error "so that freetype.h of FreeType 2 is found first."
 #endif
 
-
 FT_BEGIN_HEADER
-
 
 #define TTAG_avar  FT_MAKE_TAG( 'a', 'v', 'a', 'r' )
 #define TTAG_BASE  FT_MAKE_TAG( 'B', 'A', 'S', 'E' )
@@ -109,16 +88,10 @@ FT_BEGIN_HEADER
 #define TTAG_wOFF  FT_MAKE_TAG( 'w', 'O', 'F', 'F' )
 #define TTAG_wOF2  FT_MAKE_TAG( 'w', 'O', 'F', '2' )
 
-
 #define TTAG_0xA5kbd  FT_MAKE_TAG( 0xA5, 'k', 'b', 'd' )
-
 
 #define TTAG_0xA5lst  FT_MAKE_TAG( 0xA5, 'l', 's', 't' )
 
-
 FT_END_HEADER
 
-#endif 
-
-
-
+#endif

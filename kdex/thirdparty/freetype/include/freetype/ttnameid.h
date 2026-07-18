@@ -1,148 +1,22 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef TTNAMEID_H_
 #define TTNAMEID_H_
 
-
-
-
 FT_BEGIN_HEADER
-
-
-  
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define TT_PLATFORM_APPLE_UNICODE  0
 #define TT_PLATFORM_MACINTOSH      1
-#define TT_PLATFORM_ISO            2 
+#define TT_PLATFORM_ISO            2
 #define TT_PLATFORM_MICROSOFT      3
 #define TT_PLATFORM_CUSTOM         4
-#define TT_PLATFORM_ADOBE          7 
+#define TT_PLATFORM_ADOBE          7
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#define TT_APPLE_ID_DEFAULT           0 
-#define TT_APPLE_ID_UNICODE_1_1       1 
-#define TT_APPLE_ID_ISO_10646         2 
-#define TT_APPLE_ID_UNICODE_2_0       3 
-#define TT_APPLE_ID_UNICODE_32        4 
-#define TT_APPLE_ID_VARIANT_SELECTOR  5 
-#define TT_APPLE_ID_FULL_UNICODE      6 
-
-
-  
-
-
-
-
-
-
-
-
+#define TT_APPLE_ID_DEFAULT           0
+#define TT_APPLE_ID_UNICODE_1_1       1
+#define TT_APPLE_ID_ISO_10646         2
+#define TT_APPLE_ID_UNICODE_2_0       3
+#define TT_APPLE_ID_UNICODE_32        4
+#define TT_APPLE_ID_VARIANT_SELECTOR  5
+#define TT_APPLE_ID_FULL_UNICODE      6
 
 #define TT_MAC_ID_ROMAN                 0
 #define TT_MAC_ID_JAPANESE              1
@@ -179,70 +53,9 @@ FT_BEGIN_HEADER
 #define TT_MAC_ID_SINDHI               31
 #define TT_MAC_ID_UNINTERP             32
 
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #define TT_ISO_ID_7BIT_ASCII  0
 #define TT_ISO_ID_10646       1
 #define TT_ISO_ID_8859_1      2
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define TT_MS_ID_SYMBOL_CS    0
 #define TT_MS_ID_UNICODE_CS   1
@@ -253,51 +66,12 @@ FT_BEGIN_HEADER
 #define TT_MS_ID_JOHAB        6
 #define TT_MS_ID_UCS_4       10
 
-  
 #define TT_MS_ID_GB2312  TT_MS_ID_PRC
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define TT_ADOBE_ID_STANDARD  0
 #define TT_ADOBE_ID_EXPERT    1
 #define TT_ADOBE_ID_CUSTOM    2
 #define TT_ADOBE_ID_LATIN_1   3
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define TT_MAC_LANGID_ENGLISH                       0
 #define TT_MAC_LANGID_FRENCH                        1
@@ -409,7 +183,6 @@ FT_BEGIN_HEADER
 #define TT_MAC_LANGID_JAVANESE                    138
 #define TT_MAC_LANGID_SUNDANESE                   139
 
-  
 #define TT_MAC_LANGID_GALICIAN                    140
 #define TT_MAC_LANGID_AFRIKAANS                   141
 #define TT_MAC_LANGID_BRETON                      142
@@ -421,31 +194,6 @@ FT_BEGIN_HEADER
 #define TT_MAC_LANGID_GREEK_POLYTONIC             148
 #define TT_MAC_LANGID_GREELANDIC                  149
 #define TT_MAC_LANGID_AZERBAIJANI_ROMAN_SCRIPT    150
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #define TT_MS_LANGID_ARABIC_SAUDI_ARABIA               0x0401
 #define TT_MS_LANGID_ARABIC_IRAQ                       0x0801
@@ -653,10 +401,6 @@ FT_BEGIN_HEADER
 #define TT_MS_LANGID_WOLOF_SENEGAL                     0x0488
 #define TT_MS_LANGID_DARI_AFGHANISTAN                  0x048C
 
-  
-
-
-  
 #define TT_MS_LANGID_ARABIC_GENERAL                    0x0001
 #define TT_MS_LANGID_CATALAN_SPAIN \
           TT_MS_LANGID_CATALAN_CATALAN
@@ -674,7 +418,7 @@ FT_BEGIN_HEADER
 #define TT_MS_LANGID_FRENCH_WEST_INDIES                0x1C0C
 #define TT_MS_LANGID_FRENCH_REUNION                    0x200C
 #define TT_MS_LANGID_FRENCH_CONGO                      0x240C
-  
+
 #define TT_MS_LANGID_FRENCH_ZAIRE \
           TT_MS_LANGID_FRENCH_CONGO
 #define TT_MS_LANGID_FRENCH_SENEGAL                    0x280C
@@ -710,7 +454,7 @@ FT_BEGIN_HEADER
 #define TT_MS_LANGID_ZULU_SOUTH_AFRICA \
           TT_MS_LANGID_ISIZULU_SOUTH_AFRICA
 #define TT_MS_LANGID_SAAMI_LAPONIA                     0x043B
-  
+
 #define TT_MS_LANGID_IRISH_GAELIC_IRELAND              0x043C
 #define TT_MS_LANGID_SCOTTISH_GAELIC_UNITED_KINGDOM    0x083C
 #define TT_MS_LANGID_YIDDISH_GERMANY                   0x043D
@@ -778,17 +522,6 @@ FT_BEGIN_HEADER
 #define TT_MS_LANGID_UIGHUR_CHINA \
           TT_MS_LANGID_UIGHUR_PRC
 
-
-  
-
-
-
-
-
-
-
-
-
 #define TT_NAME_ID_COPYRIGHT              0
 #define TT_NAME_ID_FONT_FAMILY            1
 #define TT_NAME_ID_FONT_SUBFAMILY         2
@@ -798,7 +531,6 @@ FT_BEGIN_HEADER
 #define TT_NAME_ID_PS_NAME                6
 #define TT_NAME_ID_TRADEMARK              7
 
-  
 #define TT_NAME_ID_MANUFACTURER           8
 #define TT_NAME_ID_DESIGNER               9
 #define TT_NAME_ID_DESCRIPTION            10
@@ -806,416 +538,277 @@ FT_BEGIN_HEADER
 #define TT_NAME_ID_DESIGNER_URL           12
 #define TT_NAME_ID_LICENSE                13
 #define TT_NAME_ID_LICENSE_URL            14
-  
+
 #define TT_NAME_ID_TYPOGRAPHIC_FAMILY     16
 #define TT_NAME_ID_TYPOGRAPHIC_SUBFAMILY  17
 #define TT_NAME_ID_MAC_FULL_NAME          18
 
-  
 #define TT_NAME_ID_SAMPLE_TEXT            19
 
-  
 #define TT_NAME_ID_CID_FINDFONT_NAME      20
 
-  
 #define TT_NAME_ID_WWS_FAMILY             21
 #define TT_NAME_ID_WWS_SUBFAMILY          22
 
-  
 #define TT_NAME_ID_LIGHT_BACKGROUND       23
 #define TT_NAME_ID_DARK_BACKGROUND        24
 
-  
 #define TT_NAME_ID_VARIATIONS_PREFIX      25
 
-  
 #define TT_NAME_ID_PREFERRED_FAMILY     TT_NAME_ID_TYPOGRAPHIC_FAMILY
 #define TT_NAME_ID_PREFERRED_SUBFAMILY  TT_NAME_ID_TYPOGRAPHIC_SUBFAMILY
 
+#define TT_UCR_BASIC_LATIN                     (1L <<  0)
 
-  
+#define TT_UCR_LATIN1_SUPPLEMENT               (1L <<  1)
 
+#define TT_UCR_LATIN_EXTENDED_A                (1L <<  2)
 
+#define TT_UCR_LATIN_EXTENDED_B                (1L <<  3)
 
+#define TT_UCR_IPA_EXTENSIONS                  (1L <<  4)
 
+#define TT_UCR_SPACING_MODIFIER                (1L <<  5)
 
+#define TT_UCR_COMBINING_DIACRITICAL_MARKS     (1L <<  6)
 
+#define TT_UCR_GREEK                           (1L <<  7)
 
+#define TT_UCR_COPTIC                          (1L <<  8)
 
+#define TT_UCR_CYRILLIC                        (1L <<  9)
 
-  
-  
+#define TT_UCR_ARMENIAN                        (1L << 10)
 
-  
-#define TT_UCR_BASIC_LATIN                     (1L <<  0) 
-  
-#define TT_UCR_LATIN1_SUPPLEMENT               (1L <<  1) 
-  
-#define TT_UCR_LATIN_EXTENDED_A                (1L <<  2) 
-  
-#define TT_UCR_LATIN_EXTENDED_B                (1L <<  3) 
-  
-  
-  
-#define TT_UCR_IPA_EXTENSIONS                  (1L <<  4) 
-                                                          
-                                                          
-  
-  
-#define TT_UCR_SPACING_MODIFIER                (1L <<  5) 
-                                                          
-  
-  
-#define TT_UCR_COMBINING_DIACRITICAL_MARKS     (1L <<  6) 
-                                                          
-  
-#define TT_UCR_GREEK                           (1L <<  7) 
-  
-#define TT_UCR_COPTIC                          (1L <<  8) 
-  
-  
-  
-  
-#define TT_UCR_CYRILLIC                        (1L <<  9) 
-                                                          
-                                                          
-                                                          
-  
-#define TT_UCR_ARMENIAN                        (1L << 10) 
-  
-#define TT_UCR_HEBREW                          (1L << 11) 
-  
-#define TT_UCR_VAI                             (1L << 12) 
-  
-  
-#define TT_UCR_ARABIC                          (1L << 13) 
-                                                          
-  
-#define TT_UCR_NKO                             (1L << 14) 
-  
-#define TT_UCR_DEVANAGARI                      (1L << 15) 
-  
-#define TT_UCR_BENGALI                         (1L << 16) 
-  
-#define TT_UCR_GURMUKHI                        (1L << 17) 
-  
-#define TT_UCR_GUJARATI                        (1L << 18) 
-  
-#define TT_UCR_ORIYA                           (1L << 19) 
-  
-#define TT_UCR_TAMIL                           (1L << 20) 
-  
-#define TT_UCR_TELUGU                          (1L << 21) 
-  
-#define TT_UCR_KANNADA                         (1L << 22) 
-  
-#define TT_UCR_MALAYALAM                       (1L << 23) 
-  
-#define TT_UCR_THAI                            (1L << 24) 
-  
-#define TT_UCR_LAO                             (1L << 25) 
-  
-  
-#define TT_UCR_GEORGIAN                        (1L << 26) 
-                                                          
-  
-#define TT_UCR_BALINESE                        (1L << 27) 
-  
-#define TT_UCR_HANGUL_JAMO                     (1L << 28) 
-  
-  
-  
-#define TT_UCR_LATIN_EXTENDED_ADDITIONAL       (1L << 29) 
-                                                          
-                                                          
-  
-#define TT_UCR_GREEK_EXTENDED                  (1L << 30) 
-  
-  
-#define TT_UCR_GENERAL_PUNCTUATION             (1L << 31) 
-                                                          
+#define TT_UCR_HEBREW                          (1L << 11)
 
-  
-  
+#define TT_UCR_VAI                             (1L << 12)
 
-  
-#define TT_UCR_SUPERSCRIPTS_SUBSCRIPTS         (1L <<  0) 
-  
-#define TT_UCR_CURRENCY_SYMBOLS                (1L <<  1) 
-  
+#define TT_UCR_ARABIC                          (1L << 13)
+
+#define TT_UCR_NKO                             (1L << 14)
+
+#define TT_UCR_DEVANAGARI                      (1L << 15)
+
+#define TT_UCR_BENGALI                         (1L << 16)
+
+#define TT_UCR_GURMUKHI                        (1L << 17)
+
+#define TT_UCR_GUJARATI                        (1L << 18)
+
+#define TT_UCR_ORIYA                           (1L << 19)
+
+#define TT_UCR_TAMIL                           (1L << 20)
+
+#define TT_UCR_TELUGU                          (1L << 21)
+
+#define TT_UCR_KANNADA                         (1L << 22)
+
+#define TT_UCR_MALAYALAM                       (1L << 23)
+
+#define TT_UCR_THAI                            (1L << 24)
+
+#define TT_UCR_LAO                             (1L << 25)
+
+#define TT_UCR_GEORGIAN                        (1L << 26)
+
+#define TT_UCR_BALINESE                        (1L << 27)
+
+#define TT_UCR_HANGUL_JAMO                     (1L << 28)
+
+#define TT_UCR_LATIN_EXTENDED_ADDITIONAL       (1L << 29)
+
+#define TT_UCR_GREEK_EXTENDED                  (1L << 30)
+
+#define TT_UCR_GENERAL_PUNCTUATION             (1L << 31)
+
+#define TT_UCR_SUPERSCRIPTS_SUBSCRIPTS         (1L <<  0)
+
+#define TT_UCR_CURRENCY_SYMBOLS                (1L <<  1)
+
 #define TT_UCR_COMBINING_DIACRITICAL_MARKS_SYMB \
-                                               (1L <<  2) 
-  
-#define TT_UCR_LETTERLIKE_SYMBOLS              (1L <<  3) 
-  
-#define TT_UCR_NUMBER_FORMS                    (1L <<  4) 
-  
-  
-  
-  
-#define TT_UCR_ARROWS                          (1L <<  5) 
-                                                          
-                                                          
-                                                          
-  
-  
-  
-  
-#define TT_UCR_MATHEMATICAL_OPERATORS          (1L <<  6) 
-                                                          
-                                                          
-                                                          
-  
-#define TT_UCR_MISCELLANEOUS_TECHNICAL         (1L <<  7) 
-  
-#define TT_UCR_CONTROL_PICTURES                (1L <<  8) 
-  
-#define TT_UCR_OCR                             (1L <<  9) 
-  
-#define TT_UCR_ENCLOSED_ALPHANUMERICS          (1L << 10) 
-  
-#define TT_UCR_BOX_DRAWING                     (1L << 11) 
-  
-#define TT_UCR_BLOCK_ELEMENTS                  (1L << 12) 
-  
-#define TT_UCR_GEOMETRIC_SHAPES                (1L << 13) 
-  
-#define TT_UCR_MISCELLANEOUS_SYMBOLS           (1L << 14) 
-  
-#define TT_UCR_DINGBATS                        (1L << 15) 
-  
-#define TT_UCR_CJK_SYMBOLS                     (1L << 16) 
-  
-#define TT_UCR_HIRAGANA                        (1L << 17) 
-  
-  
-#define TT_UCR_KATAKANA                        (1L << 18) 
-                                                          
-  
-  
-#define TT_UCR_BOPOMOFO                        (1L << 19) 
-                                                          
-  
-#define TT_UCR_HANGUL_COMPATIBILITY_JAMO       (1L << 20) 
-  
-#define TT_UCR_CJK_MISC                        (1L << 21) 
-#define TT_UCR_KANBUN  TT_UCR_CJK_MISC 
+                                               (1L <<  2)
+
+#define TT_UCR_LETTERLIKE_SYMBOLS              (1L <<  3)
+
+#define TT_UCR_NUMBER_FORMS                    (1L <<  4)
+
+#define TT_UCR_ARROWS                          (1L <<  5)
+
+#define TT_UCR_MATHEMATICAL_OPERATORS          (1L <<  6)
+
+#define TT_UCR_MISCELLANEOUS_TECHNICAL         (1L <<  7)
+
+#define TT_UCR_CONTROL_PICTURES                (1L <<  8)
+
+#define TT_UCR_OCR                             (1L <<  9)
+
+#define TT_UCR_ENCLOSED_ALPHANUMERICS          (1L << 10)
+
+#define TT_UCR_BOX_DRAWING                     (1L << 11)
+
+#define TT_UCR_BLOCK_ELEMENTS                  (1L << 12)
+
+#define TT_UCR_GEOMETRIC_SHAPES                (1L << 13)
+
+#define TT_UCR_MISCELLANEOUS_SYMBOLS           (1L << 14)
+
+#define TT_UCR_DINGBATS                        (1L << 15)
+
+#define TT_UCR_CJK_SYMBOLS                     (1L << 16)
+
+#define TT_UCR_HIRAGANA                        (1L << 17)
+
+#define TT_UCR_KATAKANA                        (1L << 18)
+
+#define TT_UCR_BOPOMOFO                        (1L << 19)
+
+#define TT_UCR_HANGUL_COMPATIBILITY_JAMO       (1L << 20)
+
+#define TT_UCR_CJK_MISC                        (1L << 21)
+#define TT_UCR_KANBUN  TT_UCR_CJK_MISC
 #define TT_UCR_PHAGSPA
-  
-#define TT_UCR_ENCLOSED_CJK_LETTERS_MONTHS     (1L << 22) 
-  
-#define TT_UCR_CJK_COMPATIBILITY               (1L << 23) 
-  
-#define TT_UCR_HANGUL                          (1L << 24) 
-  
-  
-  
 
-  
-  
-  
-  
-  
-  
-#define TT_UCR_SURROGATES                      (1L << 25) 
-                                                          
-                                                          
+#define TT_UCR_ENCLOSED_CJK_LETTERS_MONTHS     (1L << 22)
+
+#define TT_UCR_CJK_COMPATIBILITY               (1L << 23)
+
+#define TT_UCR_HANGUL                          (1L << 24)
+
+#define TT_UCR_SURROGATES                      (1L << 25)
+
 #define TT_UCR_NON_PLANE_0  TT_UCR_SURROGATES
-  
-#define TT_UCR_PHOENICIAN                      (1L << 26) 
-  
-  
-  
-  
-  
-  
-  
-#define TT_UCR_CJK_UNIFIED_IDEOGRAPHS          (1L << 27) 
-                                                          
-                                                          
-                                                          
-                                                          
-                                                          
-                                                          
-  
-#define TT_UCR_PRIVATE_USE                     (1L << 28) 
-  
-  
-  
-#define TT_UCR_CJK_COMPATIBILITY_IDEOGRAPHS    (1L << 29) 
-                                                          
-                                                          
-  
-#define TT_UCR_ALPHABETIC_PRESENTATION_FORMS   (1L << 30) 
-  
-#define TT_UCR_ARABIC_PRESENTATION_FORMS_A     (1L << 31) 
 
-  
-  
+#define TT_UCR_PHOENICIAN                      (1L << 26)
 
-  
-#define TT_UCR_COMBINING_HALF_MARKS            (1L <<  0) 
-  
-  
-#define TT_UCR_CJK_COMPATIBILITY_FORMS         (1L <<  1) 
-                                                          
-  
-#define TT_UCR_SMALL_FORM_VARIANTS             (1L <<  2) 
-  
-#define TT_UCR_ARABIC_PRESENTATION_FORMS_B     (1L <<  3) 
-  
-#define TT_UCR_HALFWIDTH_FULLWIDTH_FORMS       (1L <<  4) 
-  
-#define TT_UCR_SPECIALS                        (1L <<  5) 
-  
-#define TT_UCR_TIBETAN                         (1L <<  6) 
-  
-#define TT_UCR_SYRIAC                          (1L <<  7) 
-  
-#define TT_UCR_THAANA                          (1L <<  8) 
-  
-#define TT_UCR_SINHALA                         (1L <<  9) 
-  
-#define TT_UCR_MYANMAR                         (1L << 10) 
-  
-  
-  
-#define TT_UCR_ETHIOPIC                        (1L << 11) 
-                                                          
-                                                          
-  
-#define TT_UCR_CHEROKEE                        (1L << 12) 
-  
-#define TT_UCR_CANADIAN_ABORIGINAL_SYLLABICS   (1L << 13) 
-  
-#define TT_UCR_OGHAM                           (1L << 14) 
-  
-#define TT_UCR_RUNIC                           (1L << 15) 
-  
-  
-#define TT_UCR_KHMER                           (1L << 16) 
-                                                          
-  
-#define TT_UCR_MONGOLIAN                       (1L << 17) 
-  
-#define TT_UCR_BRAILLE                         (1L << 18) 
-  
-  
-#define TT_UCR_YI                              (1L << 19) 
-                                                          
-  
-  
-  
-  
-#define TT_UCR_PHILIPPINE                      (1L << 20) 
-                                                          
-                                                          
-                                                          
-  
-#define TT_UCR_OLD_ITALIC                      (1L << 21) 
-  
-#define TT_UCR_GOTHIC                          (1L << 22) 
-  
-#define TT_UCR_DESERET                         (1L << 23) 
-  
-  
-  
-#define TT_UCR_MUSICAL_SYMBOLS                 (1L << 24) 
-                                                          
-                                                          
-  
-#define TT_UCR_MATH_ALPHANUMERIC_SYMBOLS       (1L << 25) 
-  
-  
-#define TT_UCR_PRIVATE_USE_SUPPLEMENTARY       (1L << 26) 
-                                                        
-  
-  
-#define TT_UCR_VARIATION_SELECTORS             (1L << 27) 
-                                                          
-  
-#define TT_UCR_TAGS                            (1L << 28) 
-  
-#define TT_UCR_LIMBU                           (1L << 29) 
-  
-#define TT_UCR_TAI_LE                          (1L << 30) 
-  
-#define TT_UCR_NEW_TAI_LUE                     (1L << 31) 
+#define TT_UCR_CJK_UNIFIED_IDEOGRAPHS          (1L << 27)
 
-  
-  
+#define TT_UCR_PRIVATE_USE                     (1L << 28)
 
-  
-#define TT_UCR_BUGINESE                        (1L <<  0) 
-  
-#define TT_UCR_GLAGOLITIC                      (1L <<  1) 
-  
-#define TT_UCR_TIFINAGH                        (1L <<  2) 
-  
-#define TT_UCR_YIJING                          (1L <<  3) 
-  
-#define TT_UCR_SYLOTI_NAGRI                    (1L <<  4) 
-  
-  
-  
-#define TT_UCR_LINEAR_B                        (1L <<  5) 
-                                                          
-                                                          
-  
-#define TT_UCR_ANCIENT_GREEK_NUMBERS           (1L <<  6) 
-  
-#define TT_UCR_UGARITIC                        (1L <<  7) 
-  
-#define TT_UCR_OLD_PERSIAN                     (1L <<  8) 
-  
-#define TT_UCR_SHAVIAN                         (1L <<  9) 
-  
-#define TT_UCR_OSMANYA                         (1L << 10) 
-  
-#define TT_UCR_CYPRIOT_SYLLABARY               (1L << 11) 
-  
-#define TT_UCR_KHAROSHTHI                      (1L << 12) 
-  
-#define TT_UCR_TAI_XUAN_JING                   (1L << 13) 
-  
-  
-#define TT_UCR_CUNEIFORM                       (1L << 14) 
-                                                          
-  
-#define TT_UCR_COUNTING_ROD_NUMERALS           (1L << 15) 
-  
-#define TT_UCR_SUNDANESE                       (1L << 16) 
-  
-#define TT_UCR_LEPCHA                          (1L << 17) 
-  
-#define TT_UCR_OL_CHIKI                        (1L << 18) 
-  
-#define TT_UCR_SAURASHTRA                      (1L << 19) 
-  
-#define TT_UCR_KAYAH_LI                        (1L << 20) 
-  
-#define TT_UCR_REJANG                          (1L << 21) 
-  
-#define TT_UCR_CHAM                            (1L << 22) 
-  
-#define TT_UCR_ANCIENT_SYMBOLS                 (1L << 23) 
-  
-#define TT_UCR_PHAISTOS_DISC                   (1L << 24) 
-  
-  
-  
-#define TT_UCR_OLD_ANATOLIAN                   (1L << 25) 
-                                                          
-                                                          
-  
-  
-#define TT_UCR_GAME_TILES                      (1L << 26) 
-                                                          
-  
+#define TT_UCR_CJK_COMPATIBILITY_IDEOGRAPHS    (1L << 29)
 
-  
+#define TT_UCR_ALPHABETIC_PRESENTATION_FORMS   (1L << 30)
 
-  
+#define TT_UCR_ARABIC_PRESENTATION_FORMS_A     (1L << 31)
+
+#define TT_UCR_COMBINING_HALF_MARKS            (1L <<  0)
+
+#define TT_UCR_CJK_COMPATIBILITY_FORMS         (1L <<  1)
+
+#define TT_UCR_SMALL_FORM_VARIANTS             (1L <<  2)
+
+#define TT_UCR_ARABIC_PRESENTATION_FORMS_B     (1L <<  3)
+
+#define TT_UCR_HALFWIDTH_FULLWIDTH_FORMS       (1L <<  4)
+
+#define TT_UCR_SPECIALS                        (1L <<  5)
+
+#define TT_UCR_TIBETAN                         (1L <<  6)
+
+#define TT_UCR_SYRIAC                          (1L <<  7)
+
+#define TT_UCR_THAANA                          (1L <<  8)
+
+#define TT_UCR_SINHALA                         (1L <<  9)
+
+#define TT_UCR_MYANMAR                         (1L << 10)
+
+#define TT_UCR_ETHIOPIC                        (1L << 11)
+
+#define TT_UCR_CHEROKEE                        (1L << 12)
+
+#define TT_UCR_CANADIAN_ABORIGINAL_SYLLABICS   (1L << 13)
+
+#define TT_UCR_OGHAM                           (1L << 14)
+
+#define TT_UCR_RUNIC                           (1L << 15)
+
+#define TT_UCR_KHMER                           (1L << 16)
+
+#define TT_UCR_MONGOLIAN                       (1L << 17)
+
+#define TT_UCR_BRAILLE                         (1L << 18)
+
+#define TT_UCR_YI                              (1L << 19)
+
+#define TT_UCR_PHILIPPINE                      (1L << 20)
+
+#define TT_UCR_OLD_ITALIC                      (1L << 21)
+
+#define TT_UCR_GOTHIC                          (1L << 22)
+
+#define TT_UCR_DESERET                         (1L << 23)
+
+#define TT_UCR_MUSICAL_SYMBOLS                 (1L << 24)
+
+#define TT_UCR_MATH_ALPHANUMERIC_SYMBOLS       (1L << 25)
+
+#define TT_UCR_PRIVATE_USE_SUPPLEMENTARY       (1L << 26)
+
+#define TT_UCR_VARIATION_SELECTORS             (1L << 27)
+
+#define TT_UCR_TAGS                            (1L << 28)
+
+#define TT_UCR_LIMBU                           (1L << 29)
+
+#define TT_UCR_TAI_LE                          (1L << 30)
+
+#define TT_UCR_NEW_TAI_LUE                     (1L << 31)
+
+#define TT_UCR_BUGINESE                        (1L <<  0)
+
+#define TT_UCR_GLAGOLITIC                      (1L <<  1)
+
+#define TT_UCR_TIFINAGH                        (1L <<  2)
+
+#define TT_UCR_YIJING                          (1L <<  3)
+
+#define TT_UCR_SYLOTI_NAGRI                    (1L <<  4)
+
+#define TT_UCR_LINEAR_B                        (1L <<  5)
+
+#define TT_UCR_ANCIENT_GREEK_NUMBERS           (1L <<  6)
+
+#define TT_UCR_UGARITIC                        (1L <<  7)
+
+#define TT_UCR_OLD_PERSIAN                     (1L <<  8)
+
+#define TT_UCR_SHAVIAN                         (1L <<  9)
+
+#define TT_UCR_OSMANYA                         (1L << 10)
+
+#define TT_UCR_CYPRIOT_SYLLABARY               (1L << 11)
+
+#define TT_UCR_KHAROSHTHI                      (1L << 12)
+
+#define TT_UCR_TAI_XUAN_JING                   (1L << 13)
+
+#define TT_UCR_CUNEIFORM                       (1L << 14)
+
+#define TT_UCR_COUNTING_ROD_NUMERALS           (1L << 15)
+
+#define TT_UCR_SUNDANESE                       (1L << 16)
+
+#define TT_UCR_LEPCHA                          (1L << 17)
+
+#define TT_UCR_OL_CHIKI                        (1L << 18)
+
+#define TT_UCR_SAURASHTRA                      (1L << 19)
+
+#define TT_UCR_KAYAH_LI                        (1L << 20)
+
+#define TT_UCR_REJANG                          (1L << 21)
+
+#define TT_UCR_CHAM                            (1L << 22)
+
+#define TT_UCR_ANCIENT_SYMBOLS                 (1L << 23)
+
+#define TT_UCR_PHAISTOS_DISC                   (1L << 24)
+
+#define TT_UCR_OLD_ANATOLIAN                   (1L << 25)
+
+#define TT_UCR_GAME_TILES                      (1L << 26)
+
 #define TT_UCR_ARABIC_PRESENTATION_A         \
           TT_UCR_ARABIC_PRESENTATION_FORMS_A
 #define TT_UCR_ARABIC_PRESENTATION_B         \
@@ -1226,10 +819,6 @@ FT_BEGIN_HEADER
 #define TT_UCR_COMBINING_DIACRITICS_SYMB          \
           TT_UCR_COMBINING_DIACRITICAL_MARKS_SYMB
 
-
 FT_END_HEADER
 
-#endif 
-
-
-
+#endif

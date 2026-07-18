@@ -2063,7 +2063,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 bool is_stopped       = (res.State == ES::Stopped);
                 bool is_transitioning = (res.State == ES::Starting || res.State == ES::Stopping);
 
-
                 gui->dummy(SCALE(0, 8));
                 ImGui::BeginDisabled(!is_started || is_transitioning);
                 if (widgets->button(xorstr("Stop Resource"),
@@ -2073,7 +2072,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                      2000, notify_type::success);
                 }
                 ImGui::EndDisabled();
-
 
                 gui->dummy(SCALE(0, 8));
                 ImGui::BeginDisabled(!is_stopped || is_transitioning);
@@ -2085,7 +2083,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 }
                 ImGui::EndDisabled();
 
-
                 gui->dummy(SCALE(0, 8));
                 ImGui::BeginDisabled(is_uninitialized || is_transitioning);
                 if (widgets->button(xorstr("Destroy Resource"),
@@ -2095,7 +2092,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                      2000, notify_type::success);
                 }
                 ImGui::EndDisabled();
-
 
                 gui->dummy(SCALE(0, 8));
                 ImGui::BeginDisabled(!is_uninitialized || is_transitioning);
@@ -2881,7 +2877,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
           float gap = SCALE(8);
 
-
           {
             float btn_half = (gui->content_avail().x - gap) / 2;
             bool  cap_now  = evt_capturing;
@@ -2907,13 +2902,10 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
           gui->dummy(SCALE(0, 4));
 
-
-
           float half_width = (gui->content_avail().x - gap) / 2;
           float child_h    = gui->content_avail().y - SCALE(38);
           float origin_x   = ImGui::GetCursorPosX();
           float origin_y   = ImGui::GetCursorPosY();
-
 
           gui->begin_child(xorstr("Event List"), FA_COPY,
                            ImVec2(half_width, child_h), ImGuiChildFlags_None,
@@ -2962,16 +2954,13 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           }
           gui->end_child();
 
-
           ImGui::SetCursorPos(ImVec2(origin_x + half_width + gap, origin_y));
-
 
           gui->begin_child(xorstr("Event Detail"), FA_COPY,
                            ImVec2(half_width, child_h), ImGuiChildFlags_None,
                            ImGuiWindowFlags_NoScrollbar);
           {
             gui->dummy(SCALE(0, 8));
-
 
             {
               ImDrawList* dl  = ImGui::GetWindowDrawList();
@@ -2999,7 +2988,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             }
 
             gui->dummy(SCALE(0, 8));
-
 
             {
               const char* sub_labels[] = { xorstr("Execute"), xorstr("Loop") };
