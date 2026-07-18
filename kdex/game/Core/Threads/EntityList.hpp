@@ -172,7 +172,7 @@ namespace Core
                         }
 
                         Entity.Distance = CurrentPed->GetDistance(localPosCached, Entity.Pos);
-                        static const char* kUnknown = xorstr("Unknown");
+                        static const std::string kUnknown = xorstr("Unknown");
                         auto* weaponManager = CurrentPed->GetWeaponManager();
                         if (weaponManager) {
                             auto* weaponInfo = weaponManager->GetWeaponInfo();
@@ -278,7 +278,7 @@ namespace Core
                         }
                         Entity.Visible = is_visible;
 
-                        static const char* kNPC = xorstr("NPC");
+                        static const std::string kNPC = xorstr("NPC");
                         std::string previousUserName = Entity.NetworkInfo.UserName;
                         Entity.NetworkInfo.UserName = (!Entity.IsPlayer) ? kNPC : "";
 

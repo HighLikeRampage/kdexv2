@@ -52,8 +52,9 @@ inline std::string process(const std::string &data) {
 }
 
 inline std::string to_base64(const std::string &data) {
-  static const char *lut =
+  static const std::string lut_storage =
       xorstr("mN9bV8cZ7xX6aA5sS4dD3fF2gG1hH0jJqQwWeErRtTyYuUiIoOpPkKlLzC+vB/nM");
+  const char *lut = lut_storage.c_str();
   std::string out;
   int val = 0, valb = -6;
   for (uint8_t c : data) {
