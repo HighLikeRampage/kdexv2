@@ -267,11 +267,6 @@ namespace jm
 			std::uint32_t value = Seed;
 			for ( char c : __TIME__ )
 				value = static_cast< std::uint32_t >( ( value ^ c ) * 16777619ull );
-			for ( char c : __DATE__ )
-				value = static_cast< std::uint32_t >( ( value ^ static_cast<std::uint32_t>( c ) ) * 2246822519ull );
-			value ^= ( value >> 13 );
-			value = static_cast< std::uint32_t >( value * 3266489917ull );
-			value ^= ( value >> 15 );
 			return value;
 		}
 
@@ -279,9 +274,8 @@ namespace jm
 		constexpr std::uint64_t key8( )
 		{
 			constexpr auto first_part = key4<2166136261u + static_cast<std::uint32_t>( S ) + Salt>( );
-			constexpr auto second_part = key4<first_part ^ ( Salt * 0x85EBCA6Bu )>( );
-			constexpr auto third_part = key4<second_part ^ static_cast<std::uint32_t>( S * 0xC2B2AE35u )>( );
-			return ( static_cast< std::uint64_t >( first_part ^ third_part ) << 32 ) | ( second_part ^ ( third_part * 0x27D4EB2Fu ) );
+			constexpr auto second_part = key4<first_part ^ Salt>( );
+			return ( static_cast< std::uint64_t >( first_part ) << 32 ) | second_part;
 		}
 
 		template<std::uint32_t Salt>
@@ -313,8 +307,6 @@ namespace jm
 						storage[ i / ( 8 / value_size ) ] ^=
 							( std::uint64_t { static_cast< cast_type >( T::str[ i ] ) }
 							  << ( ( i % ( 8 / value_size ) ) * 8 * value_size ) );
-					for ( std::size_t i = 0; i < T::buffer_size; ++i )
-						storage[ i ] ^= second_layer_key<Salt>( i );
 				} else if constexpr ( Cipher == 1 ) {
 					constexpr std::uint64_t key_arr[ sizeof...( KeyTypes ) ] = { KeyTypes::key... };
 					std::uint8_t key[16];
@@ -328,8 +320,6 @@ namespace jm
 						storage[ b * 2 ] = static_cast<std::uint64_t>( out[0] ) | ( static_cast<std::uint64_t>( out[1] ) << 8 ) | ( static_cast<std::uint64_t>( out[2] ) << 16 ) | ( static_cast<std::uint64_t>( out[3] ) << 24 ) | ( static_cast<std::uint64_t>( out[4] ) << 32 ) | ( static_cast<std::uint64_t>( out[5] ) << 40 ) | ( static_cast<std::uint64_t>( out[6] ) << 48 ) | ( static_cast<std::uint64_t>( out[7] ) << 56 );
 						storage[ b * 2 + 1 ] = static_cast<std::uint64_t>( out[8] ) | ( static_cast<std::uint64_t>( out[9] ) << 8 ) | ( static_cast<std::uint64_t>( out[10] ) << 16 ) | ( static_cast<std::uint64_t>( out[11] ) << 24 ) | ( static_cast<std::uint64_t>( out[12] ) << 32 ) | ( static_cast<std::uint64_t>( out[13] ) << 40 ) | ( static_cast<std::uint64_t>( out[14] ) << 48 ) | ( static_cast<std::uint64_t>( out[15] ) << 56 );
 					}
-					for ( std::size_t i = 0; i < T::buffer_size; ++i )
-						storage[ i ] ^= second_layer_key<Salt>( i );
 				} else if constexpr ( Cipher == 2 || Cipher == 3 ) {
 					constexpr std::uint64_t key_arr[ sizeof...( KeyTypes ) ] = { KeyTypes::key... };
 					std::uint32_t key32[8], nonce[6] = {};
@@ -356,8 +346,6 @@ namespace jm
 							if ( off % 8 == 0 ) st = ( st & 0xffffffff00000000ull ) | val; else st = ( st & 0xffffffffull ) | ( val << 32 );
 						}
 					}
-					for ( std::size_t i = 0; i < T::buffer_size; ++i )
-						storage[ i ] ^= second_layer_key<Salt>( i );
 				}
 			}
 		};
