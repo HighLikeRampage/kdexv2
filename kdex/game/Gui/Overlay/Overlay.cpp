@@ -767,25 +767,33 @@ namespace Gui {
                     s_fse_active = fse_now;
                 }
             }
-            bool need_hook_installed = menu_open;
-            bool need_hook_eating    = s_fse_active && menu_open;
-            if (need_hook_installed && !s_mouse_ll_hook) {
+            static bool s_virt_mouse_initialized = false;
+            static bool s_menu_open_prev = false;
+            if (menu_open && !s_menu_open_prev) {
+                s_virt_mouse_initialized = false;
+            }
+            s_menu_open_prev = menu_open;
 
-                RECT rc = {};
-                GetClientRect(hwnd, &rc);
-                s_virt_mouse_x  = (float)(rc.right  / 2);
-                s_virt_mouse_y  = (float)(rc.bottom / 2);
+            bool need_ll_hook = s_fse_active && menu_open;
+            if (need_ll_hook && !s_mouse_ll_hook) {
+                if (!s_virt_mouse_initialized) {
+                    RECT rc = {};
+                    GetClientRect(hwnd, &rc);
+                    s_virt_mouse_x  = (float)(rc.right  / 2);
+                    s_virt_mouse_y  = (float)(rc.bottom / 2);
+                    s_virt_mouse_initialized = true;
+                }
                 s_raw_dx.store(0);
                 s_raw_dy.store(0);
                 s_last_hw_valid = false;
                 ClipCursor(nullptr);
                 s_mouse_ll_hook = SetWindowsHookExW(WH_MOUSE_LL, OverlayMouseLLProc, GetModuleHandleW(nullptr), 0);
-            } else if (!need_hook_installed && s_mouse_ll_hook) {
+            } else if (!need_ll_hook && s_mouse_ll_hook) {
                 UnhookWindowsHookEx(s_mouse_ll_hook);
                 s_mouse_ll_hook = nullptr;
                 s_last_hw_valid = false;
             }
-            s_ll_eat_mouse.store(need_hook_eating);
+            s_ll_eat_mouse.store(need_ll_hook);
 
             if (menu_open) {
                 DisableMouseAccelForMenu();
