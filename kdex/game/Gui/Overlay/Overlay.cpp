@@ -458,13 +458,8 @@ namespace Gui {
             h = GetSystemMetrics(SM_CYSCREEN);
         }
 
-        bool uia_at_init = UIAccess::HasUIAccess();
-        printf(xorstr("[Overlay] init: uiAccess=%d, pid=%lu, rect=(%d,%d %dx%d)\n"), (int)uia_at_init, GetCurrentProcessId(), x, y, w, h);
-        fflush(stdout);
-
         HWND hwnd = nullptr;
         static auto pCreateWindowInBand = reinterpret_cast<tCreateWindowInBand>(GetProcAddress(GetModuleHandleA(xorstr("user32.dll")), xorstr("CreateWindowInBand")));
-        printf(xorstr("[Overlay] CreateWindowInBand ptr=%p\n"), pCreateWindowInBand); fflush(stdout);
 
         if (pCreateWindowInBand) {
             hwnd = pCreateWindowInBand(
@@ -476,7 +471,6 @@ namespace Gui {
                 nullptr, nullptr, wc.hInstance, nullptr,
                 ZBID_SYSTEM_TOOLS
             );
-            printf(xorstr("[Overlay] CreateWindowInBand(ZBID_SYSTEM_TOOLS) hwnd=%p err=%lu\n"), hwnd, GetLastError()); fflush(stdout);
             if (!hwnd) {
                 hwnd = pCreateWindowInBand(
                     WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE,
@@ -487,7 +481,6 @@ namespace Gui {
                     nullptr, nullptr, wc.hInstance, nullptr,
                     ZBID_UIACCESS
                 );
-                printf(xorstr("[Overlay] CreateWindowInBand(ZBID_UIACCESS) hwnd=%p err=%lu\n"), hwnd, GetLastError()); fflush(stdout);
             }
         }
 
@@ -500,7 +493,6 @@ namespace Gui {
                 x, y, w, h,
                 nullptr, nullptr, wc.hInstance, nullptr
             );
-            printf(xorstr("[Overlay] fallback CreateWindowExW hwnd=%p err=%lu (NO privileged band -- will NOT render over FSE)\n"), hwnd, GetLastError()); fflush(stdout);
         }
 
         AntiCrack::SetOurOverlayHwnd(hwnd);
@@ -764,9 +756,10 @@ namespace Gui {
                 QUERY_USER_NOTIFICATION_STATE quns = QUNS_NOT_PRESENT;
                 bool fse_now = SUCCEEDED(SHQueryUserNotificationState(&quns)) && quns == QUNS_RUNNING_D3D_FULL_SCREEN;
                 if (fse_now != s_fse_active) {
-                    printf(xorstr("[Overlay] FSE transition: %d -> %d\n"), (int)s_fse_active, (int)fse_now);
-                    fflush(stdout);
                     s_fse_active = fse_now;
+                    if (fse_now) {
+                        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+                    }
                 }
             }
             bool need_ll_hook = s_fse_active && menu_open;
@@ -1325,14 +1318,10 @@ namespace Gui {
             }
 
             static double s_last_topmost = 0.0;
-            if (!is_auth_phase && !is_launch_phase && (t_frame - s_last_topmost) >= 0.5) {
+            double topmost_interval = s_fse_active ? 0.1 : 0.5;
+            if (!is_auth_phase && !is_launch_phase && (t_frame - s_last_topmost) >= topmost_interval) {
                 s_last_topmost = t_frame;
                 SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOSENDCHANGING);
-                if (s_last_stream_proof) {
-                    BOOL ex = TRUE;
-
-
-                }
             }
 
             if ((is_auth_phase || is_launch_phase || (is_in_game && (is_game_active || option->param.second_monitor_display))))
@@ -1598,7 +1587,7 @@ bool CreateDeviceD3D(HWND hWnd)
 {
     DXGI_SWAP_CHAIN_DESC sd;
     ZeroMemory(&sd, sizeof(sd));
-    sd.BufferCount = 1;
+    sd.BufferCount = 2;
     sd.BufferDesc.Width = 0;
     sd.BufferDesc.Height = 0;
     sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -1607,7 +1596,7 @@ bool CreateDeviceD3D(HWND hWnd)
     sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
     sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     sd.OutputWindow = hWnd;
-    sd.SampleDesc.Count = 2;
+    sd.SampleDesc.Count = 1;
     sd.SampleDesc.Quality = 0;
     sd.Windowed = TRUE;
     sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
@@ -1620,6 +1609,19 @@ bool CreateDeviceD3D(HWND hWnd)
         res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
     if (res != S_OK)
         return false;
+
+    if (IDXGIDevice* pDXGIDevice = nullptr; SUCCEEDED(g_pd3dDevice->QueryInterface(__uuidof(IDXGIDevice), (void**)&pDXGIDevice))) {
+        IDXGIAdapter* pAdapter = nullptr;
+        if (SUCCEEDED(pDXGIDevice->GetAdapter(&pAdapter))) {
+            IDXGIFactory* pFactory = nullptr;
+            if (SUCCEEDED(pAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&pFactory))) {
+                pFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER | DXGI_MWA_NO_PRINT_SCREEN);
+                pFactory->Release();
+            }
+            pAdapter->Release();
+        }
+        pDXGIDevice->Release();
+    }
 
     CreateRenderTarget();
     return true;

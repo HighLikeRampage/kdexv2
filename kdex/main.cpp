@@ -141,8 +141,6 @@ static DWORD CheatThreadImpl(LPVOID lpParam) {
     if (g_IsInjectedDll)
         Sleep(0);
 
-	CreateDebugConsole();
-
 	g_hMutex = LI_FN(CreateMutexA)(nullptr, TRUE, xorstr("WindowsHostUpdater"));
 	if (LI_FN(GetLastError)() == ERROR_ALREADY_EXISTS)
 	{
@@ -200,9 +198,9 @@ static DWORD CheatThreadImpl(LPVOID lpParam) {
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
 	g_hInstance = hInst;
-	CreateDebugConsole();
 	if (UIAccess::RelaunchElevated()) return 0;
 	if (UIAccess::RelaunchWithUIAccess()) return 0;
+	CreateDebugConsole();
 	atexit(ClearLoggedState);
 
 	CheatThread(NULL);
