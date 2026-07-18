@@ -74,27 +74,6 @@ static std::atomic<bool> s_raw_input_registered{ false };
 static POINT s_last_hw_pt    = { 0, 0 };
 static bool  s_last_hw_valid = false;
 
-static INT s_saved_mouse_params[3] = { 0, 0, 0 };
-static std::atomic<bool> s_mouse_accel_saved{ false };
-
-static void RestoreMouseAccelIfNeeded() {
-    if (s_mouse_accel_saved.exchange(false)) {
-        SystemParametersInfoA(SPI_SETMOUSE, 0, s_saved_mouse_params, 0);
-    }
-}
-
-static void DisableMouseAccelForMenu() {
-    if (s_mouse_accel_saved.load()) return;
-    INT current[3] = { 0, 0, 0 };
-    if (!SystemParametersInfoA(SPI_GETMOUSE, 0, current, 0)) return;
-    if (current[2] == 0) return;
-    s_saved_mouse_params[0] = current[0];
-    s_saved_mouse_params[1] = current[1];
-    s_saved_mouse_params[2] = current[2];
-    s_mouse_accel_saved.store(true);
-    INT no_accel[3] = { current[0], current[1], 0 };
-    SystemParametersInfoA(SPI_SETMOUSE, 0, no_accel, 0);
-}
 
 static float s_virt_mouse_x = 0.f;
 static float s_virt_mouse_y = 0.f;
@@ -792,12 +771,6 @@ namespace Gui {
                 RegisterOverlayRawInput(hwnd, false);
             }
             s_ll_eat_mouse.store(need_ll_hook);
-
-            if (menu_open) {
-                DisableMouseAccelForMenu();
-            } else {
-                RestoreMouseAccelIfNeeded();
-            }
 
             if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
             {
@@ -1590,8 +1563,6 @@ namespace Gui {
         }
 
         g_dashboard_stop = true;
-
-        RestoreMouseAccelIfNeeded();
 
         ImGui_ImplDX11_Shutdown();
         ImGui_ImplWin32_Shutdown();
