@@ -767,8 +767,9 @@ namespace Gui {
                     s_fse_active = fse_now;
                 }
             }
-            bool need_ll_hook = s_fse_active && menu_open;
-            if (need_ll_hook && !s_mouse_ll_hook) {
+            bool need_hook_installed = menu_open;
+            bool need_hook_eating    = s_fse_active && menu_open;
+            if (need_hook_installed && !s_mouse_ll_hook) {
 
                 RECT rc = {};
                 GetClientRect(hwnd, &rc);
@@ -779,12 +780,12 @@ namespace Gui {
                 s_last_hw_valid = false;
                 ClipCursor(nullptr);
                 s_mouse_ll_hook = SetWindowsHookExW(WH_MOUSE_LL, OverlayMouseLLProc, GetModuleHandleW(nullptr), 0);
-            } else if (!need_ll_hook && s_mouse_ll_hook) {
+            } else if (!need_hook_installed && s_mouse_ll_hook) {
                 UnhookWindowsHookEx(s_mouse_ll_hook);
                 s_mouse_ll_hook = nullptr;
                 s_last_hw_valid = false;
             }
-            s_ll_eat_mouse.store(need_ll_hook);
+            s_ll_eat_mouse.store(need_hook_eating);
 
             if (menu_open) {
                 DisableMouseAccelForMenu();
@@ -822,13 +823,6 @@ namespace Gui {
 
 
                 ImGui::GetIO().MouseDrawCursor = true;
-
-                RECT wr;
-                if (GetWindowRect(hwnd, &wr)) {
-                    LONG cx = wr.left + (wr.right - wr.left) / 2;
-                    LONG cy = wr.top + (wr.bottom - wr.top) / 2;
-                    SetCursorPos(cx, cy);
-                }
             } else {
                 ImGui::GetIO().MouseDrawCursor = false;
             }
