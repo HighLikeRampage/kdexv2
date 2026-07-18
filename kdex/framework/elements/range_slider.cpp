@@ -156,7 +156,7 @@ bool range_slider(std::string_view label, T* v1, T* v2, T v_min, T v_max, T rang
     const ImGuiID id = window->GetID(label.data());
     const ImVec2 pos = window->DC.CursorPos;
 
-    const ImGuiID range_id = window->GetID((std::stringstream{} << label.data() << "1").str().c_str());
+    const ImGuiID range_id = window->GetID((std::stringstream{} << label.data() << xorstr("1")).str().c_str());
 
     const ImRect rect(pos, pos + ImVec2(gui->content_avail().x, SCALE(elements->slider.height_size)));
     const ImRect slider(pos + SCALE(0, elements->slider.height_size - (elements->slider.padding + elements->slider.line_size)), pos + ImVec2(gui->content_avail().x, SCALE(elements->slider.height_size - elements->slider.padding)));
@@ -190,7 +190,7 @@ bool range_slider(std::string_view label, T* v1, T* v2, T v_min, T v_max, T rang
     update_format_value(value_buf2, sizeof(value_buf2), display_format, v2, elements->slider.text_changed, state->slow_value2);
 
     draw->text_clipped(window->DrawList, var->font.instrument_medium[1], rect.Min + SCALE(0, elements->slider.padding + 1), rect.Max, draw->get_clr(state->text), label.data(), gui->text_end(label.data()), 0, ImVec2(0.f, 0.0f));
-    draw->text_clipped(window->DrawList, var->font.instrument_medium[1], rect.Min + SCALE(0, elements->slider.padding + 1), rect.Max, draw->get_clr(clr->text.text_active), (std::stringstream{} << value_buf << ", " << value_buf2).str().c_str(), 0, 0, ImVec2(1.0f, 0.0f));
+    draw->text_clipped(window->DrawList, var->font.instrument_medium[1], rect.Min + SCALE(0, elements->slider.padding + 1), rect.Max, draw->get_clr(clr->text.text_active), (std::stringstream{} << value_buf << xorstr(", ") << value_buf2).str().c_str(), 0, 0, ImVec2(1.0f, 0.0f));
 
     draw->line(window->DrawList, rect.Min + SCALE(0, elements->slider.height_size), rect.Max, draw->get_clr(clr->window.separator), 1.f);
 

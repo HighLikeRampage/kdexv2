@@ -233,9 +233,9 @@ bool c_widgets::color_picker(std::string_view label, float col[4], bool alpha)
             alpha_bar(col, &a, elements->color_edit.alpha_line_size, alpha, &value_changed);
 
             if (alpha)
-                ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
+                ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr("#%02X%02X%02X%02X"), ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
             else
-                ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255));
+                ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr("#%02X%02X%02X"), ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255));
 
             if (widgets->text_field(ICON_WRENCH, xorstr(""), xorstr("HEX"), buf, IM_ARRAYSIZE(buf), nullptr, SCALE(elements->color_edit.text_field_size), ImGuiInputTextFlags_CharsUppercase))
             {
@@ -245,7 +245,7 @@ bool c_widgets::color_picker(std::string_view label, float col[4], bool alpha)
                     p++;
                 i[0] = i[1] = i[2] = 0;
                 i[3] = 0xFF;
-                int ri = sscanf(p, "%02X%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]);
+                int ri = sscanf(p, xorstr("%02X%02X%02X%02X"), (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]);
                 r = i[0] / 255.f;
                 g = i[1] / 255.f;
                 b = i[2] / 255.f;
@@ -403,9 +403,9 @@ bool c_widgets::checkbox_with_picker(std::string_view label, bool* callback, flo
             alpha_bar(col, &a, elements->color_edit.alpha_line_size, alpha, &value_changed);
 
             if (alpha)
-                ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
+                ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr("#%02X%02X%02X%02X"), ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
             else
-                ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255));
+                ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr("#%02X%02X%02X"), ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255));
 
             if (widgets->text_field(ICON_WRENCH, xorstr(""), xorstr("HEX"), buf, IM_ARRAYSIZE(buf), nullptr, SCALE(elements->color_edit.text_field_size), ImGuiInputTextFlags_CharsUppercase))
             {
@@ -415,7 +415,7 @@ bool c_widgets::checkbox_with_picker(std::string_view label, bool* callback, flo
                     p++;
                 i[0] = i[1] = i[2] = 0;
                 i[3] = 0xFF;
-                int ri = sscanf(p, "%02X%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]);
+                int ri = sscanf(p, xorstr("%02X%02X%02X%02X"), (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]);
                 r = i[0] / 255.f;
                 g = i[1] / 255.f;
                 b = i[2] / 255.f;

@@ -33,7 +33,17 @@ SKIP_PREFIXES = ('L"', 'u8"', 'u"', 'U"', 'R"')
 
 SKIP_DIRS = ('thirdparty', 'imgui', 'freetype', 'dxsdk', 'curl')
 
-WRAPPER_CALLERS = ('xorstr(', 'xorstr_(', 'LI_FN(', '_T(', 'TEXT(', '#include')
+SKIP_FILES = (
+    'json.hpp', 'xorstr.hpp', 'LazyImporter.hpp', 'lazyimporter.hpp',
+    # Big data files that need bulk-blob encryption instead of per-literal
+    # xorstr wraps (template instantiation cost + string_view containers).
+    'CrossmapNatives.cpp', 'ObjectNames.hpp', 'NativeHashNames.hpp',
+)
+
+WRAPPER_CALLERS = ('xorstr(', 'xorstr_(', 'LI_FN(', '_T(', 'TEXT(', 'IM_STR(', '#include')
+
+EXTERN_C_RE = re.compile(r'\bextern\s*"[^"]*"')
+STRINGVIEW_RE = re.compile(r'\bstring_view\b')
 
 def should_skip_dir(path: str) -> bool:
     parts = path.replace('\\', '/').split('/')
@@ -49,10 +59,17 @@ def scan_line(line: str) -> list[tuple[int, int]]:
         return hits
     if re.search(r'\bcase\s+.*"', line):
         return hits
+    if STRINGVIEW_RE.search(line):
+        return hits
+    # extern "C" / extern "C++" — skip the whole line to avoid touching the
+    # linkage-spec string. Also skip lines with __pragma(...).
+    extern_spans = [(m.start(), m.end()) for m in EXTERN_C_RE.finditer(line)]
     for m in STRING_RE.finditer(line):
         s, e = m.start(), m.end()
         text = m.group(0)
         if text == '""':
+            continue
+        if any(s >= a and e <= b for a, b in extern_spans):
             continue
         # wide / raw / prefixed literals
         pre_start = max(0, s - 2)
@@ -95,8 +112,44 @@ def process_file(path: str, apply: bool) -> tuple[int, int]:
     changed_lines = 0
     with io.open(path, 'r', encoding='utf-8', errors='replace') as f:
         lines = f.readlines()
+    # Precompute which lines are "orphan continuations" of a concatenated
+    # string literal (previous non-empty line ends with `"` or `\<newline>`,
+    # or current line's first non-space token starts with `"`).
+    orphan_continuation = [False] * len(lines)
+    for i, line in enumerate(lines):
+        s = line.lstrip()
+        if not s: continue
+        if s.startswith('"'):
+            # Look back to previous non-blank non-comment line
+            j = i - 1
+            while j >= 0 and (not lines[j].strip() or lines[j].lstrip().startswith(('//', '/*'))):
+                j -= 1
+            if j >= 0:
+                prev = lines[j].rstrip()
+                # Concatenated literal continuation
+                if prev.endswith('"') or prev.endswith('\\') or prev.endswith('"\\'):
+                    orphan_continuation[i] = True
+                # Function argument on the next line, where the previous
+                # line ends with an unmatched `xorstr(` / `xorstr_(` /
+                # `LI_FN(` / `_T(` / `TEXT(`. Wrapping our leading literal
+                # would produce `xorstr( xorstr("..."))` which asks the
+                # compiler to xorstr-encrypt a runtime pointer.
+                stripped_prev = prev.rstrip()
+                if any(stripped_prev.endswith(w) for w in WRAPPER_CALLERS):
+                    orphan_continuation[i] = True
+        # Also mark lines whose LAST literal is followed by a newline and
+        # then another literal (this file's next line begins with ").
+        if i + 1 < len(lines):
+            nxt = lines[i + 1].lstrip()
+            if nxt.startswith('"') and line.rstrip().endswith('"'):
+                # this line's tail literal is a concat head → mark BOTH.
+                orphan_continuation[i] = True
+                orphan_continuation[i + 1] = True
     new_lines = []
     for i, line in enumerate(lines, 1):
+        if orphan_continuation[i - 1]:
+            new_lines.append(line)
+            continue
         hits = scan_line(line)
         if hits:
             total += len(hits)
@@ -123,6 +176,8 @@ def walk(root: str):
         dirs[:] = [d for d in dirs if d.lower() not in SKIP_DIRS]
         for f in files:
             if f.endswith(('.cpp', '.hpp', '.h', '.cc')):
+                if f in SKIP_FILES:
+                    continue
                 p = os.path.join(base, f)
                 if should_skip_dir(p): continue
                 yield p

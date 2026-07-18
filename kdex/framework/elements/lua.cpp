@@ -81,20 +81,20 @@ bool c_widgets::lua(std::string_view name, std::string_view desc, bool* active)
     ImVec2 stored_pos = gui->get_screen_pos();
 
     gui->set_screen_pos(rect.Max - SCALE(elements->lua.load_size + ImVec2(10, 10)), pos_all);
-    if (load_button((std::stringstream{} << name << "load_button").str(), active))
+    if (load_button((std::stringstream{} << name << xorstr("load_button")).str(), active))
         *active = !*active;
 
     gui->set_screen_pos(ImVec2(rect.Min.x + SCALE(10), rect.Max.y - SCALE(12 + elements->lua.button_size.y)), pos_all);
-    f_button((std::stringstream{} << name << "one_button").str(), "Q", true);
+    f_button((std::stringstream{} << name << xorstr("one_button")).str(), xorstr("Q"), true);
 
     gui->set_screen_pos(ImVec2(rect.Min.x + SCALE(30), rect.Max.y - SCALE(12 + elements->lua.button_size.y)), pos_all);
-    f_button((std::stringstream{} << name << "two_button").str(), "K", false);
+    f_button((std::stringstream{} << name << xorstr("two_button")).str(), xorstr("K"), false);
 
     gui->set_screen_pos(ImVec2(rect.Min.x + SCALE(50), rect.Max.y - SCALE(12 + elements->lua.button_size.y)), pos_all);
-    f_button((std::stringstream{} << name << "three_button").str(), "C", false);
+    f_button((std::stringstream{} << name << xorstr("three_button")).str(), xorstr("C"), false);
 
     gui->set_screen_pos(ImVec2(rect.Min.x + SCALE(70), rect.Max.y - SCALE(12 + elements->lua.button_size.y)), pos_all);
-    if (f_button((std::stringstream{} << name << "four_button").str(), "A", false))
+    if (f_button((std::stringstream{} << name << xorstr("four_button")).str(), xorstr("A"), false))
         elements->section.section_count = 6;
 
     gui->set_screen_pos(stored_pos, pos_all);
@@ -106,12 +106,12 @@ bool c_widgets::lua(std::string_view name, std::string_view desc, bool* active)
 
 std::unordered_set<std::string> main_keywords =
 {
-    "break", "do", "else", "elseif", "end", "for", "function", "goto", "if", "in", "repeat", "then", "until", "while"
+    xorstr("break"), xorstr("do"), xorstr("else"), xorstr("elseif"), xorstr("end"), xorstr("for"), xorstr("function"), xorstr("goto"), xorstr("if"), xorstr("in"), xorstr("repeat"), xorstr("then"), xorstr("until"), xorstr("while")
 };
 
 std::unordered_set<std::string> add_keywords =
 {
-    "return", "and", "or", "not", "nil", "true", "false", "local"
+    xorstr("return"), xorstr("and"), xorstr("or"), xorstr("not"), xorstr("nil"), xorstr("true"), xorstr("false"), xorstr("local")
 };
 
 void lua_text(const std::vector<std::pair<std::string, ImU32>>& text_with_colors, const ImVec2& pos)
@@ -201,7 +201,7 @@ void lua_syntax(const std::string& text, const ImVec2& pos)
         {
             if (start_pos + 2 < len && text[start_pos + 2] == '[' && text[start_pos + 3] == '[')
             {
-                size_t comment_end = text.find("--]]", start_pos + 4);
+                size_t comment_end = text.find(xorstr("--]]"), start_pos + 4);
                 if (comment_end != std::string::npos)
                 {
                     std::string multi_line_comment = text.substr(start_pos, comment_end - start_pos + 4);
@@ -212,7 +212,7 @@ void lua_syntax(const std::string& text, const ImVec2& pos)
             }
             else
             {
-                size_t comment_end = text.find("\n", start_pos);
+                size_t comment_end = text.find(xorstr("\n"), start_pos);
                 comment_end = (comment_end == std::string::npos) ? len : comment_end;
                 std::string comment = text.substr(start_pos, comment_end - start_pos);
                 text_with_colors.push_back({ comment, draw->get_clr(ImColor(106, 153, 85)) });
@@ -680,7 +680,7 @@ bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, 
     lua_field_state* animstate = gui->anim_container(&animstate, id);
 
     const float side_width{ 10 };
-    const ImRect numbering(window->DC.CursorPos, window->DC.CursorPos + ImVec2(gui->text_size(GetDefaultFont(), "A").x * std::to_string(animstate->line_count).length() + SCALE(side_width), size_arg.y));
+    const ImRect numbering(window->DC.CursorPos, window->DC.CursorPos + ImVec2(gui->text_size(GetDefaultFont(), xorstr("A")).x * std::to_string(animstate->line_count).length() + SCALE(side_width), size_arg.y));
     const ImRect rect(ImVec2(numbering.Max.x, numbering.Min.y), window->DC.CursorPos + size_arg);
 
     ImGuiWindow* draw_window = window;
@@ -1500,7 +1500,7 @@ bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, 
 
     if (g.LogEnabled && (!is_password || is_displaying_hint))
     {
-        LogSetNextTextDecoration("{", "}");
+        LogSetNextTextDecoration(xorstr("{"), xorstr("}"));
         LogRenderedText(&draw_pos, buf_display, buf_display_end);
     }
 
@@ -1552,7 +1552,7 @@ bool c_widgets::folder(std::string_view label, bool active)
     draw->rect_filled(window->DrawList, rect.Min, rect.Max, draw->get_clr({ 1.f, 1.f, 1.f, 0.02f }, state->alpha), SCALE(elements->lua.rounding));
 
     draw->text_clipped(window->DrawList, var->font.instrument_medium[1], rect.Min + SCALE(40, 0), rect.Max, draw->get_clr(state->text), label.data(), NULL, NULL, { 0.0, 0.5 }, NULL);
-    draw->text_clipped(window->DrawList, var->font.icons[4], rect.Min + SCALE(15, 0), rect.Max, draw->get_clr(state->icon), "K", NULL, NULL, {0.0, 0.5}, NULL);
+    draw->text_clipped(window->DrawList, var->font.icons[4], rect.Min + SCALE(15, 0), rect.Max, draw->get_clr(state->icon), xorstr("K"), NULL, NULL, {0.0, 0.5}, NULL);
 
     return pressed;
 }

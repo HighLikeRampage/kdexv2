@@ -220,7 +220,7 @@ bool c_gui::render_launch_screen(const GuiFrameContext& ctx) {
       std::time_t now = std::time(nullptr);
       std::tm *lt = std::localtime(&now);
       char datetime_buf[64];
-      std::strftime(datetime_buf, sizeof(datetime_buf), "%Y-%m-%d  %H:%M:%S",
+      std::strftime(datetime_buf, sizeof(datetime_buf), xorstr("%Y-%m-%d  %H:%M:%S"),
                     lt);
       const char *dt_label = xorstr("Date & Time:");
       ImVec2 dt_sz = gui->text_size(var->font.instrument_medium[0], dt_label);
@@ -246,7 +246,7 @@ bool c_gui::render_launch_screen(const GuiFrameContext& ctx) {
                          days_label, 0, 0, {0.0f, 0.5f});
       cur_y += line_h;
       char days_val[32];
-      snprintf(days_val, sizeof(days_val), "%d",
+      snprintf(days_val, sizeof(days_val), xorstr("%d"),
                var->auth.subscription_days_left >= 0
                    ? var->auth.subscription_days_left
                    : 0);

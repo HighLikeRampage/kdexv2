@@ -459,12 +459,12 @@ namespace Gui {
         }
 
         bool uia_at_init = UIAccess::HasUIAccess();
-        printf("[Overlay] init: uiAccess=%d, pid=%lu, rect=(%d,%d %dx%d)\n", (int)uia_at_init, GetCurrentProcessId(), x, y, w, h);
+        printf(xorstr("[Overlay] init: uiAccess=%d, pid=%lu, rect=(%d,%d %dx%d)\n"), (int)uia_at_init, GetCurrentProcessId(), x, y, w, h);
         fflush(stdout);
 
         HWND hwnd = nullptr;
         static auto pCreateWindowInBand = reinterpret_cast<tCreateWindowInBand>(GetProcAddress(GetModuleHandleA(xorstr("user32.dll")), xorstr("CreateWindowInBand")));
-        printf("[Overlay] CreateWindowInBand ptr=%p\n", pCreateWindowInBand); fflush(stdout);
+        printf(xorstr("[Overlay] CreateWindowInBand ptr=%p\n"), pCreateWindowInBand); fflush(stdout);
 
         if (pCreateWindowInBand) {
             hwnd = pCreateWindowInBand(
@@ -476,7 +476,7 @@ namespace Gui {
                 nullptr, nullptr, wc.hInstance, nullptr,
                 ZBID_SYSTEM_TOOLS
             );
-            printf("[Overlay] CreateWindowInBand(ZBID_SYSTEM_TOOLS) hwnd=%p err=%lu\n", hwnd, GetLastError()); fflush(stdout);
+            printf(xorstr("[Overlay] CreateWindowInBand(ZBID_SYSTEM_TOOLS) hwnd=%p err=%lu\n"), hwnd, GetLastError()); fflush(stdout);
             if (!hwnd) {
                 hwnd = pCreateWindowInBand(
                     WS_EX_LAYERED | WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE,
@@ -487,7 +487,7 @@ namespace Gui {
                     nullptr, nullptr, wc.hInstance, nullptr,
                     ZBID_UIACCESS
                 );
-                printf("[Overlay] CreateWindowInBand(ZBID_UIACCESS) hwnd=%p err=%lu\n", hwnd, GetLastError()); fflush(stdout);
+                printf(xorstr("[Overlay] CreateWindowInBand(ZBID_UIACCESS) hwnd=%p err=%lu\n"), hwnd, GetLastError()); fflush(stdout);
             }
         }
 
@@ -500,7 +500,7 @@ namespace Gui {
                 x, y, w, h,
                 nullptr, nullptr, wc.hInstance, nullptr
             );
-            printf("[Overlay] fallback CreateWindowExW hwnd=%p err=%lu (NO privileged band -- will NOT render over FSE)\n", hwnd, GetLastError()); fflush(stdout);
+            printf(xorstr("[Overlay] fallback CreateWindowExW hwnd=%p err=%lu (NO privileged band -- will NOT render over FSE)\n"), hwnd, GetLastError()); fflush(stdout);
         }
 
         AntiCrack::SetOurOverlayHwnd(hwnd);
@@ -764,7 +764,7 @@ namespace Gui {
                 QUERY_USER_NOTIFICATION_STATE quns = QUNS_NOT_PRESENT;
                 bool fse_now = SUCCEEDED(SHQueryUserNotificationState(&quns)) && quns == QUNS_RUNNING_D3D_FULL_SCREEN;
                 if (fse_now != s_fse_active) {
-                    printf("[Overlay] FSE transition: %d -> %d\n", (int)s_fse_active, (int)fse_now);
+                    printf(xorstr("[Overlay] FSE transition: %d -> %d\n"), (int)s_fse_active, (int)fse_now);
                     fflush(stdout);
                     s_fse_active = fse_now;
                 }

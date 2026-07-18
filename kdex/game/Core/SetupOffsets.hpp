@@ -25,7 +25,7 @@ inline bool SetupOffsets() {
     std::string pName = rawProcName;
     std::transform(pName.begin(), pName.end(), pName.begin(), ::tolower);
 
-    size_t bPos = pName.find("_b");
+    size_t bPos = pName.find(xorstr("_b"));
     if (bPos != std::string::npos) {
       std::string buildStr = "";
       for (size_t i = bPos + 2; i < pName.size() && isdigit(pName[i]); ++i) {

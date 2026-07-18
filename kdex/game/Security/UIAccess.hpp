@@ -17,10 +17,10 @@ namespace UIAccess {
         va_start(ap, fmt);
         _vsnprintf_s(buf, sizeof(buf), _TRUNCATE, fmt, ap);
         va_end(ap);
-        printf("[UIAccess] %s\n", buf);
+        printf(xorstr("[UIAccess] %s\n"), buf);
         fflush(stdout);
         char dbg[600];
-        _snprintf_s(dbg, sizeof(dbg), _TRUNCATE, "[UIAccess] %s\n", buf);
+        _snprintf_s(dbg, sizeof(dbg), _TRUNCATE, xorstr("[UIAccess] %s\n"), buf);
         OutputDebugStringA(dbg);
     }
 
@@ -49,7 +49,7 @@ namespace UIAccess {
     inline DWORD FindWinlogonInSession(DWORD sessionId) {
         HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         if (snap == INVALID_HANDLE_VALUE) {
-            Log("CreateToolhelp32Snapshot failed, err=%lu", GetLastError());
+            Log(xorstr("CreateToolhelp32Snapshot failed, err=%lu"), GetLastError());
             return 0;
         }
         PROCESSENTRY32W pe{ sizeof(pe) };
@@ -62,14 +62,14 @@ namespace UIAccess {
                     wcount++;
                     DWORD sid = (DWORD)-1;
                     BOOL sok = ProcessIdToSessionId(pe.th32ProcessID, &sid);
-                    Log("  winlogon pid=%lu session=%lu (sok=%d)", pe.th32ProcessID, sid, sok);
+                    Log(xorstr("  winlogon pid=%lu session=%lu (sok=%d)"), pe.th32ProcessID, sid, sok);
                     if (sok && sid == sessionId && !found) {
                         found = pe.th32ProcessID;
                     }
                 }
             } while (Process32NextW(snap, &pe));
         }
-        Log("enum: total=%d winlogon_matches=%d chosen_pid=%lu", total, wcount, found);
+        Log(xorstr("enum: total=%d winlogon_matches=%d chosen_pid=%lu"), total, wcount, found);
         CloseHandle(snap);
         return found;
     }
@@ -102,14 +102,14 @@ namespace UIAccess {
     }
 
     inline bool RelaunchElevated() {
-        Log("RelaunchElevated() enter, pid=%lu", GetCurrentProcessId());
+        Log(xorstr("RelaunchElevated() enter, pid=%lu"), GetCurrentProcessId());
         if (IsElevatedToken()) {
-            Log("already elevated, skip");
+            Log(xorstr("already elevated, skip"));
             return false;
         }
         LPCWSTR cmd = GetCommandLineW();
         if (cmd && wcsstr(cmd, L"--kdex-elev")) {
-            Log("--kdex-elev marker present but still Medium -- UAC/policy/manifest is stripping elevation, cannot recover");
+            Log(xorstr("--kdex-elev marker present but still Medium -- UAC/policy/manifest is stripping elevation, cannot recover"));
             return false;
         }
 
@@ -123,12 +123,12 @@ namespace UIAccess {
         sei.nShow = SW_NORMAL;
         sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC;
 
-        Log("ShellExecuteExW runas exe=%ls", exePath);
+        Log(xorstr("ShellExecuteExW runas exe=%ls"), exePath);
         if (!ShellExecuteExW(&sei)) {
-            Log("ShellExecuteExW failed, err=%lu (1223=user declined UAC)", GetLastError());
+            Log(xorstr("ShellExecuteExW failed, err=%lu (1223=user declined UAC)"), GetLastError());
             return false;
         }
-        Log("UAC accepted, elevated child spawned -- parent exiting");
+        Log(xorstr("UAC accepted, elevated child spawned -- parent exiting"));
         if (sei.hProcess) CloseHandle(sei.hProcess);
         return true;
     }
@@ -138,7 +138,7 @@ namespace UIAccess {
         GetSystemDirectoryW(path, MAX_PATH);
         wcscat_s(path, L"\\");
         wcscat_s(path, relative);
-        Log("SpawnAndStealTokenFrom: ShellExecuteExW %ls hidden", path);
+        Log(xorstr("SpawnAndStealTokenFrom: ShellExecuteExW %ls hidden"), path);
 
         SHELLEXECUTEINFOW sei{ sizeof(sei) };
         sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_FLAG_NO_UI | SEE_MASK_NOASYNC;
@@ -146,12 +146,12 @@ namespace UIAccess {
         sei.nShow = SW_HIDE;
 
         if (!ShellExecuteExW(&sei) || !sei.hProcess) {
-            Log("ShellExecuteExW(%ls) failed, err=%lu hProcess=%p", relative, GetLastError(), sei.hProcess);
+            Log(xorstr("ShellExecuteExW(%ls) failed, err=%lu hProcess=%p"), relative, GetLastError(), sei.hProcess);
             if (sei.hProcess) CloseHandle(sei.hProcess);
             return nullptr;
         }
         DWORD pid = GetProcessId(sei.hProcess);
-        Log("%ls spawned pid=%lu", relative, pid);
+        Log(xorstr("%ls spawned pid=%lu"), relative, pid);
 
         HANDLE hTok = nullptr;
         BOOL ok = FALSE;
@@ -162,12 +162,12 @@ namespace UIAccess {
                 &hTok);
         }
         if (!ok) {
-            Log("OpenProcessToken(%ls) failed after retries, err=%lu", relative, GetLastError());
+            Log(xorstr("OpenProcessToken(%ls) failed after retries, err=%lu"), relative, GetLastError());
             TerminateProcess(sei.hProcess, 0);
             CloseHandle(sei.hProcess);
             return nullptr;
         }
-        Log("OpenProcessToken(%ls) ok", relative);
+        Log(xorstr("OpenProcessToken(%ls) ok"), relative);
 
         HANDLE hDup = nullptr;
         ok = DuplicateTokenEx(hTok, MAXIMUM_ALLOWED, nullptr, SecurityImpersonation, TokenPrimary, &hDup);
@@ -176,23 +176,23 @@ namespace UIAccess {
         CloseHandle(sei.hProcess);
 
         if (!ok || !hDup) {
-            Log("DuplicateTokenEx(%ls) failed, err=%lu", relative, GetLastError());
+            Log(xorstr("DuplicateTokenEx(%ls) failed, err=%lu"), relative, GetLastError());
             return nullptr;
         }
-        Log("DuplicateTokenEx(%ls) ok", relative);
+        Log(xorstr("DuplicateTokenEx(%ls) ok"), relative);
 
         DWORD uia = 0, ret = 0;
         if (GetTokenInformation(hDup, TokenUIAccess, &uia, sizeof(uia), &ret)) {
-            Log("stolen %ls token: UIAccess=%lu", relative, uia);
+            Log(xorstr("stolen %ls token: UIAccess=%lu"), relative, uia);
         }
         if (!uia) {
             DWORD one = 1;
             if (!SetTokenInformation(hDup, TokenUIAccess, &one, sizeof(one))) {
-                Log("SetTokenInformation(TokenUIAccess=1) failed, err=%lu -- token unusable", GetLastError());
+                Log(xorstr("SetTokenInformation(TokenUIAccess=1) failed, err=%lu -- token unusable"), GetLastError());
                 CloseHandle(hDup);
                 return nullptr;
             }
-            Log("SetTokenInformation(TokenUIAccess=1) ok");
+            Log(xorstr("SetTokenInformation(TokenUIAccess=1) ok"));
         }
         return hDup;
     }
@@ -200,48 +200,48 @@ namespace UIAccess {
     inline HANDLE StealUIAccessTokenFromOsk() {
         HANDLE h = SpawnAndStealTokenFrom(L"osk.exe");
         if (h) return h;
-        Log("osk.exe failed, trying magnify.exe fallback");
+        Log(xorstr("osk.exe failed, trying magnify.exe fallback"));
         h = SpawnAndStealTokenFrom(L"magnify.exe");
         if (h) return h;
-        Log("magnify.exe failed, trying narrator.exe fallback");
+        Log(xorstr("magnify.exe failed, trying narrator.exe fallback"));
         return SpawnAndStealTokenFrom(L"narrator.exe");
     }
 
     inline bool RelaunchWithUIAccess() {
-        Log("RelaunchWithUIAccess() enter, pid=%lu", GetCurrentProcessId());
-        Log("token: elevated=%d integrity=0x%lx (0x2000=Medium 0x3000=High 0x4000=System)", (int)IsElevatedToken(), GetIntegrityLevel());
+        Log(xorstr("RelaunchWithUIAccess() enter, pid=%lu"), GetCurrentProcessId());
+        Log(xorstr("token: elevated=%d integrity=0x%lx (0x2000=Medium 0x3000=High 0x4000=System)"), (int)IsElevatedToken(), GetIntegrityLevel());
 
         if (HasUIAccess()) {
-            Log("already have UIAccess, skipping relaunch");
+            Log(xorstr("already have UIAccess, skipping relaunch"));
             return false;
         }
-        Log("current process does NOT have UIAccess");
+        Log(xorstr("current process does NOT have UIAccess"));
 
         wchar_t marker[8] = {};
         if (GetEnvironmentVariableW(L"KDEX_UIACC", marker, 8) > 0) {
-            Log("KDEX_UIACC marker present, skipping to avoid relaunch loop");
+            Log(xorstr("KDEX_UIACC marker present, skipping to avoid relaunch loop"));
             return false;
         }
         SetEnvironmentVariableW(L"KDEX_UIACC", L"1");
-        Log("set KDEX_UIACC=1");
+        Log(xorstr("set KDEX_UIACC=1"));
 
         bool dbg = EnablePrivilege(SE_DEBUG_NAME);
         bool imp = EnablePrivilege(SE_IMPERSONATE_NAME);
-        Log("EnablePrivilege SeDebug=%d SeImpersonate=%d", dbg, imp);
+        Log(xorstr("EnablePrivilege SeDebug=%d SeImpersonate=%d"), dbg, imp);
         if (!imp) {
-            Log("SeImpersonatePrivilege not held -- CreateProcessWithTokenW will fail");
+            Log(xorstr("SeImpersonatePrivilege not held -- CreateProcessWithTokenW will fail"));
             return false;
         }
 
         HANDLE hDup = StealUIAccessTokenFromOsk();
         if (!hDup) {
-            Log("StealUIAccessTokenFromOsk failed");
+            Log(xorstr("StealUIAccessTokenFromOsk failed"));
             return false;
         }
 
         wchar_t exePath[MAX_PATH] = {};
         GetModuleFileNameW(nullptr, exePath, MAX_PATH);
-        Log("exe=%ls", exePath);
+        Log(xorstr("exe=%ls"), exePath);
 
         wchar_t cmdBuf[32768] = {};
         LPCWSTR cmdSrc = GetCommandLineW();
@@ -252,10 +252,10 @@ namespace UIAccess {
         BOOL ok = CreateProcessWithTokenW(hDup, 0, exePath, cmdBuf, 0, nullptr, nullptr, &si, &pi);
         CloseHandle(hDup);
         if (!ok) {
-            Log("CreateProcessWithTokenW failed, err=%lu", GetLastError());
+            Log(xorstr("CreateProcessWithTokenW failed, err=%lu"), GetLastError());
             return false;
         }
-        Log("CreateProcessWithTokenW ok, child pid=%lu -- parent exiting", pi.dwProcessId);
+        Log(xorstr("CreateProcessWithTokenW ok, child pid=%lu -- parent exiting"), pi.dwProcessId);
 
         CloseHandle(pi.hThread);
         CloseHandle(pi.hProcess);

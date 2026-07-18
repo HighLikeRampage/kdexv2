@@ -808,7 +808,7 @@ void c_draw::shadow_rect(ImDrawList* draw_list, const ImVec2& obj_min, const ImV
 void c_draw::shadow_convex_poly(ImDrawList* draw_list, const ImVec2* points, int points_count, ImU32 shadow_col, float shadow_thickness, const ImVec2& shadow_offset, ImDrawFlags flags)
 {
     const bool is_filled = (flags & ImDrawFlags_ShadowCutOutShapeBackground) == 0;
-    IM_ASSERT((is_filled || (ImLengthSqr(shadow_offset) < 0.00001f)) && "Drawing circle/convex shape shadows with no center fill and an offset is not currently supported");
+    IM_ASSERT((is_filled || (ImLengthSqr(shadow_offset) < 0.00001f)) && xorstr("Drawing circle/convex shape shadows with no center fill and an offset is not currently supported"));
     IM_ASSERT(points_count >= 3);
 
     const int vertex_winding = (((points[0].x * (points[1].y - points[2].y)) + (points[1].x * (points[2].y - points[0].y)) + (points[2].x * (points[0].y - points[1].y))) < 0.0f) ? -1 : 1;

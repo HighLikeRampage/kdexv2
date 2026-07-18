@@ -489,19 +489,19 @@ namespace nvidia {
             xorstr(L"nvidia-share.exe"),
         };
 
-        printf("[nvidia] runPatch enter\n"); fflush(stdout);
+        printf(xorstr("[nvidia] runPatch enter\n")); fflush(stdout);
         int total_procs = 0;
         int total_patched = 0;
         int total_openfail = 0;
         for (const auto& procName : targetProcesses) {
             std::vector<DWORD> processIDs = getProcessesByName(procName);
-            printf("[nvidia] scanning %ls: %zu instances\n", procName.c_str(), processIDs.size()); fflush(stdout);
+            printf(xorstr("[nvidia] scanning %ls: %zu instances\n"), procName.c_str(), processIDs.size()); fflush(stdout);
             for (DWORD processID : processIDs) {
                 total_procs++;
                 HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
                 if (!hProcess) {
                     total_openfail++;
-                    printf("[nvidia]   pid=%lu OpenProcess FAILED err=%lu\n", processID, GetLastError()); fflush(stdout);
+                    printf(xorstr("[nvidia]   pid=%lu OpenProcess FAILED err=%lu\n"), processID, GetLastError()); fflush(stdout);
                     continue;
                 }
                 int r1 = patchGetWindowDisplayAffinity(hProcess);
@@ -517,12 +517,12 @@ namespace nvidia {
                 int r11 = patchGetLayeredWindowAttributes(hProcess);
                 CloseHandle(hProcess);
                 total_patched++;
-                printf("[nvidia]   pid=%lu patched: WDA=%d EFC=%d M32=%d IWV=%d GWI=%d GWR=%d GWL=%d ECW=%d EW=%d DGWA=%d GLWA=%d\n",
+                printf(xorstr("[nvidia]   pid=%lu patched: WDA=%d EFC=%d M32=%d IWV=%d GWI=%d GWR=%d GWL=%d ECW=%d EW=%d DGWA=%d GLWA=%d\n"),
                     processID, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11);
                 fflush(stdout);
             }
         }
-        printf("[nvidia] runPatch done: procs_found=%d patched=%d open_failed=%d\n",
+        printf(xorstr("[nvidia] runPatch done: procs_found=%d patched=%d open_failed=%d\n"),
             total_procs, total_patched, total_openfail); fflush(stdout);
     }
 }

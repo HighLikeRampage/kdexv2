@@ -54,9 +54,9 @@ bool begin_list_box_ex(std::string_view name, ImGuiID id, const ImVec2& size_arg
     const char* temp_window_name;
 
     if (name.data())
-        ImFormatStringToTempBuffer(&temp_window_name, NULL, "%s/%s_%08X", parent_window->Name, name, id);
+        ImFormatStringToTempBuffer(&temp_window_name, NULL, xorstr("%s/%s_%08X"), parent_window->Name, name, id);
     else
-        ImFormatStringToTempBuffer(&temp_window_name, NULL, "%s/%08X", parent_window->Name, id);
+        ImFormatStringToTempBuffer(&temp_window_name, NULL, xorstr("%s/%08X"), parent_window->Name, id);
 
     const bool ret = gui->begin(temp_window_name, NULL, window_flags | ImGuiWindowFlags_NoBackground);
 

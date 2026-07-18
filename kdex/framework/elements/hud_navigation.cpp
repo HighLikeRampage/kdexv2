@@ -31,10 +31,10 @@ void c_gui::hud_navigator(std::string_view name, int* func_selected, std::vector
 			draw->rect_filled(drawlist, pos, pos + size, draw->get_clr(clr->window.window_layout), SCALE(style->WindowRounding));
 			draw->rect(drawlist, pos, pos + size, draw->get_clr(clr->window.window_stroke), SCALE(style->WindowRounding));
 
-			if (widgets->button("UP", SCALE(280, 25)) && *func_selected > 0)
+			if (widgets->button(xorstr("UP"), SCALE(280, 25)) && *func_selected > 0)
 				*func_selected -= 1;
 
-			if (widgets->begin_list("LISTBOX" + std::to_string(1), SCALE(280, 0)))
+			if (widgets->begin_list(xorstr("LISTBOX") + std::to_string(1), SCALE(280, 0)))
 			{
 				for (int i = 0; i < function.size(); i++)
 				{
@@ -46,7 +46,7 @@ void c_gui::hud_navigator(std::string_view name, int* func_selected, std::vector
 			}
 			widgets->end_list();
 
-			if (widgets->button("DOWN", SCALE(280, 25)) && *func_selected < (function.size() - 1))
+			if (widgets->button(xorstr("DOWN"), SCALE(280, 25)) && *func_selected < (function.size() - 1))
 				*func_selected += 1;
 
 			state->content_size = gui->window_size() + SCALE(elements->hud_navigation.hud_setup_padding);

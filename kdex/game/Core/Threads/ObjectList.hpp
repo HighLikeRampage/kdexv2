@@ -77,7 +77,7 @@ namespace Core
                                 Object.ID = hash;
 
                                 char nameBuf[12];
-                                snprintf(nameBuf, sizeof(nameBuf), "0x%08X", hash);
+                                snprintf(nameBuf, sizeof(nameBuf), xorstr("0x%08X"), hash);
                                 Object.Name = nameBuf;
 
                                 Object.Dist = Distance;
@@ -131,7 +131,7 @@ namespace Core
                                 Pickup.Pointer = CurrentPickup;
 
                                 char nameBuf[20];
-                                snprintf(nameBuf, sizeof(nameBuf), "Pickup 0x%08X", hash);
+                                snprintf(nameBuf, sizeof(nameBuf), xorstr("Pickup 0x%08X"), hash);
                                 Pickup.Name = nameBuf;
 
                                 Pickup.Dist = Distance;

@@ -55,7 +55,7 @@ void c_gui::watermark(std::string name, std::vector<std::string> function, water
             tm ltm;
             localtime_s(&ltm, &now);
             char time_str[32];
-            strftime(time_str, sizeof(time_str), "%I:%M %p", &ltm);
+            strftime(time_str, sizeof(time_str), xorstr("%I:%M %p"), &ltm);
 
             std::string name_software = xorstr("KDEX | ");
             std::string name_bg = std::string(xorstr("[")) + std::string(var->auth.username) + xorstr("]");

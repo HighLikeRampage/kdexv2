@@ -11,7 +11,7 @@ inline void DebugLog(const char* fmt, ...)
     vsnprintf_s(buf, sizeof(buf), _TRUNCATE, fmt, args);
     va_end(args);
 
-    fprintf(stdout, "%s", buf);
+    fprintf(stdout, xorstr("%s"), buf);
     fflush(stdout);
 
     OutputDebugStringA(buf);

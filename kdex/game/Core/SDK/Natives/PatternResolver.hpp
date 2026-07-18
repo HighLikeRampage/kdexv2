@@ -18,7 +18,7 @@ public:
       char c = patternStr[i];
       if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
         if (!part.empty()) {
-          if (part == "?" || part == "??") {
+          if (part == xorstr("?") || part == xorstr("??")) {
             pat.bytes.push_back(0);
             pat.mask.push_back(0);
           } else {
@@ -32,7 +32,7 @@ public:
       }
     }
     if (!part.empty()) {
-      if (part == "?" || part == "??") {
+      if (part == xorstr("?") || part == xorstr("??")) {
         pat.bytes.push_back(0);
         pat.mask.push_back(0);
       } else {

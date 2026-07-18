@@ -35,7 +35,7 @@ namespace NativeCaller {
 	inline const char* NameOf(uint64_t hash) {
 		const auto& m = Natives::HashToName();
 		auto it = m.find(hash);
-		return it == m.end() ? "?" : it->second.data();
+		return it == m.end() ? xorstr("?") : it->second.data();
 	}
 
 	constexpr size_t Q_TRIGGER   = 0x00;
@@ -368,7 +368,7 @@ namespace NativeCaller {
 			const auto it = hashMap.find(hash);
 			if (it == hashMap.end()) return false;
 			std::string_view name = it->second;
-			return name.size() >= 8 && std::memcmp(name.data(), "NETWORK_", 8) == 0;
+			return name.size() >= 8 && std::memcmp(name.data(), xorstr("NETWORK_"), 8) == 0;
 		}
 
 		uint64_t InvokeRaw(uintptr_t queue, uint64_t hash,
@@ -388,11 +388,11 @@ namespace NativeCaller {
 				}
 			}
 
-			const char* src = "citizen";
+			const char* src = xorstr("citizen");
 			uint64_t handler = CitizenLookup(hash);
 			if (!handler) {
 				handler = PatternResolve(hash);
-				src = "pattern";
+				src = xorstr("pattern");
 			}
 			if (!handler) {
 				if (g_TraceInvoke) DebugLog(xorstr("[NC] %s(0x%llX) UNRESOLVED\n"), name, (unsigned long long)hash);
@@ -405,7 +405,7 @@ namespace NativeCaller {
 				size_t off = 0;
 				for (size_t i = 0; i < args.size() && off + 20 < sizeof(argStr); ++i) {
 					int w = _snprintf_s(argStr + off, sizeof(argStr) - off, _TRUNCATE,
-						i ? ", 0x%llX" : "0x%llX", (unsigned long long)args[i]);
+						i ? xorstr(", 0x%llX") : xorstr("0x%llX"), (unsigned long long)args[i]);
 					if (w <= 0) break;
 					off += w;
 				}

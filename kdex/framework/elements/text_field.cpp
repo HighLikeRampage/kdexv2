@@ -1047,7 +1047,7 @@ bool text_field_ex(const char* icon, const char* label, const char* hint, char* 
 
     float icon_size = (icon && icon[0]) ? SCALE(elements->text_field.field_size) : 0.f;
     ImVec4 clip_rect(field.Min.x + SCALE(5), field.Min.y, field.Min.x + inner_size.x - icon_size - SCALE(5), field.Min.y + inner_size.y);
-    ImVec2 draw_pos = is_multiline ? draw_window->DC.CursorPos : ImVec2(field.Min.x + SCALE(elements->text_field.text_padding), field.GetCenter().y - gui->text_size(var->font.instrument_medium[1], "A").y / 2 - SCALE(1));
+    ImVec2 draw_pos = is_multiline ? draw_window->DC.CursorPos : ImVec2(field.Min.x + SCALE(elements->text_field.text_padding), field.GetCenter().y - gui->text_size(var->font.instrument_medium[1], xorstr("A")).y / 2 - SCALE(1));
     ImVec2 text_size(0.0f, 0.0f);
 
     if (is_displaying_hint)
@@ -1225,7 +1225,7 @@ bool text_field_ex(const char* icon, const char* label, const char* hint, char* 
 
     if (g.LogEnabled && (!is_password || is_displaying_hint))
     {
-        LogSetNextTextDecoration("{", "}");
+        LogSetNextTextDecoration(xorstr("{"), xorstr("}"));
         LogRenderedText(&draw_pos, buf_display, buf_display_end);
     }
 
@@ -2075,7 +2075,7 @@ bool multiline_text_ex(const char* label, const char* hint, char* buf, int buf_s
 
     if (g.LogEnabled && (!is_password || is_displaying_hint))
     {
-        LogSetNextTextDecoration("{", "}");
+        LogSetNextTextDecoration(xorstr("{"), xorstr("}"));
         LogRenderedText(&draw_pos, buf_display, buf_display_end);
     }
 

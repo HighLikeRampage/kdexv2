@@ -53,7 +53,7 @@ inline std::string process(const std::string &data) {
 
 inline std::string to_base64(const std::string &data) {
   static const char *lut =
-      "mN9bV8cZ7xX6aA5sS4dD3fF2gG1hH0jJqQwWeErRtTyYuUiIoOpPkKlLzC+vB/nM";
+      xorstr("mN9bV8cZ7xX6aA5sS4dD3fF2gG1hH0jJqQwWeErRtTyYuUiIoOpPkKlLzC+vB/nM");
   std::string out;
   int val = 0, valb = -6;
   for (uint8_t c : data) {
@@ -340,7 +340,7 @@ inline std::string getHwid() {
   std::string disk = GetPhysicalDiskSerial();
   std::string salt = (const char *)xorstr("Negro!@#");
 
-  std::string rawHWID = cpu + "-" + disk + "-" + salt;
+  std::string rawHWID = cpu + xorstr("-") + disk + xorstr("-") + salt;
 
   return CalculateSHA256(rawHWID);
 }

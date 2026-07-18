@@ -130,7 +130,7 @@ void c_gui::render() {
 
     ImVec2 drag_area_size = ImVec2(gui->window_size().x, SCALE(50.f));
     ImGui::SetCursorScreenPos(gui->window_pos());
-    ImGui::InvisibleButton("##drag_area", drag_area_size);
+    ImGui::InvisibleButton(xorstr("##drag_area"), drag_area_size);
 
     if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
       is_dragging = true;

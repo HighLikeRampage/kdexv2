@@ -59,7 +59,7 @@ ImVec2 c_notify::render_notify(int cur_notify_value, float notify_alpha, float n
         wm_offset = var->watermark.last_size.y + elements->notify.notify_setup_spacing.y;
     }
 
-    const char* label_text = "Notification: ";
+    const char* label_text = xorstr("Notification: ");
     ImVec2 label_size = gui->text_size(var->font.instrument_medium[1], label_text);
     ImVec2 content_size = gui->text_size(var->font.instrument_medium[1], text.data());
     float total_width = label_size.x + content_size.x + SCALE(40);
