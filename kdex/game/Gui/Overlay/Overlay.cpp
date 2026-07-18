@@ -115,20 +115,9 @@ static LRESULT CALLBACK OverlayMouseLLProc(int nCode, WPARAM wParam, LPARAM lPar
 
     MSLLHOOKSTRUCT* mh = (MSLLHOOKSTRUCT*)lParam;
 
-
-    bool injected = (mh->flags & LLMHF_INJECTED) != 0;
-
     if (wParam == WM_MOUSEMOVE) {
-        if (!injected && s_last_hw_valid) {
-            s_raw_dx.fetch_add((int)(mh->pt.x - s_last_hw_pt.x));
-            s_raw_dy.fetch_add((int)(mh->pt.y - s_last_hw_pt.y));
-        }
-        s_last_hw_pt    = mh->pt;
-        s_last_hw_valid = true;
-
         return 1;
     }
-
 
     if (!ImGui::GetCurrentContext()) return 1;
     ImGuiIO& io = ImGui::GetIO();
@@ -786,12 +775,21 @@ namespace Gui {
                 s_raw_dx.store(0);
                 s_raw_dy.store(0);
                 s_last_hw_valid = false;
-                ClipCursor(nullptr);
+                RegisterOverlayRawInput(hwnd, true);
+                RECT wr;
+                if (GetWindowRect(hwnd, &wr)) {
+                    LONG cx = wr.left + (wr.right - wr.left) / 2;
+                    LONG cy = wr.top  + (wr.bottom - wr.top) / 2;
+                    RECT clip = { cx, cy, cx + 1, cy + 1 };
+                    ClipCursor(&clip);
+                }
                 s_mouse_ll_hook = SetWindowsHookExW(WH_MOUSE_LL, OverlayMouseLLProc, GetModuleHandleW(nullptr), 0);
             } else if (!need_ll_hook && s_mouse_ll_hook) {
                 UnhookWindowsHookEx(s_mouse_ll_hook);
                 s_mouse_ll_hook = nullptr;
                 s_last_hw_valid = false;
+                ClipCursor(nullptr);
+                RegisterOverlayRawInput(hwnd, false);
             }
             s_ll_eat_mouse.store(need_ll_hook);
 
@@ -831,6 +829,14 @@ namespace Gui {
 
 
                 ImGui::GetIO().MouseDrawCursor = true;
+
+                RECT wr;
+                if (GetWindowRect(hwnd, &wr)) {
+                    LONG cx = wr.left + (wr.right - wr.left) / 2;
+                    LONG cy = wr.top  + (wr.bottom - wr.top) / 2;
+                    RECT clip = { cx, cy, cx + 1, cy + 1 };
+                    ClipCursor(&clip);
+                }
             } else {
                 ImGui::GetIO().MouseDrawCursor = false;
             }
@@ -1592,6 +1598,8 @@ namespace Gui {
         ImGui::DestroyContext();
 
         CleanupDeviceD3D();
+        ClipCursor(nullptr);
+        if (s_raw_input_registered.load()) RegisterOverlayRawInput(hwnd, false);
         if (s_mouse_ll_hook) { UnhookWindowsHookEx(s_mouse_ll_hook); s_mouse_ll_hook = nullptr; }
         s_ll_overlay_hwnd = nullptr;
         if (s_win_event_hook) { UnhookWinEvent(s_win_event_hook); s_win_event_hook = nullptr; }
@@ -1662,6 +1670,21 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
     switch (msg)
     {
+    case WM_INPUT:
+        if (s_ll_eat_mouse.load()) {
+            UINT sz = 0;
+            GetRawInputData((HRAWINPUT)lParam, RID_INPUT, nullptr, &sz, sizeof(RAWINPUTHEADER));
+            if (sz > 0 && sz <= sizeof(RAWINPUT)) {
+                RAWINPUT ri = {};
+                if (GetRawInputData((HRAWINPUT)lParam, RID_INPUT, &ri, &sz, sizeof(RAWINPUTHEADER)) == sz
+                    && ri.header.dwType == RIM_TYPEMOUSE
+                    && !(ri.data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE)) {
+                    s_raw_dx.fetch_add(ri.data.mouse.lLastX);
+                    s_raw_dy.fetch_add(ri.data.mouse.lLastY);
+                }
+            }
+        }
+        return 0;
     case WM_CLOSE:
         if (!s_unload_started) {
             s_unload_started = true;
