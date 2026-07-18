@@ -187,58 +187,47 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "$(ProjectDir)scripts\mangle
 
     <ClCompile Include="thirdparty\dxsdk\Include\detours.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\imgui.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\imgui_draw.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\imgui_freetype.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\imgui_tables.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\imgui_widgets.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx9.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx10.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx11.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx12.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\backends\imgui_impl_win32.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

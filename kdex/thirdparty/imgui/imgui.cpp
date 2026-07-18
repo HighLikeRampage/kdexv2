@@ -1720,7 +1720,7 @@ void ImGuiIO::AddMouseButtonEvent(int mouse_button, bool down)
         const ImGuiInputEvent* latest_super_event = FindLatestInputEvent(&g, ImGuiInputEventType_Key, (int)ImGuiMod_Super);
         if (latest_super_event ? latest_super_event->Key.Down : g.IO.KeySuper)
         {
-            IMGUI_DEBUG_LOG_IO("[io] Super+Left Click aliased into Right Click\n");
+            IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] Super+Left Click aliased into Right Click\n"));
             MouseCtrlLeftAsRightClick = true;
             AddMouseButtonEvent(1, true); 
             return;
@@ -2972,7 +2972,7 @@ void ImGuiListClipper::Begin(int items_count, float items_height)
 
     ImGuiContext& g = *Ctx;
     ImGuiWindow* window = g.CurrentWindow;
-    IMGUI_DEBUG_LOG_CLIPPER("Clipper: Begin(%d,%.2f) in '%s'\n", items_count, items_height, window->Name);
+    IMGUI_DEBUG_LOG_CLIPPER(xorstr_lite("Clipper: Begin(%d,%.2f) in '%s'\n"), items_count, items_height, window->Name);
 
     if (ImGuiTable* table = g.CurrentTable)
         if (table->IsInsideRow)
@@ -3000,7 +3000,7 @@ void ImGuiListClipper::End()
     {
         
         ImGuiContext& g = *Ctx;
-        IMGUI_DEBUG_LOG_CLIPPER("Clipper: End() in '%s'\n", g.CurrentWindow->Name);
+        IMGUI_DEBUG_LOG_CLIPPER(xorstr_lite("Clipper: End() in '%s'\n"), g.CurrentWindow->Name);
         if (ItemsCount >= 0 && ItemsCount < INT_MAX && DisplayStart >= 0)
             SeekCursorForItem(ItemsCount);
 
@@ -3192,16 +3192,16 @@ bool ImGuiListClipper::Step()
     if (ret && (DisplayStart == DisplayEnd))
         ret = false;
     if (g.CurrentTable && g.CurrentTable->IsUnfrozenRows == false)
-        IMGUI_DEBUG_LOG_CLIPPER("Clipper: Step(): inside frozen table row.\n");
+        IMGUI_DEBUG_LOG_CLIPPER(xorstr_lite("Clipper: Step(): inside frozen table row.\n"));
     if (need_items_height && ItemsHeight > 0.0f)
-        IMGUI_DEBUG_LOG_CLIPPER("Clipper: Step(): computed ItemsHeight: %.2f.\n", ItemsHeight);
+        IMGUI_DEBUG_LOG_CLIPPER(xorstr_lite("Clipper: Step(): computed ItemsHeight: %.2f.\n"), ItemsHeight);
     if (ret)
     {
-        IMGUI_DEBUG_LOG_CLIPPER("Clipper: Step(): display %d to %d.\n", DisplayStart, DisplayEnd);
+        IMGUI_DEBUG_LOG_CLIPPER(xorstr_lite("Clipper: Step(): display %d to %d.\n"), DisplayStart, DisplayEnd);
     }
     else
     {
-        IMGUI_DEBUG_LOG_CLIPPER("Clipper: Step(): End.\n");
+        IMGUI_DEBUG_LOG_CLIPPER(xorstr_lite("Clipper: Step(): End.\n"));
         End();
     }
     return ret;
@@ -4273,7 +4273,7 @@ void ImGui::SetActiveID(ImGuiID id, ImGuiWindow* window)
         
         if (g.MovingWindow != NULL && g.ActiveId == g.MovingWindow->MoveId)
         {
-            IMGUI_DEBUG_LOG_ACTIVEID("SetActiveID() cancel MovingWindow\n");
+            IMGUI_DEBUG_LOG_ACTIVEID(xorstr_lite("SetActiveID() cancel MovingWindow\n"));
             g.MovingWindow = NULL;
         }
 
@@ -4288,7 +4288,7 @@ void ImGui::SetActiveID(ImGuiID id, ImGuiWindow* window)
     g.ActiveIdIsJustActivated = (g.ActiveId != id);
     if (g.ActiveIdIsJustActivated)
     {
-        IMGUI_DEBUG_LOG_ACTIVEID("SetActiveID() old:0x%08X (window \"%s\") -> new:0x%08X (window \"%s\")\n", g.ActiveId, g.ActiveIdWindow ? g.ActiveIdWindow->Name : "", id, window ? window->Name : "");
+        IMGUI_DEBUG_LOG_ACTIVEID(xorstr_lite("SetActiveID() old:0x%08X (window \"%s\") -> new:0x%08X (window \"%s\")\n"), g.ActiveId, g.ActiveIdWindow ? g.ActiveIdWindow->Name : "", id, window ? window->Name : "");
         g.ActiveIdTimer = 0.0f;
         g.ActiveIdHasBeenPressedBefore = false;
         g.ActiveIdHasBeenEditedBefore = false;
@@ -4557,7 +4557,7 @@ bool ImGui::ItemHoverable(const ImRect& bb, ImGuiID id, ImGuiItemFlags item_flag
         
         if (id == g.LastItemData.ID && (g.LastItemData.StatusFlags & ImGuiItemStatusFlags_HasShortcut) && g.ActiveId != id)
             if (IsItemHovered(ImGuiHoveredFlags_ForTooltip | ImGuiHoveredFlags_DelayNormal))
-                SetTooltip("%s", GetKeyChordName(g.LastItemData.Shortcut));
+                SetTooltip(xorstr_lite("%s"), GetKeyChordName(g.LastItemData.Shortcut));
     }
 
     
@@ -5090,7 +5090,7 @@ void ImGui::NewFrame()
     
     if (g.ActiveId != 0 && g.ActiveIdIsAlive != g.ActiveId && g.ActiveIdPreviousFrame == g.ActiveId)
     {
-        IMGUI_DEBUG_LOG_ACTIVEID("NewFrame(): ClearActiveID() because it isn't marked alive anymore!\n");
+        IMGUI_DEBUG_LOG_ACTIVEID(xorstr_lite("NewFrame(): ClearActiveID() because it isn't marked alive anymore!\n"));
         ClearActiveID();
     }
 
@@ -5243,7 +5243,7 @@ void ImGui::NewFrame()
     }
     if (g.DebugLogAutoDisableFrames > 0 && --g.DebugLogAutoDisableFrames == 0)
     {
-        DebugLog("(Debug Log: Auto-disabled some ImGuiDebugLogFlags after 2 frames)\n");
+        DebugLog(xorstr_lite("(Debug Log: Auto-disabled some ImGuiDebugLogFlags after 2 frames)\n"));
         g.DebugLogFlags &= ~g.DebugLogAutoDisableFlags;
         g.DebugLogAutoDisableFlags = ImGuiDebugLogFlags_None;
     }
@@ -5480,12 +5480,12 @@ void ImGui::EndFrame()
         if (g.DebugItemPickerActive == false && BeginTooltipEx(ImGuiTooltipFlags_OverridePrevious, ImGuiWindowFlags_None))
         {
             SeparatorText(IM_STR("MESSAGE FROM DEAR IMGUI"));
-            Text("Programmer error: %d visible items with conflicting ID!", g.HoveredIdPreviousFrameItemCount);
-            BulletText("Code should use PushID()/PopID() in loops, or append \"##xx\" to same-label identifiers!");
-            BulletText("Empty label e.g. Button(\"\") == same ID as parent widget/node. Use Button(\"##xx\") instead!");
-            BulletText("Press F1 to open \"FAQ -> About the ID Stack System\" and read details.");
-            BulletText("Press CTRL+P to activate Item Picker and debug-break in item call-stack.");
-            BulletText("Set io.ConfigDebugDetectIdConflicts=false to disable this warning in non-programmers builds.");
+            Text(xorstr_lite("Programmer error: %d visible items with conflicting ID!"), g.HoveredIdPreviousFrameItemCount);
+            BulletText(xorstr_lite("Code should use PushID()/PopID() in loops, or append \"##xx\" to same-label identifiers!"));
+            BulletText(xorstr_lite("Empty label e.g. Button(\"\") == same ID as parent widget/node. Use Button(\"##xx\") instead!"));
+            BulletText(xorstr_lite("Press F1 to open \"FAQ -> About the ID Stack System\" and read details."));
+            BulletText(xorstr_lite("Press CTRL+P to activate Item Picker and debug-break in item call-stack."));
+            BulletText(xorstr_lite("Set io.ConfigDebugDetectIdConflicts=false to disable this warning in non-programmers builds."));
             EndTooltip();
         }
         PopStyleColor();
@@ -5504,7 +5504,7 @@ void ImGui::EndFrame()
     ImGuiPlatformImeData* ime_data = &g.PlatformImeData;
     if (g.PlatformIO.Platform_SetImeDataFn != NULL && memcmp(ime_data, &g.PlatformImeDataPrev, sizeof(ImGuiPlatformImeData)) != 0)
     {
-        IMGUI_DEBUG_LOG_IO("[io] Calling Platform_SetImeDataFn(): WantVisible: %d, InputPos (%.2f,%.2f)\n", ime_data->WantVisible, ime_data->InputPos.x, ime_data->InputPos.y);
+        IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] Calling Platform_SetImeDataFn(): WantVisible: %d, InputPos (%.2f,%.2f)\n"), ime_data->WantVisible, ime_data->InputPos.x, ime_data->InputPos.y);
         ImGuiViewport* viewport = GetMainViewport();
         g.PlatformIO.Platform_SetImeDataFn(&g, viewport, ime_data);
     }
@@ -5535,7 +5535,7 @@ void ImGui::EndFrame()
     if (g.DragDropActive && g.DragDropSourceFrameCount < g.FrameCount && !(g.DragDropSourceFlags & ImGuiDragDropFlags_SourceNoPreviewTooltip))
     {
         g.DragDropWithinSource = true;
-        SetTooltip("...");
+        SetTooltip(xorstr_lite("..."));
         g.DragDropWithinSource = false;
     }
 
@@ -5969,9 +5969,9 @@ bool ImGui::BeginChildEx(const char* name, ImGuiID id, const ImVec2& size_arg, I
 
 
     if (name)
-        ImFormatStringToTempBuffer(&temp_window_name, NULL, "%s/%s_%08X", parent_window->Name, name, id);
+        ImFormatStringToTempBuffer(&temp_window_name, NULL, xorstr_lite("%s/%s_%08X"), parent_window->Name, name, id);
     else
-        ImFormatStringToTempBuffer(&temp_window_name, NULL, "%s/%08X", parent_window->Name, id);
+        ImFormatStringToTempBuffer(&temp_window_name, NULL, xorstr_lite("%s/%08X"), parent_window->Name, id);
 
     
     const float backup_border_size = g.Style.ChildBorderSize;
@@ -5999,7 +5999,7 @@ bool ImGui::BeginChildEx(const char* name, ImGuiID id, const ImVec2& size_arg, I
 
     
     
-    const ImGuiID temp_id_for_activation = ImHashStr("##Child", 0, id);
+    const ImGuiID temp_id_for_activation = ImHashStr(xorstr_lite("##Child"), 0, id);
     if (g.ActiveId == temp_id_for_activation)
         ClearActiveID();
     if (g.NavActivateId == id && !(child_flags & ImGuiChildFlags_NavFlattened) && (child_window->DC.NavLayersActiveMask != 0 || child_window->DC.NavWindowHasScrollY))
@@ -7816,7 +7816,7 @@ void ImGui::FocusWindow(ImGuiWindow* window, ImGuiFocusRequestFlags flags)
             
             
             
-            IMGUI_DEBUG_LOG_FOCUS("[focus] FocusWindow(\"%s\", UnlessBelowModal): prevented by \"%s\".\n", window ? window->Name : "<NULL>", blocking_modal->Name);
+            IMGUI_DEBUG_LOG_FOCUS(xorstr_lite("[focus] FocusWindow(\"%s\", UnlessBelowModal): prevented by \"%s\".\n"), window ? window->Name : xorstr_lite("<NULL>"), blocking_modal->Name);
             if (window && window == window->RootWindow && (window->Flags & ImGuiWindowFlags_NoBringToFrontOnFocus) == 0)
                 BringWindowToDisplayBehind(window, blocking_modal); 
             ClosePopupsOverWindow(GetTopMostPopupModal(), false); 
@@ -8506,10 +8506,10 @@ void ImGui::FocusItem()
 {
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
-    IMGUI_DEBUG_LOG_FOCUS("FocusItem(0x%08x) in window \"%s\"\n", g.LastItemData.ID, window->Name);
+    IMGUI_DEBUG_LOG_FOCUS(xorstr_lite("FocusItem(0x%08x) in window \"%s\"\n"), g.LastItemData.ID, window->Name);
     if (g.DragDropActive || g.MovingWindow != NULL) 
     {
-        IMGUI_DEBUG_LOG_FOCUS("FocusItem() ignored while DragDropActive!\n");
+        IMGUI_DEBUG_LOG_FOCUS(xorstr_lite("FocusItem() ignored while DragDropActive!\n"));
         return;
     }
 
@@ -8534,7 +8534,7 @@ void ImGui::SetKeyboardFocusHere(int offset)
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
     IM_ASSERT(offset >= -1);    
-    IMGUI_DEBUG_LOG_FOCUS("SetKeyboardFocusHere(%d) in window \"%s\"\n", offset, window->Name);
+    IMGUI_DEBUG_LOG_FOCUS(xorstr_lite("SetKeyboardFocusHere(%d) in window \"%s\"\n"), offset, window->Name);
 
     
     
@@ -8542,7 +8542,7 @@ void ImGui::SetKeyboardFocusHere(int offset)
     
     if (g.DragDropActive || g.MovingWindow != NULL)
     {
-        IMGUI_DEBUG_LOG_FOCUS("SetKeyboardFocusHere() ignored while DragDropActive!\n");
+        IMGUI_DEBUG_LOG_FOCUS(xorstr_lite("SetKeyboardFocusHere() ignored while DragDropActive!\n"));
         return;
     }
 
@@ -9053,26 +9053,26 @@ static const char* GetKeyNameByIndex(int index)
     static const char* const GKeyNames[] =
     {
         "Tab", "LeftArrow", "RightArrow", "UpArrow", "DownArrow", "PageUp", "PageDown",
-        "Home", "End", "Insert", "Delete", "Backspace", "Space", "Enter", "Escape",
-        "LeftCtrl", "LeftShift", "LeftAlt", "LeftSuper", "RightCtrl", "RightShift", "RightAlt", "RightSuper", "Menu",
-        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H",
-        "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-        "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12",
-        "F13", "F14", "F15", "F16", "F17", "F18", "F19", "F20", "F21", "F22", "F23", "F24",
-        "Apostrophe", "Comma", "Minus", "Period", "Slash", "Semicolon", "Equal", "LeftBracket",
-        "Backslash", "RightBracket", "GraveAccent", "CapsLock", "ScrollLock", "NumLock", "PrintScreen",
-        "Pause", "Keypad0", "Keypad1", "Keypad2", "Keypad3", "Keypad4", "Keypad5", "Keypad6",
-        "Keypad7", "Keypad8", "Keypad9", "KeypadDecimal", "KeypadDivide", "KeypadMultiply",
-        "KeypadSubtract", "KeypadAdd", "KeypadEnter", "KeypadEqual",
-        "AppBack", "AppForward",
-        "GamepadStart", "GamepadBack",
-        "GamepadFaceLeft", "GamepadFaceRight", "GamepadFaceUp", "GamepadFaceDown",
-        "GamepadDpadLeft", "GamepadDpadRight", "GamepadDpadUp", "GamepadDpadDown",
-        "GamepadL1", "GamepadR1", "GamepadL2", "GamepadR2", "GamepadL3", "GamepadR3",
-        "GamepadLStickLeft", "GamepadLStickRight", "GamepadLStickUp", "GamepadLStickDown",
-        "GamepadRStickLeft", "GamepadRStickRight", "GamepadRStickUp", "GamepadRStickDown",
-        "MouseLeft", "MouseRight", "MouseMiddle", "MouseX1", "MouseX2", "MouseWheelX", "MouseWheelY",
-        "ModCtrl", "ModShift", "ModAlt", "ModSuper",
+        xorstr_lite("Home"), xorstr_lite("End"), xorstr_lite("Insert"), xorstr_lite("Delete"), xorstr_lite("Backspace"), xorstr_lite("Space"), xorstr_lite("Enter"), xorstr_lite("Escape"),
+        xorstr_lite("LeftCtrl"), xorstr_lite("LeftShift"), xorstr_lite("LeftAlt"), xorstr_lite("LeftSuper"), xorstr_lite("RightCtrl"), xorstr_lite("RightShift"), xorstr_lite("RightAlt"), xorstr_lite("RightSuper"), xorstr_lite("Menu"),
+        xorstr_lite("0"), xorstr_lite("1"), xorstr_lite("2"), xorstr_lite("3"), xorstr_lite("4"), xorstr_lite("5"), xorstr_lite("6"), xorstr_lite("7"), xorstr_lite("8"), xorstr_lite("9"), xorstr_lite("A"), xorstr_lite("B"), xorstr_lite("C"), xorstr_lite("D"), xorstr_lite("E"), xorstr_lite("F"), xorstr_lite("G"), xorstr_lite("H"),
+        xorstr_lite("I"), xorstr_lite("J"), xorstr_lite("K"), xorstr_lite("L"), xorstr_lite("M"), xorstr_lite("N"), xorstr_lite("O"), xorstr_lite("P"), xorstr_lite("Q"), xorstr_lite("R"), xorstr_lite("S"), xorstr_lite("T"), xorstr_lite("U"), xorstr_lite("V"), xorstr_lite("W"), xorstr_lite("X"), xorstr_lite("Y"), xorstr_lite("Z"),
+        xorstr_lite("F1"), xorstr_lite("F2"), xorstr_lite("F3"), xorstr_lite("F4"), xorstr_lite("F5"), xorstr_lite("F6"), xorstr_lite("F7"), xorstr_lite("F8"), xorstr_lite("F9"), xorstr_lite("F10"), xorstr_lite("F11"), xorstr_lite("F12"),
+        xorstr_lite("F13"), xorstr_lite("F14"), xorstr_lite("F15"), xorstr_lite("F16"), xorstr_lite("F17"), xorstr_lite("F18"), xorstr_lite("F19"), xorstr_lite("F20"), xorstr_lite("F21"), xorstr_lite("F22"), xorstr_lite("F23"), xorstr_lite("F24"),
+        xorstr_lite("Apostrophe"), xorstr_lite("Comma"), xorstr_lite("Minus"), xorstr_lite("Period"), xorstr_lite("Slash"), xorstr_lite("Semicolon"), xorstr_lite("Equal"), xorstr_lite("LeftBracket"),
+        xorstr_lite("Backslash"), xorstr_lite("RightBracket"), xorstr_lite("GraveAccent"), xorstr_lite("CapsLock"), xorstr_lite("ScrollLock"), xorstr_lite("NumLock"), xorstr_lite("PrintScreen"),
+        xorstr_lite("Pause"), xorstr_lite("Keypad0"), xorstr_lite("Keypad1"), xorstr_lite("Keypad2"), xorstr_lite("Keypad3"), xorstr_lite("Keypad4"), xorstr_lite("Keypad5"), xorstr_lite("Keypad6"),
+        xorstr_lite("Keypad7"), xorstr_lite("Keypad8"), xorstr_lite("Keypad9"), xorstr_lite("KeypadDecimal"), xorstr_lite("KeypadDivide"), xorstr_lite("KeypadMultiply"),
+        xorstr_lite("KeypadSubtract"), xorstr_lite("KeypadAdd"), xorstr_lite("KeypadEnter"), xorstr_lite("KeypadEqual"),
+        xorstr_lite("AppBack"), xorstr_lite("AppForward"),
+        xorstr_lite("GamepadStart"), xorstr_lite("GamepadBack"),
+        xorstr_lite("GamepadFaceLeft"), xorstr_lite("GamepadFaceRight"), xorstr_lite("GamepadFaceUp"), xorstr_lite("GamepadFaceDown"),
+        xorstr_lite("GamepadDpadLeft"), xorstr_lite("GamepadDpadRight"), xorstr_lite("GamepadDpadUp"), xorstr_lite("GamepadDpadDown"),
+        xorstr_lite("GamepadL1"), xorstr_lite("GamepadR1"), xorstr_lite("GamepadL2"), xorstr_lite("GamepadR2"), xorstr_lite("GamepadL3"), xorstr_lite("GamepadR3"),
+        xorstr_lite("GamepadLStickLeft"), xorstr_lite("GamepadLStickRight"), xorstr_lite("GamepadLStickUp"), xorstr_lite("GamepadLStickDown"),
+        xorstr_lite("GamepadRStickLeft"), xorstr_lite("GamepadRStickRight"), xorstr_lite("GamepadRStickUp"), xorstr_lite("GamepadRStickDown"),
+        xorstr_lite("MouseLeft"), xorstr_lite("MouseRight"), xorstr_lite("MouseMiddle"), xorstr_lite("MouseX1"), xorstr_lite("MouseX2"), xorstr_lite("MouseWheelX"), xorstr_lite("MouseWheelY"),
+        xorstr_lite("ModCtrl"), xorstr_lite("ModShift"), xorstr_lite("ModAlt"), xorstr_lite("ModSuper"),
     };
     return (index >= 0 && index < ImGuiKey_NamedKey_COUNT) ? GKeyNames[index] : "";
 #endif
@@ -9135,11 +9135,11 @@ const char* ImGui::GetKeyChordName(ImGuiKeyChord key_chord)
     const ImGuiKey key = (ImGuiKey)(key_chord & ~ImGuiMod_Mask_);
     if (IsLRModKey(key))
         key_chord &= ~GetModForLRModKey(key); 
-    ImFormatString(g.TempKeychordName, IM_ARRAYSIZE(g.TempKeychordName), "%s%s%s%s%s",
-        (key_chord & ImGuiMod_Ctrl) ? "Ctrl+" : "",
-        (key_chord & ImGuiMod_Shift) ? "Shift+" : "",
-        (key_chord & ImGuiMod_Alt) ? "Alt+" : "",
-        (key_chord & ImGuiMod_Super) ? "Super+" : "",
+    ImFormatString(g.TempKeychordName, IM_ARRAYSIZE(g.TempKeychordName), xorstr_lite("%s%s%s%s%s"),
+        (key_chord & ImGuiMod_Ctrl) ? xorstr_lite("Ctrl+") : "",
+        (key_chord & ImGuiMod_Shift) ? xorstr_lite("Shift+") : "",
+        (key_chord & ImGuiMod_Alt) ? xorstr_lite("Alt+") : "",
+        (key_chord & ImGuiMod_Super) ? xorstr_lite("Super+") : "",
         (key != ImGuiKey_None || key_chord == ImGuiKey_None) ? GetKeyName(key) : "");
     size_t len;
     if (key == ImGuiKey_None && key_chord != 0)
@@ -9385,7 +9385,7 @@ bool ImGui::SetShortcutRouting(ImGuiKeyChord key_chord, ImGuiInputFlags flags, I
     
     if (flags & ImGuiInputFlags_RouteAlways)
     {
-        IMGUI_DEBUG_LOG_INPUTROUTING("SetShortcutRouting(%s, flags=%04X, owner_id=0x%08X) -> always, no register\n", GetKeyChordName(key_chord), flags, owner_id);
+        IMGUI_DEBUG_LOG_INPUTROUTING(xorstr_lite("SetShortcutRouting(%s, flags=%04X, owner_id=0x%08X) -> always, no register\n"), GetKeyChordName(key_chord), flags, owner_id);
         return true;
     }
 
@@ -9402,7 +9402,7 @@ bool ImGui::SetShortcutRouting(ImGuiKeyChord key_chord, ImGuiInputFlags flags, I
         
         if (g.IO.WantTextInput && IsKeyChordPotentiallyCharInput(key_chord))
         {
-            IMGUI_DEBUG_LOG_INPUTROUTING("SetShortcutRouting(%s, flags=%04X, owner_id=0x%08X) -> filtered as potential char input\n", GetKeyChordName(key_chord), flags, owner_id);
+            IMGUI_DEBUG_LOG_INPUTROUTING(xorstr_lite("SetShortcutRouting(%s, flags=%04X, owner_id=0x%08X) -> filtered as potential char input\n"), GetKeyChordName(key_chord), flags, owner_id);
             return false;
         }
 
@@ -9423,7 +9423,7 @@ bool ImGui::SetShortcutRouting(ImGuiKeyChord key_chord, ImGuiInputFlags flags, I
         focus_scope_id = g.CurrentWindow->RootWindow->ID; 
 
     const int score = CalcRoutingScore(focus_scope_id, owner_id, flags);
-    IMGUI_DEBUG_LOG_INPUTROUTING("SetShortcutRouting(%s, flags=%04X, owner_id=0x%08X) -> score %d\n", GetKeyChordName(key_chord), flags, owner_id, score);
+    IMGUI_DEBUG_LOG_INPUTROUTING(xorstr_lite("SetShortcutRouting(%s, flags=%04X, owner_id=0x%08X) -> score %d\n"), GetKeyChordName(key_chord), flags, owner_id, score);
     if (score == 255)
         return false;
 
@@ -9439,7 +9439,7 @@ bool ImGui::SetShortcutRouting(ImGuiKeyChord key_chord, ImGuiInputFlags flags, I
 
     
     if (routing_data->RoutingCurr == owner_id)
-        IMGUI_DEBUG_LOG_INPUTROUTING("--> granting current route\n");
+        IMGUI_DEBUG_LOG_INPUTROUTING(xorstr_lite("--> granting current route\n"));
     return routing_data->RoutingCurr == owner_id;
 }
 
@@ -9972,7 +9972,7 @@ static void LockWheelingWindow(ImGuiWindow* window, float wheel_amount)
         g.WheelingWindowReleaseTimer = 0.0f;
     if (g.WheelingWindow == window)
         return;
-    IMGUI_DEBUG_LOG_IO("[io] LockWheelingWindow() \"%s\"\n", window ? window->Name : IM_STR("NULL"));
+    IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] LockWheelingWindow() \"%s\"\n"), window ? window->Name : IM_STR("NULL"));
     g.WheelingWindow = window;
     g.WheelingWindowRefMousePos = g.IO.MousePos;
     if (window == NULL)
@@ -10138,12 +10138,12 @@ static const char* GetMouseSourceName(ImGuiMouseSource source)
 static void DebugPrintInputEvent(const char* prefix, const ImGuiInputEvent* e)
 {
     ImGuiContext& g = *GImGui;
-    if (e->Type == ImGuiInputEventType_MousePos)    { if (e->MousePos.PosX == -FLT_MAX && e->MousePos.PosY == -FLT_MAX) IMGUI_DEBUG_LOG_IO("[io] %s: MousePos (-FLT_MAX, -FLT_MAX)\n", prefix); else IMGUI_DEBUG_LOG_IO("[io] %s: MousePos (%.1f, %.1f) (%s)\n", prefix, e->MousePos.PosX, e->MousePos.PosY, GetMouseSourceName(e->MousePos.MouseSource)); return; }
-    if (e->Type == ImGuiInputEventType_MouseButton) { IMGUI_DEBUG_LOG_IO("[io] %s: MouseButton %d %s (%s)\n", prefix, e->MouseButton.Button, e->MouseButton.Down ? "Down" : "Up", GetMouseSourceName(e->MouseButton.MouseSource)); return; }
-    if (e->Type == ImGuiInputEventType_MouseWheel)  { IMGUI_DEBUG_LOG_IO("[io] %s: MouseWheel (%.3f, %.3f) (%s)\n", prefix, e->MouseWheel.WheelX, e->MouseWheel.WheelY, GetMouseSourceName(e->MouseWheel.MouseSource)); return; }
-    if (e->Type == ImGuiInputEventType_Key)         { IMGUI_DEBUG_LOG_IO("[io] %s: Key \"%s\" %s\n", prefix, ImGui::GetKeyName(e->Key.Key), e->Key.Down ? "Down" : "Up"); return; }
-    if (e->Type == ImGuiInputEventType_Text)        { IMGUI_DEBUG_LOG_IO("[io] %s: Text: %c (U+%08X)\n", prefix, e->Text.Char, e->Text.Char); return; }
-    if (e->Type == ImGuiInputEventType_Focus)       { IMGUI_DEBUG_LOG_IO("[io] %s: AppFocused %d\n", prefix, e->AppFocused.Focused); return; }
+    if (e->Type == ImGuiInputEventType_MousePos)    { if (e->MousePos.PosX == -FLT_MAX && e->MousePos.PosY == -FLT_MAX) IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] %s: MousePos (-FLT_MAX, -FLT_MAX)\n"), prefix); else IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] %s: MousePos (%.1f, %.1f) (%s)\n"), prefix, e->MousePos.PosX, e->MousePos.PosY, GetMouseSourceName(e->MousePos.MouseSource)); return; }
+    if (e->Type == ImGuiInputEventType_MouseButton) { IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] %s: MouseButton %d %s (%s)\n"), prefix, e->MouseButton.Button, e->MouseButton.Down ? xorstr_lite("Down") : xorstr_lite("Up"), GetMouseSourceName(e->MouseButton.MouseSource)); return; }
+    if (e->Type == ImGuiInputEventType_MouseWheel)  { IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] %s: MouseWheel (%.3f, %.3f) (%s)\n"), prefix, e->MouseWheel.WheelX, e->MouseWheel.WheelY, GetMouseSourceName(e->MouseWheel.MouseSource)); return; }
+    if (e->Type == ImGuiInputEventType_Key)         { IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] %s: Key \"%s\" %s\n"), prefix, ImGui::GetKeyName(e->Key.Key), e->Key.Down ? xorstr_lite("Down") : xorstr_lite("Up")); return; }
+    if (e->Type == ImGuiInputEventType_Text)        { IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] %s: Text: %c (U+%08X)\n"), prefix, e->Text.Char, e->Text.Char); return; }
+    if (e->Type == ImGuiInputEventType_Focus)       { IMGUI_DEBUG_LOG_IO(xorstr_lite("[io] %s: AppFocused %d\n"), prefix, e->AppFocused.Focused); return; }
 }
 #endif
 
@@ -10270,7 +10270,7 @@ void ImGui::UpdateInputEvents(bool trickle_fast_inputs)
 #ifndef IMGUI_DISABLE_DEBUG_TOOLS
     if (event_n != 0 && (g.DebugLogFlags & ImGuiDebugLogFlags_EventIO))
         for (int n = 0; n < g.InputEventsQueue.Size; n++)
-            DebugPrintInputEvent(n < event_n ? "Processed" : "Remaining", &g.InputEventsQueue[n]);
+            DebugPrintInputEvent(n < event_n ? xorstr_lite("Processed") : xorstr_lite("Remaining"), &g.InputEventsQueue[n]);
 #endif
 
     
@@ -10681,12 +10681,12 @@ void    ImGui::ErrorCheckEndFrameRecover(ImGuiErrorLogCallback log_callback, voi
         }
         if (window->Flags & ImGuiWindowFlags_ChildWindow)
         {
-            if (log_callback) log_callback(user_data, "Recovered from missing EndChild() for '%s'\n", window->Name);
+            if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing EndChild() for '%s'\n"), window->Name);
             EndChild();
         }
         else
         {
-            if (log_callback) log_callback(user_data, "Recovered from missing End() for '%s'\n", window->Name);
+            if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing End() for '%s'\n"), window->Name);
             End();
         }
     }
@@ -10698,7 +10698,7 @@ void    ImGui::ErrorCheckEndWindowRecover(ImGuiErrorLogCallback log_callback, vo
     ImGuiContext& g = *GImGui;
     while (g.CurrentTable != NULL && g.CurrentTable->InnerWindow == g.CurrentWindow)
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing EndTable() in '%s'\n", g.CurrentTable->OuterWindow->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing EndTable() in '%s'\n"), g.CurrentTable->OuterWindow->Name);
         EndTable();
     }
 
@@ -10707,32 +10707,32 @@ void    ImGui::ErrorCheckEndWindowRecover(ImGuiErrorLogCallback log_callback, vo
     IM_ASSERT(window != NULL);
     while (g.CurrentTabBar != NULL && g.CurrentTabBar->Window == window) 
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing EndTabBar() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing EndTabBar() in '%s'\n"), window->Name);
         EndTabBar();
     }
     while (g.CurrentMultiSelect != NULL && g.CurrentMultiSelect->Storage->Window == window)
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing EndMultiSelect() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing EndMultiSelect() in '%s'\n"), window->Name);
         EndMultiSelect();
     }
     while (window->DC.TreeDepth > 0)
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing TreePop() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing TreePop() in '%s'\n"), window->Name);
         TreePop();
     }
     while (g.GroupStack.Size > stack_sizes->SizeOfGroupStack) 
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing EndGroup() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing EndGroup() in '%s'\n"), window->Name);
         EndGroup();
     }
     while (window->IDStack.Size > 1)
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing PopID() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing PopID() in '%s'\n"), window->Name);
         PopID();
     }
     while (g.DisabledStackSize > stack_sizes->SizeOfDisabledStack) 
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing EndDisabled() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing EndDisabled() in '%s'\n"), window->Name);
         if (g.CurrentItemFlags & ImGuiItemFlags_Disabled)
             EndDisabled();
         else
@@ -10743,27 +10743,27 @@ void    ImGui::ErrorCheckEndWindowRecover(ImGuiErrorLogCallback log_callback, vo
     }
     while (g.ColorStack.Size > stack_sizes->SizeOfColorStack)
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing PopStyleColor() in '%s' for ImGuiCol_%s\n", window->Name, GetStyleColorName(g.ColorStack.back().Col));
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing PopStyleColor() in '%s' for ImGuiCol_%s\n"), window->Name, GetStyleColorName(g.ColorStack.back().Col));
         PopStyleColor();
     }
     while (g.ItemFlagsStack.Size > stack_sizes->SizeOfItemFlagsStack) 
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing PopItemFlag() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing PopItemFlag() in '%s'\n"), window->Name);
         PopItemFlag();
     }
     while (g.StyleVarStack.Size > stack_sizes->SizeOfStyleVarStack) 
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing PopStyleVar() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing PopStyleVar() in '%s'\n"), window->Name);
         PopStyleVar();
     }
     while (g.FontStack.Size > stack_sizes->SizeOfFontStack) 
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing PopFont() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing PopFont() in '%s'\n"), window->Name);
         PopFont();
     }
     while (g.FocusScopeStack.Size > stack_sizes->SizeOfFocusScopeStack + 1) 
     {
-        if (log_callback) log_callback(user_data, "Recovered from missing PopFocusScope() in '%s'\n", window->Name);
+        if (log_callback) log_callback(user_data, xorstr_lite("Recovered from missing PopFocusScope() in '%s'\n"), window->Name);
         PopFocusScope();
     }
 }
@@ -11615,14 +11615,14 @@ bool ImGui::BeginTooltipEx(ImGuiTooltipFlags tooltip_flags, ImGuiWindowFlags ext
     }
 
     char window_name[16];
-    ImFormatString(window_name, IM_ARRAYSIZE(window_name), "##Tooltip_%02d", g.TooltipOverrideCount);
+    ImFormatString(window_name, IM_ARRAYSIZE(window_name), xorstr_lite("##Tooltip_%02d"), g.TooltipOverrideCount);
     if (tooltip_flags & ImGuiTooltipFlags_OverridePrevious)
         if (ImGuiWindow* window = FindWindowByName(window_name))
             if (window->Active)
             {
                 
                 SetWindowHiddenAndSkipItemsForCurrentFrame(window);
-                ImFormatString(window_name, IM_ARRAYSIZE(window_name), "##Tooltip_%02d", ++g.TooltipOverrideCount);
+                ImFormatString(window_name, IM_ARRAYSIZE(window_name), xorstr_lite("##Tooltip_%02d"), ++g.TooltipOverrideCount);
             }
     ImGuiWindowFlags flags = ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize;
     Begin(window_name, NULL, flags | extra_window_flags);
@@ -11745,7 +11745,7 @@ void ImGui::OpenPopup(const char* str_id, ImGuiPopupFlags popup_flags)
 {
     ImGuiContext& g = *GImGui;
     ImGuiID id = g.CurrentWindow->GetID(str_id);
-    IMGUI_DEBUG_LOG_POPUP("[popup] OpenPopup(\"%s\" -> 0x%08X)\n", str_id, id);
+    IMGUI_DEBUG_LOG_POPUP(xorstr_lite("[popup] OpenPopup(\"%s\" -> 0x%08X)\n"), str_id, id);
     OpenPopupEx(id, popup_flags);
 }
 
@@ -11777,7 +11777,7 @@ void ImGui::OpenPopupEx(ImGuiID id, ImGuiPopupFlags popup_flags)
     popup_ref.OpenPopupPos = NavCalcPreferredRefPos();
     popup_ref.OpenMousePos = IsMousePosValid(&g.IO.MousePos) ? g.IO.MousePos : popup_ref.OpenPopupPos;
 
-    IMGUI_DEBUG_LOG_POPUP("[popup] OpenPopupEx(0x%08X)\n", id);
+    IMGUI_DEBUG_LOG_POPUP(xorstr_lite("[popup] OpenPopupEx(0x%08X)\n"), id);
     if (g.OpenPopupStack.Size < current_stack_size + 1)
     {
         g.OpenPopupStack.push_back(popup_ref);
@@ -11854,7 +11854,7 @@ void ImGui::ClosePopupsOverWindow(ImGuiWindow* ref_window, bool restore_focus_to
     }
     if (popup_count_to_keep < g.OpenPopupStack.Size) 
     {
-        IMGUI_DEBUG_LOG_POPUP("[popup] ClosePopupsOverWindow(\"%s\")\n", ref_window ? ref_window->Name : "<NULL>");
+        IMGUI_DEBUG_LOG_POPUP(xorstr_lite("[popup] ClosePopupsOverWindow(\"%s\")\n"), ref_window ? ref_window->Name : xorstr_lite("<NULL>"));
         ClosePopupToLevel(popup_count_to_keep, restore_focus_to_window_under_popup);
     }
 }
@@ -11877,11 +11877,11 @@ void ImGui::ClosePopupsExceptModals()
 void ImGui::ClosePopupToLevel(int remaining, bool restore_focus_to_window_under_popup)
 {
     ImGuiContext& g = *GImGui;
-    IMGUI_DEBUG_LOG_POPUP("[popup] ClosePopupToLevel(%d), restore_under=%d\n", remaining, restore_focus_to_window_under_popup);
+    IMGUI_DEBUG_LOG_POPUP(xorstr_lite("[popup] ClosePopupToLevel(%d), restore_under=%d\n"), remaining, restore_focus_to_window_under_popup);
     IM_ASSERT(remaining >= 0 && remaining < g.OpenPopupStack.Size);
     if (g.DebugLogFlags & ImGuiDebugLogFlags_EventPopup)
         for (int n = remaining; n < g.OpenPopupStack.Size; n++)
-            IMGUI_DEBUG_LOG_POPUP("[popup] - Closing PopupID 0x%08X Window \"%s\"\n", g.OpenPopupStack[n].PopupId, g.OpenPopupStack[n].Window ? g.OpenPopupStack[n].Window->Name : NULL);
+            IMGUI_DEBUG_LOG_POPUP(xorstr_lite("[popup] - Closing PopupID 0x%08X Window \"%s\"\n"), g.OpenPopupStack[n].PopupId, g.OpenPopupStack[n].Window ? g.OpenPopupStack[n].Window->Name : NULL);
 
     
     ImGuiPopupData prev_popup = g.OpenPopupStack[remaining];
@@ -11920,7 +11920,7 @@ void ImGui::CloseCurrentPopup()
             break;
         popup_idx--;
     }
-    IMGUI_DEBUG_LOG_POPUP("[popup] CloseCurrentPopup %d -> %d\n", g.BeginPopupStack.Size - 1, popup_idx);
+    IMGUI_DEBUG_LOG_POPUP(xorstr_lite("[popup] CloseCurrentPopup %d -> %d\n"), g.BeginPopupStack.Size - 1, popup_idx);
     ClosePopupToLevel(popup_idx, true);
 
     
@@ -11942,9 +11942,9 @@ bool ImGui::BeginPopupEx(ImGuiID id, ImGuiWindowFlags extra_window_flags)
 
     char name[20];
     if (extra_window_flags & ImGuiWindowFlags_ChildMenu)
-        ImFormatString(name, IM_ARRAYSIZE(name), "##Menu_%02d", g.BeginMenuDepth); 
+        ImFormatString(name, IM_ARRAYSIZE(name), xorstr_lite("##Menu_%02d"), g.BeginMenuDepth); 
     else
-        ImFormatString(name, IM_ARRAYSIZE(name), "##Popup_%08x", id); 
+        ImFormatString(name, IM_ARRAYSIZE(name), xorstr_lite("##Popup_%08x"), id); 
 
     bool is_open = Begin(name, NULL, extra_window_flags | ImGuiWindowFlags_Popup);
     if (!is_open) 
@@ -12245,7 +12245,7 @@ void ImGui::SetNavWindow(ImGuiWindow* window)
     ImGuiContext& g = *GImGui;
     if (g.NavWindow != window)
     {
-        IMGUI_DEBUG_LOG_FOCUS("[focus] SetNavWindow(\"%s\")\n", window ? window->Name : "<NULL>");
+        IMGUI_DEBUG_LOG_FOCUS(xorstr_lite("[focus] SetNavWindow(\"%s\")\n"), window ? window->Name : xorstr_lite("<NULL>"));
         g.NavWindow = window;
         g.NavLastValidSelectionUserData = ImGuiSelectionUserData_Invalid;
     }
@@ -12396,7 +12396,7 @@ static bool ImGui::NavScoreItem(ImGuiNavItemData* result)
     {
         if (quadrant == move_dir)
         {
-            ImFormatString(buf, IM_ARRAYSIZE(buf), "%.0f/%.0f", dist_box, dist_center);
+            ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("%.0f/%.0f"), dist_box, dist_center);
             ImDrawList* draw_list = GetForegroundDrawList(window);
             draw_list->AddRectFilled(cand.Min, cand.Max, IM_COL32(255, 0, 0, 80));
             draw_list->AddRectFilled(cand.Min, cand.Min + CalcTextSize(buf), IM_COL32(255, 0, 0, 200));
@@ -12408,8 +12408,8 @@ static bool ImGui::NavScoreItem(ImGuiNavItemData* result)
     if (debug_hovering || debug_tty)
     {
         ImFormatString(buf, IM_ARRAYSIZE(buf),
-            "d-box    (%7.3f,%7.3f) -> %7.3f\nd-center (%7.3f,%7.3f) -> %7.3f\nd-axial  (%7.3f,%7.3f) -> %7.3f\nnav %c, quadrant %c",
-            dbx, dby, dist_box, dcx, dcy, dist_center, dax, day, dist_axial, "-WENS"[move_dir+1], "-WENS"[quadrant+1]);
+            xorstr_lite("d-box    (%7.3f,%7.3f) -> %7.3f\nd-center (%7.3f,%7.3f) -> %7.3f\nd-axial  (%7.3f,%7.3f) -> %7.3f\nnav %c, quadrant %c"),
+            dbx, dby, dist_box, dcx, dcy, dist_center, dax, day, dist_axial, xorstr_lite("-WENS")[move_dir+1], xorstr_lite("-WENS")[quadrant+1]);
         if (debug_hovering)
         {
             ImDrawList* draw_list = GetForegroundDrawList(window);
@@ -12418,7 +12418,7 @@ static bool ImGui::NavScoreItem(ImGuiNavItemData* result)
             draw_list->AddRectFilled(cand.Max - ImVec2(4, 4), cand.Max + CalcTextSize(buf) + ImVec2(4, 4), IM_COL32(40, 0, 0, 200));
             draw_list->AddText(cand.Max, ~0U, buf);
         }
-        if (debug_tty) { IMGUI_DEBUG_LOG_NAV("id 0x%08X\n%s\n", g.LastItemData.ID, buf); }
+        if (debug_tty) { IMGUI_DEBUG_LOG_NAV(xorstr_lite("id 0x%08X\n%s\n"), g.LastItemData.ID, buf); }
     }
 #endif
 
@@ -12752,7 +12752,7 @@ void ImGui::NavRestoreLayer(ImGuiNavLayer layer)
         g.NavWindow = NavRestoreLastChildNavWindow(g.NavWindow);    
         g.NavLastValidSelectionUserData = ImGuiSelectionUserData_Invalid;
         if (prev_nav_window)
-            IMGUI_DEBUG_LOG_FOCUS("[focus] NavRestoreLayer: from \"%s\" to SetNavWindow(\"%s\")\n", prev_nav_window->Name, g.NavWindow->Name);
+            IMGUI_DEBUG_LOG_FOCUS(xorstr_lite("[focus] NavRestoreLayer: from \"%s\" to SetNavWindow(\"%s\")\n"), prev_nav_window->Name, g.NavWindow->Name);
     }
     ImGuiWindow* window = g.NavWindow;
     if (window->NavLastIds[layer] != 0)
@@ -12797,7 +12797,7 @@ void ImGui::NavInitWindow(ImGuiWindow* window, bool force_reinit)
     bool init_for_nav = false;
     if (window == window->RootWindow || (window->Flags & ImGuiWindowFlags_Popup) || (window->NavLastIds[0] == 0) || force_reinit)
         init_for_nav = true;
-    IMGUI_DEBUG_LOG_NAV("[nav] NavInitRequest: from NavInitWindow(), init_for_nav=%d, window=\"%s\", layer=%d\n", init_for_nav, window->Name, g.NavLayer);
+    IMGUI_DEBUG_LOG_NAV(xorstr_lite("[nav] NavInitRequest: from NavInitWindow(), init_for_nav=%d, window=\"%s\", layer=%d\n"), init_for_nav, window->Name, g.NavLayer);
     if (init_for_nav)
     {
         SetNavID(0, g.NavLayer, window->NavRootFocusScopeId, ImRect());
@@ -13060,7 +13060,7 @@ void ImGui::NavInitRequestApplyResult()
 
     
     
-    IMGUI_DEBUG_LOG_NAV("[nav] NavInitRequest: ApplyResult: NavID 0x%08X in Layer %d Window \"%s\"\n", result->ID, g.NavLayer, g.NavWindow->Name);
+    IMGUI_DEBUG_LOG_NAV(xorstr_lite("[nav] NavInitRequest: ApplyResult: NavID 0x%08X in Layer %d Window \"%s\"\n"), result->ID, g.NavLayer, g.NavWindow->Name);
     SetNavID(result->ID, g.NavLayer, result->FocusScopeId, result->RectRel);
     g.NavIdIsAlive = true; 
     if (result->SelectionUserData != ImGuiSelectionUserData_Invalid)
@@ -13108,7 +13108,7 @@ void ImGui::NavUpdateCreateMoveRequest()
         
         IM_ASSERT(g.NavMoveDir != ImGuiDir_None && g.NavMoveClipDir != ImGuiDir_None);
         IM_ASSERT(g.NavMoveFlags & ImGuiNavMoveFlags_Forwarded);
-        IMGUI_DEBUG_LOG_NAV("[nav] NavMoveRequestForward %d\n", g.NavMoveDir);
+        IMGUI_DEBUG_LOG_NAV(xorstr_lite("[nav] NavMoveRequestForward %d\n"), g.NavMoveDir);
     }
     else
     {
@@ -13160,7 +13160,7 @@ void ImGui::NavUpdateCreateMoveRequest()
     
     if (g.NavMoveSubmitted && g.NavId == 0)
     {
-        IMGUI_DEBUG_LOG_NAV("[nav] NavInitRequest: from move, window \"%s\", layer=%d\n", window ? window->Name : "<NULL>", g.NavLayer);
+        IMGUI_DEBUG_LOG_NAV(xorstr_lite("[nav] NavInitRequest: from move, window \"%s\", layer=%d\n"), window ? window->Name : xorstr_lite("<NULL>"), g.NavLayer);
         g.NavInitRequest = g.NavInitRequestFromMove = true;
         g.NavInitResult.ID = 0;
         g.NavDisableHighlight = false;
@@ -13181,7 +13181,7 @@ void ImGui::NavUpdateCreateMoveRequest()
 
         if ((clamp_x || clamp_y) && !inner_rect_rel.Contains(window->NavRectRel[g.NavLayer]))
         {
-            IMGUI_DEBUG_LOG_NAV("[nav] NavMoveRequest: clamp NavRectRel for gamepad move\n");
+            IMGUI_DEBUG_LOG_NAV(xorstr_lite("[nav] NavMoveRequest: clamp NavRectRel for gamepad move\n"));
             float pad_x = ImMin(inner_rect_rel.GetWidth(), window->CalcFontSize() * 0.5f);
             float pad_y = ImMin(inner_rect_rel.GetHeight(), window->CalcFontSize() * 0.5f); 
             inner_rect_rel.Min.x = clamp_x ? (inner_rect_rel.Min.x + pad_x) : -FLT_MAX;
@@ -13263,7 +13263,7 @@ void ImGui::NavMoveRequestApplyResult()
         if (g.NavId != 0 && (g.NavMoveFlags & ImGuiNavMoveFlags_NoSetNavHighlight) == 0)
             NavRestoreHighlightAfterMove();
         NavClearPreferredPosForAxis(axis); 
-        IMGUI_DEBUG_LOG_NAV("[nav] NavMoveSubmitted but not led to a result!\n");
+        IMGUI_DEBUG_LOG_NAV(xorstr_lite("[nav] NavMoveSubmitted but not led to a result!\n"));
         return;
     }
 
@@ -13294,7 +13294,7 @@ void ImGui::NavMoveRequestApplyResult()
 
     if (g.NavWindow != result->Window)
     {
-        IMGUI_DEBUG_LOG_FOCUS("[focus] NavMoveRequest: SetNavWindow(\"%s\")\n", result->Window->Name);
+        IMGUI_DEBUG_LOG_FOCUS(xorstr_lite("[focus] NavMoveRequest: SetNavWindow(\"%s\")\n"), result->Window->Name);
         g.NavWindow = result->Window;
         g.NavLastValidSelectionUserData = ImGuiSelectionUserData_Invalid;
     }
@@ -13319,7 +13319,7 @@ void ImGui::NavMoveRequestApplyResult()
     }
 
     
-    IMGUI_DEBUG_LOG_NAV("[nav] NavMoveRequest: result NavID 0x%08X in Layer %d Window \"%s\"\n", result->ID, g.NavLayer, g.NavWindow->Name);
+    IMGUI_DEBUG_LOG_NAV(xorstr_lite("[nav] NavMoveRequest: result NavID 0x%08X in Layer %d Window \"%s\"\n"), result->ID, g.NavLayer, g.NavWindow->Name);
     ImVec2 preferred_scoring_pos_rel = g.NavWindow->RootWindowForNav->NavPreferredScoringPosRel[g.NavLayer];
     SetNavID(result->ID, g.NavLayer, result->FocusScopeId, result->RectRel);
     if (result->SelectionUserData != ImGuiSelectionUserData_Invalid)
@@ -13363,7 +13363,7 @@ static void ImGui::NavUpdateCancelRequest()
     if (!(nav_keyboard_active && IsKeyPressed(ImGuiKey_Escape, 0, ImGuiKeyOwner_NoOwner)) && !(nav_gamepad_active && IsKeyPressed(ImGuiKey_NavGamepadCancel, 0, ImGuiKeyOwner_NoOwner)))
         return;
 
-    IMGUI_DEBUG_LOG_NAV("[nav] NavUpdateCancelRequest()\n");
+    IMGUI_DEBUG_LOG_NAV(xorstr_lite("[nav] NavUpdateCancelRequest()\n"));
     if (g.ActiveId != 0)
     {
         ClearActiveID();
@@ -13795,7 +13795,7 @@ static const char* GetFallbackWindowNameForWindowingList(ImGuiWindow* window)
 {
     if (window->Flags & ImGuiWindowFlags_Popup)
         return ImGui::LocalizeGetMsg(ImGuiLocKey_WindowingPopup);
-    if ((window->Flags & ImGuiWindowFlags_MenuBar) && strcmp(window->Name, "##MainMenuBar") == 0)
+    if ((window->Flags & ImGuiWindowFlags_MenuBar) && strcmp(window->Name, xorstr_lite("##MainMenuBar")) == 0)
         return ImGui::LocalizeGetMsg(ImGuiLocKey_WindowingMainMenuBar);
     return ImGui::LocalizeGetMsg(ImGuiLocKey_WindowingUntitled);
 }
@@ -13810,7 +13810,7 @@ void ImGui::NavUpdateWindowingOverlay()
         return;
 
     if (g.NavWindowingListWindow == NULL)
-        g.NavWindowingListWindow = FindWindowByName("###NavWindowingList");
+        g.NavWindowingListWindow = FindWindowByName(xorstr_lite("###NavWindowingList"));
     const ImGuiViewport* viewport = GetMainViewport();
     SetNextWindowSizeConstraints(ImVec2(viewport->Size.x * 0.20f, viewport->Size.y * 0.20f), ImVec2(FLT_MAX, FLT_MAX));
     SetNextWindowPos(viewport->GetCenter(), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
@@ -13848,7 +13848,7 @@ void ImGui::ClearDragDrop()
 {
     ImGuiContext& g = *GImGui;
     if (g.DragDropActive)
-        IMGUI_DEBUG_LOG_ACTIVEID("[dragdrop] ClearDragDrop()\n");
+        IMGUI_DEBUG_LOG_ACTIVEID(xorstr_lite("[dragdrop] ClearDragDrop()\n"));
     g.DragDropActive = false;
     g.DragDropPayload.Clear();
     g.DragDropAcceptFlags = ImGuiDragDropFlags_None;
@@ -13961,8 +13961,8 @@ bool ImGui::BeginDragDropSource(ImGuiDragDropFlags flags)
     {
         IM_ASSERT(source_id != 0);
         ClearDragDrop();
-        IMGUI_DEBUG_LOG_ACTIVEID("[dragdrop] BeginDragDropSource() DragDropActive = true, source_id = 0x%08X%s\n",
-            source_id, (flags & ImGuiDragDropFlags_SourceExtern) ? " (EXTERN)" : "");
+        IMGUI_DEBUG_LOG_ACTIVEID(xorstr_lite("[dragdrop] BeginDragDropSource() DragDropActive = true, source_id = 0x%08X%s\n"),
+            source_id, (flags & ImGuiDragDropFlags_SourceExtern) ? xorstr_lite(" (EXTERN)") : "");
         ImGuiPayload& payload = g.DragDropPayload;
         payload.SourceId = source_id;
         payload.SourceParentId = source_parent_id;
@@ -14156,7 +14156,7 @@ const ImGuiPayload* ImGui::AcceptDragDropPayload(const char* type, ImGuiDragDrop
         return NULL;
 
     if (payload.Delivery)
-        IMGUI_DEBUG_LOG_ACTIVEID("[dragdrop] AcceptDragDropPayload(): 0x%08X: payload delivery\n", g.DragDropTargetId);
+        IMGUI_DEBUG_LOG_ACTIVEID(xorstr_lite("[dragdrop] AcceptDragDropPayload(): 0x%08X: payload delivery\n"), g.DragDropTargetId);
     return &payload;
 }
 
@@ -14281,7 +14281,7 @@ void ImGui::LogRenderedText(const ImVec2* ref_pos, const char* text, const char*
         {
             const int line_length = (int)(line_end - line_start);
             const int indentation = g.LogLineFirstItem ? tree_depth * 4 : 1;
-            LogText("%*s%.*s", indentation, "", line_length, line_start);
+            LogText(xorstr_lite("%*s%.*s"), indentation, "", line_length, line_start);
             g.LogLineFirstItem = false;
             if (*line_end == '\n')
             {
@@ -14349,7 +14349,7 @@ void ImGui::LogToFile(int auto_open_depth, const char* filename)
         filename = g.IO.LogFilename;
     if (!filename || !filename[0])
         return;
-    ImFileHandle f = ImFileOpen(filename, "ab");
+    ImFileHandle f = ImFileOpen(filename, xorstr_lite("ab"));
     if (!f)
     {
         IM_ASSERT(0);
@@ -14417,7 +14417,7 @@ void ImGui::LogButtons()
 {
     ImGuiContext& g = *GImGui;
 
-    PushID("LogButtons");
+    PushID(xorstr_lite("LogButtons"));
 #ifndef IMGUI_DISABLE_TTY_FUNCTIONS
     const bool log_to_tty = Button(IM_STR("Log To TTY")); SameLine();
 #else
@@ -14427,7 +14427,7 @@ void ImGui::LogButtons()
     const bool log_to_clipboard = Button(IM_STR("Log To Clipboard")); SameLine();
     PushItemFlag(ImGuiItemFlags_NoTabStop, true);
     SetNextItemWidth(80.0f);
-    SliderInt("Default Depth", &g.LogDepthToExpandDefault, 0, 9, NULL);
+    SliderInt(xorstr_lite("Default Depth"), &g.LogDepthToExpandDefault, 0, 9, NULL);
     PopItemFlag();
     PopID();
 
@@ -14532,7 +14532,7 @@ void ImGui::ClearIniSettings()
 void ImGui::LoadIniSettingsFromDisk(const char* ini_filename)
 {
     size_t file_data_size = 0;
-    char* file_data = (char*)ImFileLoadToMemory(ini_filename, "rb", &file_data_size);
+    char* file_data = (char*)ImFileLoadToMemory(ini_filename, xorstr_lite("rb"), &file_data_size);
     if (!file_data)
         return;
     if (file_data_size > 0)
@@ -14621,7 +14621,7 @@ void ImGui::SaveIniSettingsToDisk(const char* ini_filename)
 
     size_t ini_data_size = 0;
     const char* ini_data = SaveIniSettingsToMemory(&ini_data_size);
-    ImFileHandle f = ImFileOpen(ini_filename, "wt");
+    ImFileHandle f = ImFileOpen(ini_filename, xorstr_lite("wt"));
     if (!f)
         return;
     ImFileWrite(ini_data, sizeof(char), ini_data_size, f);
@@ -14650,7 +14650,7 @@ ImGuiWindowSettings* ImGui::CreateNewWindowSettings(const char* name)
     {
         
         
-        if (const char* p = strstr(name, "###"))
+        if (const char* p = strstr(name, xorstr_lite("###")))
             name = p;
     }
     const size_t name_len = strlen(name);
@@ -14725,10 +14725,10 @@ static void WindowSettingsHandler_ReadLine(ImGuiContext*, ImGuiSettingsHandler*,
     ImGuiWindowSettings* settings = (ImGuiWindowSettings*)entry;
     int x, y;
     int i;
-    if (sscanf(line, "Pos=%i,%i", &x, &y) == 2)         { settings->Pos = ImVec2ih((short)x, (short)y); }
-    else if (sscanf(line, "Size=%i,%i", &x, &y) == 2)   { settings->Size = ImVec2ih((short)x, (short)y); }
-    else if (sscanf(line, "Collapsed=%d", &i) == 1)     { settings->Collapsed = (i != 0); }
-    else if (sscanf(line, "IsChild=%d", &i) == 1)       { settings->IsChild = (i != 0); }
+    if (sscanf(line, xorstr_lite("Pos=%i,%i"), &x, &y) == 2)         { settings->Pos = ImVec2ih((short)x, (short)y); }
+    else if (sscanf(line, xorstr_lite("Size=%i,%i"), &x, &y) == 2)   { settings->Size = ImVec2ih((short)x, (short)y); }
+    else if (sscanf(line, xorstr_lite("Collapsed=%d"), &i) == 1)     { settings->Collapsed = (i != 0); }
+    else if (sscanf(line, xorstr_lite("IsChild=%d"), &i) == 1)       { settings->IsChild = (i != 0); }
 }
 
 
@@ -14775,20 +14775,20 @@ static void WindowSettingsHandler_WriteAll(ImGuiContext* ctx, ImGuiSettingsHandl
         if (settings->WantDelete)
             continue;
         const char* settings_name = settings->GetName();
-        buf->appendf("[%s][%s]\n", handler->TypeName, settings_name);
+        buf->appendf(xorstr_lite("[%s][%s]\n"), handler->TypeName, settings_name);
         if (settings->IsChild)
         {
-            buf->appendf("IsChild=1\n");
-            buf->appendf("Size=%d,%d\n", settings->Size.x, settings->Size.y);
+            buf->appendf(xorstr_lite("IsChild=1\n"));
+            buf->appendf(xorstr_lite("Size=%d,%d\n"), settings->Size.x, settings->Size.y);
         }
         else
         {
-            buf->appendf("Pos=%d,%d\n", settings->Pos.x, settings->Pos.y);
-            buf->appendf("Size=%d,%d\n", settings->Size.x, settings->Size.y);
+            buf->appendf(xorstr_lite("Pos=%d,%d\n"), settings->Pos.x, settings->Pos.y);
+            buf->appendf(xorstr_lite("Size=%d,%d\n"), settings->Size.x, settings->Size.y);
             if (settings->Collapsed)
-                buf->appendf("Collapsed=1\n");
+                buf->appendf(xorstr_lite("Collapsed=1\n"));
         }
-        buf->append("\n");
+        buf->append(xorstr_lite("\n"));
     }
 }
 
@@ -14931,7 +14931,7 @@ static void Platform_SetClipboardTextFn_DefaultImpl(ImGuiContext*, const char* t
     CFDataRef cf_data = CFDataCreate(kCFAllocatorDefault, (const UInt8*)text, strlen(text));
     if (cf_data)
     {
-        PasteboardPutItemFlavor(main_clipboard, (PasteboardItemID)1, CFSTR("public.utf8-plain-text"), cf_data, 0);
+        PasteboardPutItemFlavor(main_clipboard, (PasteboardItemID)1, CFSTR(xorstr_lite("public.utf8-plain-text")), cf_data, 0);
         CFRelease(cf_data);
     }
 }
@@ -14954,7 +14954,7 @@ static const char* Platform_GetClipboardTextFn_DefaultImpl(ImGuiContext* ctx)
         for (CFIndex j = 0, nj = CFArrayGetCount(flavor_type_array); j < nj; j++)
         {
             CFDataRef cf_data;
-            if (PasteboardCopyItemFlavorData(main_clipboard, item_id, CFSTR("public.utf8-plain-text"), &cf_data) == noErr)
+            if (PasteboardCopyItemFlavorData(main_clipboard, item_id, CFSTR(xorstr_lite("public.utf8-plain-text")), &cf_data) == noErr)
             {
                 g.ClipboardHandlerData.clear();
                 int length = (int)CFDataGetLength(cf_data);
@@ -15010,7 +15010,7 @@ static void Platform_SetClipboardTextFn_DefaultImpl(ImGuiContext* ctx, const cha
 #endif
 static bool Platform_OpenInShellFn_DefaultImpl(ImGuiContext*, const char* path)
 {
-    return (INT_PTR)::ShellExecuteA(NULL, "open", path, NULL, NULL, SW_SHOWDEFAULT) > 32;
+    return (INT_PTR)::ShellExecuteA(NULL, xorstr_lite("open"), path, NULL, NULL, SW_SHOWDEFAULT) > 32;
 }
 #else
 #include <sys/wait.h>
@@ -15177,9 +15177,9 @@ void ImGui::DebugRenderKeyboardPreview(ImDrawList* draw_list)
     struct KeyLayoutData { int Row, Col; const char* Label; ImGuiKey Key; };
     const KeyLayoutData keys_to_display[] =
     {
-        { 0, 0, "", ImGuiKey_Tab },      { 0, 1, "Q", ImGuiKey_Q }, { 0, 2, "W", ImGuiKey_W }, { 0, 3, "E", ImGuiKey_E }, { 0, 4, "R", ImGuiKey_R },
-        { 1, 0, "", ImGuiKey_CapsLock }, { 1, 1, "A", ImGuiKey_A }, { 1, 2, "S", ImGuiKey_S }, { 1, 3, "D", ImGuiKey_D }, { 1, 4, "F", ImGuiKey_F },
-        { 2, 0, "", ImGuiKey_LeftShift },{ 2, 1, "Z", ImGuiKey_Z }, { 2, 2, "X", ImGuiKey_X }, { 2, 3, "C", ImGuiKey_C }, { 2, 4, "V", ImGuiKey_V }
+        { 0, 0, "", ImGuiKey_Tab },      { 0, 1, xorstr_lite("Q"), ImGuiKey_Q }, { 0, 2, xorstr_lite("W"), ImGuiKey_W }, { 0, 3, xorstr_lite("E"), ImGuiKey_E }, { 0, 4, xorstr_lite("R"), ImGuiKey_R },
+        { 1, 0, "", ImGuiKey_CapsLock }, { 1, 1, xorstr_lite("A"), ImGuiKey_A }, { 1, 2, xorstr_lite("S"), ImGuiKey_S }, { 1, 3, xorstr_lite("D"), ImGuiKey_D }, { 1, 4, xorstr_lite("F"), ImGuiKey_F },
+        { 2, 0, "", ImGuiKey_LeftShift },{ 2, 1, xorstr_lite("Z"), ImGuiKey_Z }, { 2, 2, xorstr_lite("X"), ImGuiKey_X }, { 2, 3, xorstr_lite("C"), ImGuiKey_C }, { 2, 4, xorstr_lite("V"), ImGuiKey_V }
     };
 
     
@@ -15210,34 +15210,34 @@ void ImGui::DebugRenderKeyboardPreview(ImDrawList* draw_list)
 
 void ImGui::DebugTextEncoding(const char* str)
 {
-    Text("Text: \"%s\"", str);
-    if (!BeginTable("##DebugTextEncoding", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Resizable))
+    Text(xorstr_lite("Text: \"%s\""), str);
+    if (!BeginTable(xorstr_lite("##DebugTextEncoding"), 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_Resizable))
         return;
-    TableSetupColumn("Offset");
-    TableSetupColumn("UTF-8");
-    TableSetupColumn("Glyph");
-    TableSetupColumn("Codepoint");
+    TableSetupColumn(xorstr_lite("Offset"));
+    TableSetupColumn(xorstr_lite("UTF-8"));
+    TableSetupColumn(xorstr_lite("Glyph"));
+    TableSetupColumn(xorstr_lite("Codepoint"));
     TableHeadersRow();
     for (const char* p = str; *p != 0; )
     {
         unsigned int c;
         const int c_utf8_len = ImTextCharFromUtf8(&c, p, NULL);
         TableNextColumn();
-        Text("%d", (int)(p - str));
+        Text(xorstr_lite("%d"), (int)(p - str));
         TableNextColumn();
         for (int byte_index = 0; byte_index < c_utf8_len; byte_index++)
         {
             if (byte_index > 0)
                 SameLine();
-            Text("0x%02X", (int)(unsigned char)p[byte_index]);
+            Text(xorstr_lite("0x%02X"), (int)(unsigned char)p[byte_index]);
         }
         TableNextColumn();
         if (GetFont()->FindGlyphNoFallback((ImWchar)c))
             TextUnformatted(p, p + c_utf8_len);
         else
-            TextUnformatted((c == IM_UNICODE_CODEPOINT_INVALID) ? "[invalid]" : "[missing]");
+            TextUnformatted((c == IM_UNICODE_CODEPOINT_INVALID) ? xorstr_lite("[invalid]") : xorstr_lite("[missing]"));
         TableNextColumn();
-        Text("U+%04X", (int)c);
+        Text(xorstr_lite("U+%04X"), (int)c);
         p += c_utf8_len;
     }
     EndTable();
@@ -15275,7 +15275,7 @@ void ImGui::UpdateDebugToolFlashStyleColor()
 
 static void MetricsHelpMarker(const char* desc)
 {
-    ImGui::TextDisabled("(?)");
+    ImGui::TextDisabled(xorstr_lite("(?)"));
     if (ImGui::BeginItemTooltip())
     {
         ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
@@ -15298,7 +15298,7 @@ void ImGui::ShowFontAtlas(ImFontAtlas* atlas)
     {
         ImGuiContext& g = *GImGui;
         ImGuiMetricsConfig* cfg = &g.DebugMetricsConfig;
-        Checkbox("Tint with Text Color", &cfg->ShowAtlasTintedWithTextColor); 
+        Checkbox(xorstr_lite("Tint with Text Color"), &cfg->ShowAtlasTintedWithTextColor); 
         ImVec4 tint_col = cfg->ShowAtlasTintedWithTextColor ? GetStyleColorVec4(ImGuiCol_Text) : ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
         ImVec4 border_col = GetStyleColorVec4(ImGuiCol_Border);
         Image(atlas->TexID, ImVec2((float)atlas->TexWidth, (float)atlas->TexHeight), ImVec2(0.0f, 0.0f), ImVec2(1.0f, 1.0f), tint_col, border_col);
@@ -15326,15 +15326,15 @@ void ImGui::ShowMetricsWindow(bool* p_open)
     DebugBreakClearData();
 
     
-    Text("Dear ImGui %s", GetVersion());
+    Text(xorstr_lite("Dear ImGui %s"), GetVersion());
     if (g.ContextName[0] != 0)
     {
         SameLine();
-        Text("(Context Name: \"%s\")", g.ContextName);
+        Text(xorstr_lite("(Context Name: \"%s\")"), g.ContextName);
     }
-    Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-    Text("%d vertices, %d indices (%d triangles)", io.MetricsRenderVertices, io.MetricsRenderIndices, io.MetricsRenderIndices / 3);
-    Text("%d visible windows, %d current allocations", io.MetricsRenderWindows, g.DebugAllocInfo.TotalAllocCount - g.DebugAllocInfo.TotalFreeCount);
+    Text(xorstr_lite("Application average %.3f ms/frame (%.1f FPS)"), 1000.0f / io.Framerate, io.Framerate);
+    Text(xorstr_lite("%d vertices, %d indices (%d triangles)"), io.MetricsRenderVertices, io.MetricsRenderIndices, io.MetricsRenderIndices / 3);
+    Text(xorstr_lite("%d visible windows, %d current allocations"), io.MetricsRenderWindows, g.DebugAllocInfo.TotalAllocCount - g.DebugAllocInfo.TotalFreeCount);
     
 
     Separator();
@@ -15391,44 +15391,44 @@ void ImGui::ShowMetricsWindow(bool* p_open)
     {
         
         
-        SeparatorTextEx(0, "Debug breaks", NULL, CalcTextSize("(?)").x + g.Style.SeparatorTextPadding.x);
+        SeparatorTextEx(0, xorstr_lite("Debug breaks"), NULL, CalcTextSize(xorstr_lite("(?)")).x + g.Style.SeparatorTextPadding.x);
         SameLine();
-        MetricsHelpMarker("Will call the IM_DEBUG_BREAK() macro to break in debugger.\nWarning: If you don't have a debugger attached, this will probably crash.");
-        if (Checkbox("Show Item Picker", &g.DebugItemPickerActive) && g.DebugItemPickerActive)
+        MetricsHelpMarker(xorstr_lite("Will call the IM_DEBUG_BREAK() macro to break in debugger.\nWarning: If you don't have a debugger attached, this will probably crash."));
+        if (Checkbox(xorstr_lite("Show Item Picker"), &g.DebugItemPickerActive) && g.DebugItemPickerActive)
             DebugStartItemPicker();
-        Checkbox("Show \"Debug Break\" buttons in other sections (io.ConfigDebugIsDebuggerPresent)", &g.IO.ConfigDebugIsDebuggerPresent);
+        Checkbox(xorstr_lite("Show \"Debug Break\" buttons in other sections (io.ConfigDebugIsDebuggerPresent)"), &g.IO.ConfigDebugIsDebuggerPresent);
 
-        SeparatorText("Visualize");
+        SeparatorText(xorstr_lite("Visualize"));
 
-        Checkbox("Show Debug Log", &cfg->ShowDebugLog);
+        Checkbox(xorstr_lite("Show Debug Log"), &cfg->ShowDebugLog);
         SameLine();
-        MetricsHelpMarker("You can also call ImGui::ShowDebugLogWindow() from your code.");
+        MetricsHelpMarker(xorstr_lite("You can also call ImGui::ShowDebugLogWindow() from your code."));
 
-        Checkbox("Show ID Stack Tool", &cfg->ShowIDStackTool);
+        Checkbox(xorstr_lite("Show ID Stack Tool"), &cfg->ShowIDStackTool);
         SameLine();
-        MetricsHelpMarker("You can also call ImGui::ShowIDStackToolWindow() from your code.");
+        MetricsHelpMarker(xorstr_lite("You can also call ImGui::ShowIDStackToolWindow() from your code."));
 
-        Checkbox("Show windows begin order", &cfg->ShowWindowsBeginOrder);
-        Checkbox("Show windows rectangles", &cfg->ShowWindowsRects);
+        Checkbox(xorstr_lite("Show windows begin order"), &cfg->ShowWindowsBeginOrder);
+        Checkbox(xorstr_lite("Show windows rectangles"), &cfg->ShowWindowsRects);
         SameLine();
         SetNextItemWidth(GetFontSize() * 12);
-        cfg->ShowWindowsRects |= Combo("##show_windows_rect_type", &cfg->ShowWindowsRectsType, wrt_rects_names, WRT_Count, WRT_Count);
+        cfg->ShowWindowsRects |= Combo(xorstr_lite("##show_windows_rect_type"), &cfg->ShowWindowsRectsType, wrt_rects_names, WRT_Count, WRT_Count);
         if (cfg->ShowWindowsRects && g.NavWindow != NULL)
         {
-            BulletText("'%s':", g.NavWindow->Name);
+            BulletText(xorstr_lite("'%s':"), g.NavWindow->Name);
             Indent();
             for (int rect_n = 0; rect_n < WRT_Count; rect_n++)
             {
                 ImRect r = Funcs::GetWindowRect(g.NavWindow, rect_n);
-                Text("(%6.1f,%6.1f) (%6.1f,%6.1f) Size (%6.1f,%6.1f) %s", r.Min.x, r.Min.y, r.Max.x, r.Max.y, r.GetWidth(), r.GetHeight(), wrt_rects_names[rect_n]);
+                Text(xorstr_lite("(%6.1f,%6.1f) (%6.1f,%6.1f) Size (%6.1f,%6.1f) %s"), r.Min.x, r.Min.y, r.Max.x, r.Max.y, r.GetWidth(), r.GetHeight(), wrt_rects_names[rect_n]);
             }
             Unindent();
         }
 
-        Checkbox("Show tables rectangles", &cfg->ShowTablesRects);
+        Checkbox(xorstr_lite("Show tables rectangles"), &cfg->ShowTablesRects);
         SameLine();
         SetNextItemWidth(GetFontSize() * 12);
-        cfg->ShowTablesRects |= Combo("##show_table_rects_type", &cfg->ShowTablesRectsType, trt_rects_names, TRT_Count, TRT_Count);
+        cfg->ShowTablesRects |= Combo(xorstr_lite("##show_table_rects_type"), &cfg->ShowTablesRectsType, trt_rects_names, TRT_Count, TRT_Count);
         if (cfg->ShowTablesRects && g.NavWindow != NULL)
         {
             for (int table_n = 0; table_n < g.Tables.GetMapSize(); table_n++)
@@ -15437,7 +15437,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
                 if (table == NULL || table->LastFrameActive < g.FrameCount - 1 || (table->OuterWindow != g.NavWindow && table->InnerWindow != g.NavWindow))
                     continue;
 
-                BulletText("Table 0x%08X (%d columns, in '%s')", table->ID, table->ColumnsCount, table->OuterWindow->Name);
+                BulletText(xorstr_lite("Table 0x%08X (%d columns, in '%s')"), table->ID, table->ColumnsCount, table->OuterWindow->Name);
                 if (IsItemHovered())
                     GetForegroundDrawList()->AddRect(table->OuterRect.Min - ImVec2(1, 1), table->OuterRect.Max + ImVec2(1, 1), IM_COL32(255, 255, 0, 255), 0.0f, 0, 2.0f);
                 Indent();
@@ -15451,7 +15451,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
                         for (int column_n = 0; column_n < table->ColumnsCount; column_n++)
                         {
                             ImRect r = Funcs::GetTableRect(table, rect_n, column_n);
-                            ImFormatString(buf, IM_ARRAYSIZE(buf), "(%6.1f,%6.1f) (%6.1f,%6.1f) Size (%6.1f,%6.1f) Col %d %s", r.Min.x, r.Min.y, r.Max.x, r.Max.y, r.GetWidth(), r.GetHeight(), column_n, trt_rects_names[rect_n]);
+                            ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("(%6.1f,%6.1f) (%6.1f,%6.1f) Size (%6.1f,%6.1f) Col %d %s"), r.Min.x, r.Min.y, r.Max.x, r.Max.y, r.GetWidth(), r.GetHeight(), column_n, trt_rects_names[rect_n]);
                             Selectable(buf);
                             if (IsItemHovered())
                                 GetForegroundDrawList()->AddRect(r.Min - ImVec2(1, 1), r.Max + ImVec2(1, 1), IM_COL32(255, 255, 0, 255), 0.0f, 0, 2.0f);
@@ -15460,7 +15460,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
                     else
                     {
                         ImRect r = Funcs::GetTableRect(table, rect_n, -1);
-                        ImFormatString(buf, IM_ARRAYSIZE(buf), "(%6.1f,%6.1f) (%6.1f,%6.1f) Size (%6.1f,%6.1f) %s", r.Min.x, r.Min.y, r.Max.x, r.Max.y, r.GetWidth(), r.GetHeight(), trt_rects_names[rect_n]);
+                        ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("(%6.1f,%6.1f) (%6.1f,%6.1f) Size (%6.1f,%6.1f) %s"), r.Min.x, r.Min.y, r.Max.x, r.Max.y, r.GetWidth(), r.GetHeight(), trt_rects_names[rect_n]);
                         Selectable(buf);
                         if (IsItemHovered())
                             GetForegroundDrawList()->AddRect(r.Min - ImVec2(1, 1), r.Max + ImVec2(1, 1), IM_COL32(255, 255, 0, 255), 0.0f, 0, 2.0f);
@@ -15469,17 +15469,17 @@ void ImGui::ShowMetricsWindow(bool* p_open)
                 Unindent();
             }
         }
-        Checkbox("Show groups rectangles", &g.DebugShowGroupRects); 
+        Checkbox(xorstr_lite("Show groups rectangles"), &g.DebugShowGroupRects); 
 
         SeparatorText(IM_STR("Validate"));
 
-        Checkbox("Debug Begin/BeginChild return value", &io.ConfigDebugBeginReturnValueLoop);
+        Checkbox(xorstr_lite("Debug Begin/BeginChild return value"), &io.ConfigDebugBeginReturnValueLoop);
         SameLine();
-        MetricsHelpMarker("Some calls to Begin()/BeginChild() will return false.\n\nWill cycle through window depths then repeat. Windows should be flickering while running.");
+        MetricsHelpMarker(xorstr_lite("Some calls to Begin()/BeginChild() will return false.\n\nWill cycle through window depths then repeat. Windows should be flickering while running."));
 
-        Checkbox("UTF-8 Encoding viewer", &cfg->ShowTextEncodingViewer);
+        Checkbox(xorstr_lite("UTF-8 Encoding viewer"), &cfg->ShowTextEncodingViewer);
         SameLine();
-        MetricsHelpMarker("You can also call ImGui::DebugTextEncoding() from your code with a given string to test that your UTF-8 encoding settings are correct.");
+        MetricsHelpMarker(xorstr_lite("You can also call ImGui::DebugTextEncoding() from your code with a given string to test that your UTF-8 encoding settings are correct."));
         if (cfg->ShowTextEncodingViewer)
         {
             static char buf[64] = "";
@@ -15496,8 +15496,8 @@ void ImGui::ShowMetricsWindow(bool* p_open)
     if (TreeNode(IM_STR("Windows"), IM_STR("Windows (%d)"), g.Windows.Size))
     {
         
-        DebugNodeWindowsList(&g.Windows, "By display order");
-        DebugNodeWindowsList(&g.WindowsFocusOrder, "By focus order (root windows)");
+        DebugNodeWindowsList(&g.Windows, xorstr_lite("By display order"));
+        DebugNodeWindowsList(&g.WindowsFocusOrder, xorstr_lite("By focus order (root windows)"));
         if (TreeNode(IM_STR("By submission order (begin stack)")))
         {
             
@@ -15521,11 +15521,11 @@ void ImGui::ShowMetricsWindow(bool* p_open)
         drawlist_count += viewport->DrawDataP.CmdLists.Size;
     if (TreeNode(IM_STR("DrawLists"), IM_STR("DrawLists (%d)"), drawlist_count))
     {
-        Checkbox("Show ImDrawCmd mesh when hovering", &cfg->ShowDrawCmdMesh);
-        Checkbox("Show ImDrawCmd bounding boxes when hovering", &cfg->ShowDrawCmdBoundingBoxes);
+        Checkbox(xorstr_lite("Show ImDrawCmd mesh when hovering"), &cfg->ShowDrawCmdMesh);
+        Checkbox(xorstr_lite("Show ImDrawCmd bounding boxes when hovering"), &cfg->ShowDrawCmdBoundingBoxes);
         for (ImGuiViewportP* viewport : g.Viewports)
             for (ImDrawList* draw_list : viewport->DrawDataP.CmdLists)
-                DebugNodeDrawList(NULL, viewport, draw_list, "DrawList");
+                DebugNodeDrawList(NULL, viewport, draw_list, xorstr_lite("DrawList"));
         TreePop();
     }
 
@@ -15552,7 +15552,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
         {
             
             ImGuiWindow* window = popup_data.Window;
-            BulletText("PopupID: %08x, Window: '%s' (%s%s), RestoreNavWindow '%s', ParentWindow '%s'",
+            BulletText(xorstr_lite("PopupID: %08x, Window: '%s' (%s%s), RestoreNavWindow '%s', ParentWindow '%s'"),
                 popup_data.PopupId, window ? window->Name : IM_STR("NULL"), window && (window->Flags & ImGuiWindowFlags_ChildWindow) ? IM_STR("Child;") : IM_STR(""), window && (window->Flags & ImGuiWindowFlags_ChildMenu) ? IM_STR("Menu;") : IM_STR(""),
                 popup_data.RestoreNavWindow ? popup_data.RestoreNavWindow->Name : IM_STR("NULL"), window && window->ParentWindow ? window->ParentWindow->Name : IM_STR("NULL"));
         }
@@ -15566,7 +15566,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
             if (ImGuiTabBar* tab_bar = g.TabBars.TryGetMapData(n))
             {
                 PushID(tab_bar);
-                DebugNodeTabBar(tab_bar, "TabBar");
+                DebugNodeTabBar(tab_bar, xorstr_lite("TabBar"));
                 PopID();
             }
         TreePop();
@@ -15607,7 +15607,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
     if (TreeNode(IM_STR("MultiSelect"), IM_STR("MultiSelect (%d)"), g.MultiSelectStorage.GetAliveCount()))
     {
         ImGuiBoxSelectState* bs = &g.BoxSelectState;
-        BulletText("BoxSelect ID=0x%08X, Starting = %d, Active %d", bs->ID, bs->IsStarting, bs->IsActive);
+        BulletText(xorstr_lite("BoxSelect ID=0x%08X, Starting = %d, Active %d"), bs->ID, bs->IsStarting, bs->IsActive);
         for (int n = 0; n < g.MultiSelectStorage.GetMapSize(); n++)
             if (ImGuiMultiSelectState* state = g.MultiSelectStorage.TryGetMapData(n))
                 DebugNodeMultiSelectState(state);
@@ -15632,15 +15632,15 @@ void ImGui::ShowMetricsWindow(bool* p_open)
             SaveIniSettingsToMemory();
         SameLine();
         if (g.IO.IniFilename)
-            Text("\"%s\"", g.IO.IniFilename);
+            Text(xorstr_lite("\"%s\""), g.IO.IniFilename);
         else
-            TextUnformatted("<NULL>");
-        Checkbox("io.ConfigDebugIniSettings", &io.ConfigDebugIniSettings);
-        Text("SettingsDirtyTimer %.2f", g.SettingsDirtyTimer);
+            TextUnformatted(xorstr_lite("<NULL>"));
+        Checkbox(xorstr_lite("io.ConfigDebugIniSettings"), &io.ConfigDebugIniSettings);
+        Text(xorstr_lite("SettingsDirtyTimer %.2f"), g.SettingsDirtyTimer);
         if (TreeNode(IM_STR("SettingsHandlers"), IM_STR("Settings handlers: (%d)"), g.SettingsHandlers.Size))
         {
             for (ImGuiSettingsHandler& handler : g.SettingsHandlers)
-                BulletText("\"%s\"", handler.TypeName);
+                BulletText(xorstr_lite("\"%s\""), handler.TypeName);
             TreePop();
         }
         if (TreeNode(IM_STR("SettingsWindows"), IM_STR("Settings packed data: Windows: %d bytes"), g.SettingsWindows.size()))
@@ -15662,7 +15662,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
 
         if (TreeNode(IM_STR("SettingsIniData"), IM_STR("Settings unpacked data (.ini): %d bytes"), g.SettingsIniData.size()))
         {
-            InputTextMultiline("##Ini", (char*)(void*)g.SettingsIniData.c_str(), g.SettingsIniData.Buf.Size, ImVec2(-FLT_MIN, GetTextLineHeight() * 20), ImGuiInputTextFlags_ReadOnly);
+            InputTextMultiline(xorstr_lite("##Ini"), (char*)(void*)g.SettingsIniData.c_str(), g.SettingsIniData.Buf.Size, ImVec2(-FLT_MIN, GetTextLineHeight() * 20), ImGuiInputTextFlags_ReadOnly);
             TreePop();
         }
         TreePop();
@@ -15672,18 +15672,18 @@ void ImGui::ShowMetricsWindow(bool* p_open)
     if (TreeNode(IM_STR("Memory allocations")))
     {
         ImGuiDebugAllocInfo* info = &g.DebugAllocInfo;
-        Text("%d current allocations", info->TotalAllocCount - info->TotalFreeCount);
+        Text(xorstr_lite("%d current allocations"), info->TotalAllocCount - info->TotalFreeCount);
         if (SmallButton(IM_STR("GC now"))) { g.GcCompactAll = true; }
-        Text("Recent frames with allocations:");
+        Text(xorstr_lite("Recent frames with allocations:"));
         int buf_size = IM_ARRAYSIZE(info->LastEntriesBuf);
         for (int n = buf_size - 1; n >= 0; n--)
         {
             ImGuiDebugAllocEntry* entry = &info->LastEntriesBuf[(info->LastEntriesIdx - n + buf_size) % buf_size];
-            BulletText("Frame %06d: %+3d ( %2d alloc, %2d free )", entry->FrameCount, entry->AllocCount - entry->FreeCount, entry->AllocCount, entry->FreeCount);
+            BulletText(xorstr_lite("Frame %06d: %+3d ( %2d alloc, %2d free )"), entry->FrameCount, entry->AllocCount - entry->FreeCount, entry->AllocCount, entry->FreeCount);
             if (n == 0)
             {
                 SameLine();
-                Text("<- %d frames ago", g.FrameCount - entry->FrameCount);
+                Text(xorstr_lite("<- %d frames ago"), g.FrameCount - entry->FrameCount);
             }
         }
         TreePop();
@@ -15691,7 +15691,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
 
     if (TreeNode(IM_STR("Inputs")))
     {
-        Text("KEYBOARD/GAMEPAD/MOUSE KEYS");
+        Text(xorstr_lite("KEYBOARD/GAMEPAD/MOUSE KEYS"));
         {
             
             
@@ -15702,65 +15702,65 @@ void ImGui::ShowMetricsWindow(bool* p_open)
             struct funcs { static bool IsLegacyNativeDupe(ImGuiKey key) { return key >= 0 && key < 512 && GetIO().KeyMap[key] != -1; } }; 
             
 #endif
-            Text("Keys down:");         for (ImGuiKey key = ImGuiKey_KeysData_OFFSET; key < ImGuiKey_COUNT; key = (ImGuiKey)(key + 1)) { if (funcs::IsLegacyNativeDupe(key) || !IsKeyDown(key)) continue;     SameLine(); Text(IsNamedKey(key) ? "\"%s\"" : "\"%s\" %d", GetKeyName(key), key); SameLine(); Text("(%.02f)", GetKeyData(key)->DownDuration); }
-            Text("Keys pressed:");      for (ImGuiKey key = ImGuiKey_KeysData_OFFSET; key < ImGuiKey_COUNT; key = (ImGuiKey)(key + 1)) { if (funcs::IsLegacyNativeDupe(key) || !IsKeyPressed(key)) continue;  SameLine(); Text(IsNamedKey(key) ? "\"%s\"" : "\"%s\" %d", GetKeyName(key), key); }
-            Text("Keys released:");     for (ImGuiKey key = ImGuiKey_KeysData_OFFSET; key < ImGuiKey_COUNT; key = (ImGuiKey)(key + 1)) { if (funcs::IsLegacyNativeDupe(key) || !IsKeyReleased(key)) continue; SameLine(); Text(IsNamedKey(key) ? "\"%s\"" : "\"%s\" %d", GetKeyName(key), key); }
-            Text("Keys mods: %s%s%s%s", io.KeyCtrl ? "CTRL " : "", io.KeyShift ? "SHIFT " : "", io.KeyAlt ? "ALT " : "", io.KeySuper ? "SUPER " : "");
-            Text("Chars queue:");       for (int i = 0; i < io.InputQueueCharacters.Size; i++) { ImWchar c = io.InputQueueCharacters[i]; SameLine(); Text("\'%c\' (0x%04X)", (c > ' ' && c <= 255) ? (char)c : '?', c); } 
+            Text(xorstr_lite("Keys down:"));         for (ImGuiKey key = ImGuiKey_KeysData_OFFSET; key < ImGuiKey_COUNT; key = (ImGuiKey)(key + 1)) { if (funcs::IsLegacyNativeDupe(key) || !IsKeyDown(key)) continue;     SameLine(); Text(IsNamedKey(key) ? xorstr_lite("\"%s\"") : xorstr_lite("\"%s\" %d"), GetKeyName(key), key); SameLine(); Text(xorstr_lite("(%.02f)"), GetKeyData(key)->DownDuration); }
+            Text(xorstr_lite("Keys pressed:"));      for (ImGuiKey key = ImGuiKey_KeysData_OFFSET; key < ImGuiKey_COUNT; key = (ImGuiKey)(key + 1)) { if (funcs::IsLegacyNativeDupe(key) || !IsKeyPressed(key)) continue;  SameLine(); Text(IsNamedKey(key) ? xorstr_lite("\"%s\"") : xorstr_lite("\"%s\" %d"), GetKeyName(key), key); }
+            Text(xorstr_lite("Keys released:"));     for (ImGuiKey key = ImGuiKey_KeysData_OFFSET; key < ImGuiKey_COUNT; key = (ImGuiKey)(key + 1)) { if (funcs::IsLegacyNativeDupe(key) || !IsKeyReleased(key)) continue; SameLine(); Text(IsNamedKey(key) ? xorstr_lite("\"%s\"") : xorstr_lite("\"%s\" %d"), GetKeyName(key), key); }
+            Text(xorstr_lite("Keys mods: %s%s%s%s"), io.KeyCtrl ? xorstr_lite("CTRL ") : "", io.KeyShift ? xorstr_lite("SHIFT ") : "", io.KeyAlt ? xorstr_lite("ALT ") : "", io.KeySuper ? xorstr_lite("SUPER ") : "");
+            Text(xorstr_lite("Chars queue:"));       for (int i = 0; i < io.InputQueueCharacters.Size; i++) { ImWchar c = io.InputQueueCharacters[i]; SameLine(); Text(xorstr_lite("\'%c\' (0x%04X)"), (c > ' ' && c <= 255) ? (char)c : '?', c); } 
             DebugRenderKeyboardPreview(GetWindowDrawList());
             Unindent();
         }
 
-        Text("MOUSE STATE");
+        Text(xorstr_lite("MOUSE STATE"));
         {
             Indent();
             if (IsMousePosValid())
-                Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
+                Text(xorstr_lite("Mouse pos: (%g, %g)"), io.MousePos.x, io.MousePos.y);
             else
-                Text("Mouse pos: <INVALID>");
-            Text("Mouse delta: (%g, %g)", io.MouseDelta.x, io.MouseDelta.y);
+                Text(xorstr_lite("Mouse pos: <INVALID>"));
+            Text(xorstr_lite("Mouse delta: (%g, %g)"), io.MouseDelta.x, io.MouseDelta.y);
             int count = IM_ARRAYSIZE(io.MouseDown);
-            Text("Mouse down:");     for (int i = 0; i < count; i++) if (IsMouseDown(i)) { SameLine(); Text("b%d (%.02f secs)", i, io.MouseDownDuration[i]); }
-            Text("Mouse clicked:");  for (int i = 0; i < count; i++) if (IsMouseClicked(i)) { SameLine(); Text("b%d (%d)", i, io.MouseClickedCount[i]); }
-            Text("Mouse released:"); for (int i = 0; i < count; i++) if (IsMouseReleased(i)) { SameLine(); Text("b%d", i); }
-            Text("Mouse wheel: %.1f", io.MouseWheel);
-            Text("MouseStationaryTimer: %.2f", g.MouseStationaryTimer);
-            Text("Mouse source: %s", GetMouseSourceName(io.MouseSource));
-            Text("Pen Pressure: %.1f", io.PenPressure); 
+            Text(xorstr_lite("Mouse down:"));     for (int i = 0; i < count; i++) if (IsMouseDown(i)) { SameLine(); Text(xorstr_lite("b%d (%.02f secs)"), i, io.MouseDownDuration[i]); }
+            Text(xorstr_lite("Mouse clicked:"));  for (int i = 0; i < count; i++) if (IsMouseClicked(i)) { SameLine(); Text(xorstr_lite("b%d (%d)"), i, io.MouseClickedCount[i]); }
+            Text(xorstr_lite("Mouse released:")); for (int i = 0; i < count; i++) if (IsMouseReleased(i)) { SameLine(); Text(xorstr_lite("b%d"), i); }
+            Text(xorstr_lite("Mouse wheel: %.1f"), io.MouseWheel);
+            Text(xorstr_lite("MouseStationaryTimer: %.2f"), g.MouseStationaryTimer);
+            Text(xorstr_lite("Mouse source: %s"), GetMouseSourceName(io.MouseSource));
+            Text(xorstr_lite("Pen Pressure: %.1f"), io.PenPressure); 
             Unindent();
         }
 
-        Text("MOUSE WHEELING");
+        Text(xorstr_lite("MOUSE WHEELING"));
         {
             Indent();
-            Text("WheelingWindow: '%s'", g.WheelingWindow ? g.WheelingWindow->Name : IM_STR("NULL"));
-            Text("WheelingWindowReleaseTimer: %.2f", g.WheelingWindowReleaseTimer);
-            Text("WheelingAxisAvg[] = { %.3f, %.3f }, Main Axis: %s", g.WheelingAxisAvg.x, g.WheelingAxisAvg.y, (g.WheelingAxisAvg.x > g.WheelingAxisAvg.y) ? "X" : (g.WheelingAxisAvg.x < g.WheelingAxisAvg.y) ? "Y" : "<none>");
+            Text(xorstr_lite("WheelingWindow: '%s'"), g.WheelingWindow ? g.WheelingWindow->Name : IM_STR("NULL"));
+            Text(xorstr_lite("WheelingWindowReleaseTimer: %.2f"), g.WheelingWindowReleaseTimer);
+            Text(xorstr_lite("WheelingAxisAvg[] = { %.3f, %.3f }, Main Axis: %s"), g.WheelingAxisAvg.x, g.WheelingAxisAvg.y, (g.WheelingAxisAvg.x > g.WheelingAxisAvg.y) ? xorstr_lite("X") : (g.WheelingAxisAvg.x < g.WheelingAxisAvg.y) ? xorstr_lite("Y") : xorstr_lite("<none>"));
             Unindent();
         }
 
-        Text("KEY OWNERS");
+        Text(xorstr_lite("KEY OWNERS"));
         {
             Indent();
-            if (BeginChild("##owners", ImVec2(-FLT_MIN, GetTextLineHeightWithSpacing() * 8), ImGuiChildFlags_FrameStyle | ImGuiChildFlags_ResizeY, ImGuiWindowFlags_NoSavedSettings))
+            if (BeginChild(xorstr_lite("##owners"), ImVec2(-FLT_MIN, GetTextLineHeightWithSpacing() * 8), ImGuiChildFlags_FrameStyle | ImGuiChildFlags_ResizeY, ImGuiWindowFlags_NoSavedSettings))
                 for (ImGuiKey key = ImGuiKey_NamedKey_BEGIN; key < ImGuiKey_NamedKey_END; key = (ImGuiKey)(key + 1))
                 {
                     ImGuiKeyOwnerData* owner_data = GetKeyOwnerData(&g, key);
                     if (owner_data->OwnerCurr == ImGuiKeyOwner_NoOwner)
                         continue;
-                    Text("%s: 0x%08X%s", GetKeyName(key), owner_data->OwnerCurr,
-                        owner_data->LockUntilRelease ? " LockUntilRelease" : owner_data->LockThisFrame ? " LockThisFrame" : "");
+                    Text(xorstr_lite("%s: 0x%08X%s"), GetKeyName(key), owner_data->OwnerCurr,
+                        owner_data->LockUntilRelease ? xorstr_lite(" LockUntilRelease") : owner_data->LockThisFrame ? xorstr_lite(" LockThisFrame") : "");
                     DebugLocateItemOnHover(owner_data->OwnerCurr);
                 }
             EndChild();
             Unindent();
         }
-        Text("SHORTCUT ROUTING");
+        Text(xorstr_lite("SHORTCUT ROUTING"));
         SameLine();
-        MetricsHelpMarker("Declared shortcut routes automatically set key owner when mods matches.");
+        MetricsHelpMarker(xorstr_lite("Declared shortcut routes automatically set key owner when mods matches."));
         {
             Indent();
-            if (BeginChild("##routes", ImVec2(-FLT_MIN, GetTextLineHeightWithSpacing() * 8), ImGuiChildFlags_FrameStyle | ImGuiChildFlags_ResizeY, ImGuiWindowFlags_NoSavedSettings))
+            if (BeginChild(xorstr_lite("##routes"), ImVec2(-FLT_MIN, GetTextLineHeightWithSpacing() * 8), ImGuiChildFlags_FrameStyle | ImGuiChildFlags_ResizeY, ImGuiWindowFlags_NoSavedSettings))
                 for (ImGuiKey key = ImGuiKey_NamedKey_BEGIN; key < ImGuiKey_NamedKey_END; key = (ImGuiKey)(key + 1))
                 {
                     ImGuiKeyRoutingTable* rt = &g.KeysRoutingTable;
@@ -15768,19 +15768,19 @@ void ImGui::ShowMetricsWindow(bool* p_open)
                     {
                         ImGuiKeyRoutingData* routing_data = &rt->Entries[idx];
                         ImGuiKeyChord key_chord = key | routing_data->Mods;
-                        Text("%s: 0x%08X (scored %d)", GetKeyChordName(key_chord), routing_data->RoutingCurr, routing_data->RoutingCurrScore);
+                        Text(xorstr_lite("%s: 0x%08X (scored %d)"), GetKeyChordName(key_chord), routing_data->RoutingCurr, routing_data->RoutingCurrScore);
                         DebugLocateItemOnHover(routing_data->RoutingCurr);
                         if (g.IO.ConfigDebugIsDebuggerPresent)
                         {
                             SameLine();
-                            if (DebugBreakButton("**DebugBreak**", "in SetShortcutRouting() for this KeyChord"))
+                            if (DebugBreakButton(xorstr_lite("**DebugBreak**"), xorstr_lite("in SetShortcutRouting() for this KeyChord")))
                                 g.DebugBreakInShortcutRouting = key_chord;
                         }
                         idx = routing_data->NextEntryIndex;
                     }
                 }
             EndChild();
-            Text("(ActiveIdUsing: AllKeyboardKeys: %d, NavDirMask: 0x%X)", g.ActiveIdUsingAllKeyboardKeys, g.ActiveIdUsingNavDirMask);
+            Text(xorstr_lite("(ActiveIdUsing: AllKeyboardKeys: %d, NavDirMask: 0x%X)"), g.ActiveIdUsingAllKeyboardKeys, g.ActiveIdUsingNavDirMask);
             Unindent();
         }
         TreePop();
@@ -15788,47 +15788,47 @@ void ImGui::ShowMetricsWindow(bool* p_open)
 
     if (TreeNode(IM_STR("Internal state")))
     {
-        Text("WINDOWING");
+        Text(xorstr_lite("WINDOWING"));
         Indent();
-        Text("HoveredWindow: '%s'", g.HoveredWindow ? g.HoveredWindow->Name : IM_STR("NULL"));
-        Text("HoveredWindow->Root: '%s'", g.HoveredWindow ? g.HoveredWindow->RootWindow->Name : IM_STR("NULL"));
-        Text("HoveredWindowUnderMovingWindow: '%s'", g.HoveredWindowUnderMovingWindow ? g.HoveredWindowUnderMovingWindow->Name : IM_STR("NULL"));
-        Text("MovingWindow: '%s'", g.MovingWindow ? g.MovingWindow->Name : IM_STR("NULL"));
+        Text(xorstr_lite("HoveredWindow: '%s'"), g.HoveredWindow ? g.HoveredWindow->Name : IM_STR("NULL"));
+        Text(xorstr_lite("HoveredWindow->Root: '%s'"), g.HoveredWindow ? g.HoveredWindow->RootWindow->Name : IM_STR("NULL"));
+        Text(xorstr_lite("HoveredWindowUnderMovingWindow: '%s'"), g.HoveredWindowUnderMovingWindow ? g.HoveredWindowUnderMovingWindow->Name : IM_STR("NULL"));
+        Text(xorstr_lite("MovingWindow: '%s'"), g.MovingWindow ? g.MovingWindow->Name : IM_STR("NULL"));
         Unindent();
 
-        Text("ITEMS");
+        Text(xorstr_lite("ITEMS"));
         Indent();
-        Text("ActiveId: 0x%08X/0x%08X (%.2f sec), AllowOverlap: %d, Source: %s", g.ActiveId, g.ActiveIdPreviousFrame, g.ActiveIdTimer, g.ActiveIdAllowOverlap, GetInputSourceName(g.ActiveIdSource));
+        Text(xorstr_lite("ActiveId: 0x%08X/0x%08X (%.2f sec), AllowOverlap: %d, Source: %s"), g.ActiveId, g.ActiveIdPreviousFrame, g.ActiveIdTimer, g.ActiveIdAllowOverlap, GetInputSourceName(g.ActiveIdSource));
         DebugLocateItemOnHover(g.ActiveId);
-        Text("ActiveIdWindow: '%s'", g.ActiveIdWindow ? g.ActiveIdWindow->Name : IM_STR("NULL"));
-        Text("ActiveIdUsing: AllKeyboardKeys: %d, NavDirMask: %X", g.ActiveIdUsingAllKeyboardKeys, g.ActiveIdUsingNavDirMask);
-        Text("HoveredId: 0x%08X (%.2f sec), AllowOverlap: %d", g.HoveredIdPreviousFrame, g.HoveredIdTimer, g.HoveredIdAllowOverlap); 
-        Text("HoverItemDelayId: 0x%08X, Timer: %.2f, ClearTimer: %.2f", g.HoverItemDelayId, g.HoverItemDelayTimer, g.HoverItemDelayClearTimer);
-        Text("DragDrop: %d, SourceId = 0x%08X, Payload \"%s\" (%d bytes)", g.DragDropActive, g.DragDropPayload.SourceId, g.DragDropPayload.DataType, g.DragDropPayload.DataSize);
+        Text(xorstr_lite("ActiveIdWindow: '%s'"), g.ActiveIdWindow ? g.ActiveIdWindow->Name : IM_STR("NULL"));
+        Text(xorstr_lite("ActiveIdUsing: AllKeyboardKeys: %d, NavDirMask: %X"), g.ActiveIdUsingAllKeyboardKeys, g.ActiveIdUsingNavDirMask);
+        Text(xorstr_lite("HoveredId: 0x%08X (%.2f sec), AllowOverlap: %d"), g.HoveredIdPreviousFrame, g.HoveredIdTimer, g.HoveredIdAllowOverlap); 
+        Text(xorstr_lite("HoverItemDelayId: 0x%08X, Timer: %.2f, ClearTimer: %.2f"), g.HoverItemDelayId, g.HoverItemDelayTimer, g.HoverItemDelayClearTimer);
+        Text(xorstr_lite("DragDrop: %d, SourceId = 0x%08X, Payload \"%s\" (%d bytes)"), g.DragDropActive, g.DragDropPayload.SourceId, g.DragDropPayload.DataType, g.DragDropPayload.DataSize);
         DebugLocateItemOnHover(g.DragDropPayload.SourceId);
         Unindent();
 
-        Text("NAV,FOCUS");
+        Text(xorstr_lite("NAV,FOCUS"));
         Indent();
-        Text("NavWindow: '%s'", g.NavWindow ? g.NavWindow->Name : IM_STR("NULL"));
-        Text("NavId: 0x%08X, NavLayer: %d", g.NavId, g.NavLayer);
+        Text(xorstr_lite("NavWindow: '%s'"), g.NavWindow ? g.NavWindow->Name : IM_STR("NULL"));
+        Text(xorstr_lite("NavId: 0x%08X, NavLayer: %d"), g.NavId, g.NavLayer);
         DebugLocateItemOnHover(g.NavId);
-        Text("NavInputSource: %s", GetInputSourceName(g.NavInputSource));
+        Text(xorstr_lite("NavInputSource: %s"), GetInputSourceName(g.NavInputSource));
         Text("NavLastValidSelectionUserData = %" IM_PRId64 " (0x%" IM_PRIX64 ")", g.NavLastValidSelectionUserData, g.NavLastValidSelectionUserData);
-        Text("NavActive: %d, NavVisible: %d", g.IO.NavActive, g.IO.NavVisible);
-        Text("NavActivateId/DownId/PressedId: %08X/%08X/%08X", g.NavActivateId, g.NavActivateDownId, g.NavActivatePressedId);
-        Text("NavActivateFlags: %04X", g.NavActivateFlags);
-        Text("NavDisableHighlight: %d, NavDisableMouseHover: %d", g.NavDisableHighlight, g.NavDisableMouseHover);
-        Text("NavFocusScopeId = 0x%08X", g.NavFocusScopeId);
-        Text("NavFocusRoute[] = ");
+        Text(xorstr_lite("NavActive: %d, NavVisible: %d"), g.IO.NavActive, g.IO.NavVisible);
+        Text(xorstr_lite("NavActivateId/DownId/PressedId: %08X/%08X/%08X"), g.NavActivateId, g.NavActivateDownId, g.NavActivatePressedId);
+        Text(xorstr_lite("NavActivateFlags: %04X"), g.NavActivateFlags);
+        Text(xorstr_lite("NavDisableHighlight: %d, NavDisableMouseHover: %d"), g.NavDisableHighlight, g.NavDisableMouseHover);
+        Text(xorstr_lite("NavFocusScopeId = 0x%08X"), g.NavFocusScopeId);
+        Text(xorstr_lite("NavFocusRoute[] = "));
         for (int path_n = g.NavFocusRoute.Size - 1; path_n >= 0; path_n--)
         {
             const ImGuiFocusScopeData& focus_scope = g.NavFocusRoute[path_n];
             SameLine(0.0f, 0.0f);
-            Text("0x%08X/", focus_scope.ID);
-            SetItemTooltip("In window \"%s\"", FindWindowByID(focus_scope.WindowID)->Name);
+            Text(xorstr_lite("0x%08X/"), focus_scope.ID);
+            SetItemTooltip(xorstr_lite("In window \"%s\""), FindWindowByID(focus_scope.WindowID)->Name);
         }
-        Text("NavWindowingTarget: '%s'", g.NavWindowingTarget ? g.NavWindowingTarget->Name : IM_STR("NULL"));
+        Text(xorstr_lite("NavWindowingTarget: '%s'"), g.NavWindowingTarget ? g.NavWindowingTarget->Name : IM_STR("NULL"));
         Unindent();
 
         TreePop();
@@ -15850,7 +15850,7 @@ void ImGui::ShowMetricsWindow(bool* p_open)
             if (cfg->ShowWindowsBeginOrder && !(window->Flags & ImGuiWindowFlags_ChildWindow))
             {
                 char buf[32];
-                ImFormatString(buf, IM_ARRAYSIZE(buf), "%d", window->BeginOrderWithinContext);
+                ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("%d"), window->BeginOrderWithinContext);
                 float font_size = GetFontSize();
                 draw_list->AddRectFilled(window->Pos, window->Pos + ImVec2(font_size, font_size), IM_COL32(200, 100, 100, 255));
                 draw_list->AddText(window->Pos, IM_COL32(255, 255, 255, 255), buf);
@@ -15908,11 +15908,11 @@ void ImGui::DebugBreakButtonTooltip(bool keyboard_only, const char* description_
 {
     if (!BeginItemTooltip())
         return;
-    Text("To call IM_DEBUG_BREAK() %s:", description_of_location);
+    Text(xorstr_lite("To call IM_DEBUG_BREAK() %s:"), description_of_location);
     Separator();
-    TextUnformatted(keyboard_only ? "- Press 'Pause/Break' on keyboard." : "- Press 'Pause/Break' on keyboard.\n- or Click (may alter focus/active id).\n- or navigate using keyboard and press space.");
+    TextUnformatted(keyboard_only ? xorstr_lite("- Press 'Pause/Break' on keyboard.") : xorstr_lite("- Press 'Pause/Break' on keyboard.\n- or Click (may alter focus/active id).\n- or navigate using keyboard and press space."));
     Separator();
-    TextUnformatted("Choose one way that doesn't interfere with what you are trying to debug!\nYou need a debugger attached or this will crash!");
+    TextUnformatted(xorstr_lite("Choose one way that doesn't interfere with what you are trying to debug!\nYou need a debugger attached or this will crash!"));
     EndTooltip();
 }
 
@@ -15956,11 +15956,11 @@ bool ImGui::DebugBreakButton(const char* label, const char* description_of_locat
 
 void ImGui::DebugNodeColumns(ImGuiOldColumns* columns)
 {
-    if (!TreeNode((void*)(uintptr_t)columns->ID, "Columns Id: 0x%08X, Count: %d, Flags: 0x%04X", columns->ID, columns->Count, columns->Flags))
+    if (!TreeNode((void*)(uintptr_t)columns->ID, xorstr_lite("Columns Id: 0x%08X, Count: %d, Flags: 0x%04X"), columns->ID, columns->Count, columns->Flags))
         return;
-    BulletText("Width: %.1f (MinX: %.1f, MaxX: %.1f)", columns->OffMaxX - columns->OffMinX, columns->OffMinX, columns->OffMaxX);
+    BulletText(xorstr_lite("Width: %.1f (MinX: %.1f, MaxX: %.1f)"), columns->OffMaxX - columns->OffMinX, columns->OffMinX, columns->OffMaxX);
     for (ImGuiOldColumnData& column : columns->Columns)
-        BulletText("Column %02d: OffsetNorm %.3f (= %.1f px)", (int)columns->Columns.index_from_ptr(&column), column.OffsetNorm, GetColumnOffsetFromNorm(columns, column.OffsetNorm));
+        BulletText(xorstr_lite("Column %02d: OffsetNorm %.3f (= %.1f px)"), (int)columns->Columns.index_from_ptr(&column), column.OffsetNorm, GetColumnOffsetFromNorm(columns, column.OffsetNorm));
     TreePop();
 }
 
@@ -15969,9 +15969,9 @@ static void FormatTextureIDForDebugDisplay(char* buf, int buf_size, ImTextureID 
     union { void* ptr; int integer; } tex_id_opaque;
     memcpy(&tex_id_opaque, &tex_id, ImMin(sizeof(void*), sizeof(tex_id)));
     if (sizeof(tex_id) >= sizeof(void*))
-        ImFormatString(buf, buf_size, "0x%p", tex_id_opaque.ptr);
+        ImFormatString(buf, buf_size, xorstr_lite("0x%p"), tex_id_opaque.ptr);
     else
-        ImFormatString(buf, buf_size, "0x%04X", tex_id_opaque.integer);
+        ImFormatString(buf, buf_size, xorstr_lite("0x%04X"), tex_id_opaque.integer);
 }
 
 
@@ -15983,11 +15983,11 @@ void ImGui::DebugNodeDrawList(ImGuiWindow* window, ImGuiViewportP* viewport, con
     int cmd_count = draw_list->CmdBuffer.Size;
     if (cmd_count > 0 && draw_list->CmdBuffer.back().ElemCount == 0 && draw_list->CmdBuffer.back().UserCallback == NULL)
         cmd_count--;
-    bool node_open = TreeNode(draw_list, "%s: '%s' %d vtx, %d indices, %d cmds", label, draw_list->_OwnerName ? draw_list->_OwnerName : "", draw_list->VtxBuffer.Size, draw_list->IdxBuffer.Size, cmd_count);
+    bool node_open = TreeNode(draw_list, xorstr_lite("%s: '%s' %d vtx, %d indices, %d cmds"), label, draw_list->_OwnerName ? draw_list->_OwnerName : "", draw_list->VtxBuffer.Size, draw_list->IdxBuffer.Size, cmd_count);
     if (draw_list == GetWindowDrawList())
     {
         SameLine();
-        TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "CURRENTLY APPENDING"); 
+        TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), xorstr_lite("CURRENTLY APPENDING")); 
         if (node_open)
             TreePop();
         return;
@@ -16000,22 +16000,22 @@ void ImGui::DebugNodeDrawList(ImGuiWindow* window, ImGuiViewportP* viewport, con
         return;
 
     if (window && !window->WasActive)
-        TextDisabled("Warning: owning Window is inactive. This DrawList is not being rendered!");
+        TextDisabled(xorstr_lite("Warning: owning Window is inactive. This DrawList is not being rendered!"));
 
     for (const ImDrawCmd* pcmd = draw_list->CmdBuffer.Data; pcmd < draw_list->CmdBuffer.Data + cmd_count; pcmd++)
     {
         if (pcmd->UserCallback)
         {
-            BulletText("Callback %p, user_data %p", pcmd->UserCallback, pcmd->UserCallbackData);
+            BulletText(xorstr_lite("Callback %p, user_data %p"), pcmd->UserCallback, pcmd->UserCallbackData);
             continue;
         }
 
         char texid_desc[20];
         FormatTextureIDForDebugDisplay(texid_desc, IM_ARRAYSIZE(texid_desc), pcmd->TextureId);
         char buf[300];
-        ImFormatString(buf, IM_ARRAYSIZE(buf), "DrawCmd:%5d tris, Tex %s, ClipRect (%4.0f,%4.0f)-(%4.0f,%4.0f)",
+        ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("DrawCmd:%5d tris, Tex %s, ClipRect (%4.0f,%4.0f)-(%4.0f,%4.0f)"),
             pcmd->ElemCount / 3, texid_desc, pcmd->ClipRect.x, pcmd->ClipRect.y, pcmd->ClipRect.z, pcmd->ClipRect.w);
-        bool pcmd_node_open = TreeNode((void*)(pcmd - draw_list->CmdBuffer.begin()), "%s", buf);
+        bool pcmd_node_open = TreeNode((void*)(pcmd - draw_list->CmdBuffer.begin()), xorstr_lite("%s"), buf);
         if (IsItemHovered() && (cfg->ShowDrawCmdMesh || cfg->ShowDrawCmdBoundingBoxes) && fg_draw_list)
             DebugNodeDrawCmdShowMeshAndBoundingBox(fg_draw_list, draw_list, pcmd, cfg->ShowDrawCmdMesh, cfg->ShowDrawCmdBoundingBoxes);
         if (!pcmd_node_open)
@@ -16035,7 +16035,7 @@ void ImGui::DebugNodeDrawList(ImGuiWindow* window, ImGuiViewportP* viewport, con
         }
 
         
-        ImFormatString(buf, IM_ARRAYSIZE(buf), "Mesh: ElemCount: %d, VtxOffset: +%d, IdxOffset: +%d, Area: ~%0.f px", pcmd->ElemCount, pcmd->VtxOffset, pcmd->IdxOffset, total_area);
+        ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("Mesh: ElemCount: %d, VtxOffset: +%d, IdxOffset: +%d, Area: ~%0.f px"), pcmd->ElemCount, pcmd->VtxOffset, pcmd->IdxOffset, total_area);
         Selectable(buf);
         if (IsItemHovered() && fg_draw_list)
             DebugNodeDrawCmdShowMeshAndBoundingBox(fg_draw_list, draw_list, pcmd, true, false);
@@ -16052,8 +16052,8 @@ void ImGui::DebugNodeDrawList(ImGuiWindow* window, ImGuiViewportP* viewport, con
                 {
                     const ImDrawVert& v = vtx_buffer[idx_buffer ? idx_buffer[idx_i] : idx_i];
                     triangle[n] = v.pos;
-                    buf_p += ImFormatString(buf_p, buf_end - buf_p, "%s %04d: pos (%8.2f,%8.2f), uv (%.6f,%.6f), col %08X\n",
-                        (n == 0) ? "Vert:" : "     ", idx_i, v.pos.x, v.pos.y, v.uv.x, v.uv.y, v.col);
+                    buf_p += ImFormatString(buf_p, buf_end - buf_p, xorstr_lite("%s %04d: pos (%8.2f,%8.2f), uv (%.6f,%.6f), col %08X\n"),
+                        (n == 0) ? xorstr_lite("Vert:") : xorstr_lite("     "), idx_i, v.pos.x, v.pos.y, v.uv.x, v.uv.y, v.col);
                 }
 
                 Selectable(buf, false);
@@ -16103,42 +16103,42 @@ void ImGui::DebugNodeDrawCmdShowMeshAndBoundingBox(ImDrawList* out_draw_list, co
 
 void ImGui::DebugNodeFont(ImFont* font)
 {
-    bool opened = TreeNode(font, "Font: \"%s\"\n%.2f px, %d glyphs, %d file(s)",
+    bool opened = TreeNode(font, xorstr_lite("Font: \"%s\"\n%.2f px, %d glyphs, %d file(s)"),
         font->ConfigData ? font->ConfigData[0].Name : "", font->FontSize, font->Glyphs.Size, font->ConfigDataCount);
     SameLine();
-    if (SmallButton("Set as default"))
+    if (SmallButton(xorstr_lite("Set as default")))
         GetIO().FontDefault = font;
     if (!opened)
         return;
 
     
     PushFont(font);
-    Text("The quick brown fox jumps over the lazy dog");
+    Text(xorstr_lite("The quick brown fox jumps over the lazy dog"));
     PopFont();
 
     
     SetNextItemWidth(GetFontSize() * 8);
-    DragFloat("Font scale", &font->Scale, 0.005f, 0.3f, 2.0f, "%.1f");
+    DragFloat(xorstr_lite("Font scale"), &font->Scale, 0.005f, 0.3f, 2.0f, xorstr_lite("%.1f"));
     SameLine(); MetricsHelpMarker(
         "Note that the default embedded font is NOT meant to be scaled.\n\n"
         "Font are currently rendered into bitmaps at a given size at the time of building the atlas. "
         "You may oversample them to get some flexibility with scaling. "
         "You can also render at multiple sizes and select which one to use at runtime.\n\n"
         "(Glimmer of hope: the atlas system will be rewritten in the future to make scaling more flexible.)");
-    Text("Ascent: %f, Descent: %f, Height: %f", font->Ascent, font->Descent, font->Ascent - font->Descent);
+    Text(xorstr_lite("Ascent: %f, Descent: %f, Height: %f"), font->Ascent, font->Descent, font->Ascent - font->Descent);
     char c_str[5];
-    Text("Fallback character: '%s' (U+%04X)", ImTextCharToUtf8(c_str, font->FallbackChar), font->FallbackChar);
-    Text("Ellipsis character: '%s' (U+%04X)", ImTextCharToUtf8(c_str, font->EllipsisChar), font->EllipsisChar);
+    Text(xorstr_lite("Fallback character: '%s' (U+%04X)"), ImTextCharToUtf8(c_str, font->FallbackChar), font->FallbackChar);
+    Text(xorstr_lite("Ellipsis character: '%s' (U+%04X)"), ImTextCharToUtf8(c_str, font->EllipsisChar), font->EllipsisChar);
     const int surface_sqrt = (int)ImSqrt((float)font->MetricsTotalSurface);
-    Text("Texture Area: about %d px ~%dx%d px", font->MetricsTotalSurface, surface_sqrt, surface_sqrt);
+    Text(xorstr_lite("Texture Area: about %d px ~%dx%d px"), font->MetricsTotalSurface, surface_sqrt, surface_sqrt);
     for (int config_i = 0; config_i < font->ConfigDataCount; config_i++)
         if (font->ConfigData)
             if (const ImFontConfig* cfg = &font->ConfigData[config_i])
-                BulletText("Input %d: \'%s\', Oversample: (%d,%d), PixelSnapH: %d, Offset: (%.1f,%.1f)",
+                BulletText(xorstr_lite("Input %d: \'%s\', Oversample: (%d,%d), PixelSnapH: %d, Offset: (%.1f,%.1f)"),
                     config_i, cfg->Name, cfg->OversampleH, cfg->OversampleV, cfg->PixelSnapH, cfg->GlyphOffset.x, cfg->GlyphOffset.y);
 
     
-    if (TreeNode("Glyphs", "Glyphs (%d)", font->Glyphs.Size))
+    if (TreeNode(xorstr_lite("Glyphs"), xorstr_lite("Glyphs (%d)"), font->Glyphs.Size))
     {
         ImDrawList* draw_list = GetWindowDrawList();
         const ImU32 glyph_col = GetColorU32(ImGuiCol_Text);
@@ -16161,7 +16161,7 @@ void ImGui::DebugNodeFont(ImFont* font)
                     count++;
             if (count <= 0)
                 continue;
-            if (!TreeNode((void*)(intptr_t)base, "U+%04X..U+%04X (%d %s)", base, base + 255, count, count > 1 ? "glyphs" : "glyph"))
+            if (!TreeNode((void*)(intptr_t)base, xorstr_lite("U+%04X..U+%04X (%d %s)"), base, base + 255, count, count > 1 ? xorstr_lite("glyphs") : xorstr_lite("glyph")))
                 continue;
 
             
@@ -16193,22 +16193,22 @@ void ImGui::DebugNodeFont(ImFont* font)
 
 void ImGui::DebugNodeFontGlyph(ImFont*, const ImFontGlyph* glyph)
 {
-    Text("Codepoint: U+%04X", glyph->Codepoint);
+    Text(xorstr_lite("Codepoint: U+%04X"), glyph->Codepoint);
     Separator();
-    Text("Visible: %d", glyph->Visible);
-    Text("AdvanceX: %.1f", glyph->AdvanceX);
-    Text("Pos: (%.2f,%.2f)->(%.2f,%.2f)", glyph->X0, glyph->Y0, glyph->X1, glyph->Y1);
-    Text("UV: (%.3f,%.3f)->(%.3f,%.3f)", glyph->U0, glyph->V0, glyph->U1, glyph->V1);
+    Text(xorstr_lite("Visible: %d"), glyph->Visible);
+    Text(xorstr_lite("AdvanceX: %.1f"), glyph->AdvanceX);
+    Text(xorstr_lite("Pos: (%.2f,%.2f)->(%.2f,%.2f)"), glyph->X0, glyph->Y0, glyph->X1, glyph->Y1);
+    Text(xorstr_lite("UV: (%.3f,%.3f)->(%.3f,%.3f)"), glyph->U0, glyph->V0, glyph->U1, glyph->V1);
 }
 
 
 void ImGui::DebugNodeStorage(ImGuiStorage* storage, const char* label)
 {
-    if (!TreeNode(label, "%s: %d entries, %d bytes", label, storage->Data.Size, storage->Data.size_in_bytes()))
+    if (!TreeNode(label, xorstr_lite("%s: %d entries, %d bytes"), label, storage->Data.Size, storage->Data.size_in_bytes()))
         return;
     for (const ImGuiStoragePair& p : storage->Data)
     {
-        BulletText("Key 0x%08X Value { i: %d }", p.key, p.val_i); 
+        BulletText(xorstr_lite("Key 0x%08X Value { i: %d }"), p.key, p.val_i); 
         DebugLocateItemOnHover(p.key);
     }
     TreePop();
@@ -16222,15 +16222,15 @@ void ImGui::DebugNodeTabBar(ImGuiTabBar* tab_bar, const char* label)
     char* p = buf;
     const char* buf_end = buf + IM_ARRAYSIZE(buf);
     const bool is_active = (tab_bar->PrevFrameVisible >= GetFrameCount() - 2);
-    p += ImFormatString(p, buf_end - p, "%s 0x%08X (%d tabs)%s  {", label, tab_bar->ID, tab_bar->Tabs.Size, is_active ? "" : " *Inactive*");
+    p += ImFormatString(p, buf_end - p, xorstr_lite("%s 0x%08X (%d tabs)%s  {"), label, tab_bar->ID, tab_bar->Tabs.Size, is_active ? "" : xorstr_lite(" *Inactive*"));
     for (int tab_n = 0; tab_n < ImMin(tab_bar->Tabs.Size, 3); tab_n++)
     {
         ImGuiTabItem* tab = &tab_bar->Tabs[tab_n];
-        p += ImFormatString(p, buf_end - p, "%s'%s'", tab_n > 0 ? ", " : "", TabBarGetTabName(tab_bar, tab));
+        p += ImFormatString(p, buf_end - p, xorstr_lite("%s'%s'"), tab_n > 0 ? xorstr_lite(", ") : "", TabBarGetTabName(tab_bar, tab));
     }
-    p += ImFormatString(p, buf_end - p, (tab_bar->Tabs.Size > 3) ? " ... }" : " } ");
+    p += ImFormatString(p, buf_end - p, (tab_bar->Tabs.Size > 3) ? xorstr_lite(" ... }") : xorstr_lite(" } "));
     if (!is_active) { PushStyleColor(ImGuiCol_Text, GetStyleColorVec4(ImGuiCol_TextDisabled)); }
-    bool open = TreeNode(label, "%s", buf);
+    bool open = TreeNode(label, xorstr_lite("%s"), buf);
     if (!is_active) { PopStyleColor(); }
     if (is_active && IsItemHovered())
     {
@@ -16245,9 +16245,9 @@ void ImGui::DebugNodeTabBar(ImGuiTabBar* tab_bar, const char* label)
         {
             ImGuiTabItem* tab = &tab_bar->Tabs[tab_n];
             PushID(tab);
-            if (SmallButton("<")) { TabBarQueueReorder(tab_bar, tab, -1); } SameLine(0, 2);
-            if (SmallButton(">")) { TabBarQueueReorder(tab_bar, tab, +1); } SameLine();
-            Text("%02d%c Tab 0x%08X '%s' Offset: %.2f, Width: %.2f/%.2f",
+            if (SmallButton(xorstr_lite("<"))) { TabBarQueueReorder(tab_bar, tab, -1); } SameLine(0, 2);
+            if (SmallButton(xorstr_lite(">"))) { TabBarQueueReorder(tab_bar, tab, +1); } SameLine();
+            Text(xorstr_lite("%02d%c Tab 0x%08X '%s' Offset: %.2f, Width: %.2f/%.2f"),
                 tab_n, (tab->ID == tab_bar->SelectedTabId) ? '*' : ' ', tab->ID, TabBarGetTabName(tab_bar, tab), tab->Offset, tab->Width, tab->ContentWidth);
             PopID();
         }
@@ -16259,21 +16259,21 @@ void ImGui::DebugNodeViewport(ImGuiViewportP* viewport)
 {
     ImGuiContext& g = *GImGui;
     SetNextItemOpen(true, ImGuiCond_Once);
-    bool open = TreeNode("viewport0", "Viewport #%d", 0);
+    bool open = TreeNode(xorstr_lite("viewport0"), xorstr_lite("Viewport #%d"), 0);
     if (IsItemHovered())
         g.DebugMetricsConfig.HighlightViewportID = viewport->ID;
     if (open)
     {
         ImGuiWindowFlags flags = viewport->Flags;
-        BulletText("Main Pos: (%.0f,%.0f), Size: (%.0f,%.0f)\nWorkArea Inset Left: %.0f Top: %.0f, Right: %.0f, Bottom: %.0f",
+        BulletText(xorstr_lite("Main Pos: (%.0f,%.0f), Size: (%.0f,%.0f)\nWorkArea Inset Left: %.0f Top: %.0f, Right: %.0f, Bottom: %.0f"),
             viewport->Pos.x, viewport->Pos.y, viewport->Size.x, viewport->Size.y,
             viewport->WorkInsetMin.x, viewport->WorkInsetMin.y, viewport->WorkInsetMax.x, viewport->WorkInsetMax.y);
-        BulletText("Flags: 0x%04X =%s%s%s", viewport->Flags,
-            (flags & ImGuiViewportFlags_IsPlatformWindow)  ? " IsPlatformWindow"  : "",
-            (flags & ImGuiViewportFlags_IsPlatformMonitor) ? " IsPlatformMonitor" : "",
-            (flags & ImGuiViewportFlags_OwnedByApp)        ? " OwnedByApp"        : "");
+        BulletText(xorstr_lite("Flags: 0x%04X =%s%s%s"), viewport->Flags,
+            (flags & ImGuiViewportFlags_IsPlatformWindow)  ? xorstr_lite(" IsPlatformWindow")  : "",
+            (flags & ImGuiViewportFlags_IsPlatformMonitor) ? xorstr_lite(" IsPlatformMonitor") : "",
+            (flags & ImGuiViewportFlags_OwnedByApp)        ? xorstr_lite(" OwnedByApp")        : "");
         for (ImDrawList* draw_list : viewport->DrawDataP.CmdLists)
-            DebugNodeDrawList(NULL, viewport, draw_list, "DrawList");
+            DebugNodeDrawList(NULL, viewport, draw_list, xorstr_lite("DrawList"));
         TreePop();
     }
 }
@@ -16282,7 +16282,7 @@ void ImGui::DebugNodeWindow(ImGuiWindow* window, const char* label)
 {
     if (window == NULL)
     {
-        BulletText("%s: NULL", label);
+        BulletText(xorstr_lite("%s: NULL"), label);
         return;
     }
 
@@ -16290,7 +16290,7 @@ void ImGui::DebugNodeWindow(ImGuiWindow* window, const char* label)
     const bool is_active = window->WasActive;
     ImGuiTreeNodeFlags tree_node_flags = (window == g.NavWindow) ? ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;
     if (!is_active) { PushStyleColor(ImGuiCol_Text, GetStyleColorVec4(ImGuiCol_TextDisabled)); }
-    const bool open = TreeNodeEx(label, tree_node_flags, "%s '%s'%s", label, window->Name, is_active ? "" : " *Inactive*");
+    const bool open = TreeNodeEx(label, tree_node_flags, xorstr_lite("%s '%s'%s"), label, window->Name, is_active ? "" : xorstr_lite(" *Inactive*"));
     if (!is_active) { PopStyleColor(); }
     if (IsItemHovered() && is_active)
         GetForegroundDrawList(window)->AddRect(window->Pos, window->Pos + window->Size, IM_COL32(255, 255, 0, 255));
@@ -16298,40 +16298,40 @@ void ImGui::DebugNodeWindow(ImGuiWindow* window, const char* label)
         return;
 
     if (window->MemoryCompacted)
-        TextDisabled("Note: some memory buffers have been compacted/freed.");
+        TextDisabled(xorstr_lite("Note: some memory buffers have been compacted/freed."));
 
-    if (g.IO.ConfigDebugIsDebuggerPresent && DebugBreakButton("**DebugBreak**", "in Begin()"))
+    if (g.IO.ConfigDebugIsDebuggerPresent && DebugBreakButton(xorstr_lite("**DebugBreak**"), xorstr_lite("in Begin()")))
         g.DebugBreakInWindow = window->ID;
 
     ImGuiWindowFlags flags = window->Flags;
-    DebugNodeDrawList(window, window->Viewport, window->DrawList, "DrawList");
-    BulletText("Pos: (%.1f,%.1f), Size: (%.1f,%.1f), ContentSize (%.1f,%.1f) Ideal (%.1f,%.1f)", window->Pos.x, window->Pos.y, window->Size.x, window->Size.y, window->ContentSize.x, window->ContentSize.y, window->ContentSizeIdeal.x, window->ContentSizeIdeal.y);
-    BulletText("Flags: 0x%08X (%s%s%s%s%s%s%s%s%s..)", flags,
-        (flags & ImGuiWindowFlags_ChildWindow)  ? "Child " : "",      (flags & ImGuiWindowFlags_Tooltip)     ? "Tooltip "   : "",  (flags & ImGuiWindowFlags_Popup) ? "Popup " : "",
-        (flags & ImGuiWindowFlags_Modal)        ? "Modal " : "",      (flags & ImGuiWindowFlags_ChildMenu)   ? "ChildMenu " : "",  (flags & ImGuiWindowFlags_NoSavedSettings) ? "NoSavedSettings " : "",
-        (flags & ImGuiWindowFlags_NoMouseInputs)? "NoMouseInputs":"", (flags & ImGuiWindowFlags_NoNavInputs) ? "NoNavInputs" : "", (flags & ImGuiWindowFlags_AlwaysAutoResize) ? "AlwaysAutoResize" : "");
+    DebugNodeDrawList(window, window->Viewport, window->DrawList, xorstr_lite("DrawList"));
+    BulletText(xorstr_lite("Pos: (%.1f,%.1f), Size: (%.1f,%.1f), ContentSize (%.1f,%.1f) Ideal (%.1f,%.1f)"), window->Pos.x, window->Pos.y, window->Size.x, window->Size.y, window->ContentSize.x, window->ContentSize.y, window->ContentSizeIdeal.x, window->ContentSizeIdeal.y);
+    BulletText(xorstr_lite("Flags: 0x%08X (%s%s%s%s%s%s%s%s%s..)"), flags,
+        (flags & ImGuiWindowFlags_ChildWindow)  ? xorstr_lite("Child ") : "",      (flags & ImGuiWindowFlags_Tooltip)     ? xorstr_lite("Tooltip ")   : "",  (flags & ImGuiWindowFlags_Popup) ? xorstr_lite("Popup ") : "",
+        (flags & ImGuiWindowFlags_Modal)        ? xorstr_lite("Modal ") : "",      (flags & ImGuiWindowFlags_ChildMenu)   ? xorstr_lite("ChildMenu ") : "",  (flags & ImGuiWindowFlags_NoSavedSettings) ? xorstr_lite("NoSavedSettings ") : "",
+        (flags & ImGuiWindowFlags_NoMouseInputs)? xorstr_lite("NoMouseInputs"):"", (flags & ImGuiWindowFlags_NoNavInputs) ? xorstr_lite("NoNavInputs") : "", (flags & ImGuiWindowFlags_AlwaysAutoResize) ? xorstr_lite("AlwaysAutoResize") : "");
     if (flags & ImGuiWindowFlags_ChildWindow)
-        BulletText("ChildFlags: 0x%08X (%s%s%s%s..)", window->ChildFlags,
-            (window->ChildFlags & ImGuiChildFlags_Borders) ? "Borders " : "",
-            (window->ChildFlags & ImGuiChildFlags_ResizeX) ? "ResizeX " : "",
-            (window->ChildFlags & ImGuiChildFlags_ResizeY) ? "ResizeY " : "",
-            (window->ChildFlags & ImGuiChildFlags_NavFlattened) ? "NavFlattened " : "");
-    BulletText("Scroll: (%.2f/%.2f,%.2f/%.2f) Scrollbar:%s%s", window->Scroll.x, window->ScrollMax.x, window->Scroll.y, window->ScrollMax.y, window->ScrollbarX ? "X" : "", window->ScrollbarY ? "Y" : "");
-    BulletText("Active: %d/%d, WriteAccessed: %d, BeginOrderWithinContext: %d", window->Active, window->WasActive, window->WriteAccessed, (window->Active || window->WasActive) ? window->BeginOrderWithinContext : -1);
-    BulletText("Appearing: %d, Hidden: %d (CanSkip %d Cannot %d), SkipItems: %d", window->Appearing, window->Hidden, window->HiddenFramesCanSkipItems, window->HiddenFramesCannotSkipItems, window->SkipItems);
+        BulletText(xorstr_lite("ChildFlags: 0x%08X (%s%s%s%s..)"), window->ChildFlags,
+            (window->ChildFlags & ImGuiChildFlags_Borders) ? xorstr_lite("Borders ") : "",
+            (window->ChildFlags & ImGuiChildFlags_ResizeX) ? xorstr_lite("ResizeX ") : "",
+            (window->ChildFlags & ImGuiChildFlags_ResizeY) ? xorstr_lite("ResizeY ") : "",
+            (window->ChildFlags & ImGuiChildFlags_NavFlattened) ? xorstr_lite("NavFlattened ") : "");
+    BulletText(xorstr_lite("Scroll: (%.2f/%.2f,%.2f/%.2f) Scrollbar:%s%s"), window->Scroll.x, window->ScrollMax.x, window->Scroll.y, window->ScrollMax.y, window->ScrollbarX ? xorstr_lite("X") : "", window->ScrollbarY ? xorstr_lite("Y") : "");
+    BulletText(xorstr_lite("Active: %d/%d, WriteAccessed: %d, BeginOrderWithinContext: %d"), window->Active, window->WasActive, window->WriteAccessed, (window->Active || window->WasActive) ? window->BeginOrderWithinContext : -1);
+    BulletText(xorstr_lite("Appearing: %d, Hidden: %d (CanSkip %d Cannot %d), SkipItems: %d"), window->Appearing, window->Hidden, window->HiddenFramesCanSkipItems, window->HiddenFramesCannotSkipItems, window->SkipItems);
     for (int layer = 0; layer < ImGuiNavLayer_COUNT; layer++)
     {
         ImRect r = window->NavRectRel[layer];
         if (r.Min.x >= r.Max.y && r.Min.y >= r.Max.y)
-            BulletText("NavLastIds[%d]: 0x%08X", layer, window->NavLastIds[layer]);
+            BulletText(xorstr_lite("NavLastIds[%d]: 0x%08X"), layer, window->NavLastIds[layer]);
         else
-            BulletText("NavLastIds[%d]: 0x%08X at +(%.1f,%.1f)(%.1f,%.1f)", layer, window->NavLastIds[layer], r.Min.x, r.Min.y, r.Max.x, r.Max.y);
+            BulletText(xorstr_lite("NavLastIds[%d]: 0x%08X at +(%.1f,%.1f)(%.1f,%.1f)"), layer, window->NavLastIds[layer], r.Min.x, r.Min.y, r.Max.x, r.Max.y);
         DebugLocateItemOnHover(window->NavLastIds[layer]);
     }
     const ImVec2* pr = window->NavPreferredScoringPosRel;
     for (int layer = 0; layer < ImGuiNavLayer_COUNT; layer++)
-        BulletText("NavPreferredScoringPosRel[%d] = {%.1f,%.1f)", layer, (pr[layer].x == FLT_MAX ? -99999.0f : pr[layer].x), (pr[layer].y == FLT_MAX ? -99999.0f : pr[layer].y)); 
-    BulletText("NavLayersActiveMask: %X, NavLastChildNavWindow: %s", window->DC.NavLayersActiveMask, window->NavLastChildNavWindow ? window->NavLastChildNavWindow->Name : IM_STR("NULL"));
+        BulletText(xorstr_lite("NavPreferredScoringPosRel[%d] = {%.1f,%.1f)"), layer, (pr[layer].x == FLT_MAX ? -99999.0f : pr[layer].x), (pr[layer].y == FLT_MAX ? -99999.0f : pr[layer].y)); 
+    BulletText(xorstr_lite("NavLayersActiveMask: %X, NavLastChildNavWindow: %s"), window->DC.NavLayersActiveMask, window->NavLastChildNavWindow ? window->NavLastChildNavWindow->Name : IM_STR("NULL"));
     if (window->RootWindow != window)               { DebugNodeWindow(window->RootWindow, IM_STR("RootWindow")); }
     if (window->ParentWindow != NULL)               { DebugNodeWindow(window->ParentWindow, IM_STR("ParentWindow")); }
     if (window->ParentWindowForFocusRoute != NULL)  { DebugNodeWindow(window->ParentWindowForFocusRoute, IM_STR("ParentWindowForFocusRoute")); }
@@ -16350,7 +16350,7 @@ void ImGui::DebugNodeWindowSettings(ImGuiWindowSettings* settings)
 {
     if (settings->WantDelete)
         BeginDisabled();
-    Text("0x%08X \"%s\" Pos (%d,%d) Size (%d,%d) Collapsed=%d",
+    Text(xorstr_lite("0x%08X \"%s\" Pos (%d,%d) Size (%d,%d) Collapsed=%d"),
         settings->ID, settings->GetName(), settings->Pos.x, settings->Pos.y, settings->Size.x, settings->Size.y, settings->Collapsed);
     if (settings->WantDelete)
         EndDisabled();
@@ -16358,7 +16358,7 @@ void ImGui::DebugNodeWindowSettings(ImGuiWindowSettings* settings)
 
 void ImGui::DebugNodeWindowsList(ImVector<ImGuiWindow*>* windows, const char* label)
 {
-    if (!TreeNode(label, "%s (%d)", label, windows->Size))
+    if (!TreeNode(label, xorstr_lite("%s (%d)"), label, windows->Size))
         return;
     for (int i = windows->Size - 1; i >= 0; i--) 
     {
@@ -16378,7 +16378,7 @@ void ImGui::DebugNodeWindowsListByBeginStackParent(ImGuiWindow** windows, int wi
         if (window->ParentWindowInBeginStack != parent_in_begin_stack)
             continue;
         char buf[20];
-        ImFormatString(buf, IM_ARRAYSIZE(buf), "[%04d] Window", window->BeginOrderWithinContext);
+        ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("[%04d] Window"), window->BeginOrderWithinContext);
         
         DebugNodeWindow(window, buf);
         Indent();
@@ -16404,19 +16404,19 @@ void ImGui::DebugLogV(const char* fmt, va_list args)
     ImGuiContext& g = *GImGui;
     const int old_size = g.DebugLogBuf.size();
     if (g.ContextName[0] != 0)
-        g.DebugLogBuf.appendf("[%s] [%05d] ", g.ContextName, g.FrameCount);
+        g.DebugLogBuf.appendf(xorstr_lite("[%s] [%05d] "), g.ContextName, g.FrameCount);
     else
-        g.DebugLogBuf.appendf("[%05d] ", g.FrameCount);
+        g.DebugLogBuf.appendf(xorstr_lite("[%05d] "), g.FrameCount);
     g.DebugLogBuf.appendfv(fmt, args);
     g.DebugLogIndex.append(g.DebugLogBuf.c_str(), old_size, g.DebugLogBuf.size());
     if (g.DebugLogFlags & ImGuiDebugLogFlags_OutputToTTY)
-        IMGUI_DEBUG_PRINTF("%s", g.DebugLogBuf.begin() + old_size);
+        IMGUI_DEBUG_PRINTF(xorstr_lite("%s"), g.DebugLogBuf.begin() + old_size);
 #ifdef IMGUI_ENABLE_TEST_ENGINE
     
     const int new_size = g.DebugLogBuf.size();
     const bool trailing_carriage_return = (g.DebugLogBuf[new_size - 1] == '\n');
     if (g.DebugLogFlags & ImGuiDebugLogFlags_OutputToTestEngine)
-        IMGUI_TEST_ENGINE_LOG("%.*s", new_size - old_size - (trailing_carriage_return ? 1 : 0), g.DebugLogBuf.begin() + old_size);
+        IMGUI_TEST_ENGINE_LOG(xorstr_lite("%.*s"), new_size - old_size - (trailing_carriage_return ? 1 : 0), g.DebugLogBuf.begin() + old_size);
 #endif
 }
 
@@ -16440,7 +16440,7 @@ static void ShowDebugLogFlag(const char* name, ImGuiDebugLogFlags flags)
         g.DebugLogAutoDisableFrames = 2;
         g.DebugLogAutoDisableFlags |= flags;
     }
-    ImGui::SetItemTooltip("Hold SHIFT when clicking to enable for 2 frames only (useful for spammy log entries)");
+    ImGui::SetItemTooltip(xorstr_lite("Hold SHIFT when clicking to enable for 2 frames only (useful for spammy log entries)"));
 }
 
 void ImGui::ShowDebugLogWindow(bool* p_open)
@@ -16455,43 +16455,43 @@ void ImGui::ShowDebugLogWindow(bool* p_open)
     }
 
     ImGuiDebugLogFlags all_enable_flags = ImGuiDebugLogFlags_EventMask_ & ~ImGuiDebugLogFlags_EventInputRouting;
-    CheckboxFlags("All", &g.DebugLogFlags, all_enable_flags);
-    SetItemTooltip("(except InputRouting which is spammy)");
+    CheckboxFlags(xorstr_lite("All"), &g.DebugLogFlags, all_enable_flags);
+    SetItemTooltip(xorstr_lite("(except InputRouting which is spammy)"));
 
-    ShowDebugLogFlag("ActiveId", ImGuiDebugLogFlags_EventActiveId);
-    ShowDebugLogFlag("Clipper", ImGuiDebugLogFlags_EventClipper);
-    ShowDebugLogFlag("Focus", ImGuiDebugLogFlags_EventFocus);
-    ShowDebugLogFlag("IO", ImGuiDebugLogFlags_EventIO);
-    ShowDebugLogFlag("Nav", ImGuiDebugLogFlags_EventNav);
-    ShowDebugLogFlag("Popup", ImGuiDebugLogFlags_EventPopup);
-    ShowDebugLogFlag("Selection", ImGuiDebugLogFlags_EventSelection);
-    ShowDebugLogFlag("InputRouting", ImGuiDebugLogFlags_EventInputRouting);
+    ShowDebugLogFlag(xorstr_lite("ActiveId"), ImGuiDebugLogFlags_EventActiveId);
+    ShowDebugLogFlag(xorstr_lite("Clipper"), ImGuiDebugLogFlags_EventClipper);
+    ShowDebugLogFlag(xorstr_lite("Focus"), ImGuiDebugLogFlags_EventFocus);
+    ShowDebugLogFlag(xorstr_lite("IO"), ImGuiDebugLogFlags_EventIO);
+    ShowDebugLogFlag(xorstr_lite("Nav"), ImGuiDebugLogFlags_EventNav);
+    ShowDebugLogFlag(xorstr_lite("Popup"), ImGuiDebugLogFlags_EventPopup);
+    ShowDebugLogFlag(xorstr_lite("Selection"), ImGuiDebugLogFlags_EventSelection);
+    ShowDebugLogFlag(xorstr_lite("InputRouting"), ImGuiDebugLogFlags_EventInputRouting);
 
-    if (SmallButton("Clear"))
+    if (SmallButton(xorstr_lite("Clear")))
     {
         g.DebugLogBuf.clear();
         g.DebugLogIndex.clear();
     }
     SameLine();
-    if (SmallButton("Copy"))
+    if (SmallButton(xorstr_lite("Copy")))
         SetClipboardText(g.DebugLogBuf.c_str());
     SameLine();
-    if (SmallButton("Configure Outputs.."))
-        OpenPopup("Outputs");
-    if (BeginPopup("Outputs"))
+    if (SmallButton(xorstr_lite("Configure Outputs..")))
+        OpenPopup(xorstr_lite("Outputs"));
+    if (BeginPopup(xorstr_lite("Outputs")))
     {
-        CheckboxFlags("OutputToTTY", &g.DebugLogFlags, ImGuiDebugLogFlags_OutputToTTY);
+        CheckboxFlags(xorstr_lite("OutputToTTY"), &g.DebugLogFlags, ImGuiDebugLogFlags_OutputToTTY);
 #ifndef IMGUI_ENABLE_TEST_ENGINE
         BeginDisabled();
 #endif
-        CheckboxFlags("OutputToTestEngine", &g.DebugLogFlags, ImGuiDebugLogFlags_OutputToTestEngine);
+        CheckboxFlags(xorstr_lite("OutputToTestEngine"), &g.DebugLogFlags, ImGuiDebugLogFlags_OutputToTestEngine);
 #ifndef IMGUI_ENABLE_TEST_ENGINE
         EndDisabled();
 #endif
         EndPopup();
     }
 
-    BeginChild("##log", ImVec2(0.0f, 0.0f), ImGuiChildFlags_Borders, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+    BeginChild(xorstr_lite("##log"), ImVec2(0.0f, 0.0f), ImGuiChildFlags_Borders, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 
     const ImGuiDebugLogFlags backup_log_flags = g.DebugLogFlags;
     g.DebugLogFlags &= ~ImGuiDebugLogFlags_EventClipper;
@@ -16520,7 +16520,7 @@ void ImGui::DebugTextUnformattedWithLocateItem(const char* line_begin, const cha
     for (const char* p = line_begin; p <= line_end - 10; p++)
     {
         ImGuiID id = 0;
-        if (p[0] != '0' || (p[1] != 'x' && p[1] != 'X') || sscanf(p + 2, "%X", &id) != 1 || ImCharIsXdigitA(p[10]))
+        if (p[0] != '0' || (p[1] != 'x' && p[1] != 'X') || sscanf(p + 2, xorstr_lite("%X"), &id) != 1 || ImCharIsXdigitA(p[10]))
             continue;
         ImVec2 p0 = CalcTextSize(line_begin, p);
         ImVec2 p1 = CalcTextSize(p, p + 10);
@@ -16589,7 +16589,7 @@ void ImGui::DebugLocateItemOnHover(ImGuiID target_id)
     
     if (g.IO.ConfigDebugIsDebuggerPresent && g.MouseStationaryTimer > 1.0f)
     {
-        DebugBreakButtonTooltip(false, "in ItemAdd()");
+        DebugBreakButtonTooltip(false, xorstr_lite("in ItemAdd()"));
         if (IsKeyChordPressed(g.DebugBreakKeyChord))
             g.DebugBreakInLocateId = true;
     }
@@ -16644,13 +16644,13 @@ void ImGui::UpdateDebugToolItemPicker()
     SetNextWindowBgAlpha(0.70f);
     if (!BeginTooltip())
         return;
-    Text("HoveredId: 0x%08X", hovered_id);
-    Text("Press ESC to abort picking.");
+    Text(xorstr_lite("HoveredId: 0x%08X"), hovered_id);
+    Text(xorstr_lite("Press ESC to abort picking."));
     const char* mouse_button_names[] = { "Left", "Right", "Middle" };
     if (change_mapping)
-        Text("Remap w/ Ctrl+Shift: click anywhere to select new mouse button.");
+        Text(xorstr_lite("Remap w/ Ctrl+Shift: click anywhere to select new mouse button."));
     else
-        TextColored(GetStyleColorVec4(hovered_id ? ImGuiCol_Text : ImGuiCol_TextDisabled), "Click %s Button to break in debugger! (remap w/ Ctrl+Shift)", mouse_button_names[g.DebugItemPickerMouseButton]);
+        TextColored(GetStyleColorVec4(hovered_id ? ImGuiCol_Text : ImGuiCol_TextDisabled), xorstr_lite("Click %s Button to break in debugger! (remap w/ Ctrl+Shift)"), mouse_button_names[g.DebugItemPickerMouseButton]);
     EndTooltip();
 }
 
@@ -16722,18 +16722,18 @@ void ImGui::DebugHookIdInfo(ImGuiID id, ImGuiDataType data_type, const void* dat
     switch (data_type)
     {
     case ImGuiDataType_S32:
-        ImFormatString(info->Desc, IM_ARRAYSIZE(info->Desc), "%d", (int)(intptr_t)data_id);
+        ImFormatString(info->Desc, IM_ARRAYSIZE(info->Desc), xorstr_lite("%d"), (int)(intptr_t)data_id);
         break;
     case ImGuiDataType_String:
-        ImFormatString(info->Desc, IM_ARRAYSIZE(info->Desc), "%.*s", data_id_end ? (int)((const char*)data_id_end - (const char*)data_id) : (int)strlen((const char*)data_id), (const char*)data_id);
+        ImFormatString(info->Desc, IM_ARRAYSIZE(info->Desc), xorstr_lite("%.*s"), data_id_end ? (int)((const char*)data_id_end - (const char*)data_id) : (int)strlen((const char*)data_id), (const char*)data_id);
         break;
     case ImGuiDataType_Pointer:
-        ImFormatString(info->Desc, IM_ARRAYSIZE(info->Desc), "(void*)0x%p", data_id);
+        ImFormatString(info->Desc, IM_ARRAYSIZE(info->Desc), xorstr_lite("(void*)0x%p"), data_id);
         break;
     case ImGuiDataType_ID:
         if (info->Desc[0] != 0) 
             return;
-        ImFormatString(info->Desc, IM_ARRAYSIZE(info->Desc), "0x%08X [override]", id);
+        ImFormatString(info->Desc, IM_ARRAYSIZE(info->Desc), xorstr_lite("0x%08X [override]"), id);
         break;
     default:
         IM_ASSERT(0);
@@ -16747,16 +16747,16 @@ static int StackToolFormatLevelInfo(ImGuiIDStackTool* tool, int n, bool format_f
     ImGuiStackLevelInfo* info = &tool->Results[n];
     ImGuiWindow* window = (info->Desc[0] == 0 && n == 0) ? ImGui::FindWindowByID(info->ID) : NULL;
     if (window)                                                                 
-        return ImFormatString(buf, buf_size, format_for_ui ? "\"%s\" [window]" : "%s", window->Name);
+        return ImFormatString(buf, buf_size, format_for_ui ? xorstr_lite("\"%s\" [window]") : xorstr_lite("%s"), window->Name);
     if (info->QuerySuccess)                                                     
-        return ImFormatString(buf, buf_size, (format_for_ui && info->DataType == ImGuiDataType_String) ? "\"%s\"" : "%s", info->Desc);
+        return ImFormatString(buf, buf_size, (format_for_ui && info->DataType == ImGuiDataType_String) ? xorstr_lite("\"%s\"") : xorstr_lite("%s"), info->Desc);
     if (tool->StackLevel < tool->Results.Size)                                  
         return (*buf = 0);
 #ifdef IMGUI_ENABLE_TEST_ENGINE
     if (const char* label = ImGuiTestEngine_FindItemDebugLabel(GImGui, info->ID))   
-        return ImFormatString(buf, buf_size, format_for_ui ? "??? \"%s\"" : "%s", label);
+        return ImFormatString(buf, buf_size, format_for_ui ? xorstr_lite("??? \"%s\"") : xorstr_lite("%s"), label);
 #endif
-    return ImFormatString(buf, buf_size, "???");
+    return ImFormatString(buf, buf_size, xorstr_lite("???"));
 }
 
 
@@ -16776,18 +16776,18 @@ void ImGui::ShowIDStackToolWindow(bool* p_open)
     const ImGuiID hovered_id = g.HoveredIdPreviousFrame;
     const ImGuiID active_id = g.ActiveId;
 #ifdef IMGUI_ENABLE_TEST_ENGINE
-    Text("HoveredId: 0x%08X (\"%s\"), ActiveId:  0x%08X (\"%s\")", hovered_id, hovered_id ? ImGuiTestEngine_FindItemDebugLabel(&g, hovered_id) : "", active_id, active_id ? ImGuiTestEngine_FindItemDebugLabel(&g, active_id) : "");
+    Text(xorstr_lite("HoveredId: 0x%08X (\"%s\"), ActiveId:  0x%08X (\"%s\")"), hovered_id, hovered_id ? ImGuiTestEngine_FindItemDebugLabel(&g, hovered_id) : "", active_id, active_id ? ImGuiTestEngine_FindItemDebugLabel(&g, active_id) : "");
 #else
-    Text("HoveredId: 0x%08X, ActiveId:  0x%08X", hovered_id, active_id);
+    Text(xorstr_lite("HoveredId: 0x%08X, ActiveId:  0x%08X"), hovered_id, active_id);
 #endif
     SameLine();
-    MetricsHelpMarker("Hover an item with the mouse to display elements of the ID Stack leading to the item's final ID.\nEach level of the stack correspond to a PushID() call.\nAll levels of the stack are hashed together to make the final ID of a widget (ID displayed at the bottom level of the stack).\nRead FAQ entry about the ID stack for details.");
+    MetricsHelpMarker(xorstr_lite("Hover an item with the mouse to display elements of the ID Stack leading to the item's final ID.\nEach level of the stack correspond to a PushID() call.\nAll levels of the stack are hashed together to make the final ID of a widget (ID displayed at the bottom level of the stack).\nRead FAQ entry about the ID stack for details."));
 
     
     const float time_since_copy = (float)g.Time - tool->CopyToClipboardLastTime;
-    Checkbox("Ctrl+C: copy path to clipboard", &tool->CopyToClipboardOnCtrlC);
+    Checkbox(xorstr_lite("Ctrl+C: copy path to clipboard"), &tool->CopyToClipboardOnCtrlC);
     SameLine();
-    TextColored((time_since_copy >= 0.0f && time_since_copy < 0.75f && ImFmod(time_since_copy, 0.25f) < 0.25f * 0.5f) ? ImVec4(1.f, 1.f, 0.3f, 1.f) : ImVec4(), "*COPIED*");
+    TextColored((time_since_copy >= 0.0f && time_since_copy < 0.75f && ImFmod(time_since_copy, 0.25f) < 0.25f * 0.5f) ? ImVec4(1.f, 1.f, 0.3f, 1.f) : ImVec4(), xorstr_lite("*COPIED*"));
     if (tool->CopyToClipboardOnCtrlC && Shortcut(ImGuiMod_Ctrl | ImGuiKey_C, ImGuiInputFlags_RouteGlobal | ImGuiInputFlags_RouteOverFocused))
     {
         tool->CopyToClipboardLastTime = (float)g.Time;
@@ -16811,23 +16811,23 @@ void ImGui::ShowIDStackToolWindow(bool* p_open)
 
     
     tool->LastActiveFrame = g.FrameCount;
-    if (tool->Results.Size > 0 && BeginTable("##table", 3, ImGuiTableFlags_Borders))
+    if (tool->Results.Size > 0 && BeginTable(xorstr_lite("##table"), 3, ImGuiTableFlags_Borders))
     {
-        const float id_width = CalcTextSize("0xDDDDDDDD").x;
-        TableSetupColumn("Seed", ImGuiTableColumnFlags_WidthFixed, id_width);
-        TableSetupColumn("PushID", ImGuiTableColumnFlags_WidthStretch);
-        TableSetupColumn("Result", ImGuiTableColumnFlags_WidthFixed, id_width);
+        const float id_width = CalcTextSize(xorstr_lite("0xDDDDDDDD")).x;
+        TableSetupColumn(xorstr_lite("Seed"), ImGuiTableColumnFlags_WidthFixed, id_width);
+        TableSetupColumn(xorstr_lite("PushID"), ImGuiTableColumnFlags_WidthStretch);
+        TableSetupColumn(xorstr_lite("Result"), ImGuiTableColumnFlags_WidthFixed, id_width);
         TableHeadersRow();
         for (int n = 0; n < tool->Results.Size; n++)
         {
             ImGuiStackLevelInfo* info = &tool->Results[n];
             TableNextColumn();
-            Text("0x%08X", (n > 0) ? tool->Results[n - 1].ID : 0);
+            Text(xorstr_lite("0x%08X"), (n > 0) ? tool->Results[n - 1].ID : 0);
             TableNextColumn();
             StackToolFormatLevelInfo(tool, n, true, g.TempBuffer.Data, g.TempBuffer.Size);
             TextUnformatted(g.TempBuffer.Data);
             TableNextColumn();
-            Text("0x%08X", info->ID);
+            Text(xorstr_lite("0x%08X"), info->ID);
             if (n == tool->Results.Size - 1)
                 TableSetBgColor(ImGuiTableBgTarget_CellBg, GetColorU32(ImGuiCol_Header));
         }

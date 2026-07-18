@@ -807,7 +807,7 @@ static bool ImFontAtlasBuildWithFreeType(ImFontAtlas* atlas)
     
     
     SVG_RendererHooks hooks = { ImGuiLunasvgPortInit, ImGuiLunasvgPortFree, ImGuiLunasvgPortRender, ImGuiLunasvgPortPresetSlot };
-    FT_Property_Set(ft_library, "ot-svg", "svg-hooks", &hooks);
+    FT_Property_Set(ft_library, xorstr_lite("ot-svg"), xorstr_lite("svg-hooks"), &hooks);
 #endif 
 
     bool ret = ImFontAtlasBuildWithFreeTypeEx(ft_library, atlas, atlas->FontBuilderFlags);

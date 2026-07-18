@@ -739,7 +739,7 @@ bool ImGui::ButtonEx(const char* label, const ImVec2& size_arg, ImGuiButtonFlags
     RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
 
     if (g.LogEnabled)
-        LogSetNextTextDecoration("[", "]");
+        LogSetNextTextDecoration(xorstr_lite("["), xorstr_lite("]"));
     RenderTextClipped(bb.Min + style.FramePadding, bb.Max - style.FramePadding, label, NULL, &label_size, style.ButtonTextAlign, &bb);
 
     
@@ -892,7 +892,7 @@ bool ImGui::CollapseButton(ImGuiID id, const ImVec2& pos)
 
 ImGuiID ImGui::GetWindowScrollbarID(ImGuiWindow* window, ImGuiAxis axis)
 {
-    return window->GetID(axis == ImGuiAxis_X ? "#SCROLLX" : "#SCROLLY");
+    return window->GetID(axis == ImGuiAxis_X ? xorstr_lite("#SCROLLX") : xorstr_lite("#SCROLLY"));
 }
 
 
@@ -1196,7 +1196,7 @@ bool ImGui::Checkbox(const char* label, bool* v)
     }
     const ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
     if (g.LogEnabled)
-        LogRenderedText(&label_pos, mixed_value ? "[~]" : *v ? "[x]" : "[ ]");
+        LogRenderedText(&label_pos, mixed_value ? xorstr_lite("[~]") : *v ? xorstr_lite("[x]") : xorstr_lite("[ ]"));
     if (is_visible && label_size.x > 0.0f)
         RenderText(label_pos, label);
 
@@ -1297,7 +1297,7 @@ bool ImGui::RadioButton(const char* label, bool active)
 
     ImVec2 label_pos = ImVec2(check_bb.Max.x + style.ItemInnerSpacing.x, check_bb.Min.y + style.FramePadding.y);
     if (g.LogEnabled)
-        LogRenderedText(&label_pos, active ? "(x)" : "( )");
+        LogRenderedText(&label_pos, active ? xorstr_lite("(x)") : xorstr_lite("( )"));
     if (label_size.x > 0.0f)
         RenderText(label_pos, label);
 
@@ -1361,7 +1361,7 @@ void ImGui::ProgressBar(float fraction, const ImVec2& size_arg, const char* over
     {
         if (!overlay)
         {
-            ImFormatString(overlay_buf, IM_ARRAYSIZE(overlay_buf), "%.0f%%", fraction * 100 + 0.01f);
+            ImFormatString(overlay_buf, IM_ARRAYSIZE(overlay_buf), xorstr_lite("%.0f%%"), fraction * 100 + 0.01f);
             overlay = overlay_buf;
         }
 
@@ -1556,7 +1556,7 @@ void ImGui::SeparatorEx(ImGuiSeparatorFlags flags, float thickness)
         
         window->DrawList->AddRectFilled(bb.Min, bb.Max, GetColorU32(ImGuiCol_Separator));
         if (g.LogEnabled)
-            LogText(" |");
+            LogText(xorstr_lite(" |"));
     }
     else if (flags & ImGuiSeparatorFlags_Horizontal)
     {
@@ -1586,7 +1586,7 @@ void ImGui::SeparatorEx(ImGuiSeparatorFlags flags, float thickness)
             
             window->DrawList->AddRectFilled(bb.Min, bb.Max, GetColorU32(ImGuiCol_Separator));
             if (g.LogEnabled)
-                LogRenderedText(&bb.Min, "--------------------------------\n");
+                LogRenderedText(&bb.Min, xorstr_lite("--------------------------------\n"));
 
         }
         if (columns)
@@ -1653,13 +1653,13 @@ void ImGui::SeparatorTextEx(ImGuiID id, const char* label, const char* label_end
         if (sep2_x2 > sep2_x1 && separator_thickness > 0.0f)
             window->DrawList->AddLine(ImVec2(sep2_x1, seps_y), ImVec2(sep2_x2, seps_y), separator_col, separator_thickness);
         if (g.LogEnabled)
-            LogSetNextTextDecoration("---", NULL);
+            LogSetNextTextDecoration(xorstr_lite("---"), NULL);
         RenderTextEllipsis(window->DrawList, label_pos, ImVec2(bb.Max.x, bb.Max.y + style.ItemSpacing.y), bb.Max.x, bb.Max.x, label, label_end, &label_size);
     }
     else
     {
         if (g.LogEnabled)
-            LogText("---");
+            LogText(xorstr_lite("---"));
         if (separator_thickness > 0.0f)
             window->DrawList->AddLine(ImVec2(sep1_x1, seps_y), ImVec2(sep2_x2, seps_y), separator_col, separator_thickness);
     }
@@ -1840,7 +1840,7 @@ bool ImGui::BeginCombo(const char* label, const char* preview_value, ImGuiComboF
     
     bool hovered, held;
     bool pressed = ButtonBehavior(bb, id, &hovered, &held);
-    const ImGuiID popup_id = ImHashStr("##ComboPopup", 0, id);
+    const ImGuiID popup_id = ImHashStr(xorstr_lite("##ComboPopup"), 0, id);
     bool popup_open = IsPopupOpen(popup_id, ImGuiPopupFlags_None);
     if (pressed && !popup_open)
     {
@@ -1876,7 +1876,7 @@ bool ImGui::BeginCombo(const char* label, const char* preview_value, ImGuiComboF
     if (preview_value != NULL && !(flags & ImGuiComboFlags_NoPreview))
     {
         if (g.LogEnabled)
-            LogSetNextTextDecoration("{", "}");
+            LogSetNextTextDecoration(xorstr_lite("{"), xorstr_lite("}"));
         RenderTextClipped(bb.Min + style.FramePadding, ImVec2(value_x2, bb.Max.y), preview_value, NULL, NULL);
     }
     if (label_size.x > 0)
@@ -1923,7 +1923,7 @@ bool ImGui::BeginComboPopup(ImGuiID popup_id, const ImRect& bb, ImGuiComboFlags 
 
     
     char name[16];
-    ImFormatString(name, IM_ARRAYSIZE(name), "##Combo_%02d", g.BeginComboDepth); 
+    ImFormatString(name, IM_ARRAYSIZE(name), xorstr_lite("##Combo_%02d"), g.BeginComboDepth); 
 
     
     
@@ -2064,7 +2064,7 @@ bool ImGui::Combo(const char* label, int* current_item, const char* (*getter)(vo
         {
             const char* item_text = getter(user_data, i);
             if (item_text == NULL)
-                item_text = "*Unknown item*";
+                item_text = xorstr_lite("*Unknown item*");
 
             PushID(i);
             const bool item_selected = (i == *current_item);
@@ -2145,22 +2145,22 @@ bool ImGui::Combo(const char* label, int* current_item, bool (*old_getter)(void*
 
 static const ImGuiDataTypeInfo GDataTypeInfo[] =
 {
-    { sizeof(char),             "S8",   "%d",   "%d"    },  
-    { sizeof(unsigned char),    "U8",   "%u",   "%u"    },
-    { sizeof(short),            "S16",  "%d",   "%d"    },  
-    { sizeof(unsigned short),   "U16",  "%u",   "%u"    },
-    { sizeof(int),              "S32",  "%d",   "%d"    },  
-    { sizeof(unsigned int),     "U32",  "%u",   "%u"    },
+    { sizeof(char),             xorstr_lite("S8"),   xorstr_lite("%d"),   xorstr_lite("%d")    },  
+    { sizeof(unsigned char),    xorstr_lite("U8"),   xorstr_lite("%u"),   xorstr_lite("%u")    },
+    { sizeof(short),            xorstr_lite("S16"),  xorstr_lite("%d"),   xorstr_lite("%d")    },  
+    { sizeof(unsigned short),   xorstr_lite("U16"),  xorstr_lite("%u"),   xorstr_lite("%u")    },
+    { sizeof(int),              xorstr_lite("S32"),  xorstr_lite("%d"),   xorstr_lite("%d")    },  
+    { sizeof(unsigned int),     xorstr_lite("U32"),  xorstr_lite("%u"),   xorstr_lite("%u")    },
 #ifdef _MSC_VER
-    { sizeof(ImS64),            "S64",  "%I64d","%I64d" },  
-    { sizeof(ImU64),            "U64",  "%I64u","%I64u" },
+    { sizeof(ImS64),            xorstr_lite("S64"),  xorstr_lite("%I64d"),xorstr_lite("%I64d") },  
+    { sizeof(ImU64),            xorstr_lite("U64"),  xorstr_lite("%I64u"),xorstr_lite("%I64u") },
 #else
-    { sizeof(ImS64),            "S64",  "%lld", "%lld"  },  
-    { sizeof(ImU64),            "U64",  "%llu", "%llu"  },
+    { sizeof(ImS64),            xorstr_lite("S64"),  xorstr_lite("%lld"), xorstr_lite("%lld")  },  
+    { sizeof(ImU64),            xorstr_lite("U64"),  xorstr_lite("%llu"), xorstr_lite("%llu")  },
 #endif
-    { sizeof(float),            "float", "%.3f","%f"    },  
-    { sizeof(double),           "double","%f",  "%lf"   },  
-    { sizeof(bool),             "bool", "%d",   "%d"    },  
+    { sizeof(float),            xorstr_lite("float"), xorstr_lite("%.3f"),xorstr_lite("%f")    },  
+    { sizeof(double),           xorstr_lite("double"),xorstr_lite("%f"),  xorstr_lite("%lf")   },  
+    { sizeof(bool),             xorstr_lite("bool"), xorstr_lite("%d"),   xorstr_lite("%d")    },  
 };
 IM_STATIC_ASSERT(IM_ARRAYSIZE(GDataTypeInfo) == ImGuiDataType_COUNT);
 
@@ -2651,7 +2651,7 @@ bool ImGui::DragScalar(const char* label, ImGuiDataType data_type, void* p_data,
     char value_buf[64];
     const char* value_buf_end = value_buf + DataTypeFormatString(value_buf, IM_ARRAYSIZE(value_buf), data_type, p_data, format);
     if (g.LogEnabled)
-        LogSetNextTextDecoration("{", "}");
+        LogSetNextTextDecoration(xorstr_lite("{"), xorstr_lite("}"));
     RenderTextClipped(frame_bb.Min, frame_bb.Max, value_buf, value_buf_end, NULL, ImVec2(0.5f, 0.5f));
 
     if (label_size.x > 0.0f)
@@ -2731,14 +2731,14 @@ bool ImGui::DragFloatRange2(const char* label, float* v_current_min, float* v_cu
     float min_min = (v_min >= v_max) ? -FLT_MAX : v_min;
     float min_max = (v_min >= v_max) ? *v_current_max : ImMin(v_max, *v_current_max);
     ImGuiSliderFlags min_flags = flags | ((min_min == min_max) ? ImGuiSliderFlags_ReadOnly : 0);
-    bool value_changed = DragScalar("##min", ImGuiDataType_Float, v_current_min, v_speed, &min_min, &min_max, format, min_flags);
+    bool value_changed = DragScalar(xorstr_lite("##min"), ImGuiDataType_Float, v_current_min, v_speed, &min_min, &min_max, format, min_flags);
     PopItemWidth();
     SameLine(0, g.Style.ItemInnerSpacing.x);
 
     float max_min = (v_min >= v_max) ? *v_current_min : ImMax(v_min, *v_current_min);
     float max_max = (v_min >= v_max) ? FLT_MAX : v_max;
     ImGuiSliderFlags max_flags = flags | ((max_min == max_max) ? ImGuiSliderFlags_ReadOnly : 0);
-    value_changed |= DragScalar("##max", ImGuiDataType_Float, v_current_max, v_speed, &max_min, &max_max, format_max ? format_max : format, max_flags);
+    value_changed |= DragScalar(xorstr_lite("##max"), ImGuiDataType_Float, v_current_max, v_speed, &max_min, &max_max, format_max ? format_max : format, max_flags);
     PopItemWidth();
     SameLine(0, g.Style.ItemInnerSpacing.x);
 
@@ -2785,14 +2785,14 @@ bool ImGui::DragIntRange2(const char* label, int* v_current_min, int* v_current_
     int min_min = (v_min >= v_max) ? INT_MIN : v_min;
     int min_max = (v_min >= v_max) ? *v_current_max : ImMin(v_max, *v_current_max);
     ImGuiSliderFlags min_flags = flags | ((min_min == min_max) ? ImGuiSliderFlags_ReadOnly : 0);
-    bool value_changed = DragInt("##min", v_current_min, v_speed, min_min, min_max, format, min_flags);
+    bool value_changed = DragInt(xorstr_lite("##min"), v_current_min, v_speed, min_min, min_max, format, min_flags);
     PopItemWidth();
     SameLine(0, g.Style.ItemInnerSpacing.x);
 
     int max_min = (v_min >= v_max) ? *v_current_min : ImMax(v_min, *v_current_min);
     int max_max = (v_min >= v_max) ? INT_MAX : v_max;
     ImGuiSliderFlags max_flags = flags | ((max_min == max_max) ? ImGuiSliderFlags_ReadOnly : 0);
-    value_changed |= DragInt("##max", v_current_max, v_speed, max_min, max_max, format_max ? format_max : format, max_flags);
+    value_changed |= DragInt(xorstr_lite("##max"), v_current_max, v_speed, max_min, max_max, format_max ? format_max : format, max_flags);
     PopItemWidth();
     SameLine(0, g.Style.ItemInnerSpacing.x);
 
@@ -3238,7 +3238,7 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_dat
     char value_buf[64];
     const char* value_buf_end = value_buf + DataTypeFormatString(value_buf, IM_ARRAYSIZE(value_buf), data_type, p_data, format);
     if (g.LogEnabled)
-        LogSetNextTextDecoration("{", "}");
+        LogSetNextTextDecoration(xorstr_lite("{"), xorstr_lite("}"));
     RenderTextClipped(frame_bb.Min, frame_bb.Max, value_buf, value_buf_end, NULL, ImVec2(0.5f, 0.5f));
 
     if (label_size.x > 0.0f)
@@ -3307,7 +3307,7 @@ bool ImGui::SliderFloat4(const char* label, float v[4], float v_min, float v_max
 bool ImGui::SliderAngle(const char* label, float* v_rad, float v_degrees_min, float v_degrees_max, const char* format, ImGuiSliderFlags flags)
 {
     if (format == NULL)
-        format = "%.0f deg";
+        format = xorstr_lite("%.0f deg");
     float v_deg = (*v_rad) * 360.0f / (2 * IM_PI);
     bool value_changed = SliderFloat(label, &v_deg, v_degrees_min, v_degrees_max, format, flags);
     *v_rad = v_deg * (2 * IM_PI) / 360.0f;
@@ -3674,13 +3674,13 @@ bool ImGui::InputScalar(const char* label, ImGuiDataType data_type, void* p_data
         if (flags & ImGuiInputTextFlags_ReadOnly)
             BeginDisabled();
         SameLine(0, style.ItemInnerSpacing.x);
-        if (ButtonEx("-", ImVec2(button_size, button_size), button_flags))
+        if (ButtonEx(xorstr_lite("-"), ImVec2(button_size, button_size), button_flags))
         {
             DataTypeApplyOp(data_type, '-', p_data, p_data, g.IO.KeyCtrl && p_step_fast ? p_step_fast : p_step);
             value_changed = true;
         }
         SameLine(0, style.ItemInnerSpacing.x);
-        if (ButtonEx("+", ImVec2(button_size, button_size), button_flags))
+        if (ButtonEx(xorstr_lite("+"), ImVec2(button_size, button_size), button_flags))
         {
             DataTypeApplyOp(data_type, '+', p_data, p_data, g.IO.KeyCtrl && p_step_fast ? p_step_fast : p_step);
             value_changed = true;
@@ -3763,23 +3763,23 @@ bool ImGui::InputFloat4(const char* label, float v[4], const char* format, ImGui
 bool ImGui::InputInt(const char* label, int* v, int step, int step_fast, ImGuiInputTextFlags flags)
 {
     
-    const char* format = (flags & ImGuiInputTextFlags_CharsHexadecimal) ? "%08X" : "%d";
+    const char* format = (flags & ImGuiInputTextFlags_CharsHexadecimal) ? xorstr_lite("%08X") : xorstr_lite("%d");
     return InputScalar(label, ImGuiDataType_S32, (void*)v, (void*)(step > 0 ? &step : NULL), (void*)(step_fast > 0 ? &step_fast : NULL), format, flags);
 }
 
 bool ImGui::InputInt2(const char* label, int v[2], ImGuiInputTextFlags flags)
 {
-    return InputScalarN(label, ImGuiDataType_S32, v, 2, NULL, NULL, "%d", flags);
+    return InputScalarN(label, ImGuiDataType_S32, v, 2, NULL, NULL, xorstr_lite("%d"), flags);
 }
 
 bool ImGui::InputInt3(const char* label, int v[3], ImGuiInputTextFlags flags)
 {
-    return InputScalarN(label, ImGuiDataType_S32, v, 3, NULL, NULL, "%d", flags);
+    return InputScalarN(label, ImGuiDataType_S32, v, 3, NULL, NULL, xorstr_lite("%d"), flags);
 }
 
 bool ImGui::InputInt4(const char* label, int v[4], ImGuiInputTextFlags flags)
 {
-    return InputScalarN(label, ImGuiDataType_S32, v, 4, NULL, NULL, "%d", flags);
+    return InputScalarN(label, ImGuiDataType_S32, v, 4, NULL, NULL, xorstr_lite("%d"), flags);
 }
 
 bool ImGui::InputDouble(const char* label, double* v, double step, double step_fast, const char* format, ImGuiInputTextFlags flags)
@@ -5280,7 +5280,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
     
     if (g.LogEnabled && (!is_password || is_displaying_hint))
     {
-        LogSetNextTextDecoration("{", "}");
+        LogSetNextTextDecoration(xorstr_lite("{"), xorstr_lite("}"));
         LogRenderedText(&draw_pos, buf_display, buf_display_end);
     }
 
@@ -5303,12 +5303,12 @@ void ImGui::DebugNodeInputTextState(ImGuiInputTextState* state)
     ImGuiContext& g = *GImGui;
     ImStb::STB_TexteditState* stb_state = state->Stb;
     ImStb::StbUndoState* undo_state = &stb_state->undostate;
-    Text("ID: 0x%08X, ActiveID: 0x%08X", state->ID, g.ActiveId);
+    Text(xorstr_lite("ID: 0x%08X, ActiveID: 0x%08X"), state->ID, g.ActiveId);
     DebugLocateItemOnHover(state->ID);
-    Text("CurLenA: %d, Cursor: %d, Selection: %d..%d", state->CurLenA, stb_state->cursor, stb_state->select_start, stb_state->select_end);
-    Text("has_preferred_x: %d (%.2f)", stb_state->has_preferred_x, stb_state->preferred_x);
-    Text("undo_point: %d, redo_point: %d, undo_char_point: %d, redo_char_point: %d", undo_state->undo_point, undo_state->redo_point, undo_state->undo_char_point, undo_state->redo_char_point);
-    if (BeginChild("undopoints", ImVec2(0.0f, GetTextLineHeight() * 10), ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeY)) 
+    Text(xorstr_lite("CurLenA: %d, Cursor: %d, Selection: %d..%d"), state->CurLenA, stb_state->cursor, stb_state->select_start, stb_state->select_end);
+    Text(xorstr_lite("has_preferred_x: %d (%.2f)"), stb_state->has_preferred_x, stb_state->preferred_x);
+    Text(xorstr_lite("undo_point: %d, redo_point: %d, undo_char_point: %d, redo_char_point: %d"), undo_state->undo_point, undo_state->redo_point, undo_state->undo_char_point, undo_state->redo_char_point);
+    if (BeginChild(xorstr_lite("undopoints"), ImVec2(0.0f, GetTextLineHeight() * 10), ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeY)) 
     {
         PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
         for (int n = 0; n < IMSTB_TEXTEDIT_UNDOSTATECOUNT; n++)
@@ -5319,7 +5319,7 @@ void ImGui::DebugNodeInputTextState(ImGuiInputTextState* state)
                 BeginDisabled();
             const int buf_preview_len = (undo_rec_type != ' ' && undo_rec->char_storage != -1) ? undo_rec->insert_length : 0;
             const char* buf_preview_str = undo_state->undo_char + undo_rec->char_storage;
-            Text("%c [%02d] where %03d, insert %03d, delete %03d, char_storage %03d \"%.*s\"",
+            Text(xorstr_lite("%c [%02d] where %03d, insert %03d, delete %03d, char_storage %03d \"%.*s\""),
                 undo_rec_type, n, undo_rec->where, undo_rec->insert_length, undo_rec->delete_length, undo_rec->char_storage, buf_preview_len, buf_preview_str);
             if (undo_rec_type == ' ')
                 EndDisabled();
@@ -5455,19 +5455,19 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
         
         const float w_items = w_inputs - style.ItemInnerSpacing.x * (components - 1);
 
-        const bool hide_prefix = (IM_TRUNC(w_items / components) <= CalcTextSize((flags & ImGuiColorEditFlags_Float) ? "M:0.000" : "M:000").x);
+        const bool hide_prefix = (IM_TRUNC(w_items / components) <= CalcTextSize((flags & ImGuiColorEditFlags_Float) ? xorstr_lite("M:0.000") : xorstr_lite("M:000")).x);
         static const char* ids[4] = { "##X", "##Y", "##Z", "##W" };
         static const char* fmt_table_int[3][4] =
         {
-            {   "%3d",   "%3d",   "%3d",   "%3d" }, 
-            { "R:%3d", "G:%3d", "B:%3d", "A:%3d" }, 
-            { "H:%3d", "S:%3d", "V:%3d", "A:%3d" }  
+            {   xorstr_lite("%3d"),   xorstr_lite("%3d"),   xorstr_lite("%3d"),   xorstr_lite("%3d") }, 
+            { xorstr_lite("R:%3d"), xorstr_lite("G:%3d"), xorstr_lite("B:%3d"), xorstr_lite("A:%3d") }, 
+            { xorstr_lite("H:%3d"), xorstr_lite("S:%3d"), xorstr_lite("V:%3d"), xorstr_lite("A:%3d") }  
         };
         static const char* fmt_table_float[3][4] =
         {
-            {   "%0.3f",   "%0.3f",   "%0.3f",   "%0.3f" }, 
-            { "R:%0.3f", "G:%0.3f", "B:%0.3f", "A:%0.3f" }, 
-            { "H:%0.3f", "S:%0.3f", "V:%0.3f", "A:%0.3f" }  
+            {   xorstr_lite("%0.3f"),   xorstr_lite("%0.3f"),   xorstr_lite("%0.3f"),   xorstr_lite("%0.3f") }, 
+            { xorstr_lite("R:%0.3f"), xorstr_lite("G:%0.3f"), xorstr_lite("B:%0.3f"), xorstr_lite("A:%0.3f") }, 
+            { xorstr_lite("H:%0.3f"), xorstr_lite("S:%0.3f"), xorstr_lite("V:%0.3f"), xorstr_lite("A:%0.3f") }  
         };
         const int fmt_idx = hide_prefix ? 0 : (flags & ImGuiColorEditFlags_DisplayHSV) ? 2 : 1;
 
@@ -5491,7 +5491,7 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
                 value_changed |= DragInt(ids[n], &i[n], 1.0f, 0, hdr ? 0 : 255, fmt_table_int[fmt_idx][n]);
             }
             if (!(flags & ImGuiColorEditFlags_NoOptions))
-                OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
+                OpenPopupOnItemClick(xorstr_lite("context"), ImGuiPopupFlags_MouseButtonRight);
         }
     }
     else if ((flags & ImGuiColorEditFlags_DisplayHex) != 0 && (flags & ImGuiColorEditFlags_NoInputs) == 0)
@@ -5499,11 +5499,11 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
         
         char buf[64];
         if (alpha)
-            ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
+            ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("#%02X%02X%02X%02X"), ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
         else
-            ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255));
+            ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("#%02X%02X%02X"), ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255));
         SetNextItemWidth(w_inputs);
-        if (InputText("##Text", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_CharsUppercase))
+        if (InputText(xorstr_lite("##Text"), buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_CharsUppercase))
         {
             value_changed = true;
             char* p = buf;
@@ -5513,13 +5513,13 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
             i[3] = 0xFF; 
             int r;
             if (alpha)
-                r = sscanf(p, "%02X%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]); 
+                r = sscanf(p, xorstr_lite("%02X%02X%02X%02X"), (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]); 
             else
-                r = sscanf(p, "%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2]);
+                r = sscanf(p, xorstr_lite("%02X%02X%02X"), (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2]);
             IM_UNUSED(r); 
         }
         if (!(flags & ImGuiColorEditFlags_NoOptions))
-            OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
+            OpenPopupOnItemClick(xorstr_lite("context"), ImGuiPopupFlags_MouseButtonRight);
     }
 
     ImGuiWindow* picker_active_window = NULL;
@@ -5529,20 +5529,20 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
         window->DC.CursorPos = ImVec2(pos.x + button_offset_x, pos.y);
 
         const ImVec4 col_v4(col[0], col[1], col[2], alpha ? col[3] : 1.0f);
-        if (ColorButton("##ColorButton", col_v4, flags))
+        if (ColorButton(xorstr_lite("##ColorButton"), col_v4, flags))
         {
             if (!(flags & ImGuiColorEditFlags_NoPicker))
             {
                 
                 g.ColorPickerRef = col_v4;
-                OpenPopup("picker");
+                OpenPopup(xorstr_lite("picker"));
                 SetNextWindowPos(g.LastItemData.Rect.GetBL() + ImVec2(0.0f, style.ItemSpacing.y));
             }
         }
         if (!(flags & ImGuiColorEditFlags_NoOptions))
-            OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
+            OpenPopupOnItemClick(xorstr_lite("context"), ImGuiPopupFlags_MouseButtonRight);
 
-        if (BeginPopup("picker"))
+        if (BeginPopup(xorstr_lite("picker")))
         {
             if (g.CurrentWindow->BeginCount == 1)
             {
@@ -5555,7 +5555,7 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
                 ImGuiColorEditFlags picker_flags_to_forward = ImGuiColorEditFlags_DataTypeMask_ | ImGuiColorEditFlags_PickerMask_ | ImGuiColorEditFlags_InputMask_ | ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_AlphaBar;
                 ImGuiColorEditFlags picker_flags = (flags_untouched & picker_flags_to_forward) | ImGuiColorEditFlags_DisplayMask_ | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_AlphaPreviewHalf;
                 SetNextItemWidth(square_sz * 12.0f); 
-                value_changed |= ColorPicker4("##picker", col, picker_flags, &g.ColorPickerRef.x);
+                value_changed |= ColorPicker4(xorstr_lite("##picker"), col, picker_flags, &g.ColorPickerRef.x);
             }
             EndPopup();
         }
@@ -5736,7 +5736,7 @@ bool ImGui::ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags fl
     if (flags & ImGuiColorEditFlags_PickerHueWheel)
     {
         
-        InvisibleButton("hsv", ImVec2(sv_picker_size + style.ItemInnerSpacing.x + bars_width, sv_picker_size));
+        InvisibleButton(xorstr_lite("hsv"), ImVec2(sv_picker_size + style.ItemInnerSpacing.x + bars_width, sv_picker_size));
         if (IsItemActive() && !is_readonly)
         {
             ImVec2 initial_off = g.IO.MouseClickedPos[0] - wheel_center;
@@ -5766,12 +5766,12 @@ bool ImGui::ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags fl
             }
         }
         if (!(flags & ImGuiColorEditFlags_NoOptions))
-            OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
+            OpenPopupOnItemClick(xorstr_lite("context"), ImGuiPopupFlags_MouseButtonRight);
     }
     else if (flags & ImGuiColorEditFlags_PickerHueBar)
     {
         
-        InvisibleButton("sv", ImVec2(sv_picker_size, sv_picker_size));
+        InvisibleButton(xorstr_lite("sv"), ImVec2(sv_picker_size, sv_picker_size));
         if (IsItemActive() && !is_readonly)
         {
             S = ImSaturate((io.MousePos.x - picker_pos.x) / (sv_picker_size - 1));
@@ -5780,11 +5780,11 @@ bool ImGui::ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags fl
             value_changed = value_changed_sv = true;
         }
         if (!(flags & ImGuiColorEditFlags_NoOptions))
-            OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
+            OpenPopupOnItemClick(xorstr_lite("context"), ImGuiPopupFlags_MouseButtonRight);
 
         
         SetCursorScreenPos(ImVec2(bar0_pos_x, picker_pos.y));
-        InvisibleButton("hue", ImVec2(bars_width, sv_picker_size));
+        InvisibleButton(xorstr_lite("hue"), ImVec2(bars_width, sv_picker_size));
         if (IsItemActive() && !is_readonly)
         {
             H = ImSaturate((io.MousePos.y - picker_pos.y) / (sv_picker_size - 1));
@@ -5796,7 +5796,7 @@ bool ImGui::ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags fl
     if (alpha_bar)
     {
         SetCursorScreenPos(ImVec2(bar1_pos_x, picker_pos.y));
-        InvisibleButton("alpha", ImVec2(bars_width, sv_picker_size));
+        InvisibleButton(xorstr_lite("alpha"), ImVec2(bars_width, sv_picker_size));
         if (IsItemActive())
         {
             col[3] = 1.0f - ImSaturate((io.MousePos.y - picker_pos.y) / (sv_picker_size - 1));
@@ -5827,15 +5827,15 @@ bool ImGui::ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags fl
         PushItemFlag(ImGuiItemFlags_NoNavDefaultFocus, true);
         ImVec4 col_v4(col[0], col[1], col[2], (flags & ImGuiColorEditFlags_NoAlpha) ? 1.0f : col[3]);
         if ((flags & ImGuiColorEditFlags_NoLabel))
-            Text("Current");
+            Text(xorstr_lite("Current"));
 
         ImGuiColorEditFlags sub_flags_to_forward = ImGuiColorEditFlags_InputMask_ | ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_AlphaPreviewHalf | ImGuiColorEditFlags_NoTooltip;
-        ColorButton("##current", col_v4, (flags & sub_flags_to_forward), ImVec2(square_sz * 3, square_sz * 2));
+        ColorButton(xorstr_lite("##current"), col_v4, (flags & sub_flags_to_forward), ImVec2(square_sz * 3, square_sz * 2));
         if (ref_col != NULL)
         {
-            Text("Original");
+            Text(xorstr_lite("Original"));
             ImVec4 ref_col_v4(ref_col[0], ref_col[1], ref_col[2], (flags & ImGuiColorEditFlags_NoAlpha) ? 1.0f : ref_col[3]);
-            if (ColorButton("##original", ref_col_v4, (flags & sub_flags_to_forward), ImVec2(square_sz * 3, square_sz * 2)))
+            if (ColorButton(xorstr_lite("##original"), ref_col_v4, (flags & sub_flags_to_forward), ImVec2(square_sz * 3, square_sz * 2)))
             {
                 memcpy(col, ref_col, components * sizeof(float));
                 value_changed = true;
@@ -5872,7 +5872,7 @@ bool ImGui::ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags fl
         ImGuiColorEditFlags sub_flags_to_forward = ImGuiColorEditFlags_DataTypeMask_ | ImGuiColorEditFlags_InputMask_ | ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoSmallPreview | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_AlphaPreviewHalf;
         ImGuiColorEditFlags sub_flags = (flags & sub_flags_to_forward) | ImGuiColorEditFlags_NoPicker;
         if (flags & ImGuiColorEditFlags_DisplayRGB || (flags & ImGuiColorEditFlags_DisplayMask_) == 0)
-            if (ColorEdit4("##rgb", col, sub_flags | ImGuiColorEditFlags_DisplayRGB))
+            if (ColorEdit4(xorstr_lite("##rgb"), col, sub_flags | ImGuiColorEditFlags_DisplayRGB))
             {
                 
                 
@@ -5880,9 +5880,9 @@ bool ImGui::ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags fl
                 value_changed = true;
             }
         if (flags & ImGuiColorEditFlags_DisplayHSV || (flags & ImGuiColorEditFlags_DisplayMask_) == 0)
-            value_changed |= ColorEdit4("##hsv", col, sub_flags | ImGuiColorEditFlags_DisplayHSV);
+            value_changed |= ColorEdit4(xorstr_lite("##hsv"), col, sub_flags | ImGuiColorEditFlags_DisplayHSV);
         if (flags & ImGuiColorEditFlags_DisplayHex || (flags & ImGuiColorEditFlags_DisplayMask_) == 0)
-            value_changed |= ColorEdit4("##hex", col, sub_flags | ImGuiColorEditFlags_DisplayHex);
+            value_changed |= ColorEdit4(xorstr_lite("##hex"), col, sub_flags | ImGuiColorEditFlags_DisplayHex);
         PopItemWidth();
     }
 
@@ -6096,7 +6096,7 @@ bool ImGui::ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFl
             SetDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_4F, &col_rgb, sizeof(float) * 4, ImGuiCond_Once);
         ColorButton(desc_id, col, flags);
         SameLine();
-        TextEx("Color");
+        TextEx(xorstr_lite("Color"));
         EndDragDropSource();
     }
 
@@ -6143,21 +6143,21 @@ void ImGui::ColorTooltip(const char* text, const float* col, ImGuiColorEditFlags
     ImVec2 sz(g.FontSize * 3 + g.Style.FramePadding.y * 2, g.FontSize * 3 + g.Style.FramePadding.y * 2);
     ImVec4 cf(col[0], col[1], col[2], (flags & ImGuiColorEditFlags_NoAlpha) ? 1.0f : col[3]);
     int cr = IM_F32_TO_INT8_SAT(col[0]), cg = IM_F32_TO_INT8_SAT(col[1]), cb = IM_F32_TO_INT8_SAT(col[2]), ca = (flags & ImGuiColorEditFlags_NoAlpha) ? 255 : IM_F32_TO_INT8_SAT(col[3]);
-    ColorButton("##preview", cf, (flags & (ImGuiColorEditFlags_InputMask_ | ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_AlphaPreviewHalf)) | ImGuiColorEditFlags_NoTooltip, sz);
+    ColorButton(xorstr_lite("##preview"), cf, (flags & (ImGuiColorEditFlags_InputMask_ | ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_AlphaPreviewHalf)) | ImGuiColorEditFlags_NoTooltip, sz);
     SameLine();
     if ((flags & ImGuiColorEditFlags_InputRGB) || !(flags & ImGuiColorEditFlags_InputMask_))
     {
         if (flags & ImGuiColorEditFlags_NoAlpha)
-            Text("#%02X%02X%02X\nR: %d, G: %d, B: %d\n(%.3f, %.3f, %.3f)", cr, cg, cb, cr, cg, cb, col[0], col[1], col[2]);
+            Text(xorstr_lite("#%02X%02X%02X\nR: %d, G: %d, B: %d\n(%.3f, %.3f, %.3f)"), cr, cg, cb, cr, cg, cb, col[0], col[1], col[2]);
         else
-            Text("#%02X%02X%02X%02X\nR:%d, G:%d, B:%d, A:%d\n(%.3f, %.3f, %.3f, %.3f)", cr, cg, cb, ca, cr, cg, cb, ca, col[0], col[1], col[2], col[3]);
+            Text(xorstr_lite("#%02X%02X%02X%02X\nR:%d, G:%d, B:%d, A:%d\n(%.3f, %.3f, %.3f, %.3f)"), cr, cg, cb, ca, cr, cg, cb, ca, col[0], col[1], col[2], col[3]);
     }
     else if (flags & ImGuiColorEditFlags_InputHSV)
     {
         if (flags & ImGuiColorEditFlags_NoAlpha)
-            Text("H: %.3f, S: %.3f, V: %.3f", col[0], col[1], col[2]);
+            Text(xorstr_lite("H: %.3f, S: %.3f, V: %.3f"), col[0], col[1], col[2]);
         else
-            Text("H: %.3f, S: %.3f, V: %.3f, A: %.3f", col[0], col[1], col[2], col[3]);
+            Text(xorstr_lite("H: %.3f, S: %.3f, V: %.3f, A: %.3f"), col[0], col[1], col[2], col[3]);
     }
     EndTooltip();
 }
@@ -6166,44 +6166,44 @@ void ImGui::ColorEditOptionsPopup(const float* col, ImGuiColorEditFlags flags)
 {
     bool allow_opt_inputs = !(flags & ImGuiColorEditFlags_DisplayMask_);
     bool allow_opt_datatype = !(flags & ImGuiColorEditFlags_DataTypeMask_);
-    if ((!allow_opt_inputs && !allow_opt_datatype) || !BeginPopup("context"))
+    if ((!allow_opt_inputs && !allow_opt_datatype) || !BeginPopup(xorstr_lite("context")))
         return;
     ImGuiContext& g = *GImGui;
     g.LockMarkEdited++;
     ImGuiColorEditFlags opts = g.ColorEditOptions;
     if (allow_opt_inputs)
     {
-        if (RadioButton("RGB", (opts & ImGuiColorEditFlags_DisplayRGB) != 0)) opts = (opts & ~ImGuiColorEditFlags_DisplayMask_) | ImGuiColorEditFlags_DisplayRGB;
-        if (RadioButton("HSV", (opts & ImGuiColorEditFlags_DisplayHSV) != 0)) opts = (opts & ~ImGuiColorEditFlags_DisplayMask_) | ImGuiColorEditFlags_DisplayHSV;
-        if (RadioButton("Hex", (opts & ImGuiColorEditFlags_DisplayHex) != 0)) opts = (opts & ~ImGuiColorEditFlags_DisplayMask_) | ImGuiColorEditFlags_DisplayHex;
+        if (RadioButton(xorstr_lite("RGB"), (opts & ImGuiColorEditFlags_DisplayRGB) != 0)) opts = (opts & ~ImGuiColorEditFlags_DisplayMask_) | ImGuiColorEditFlags_DisplayRGB;
+        if (RadioButton(xorstr_lite("HSV"), (opts & ImGuiColorEditFlags_DisplayHSV) != 0)) opts = (opts & ~ImGuiColorEditFlags_DisplayMask_) | ImGuiColorEditFlags_DisplayHSV;
+        if (RadioButton(xorstr_lite("Hex"), (opts & ImGuiColorEditFlags_DisplayHex) != 0)) opts = (opts & ~ImGuiColorEditFlags_DisplayMask_) | ImGuiColorEditFlags_DisplayHex;
     }
     if (allow_opt_datatype)
     {
         if (allow_opt_inputs) Separator();
-        if (RadioButton("0..255",     (opts & ImGuiColorEditFlags_Uint8) != 0)) opts = (opts & ~ImGuiColorEditFlags_DataTypeMask_) | ImGuiColorEditFlags_Uint8;
-        if (RadioButton("0.00..1.00", (opts & ImGuiColorEditFlags_Float) != 0)) opts = (opts & ~ImGuiColorEditFlags_DataTypeMask_) | ImGuiColorEditFlags_Float;
+        if (RadioButton(xorstr_lite("0..255"),     (opts & ImGuiColorEditFlags_Uint8) != 0)) opts = (opts & ~ImGuiColorEditFlags_DataTypeMask_) | ImGuiColorEditFlags_Uint8;
+        if (RadioButton(xorstr_lite("0.00..1.00"), (opts & ImGuiColorEditFlags_Float) != 0)) opts = (opts & ~ImGuiColorEditFlags_DataTypeMask_) | ImGuiColorEditFlags_Float;
     }
 
     if (allow_opt_inputs || allow_opt_datatype)
         Separator();
-    if (Button("Copy as..", ImVec2(-1, 0)))
-        OpenPopup("Copy");
-    if (BeginPopup("Copy"))
+    if (Button(xorstr_lite("Copy as.."), ImVec2(-1, 0)))
+        OpenPopup(xorstr_lite("Copy"));
+    if (BeginPopup(xorstr_lite("Copy")))
     {
         int cr = IM_F32_TO_INT8_SAT(col[0]), cg = IM_F32_TO_INT8_SAT(col[1]), cb = IM_F32_TO_INT8_SAT(col[2]), ca = (flags & ImGuiColorEditFlags_NoAlpha) ? 255 : IM_F32_TO_INT8_SAT(col[3]);
         char buf[64];
-        ImFormatString(buf, IM_ARRAYSIZE(buf), "(%.3ff, %.3ff, %.3ff, %.3ff)", col[0], col[1], col[2], (flags & ImGuiColorEditFlags_NoAlpha) ? 1.0f : col[3]);
+        ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("(%.3ff, %.3ff, %.3ff, %.3ff)"), col[0], col[1], col[2], (flags & ImGuiColorEditFlags_NoAlpha) ? 1.0f : col[3]);
         if (Selectable(buf))
             SetClipboardText(buf);
-        ImFormatString(buf, IM_ARRAYSIZE(buf), "(%d,%d,%d,%d)", cr, cg, cb, ca);
+        ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("(%d,%d,%d,%d)"), cr, cg, cb, ca);
         if (Selectable(buf))
             SetClipboardText(buf);
-        ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X", cr, cg, cb);
+        ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("#%02X%02X%02X"), cr, cg, cb);
         if (Selectable(buf))
             SetClipboardText(buf);
         if (!(flags & ImGuiColorEditFlags_NoAlpha))
         {
-            ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", cr, cg, cb, ca);
+            ImFormatString(buf, IM_ARRAYSIZE(buf), xorstr_lite("#%02X%02X%02X%02X"), cr, cg, cb, ca);
             if (Selectable(buf))
                 SetClipboardText(buf);
         }
@@ -6219,7 +6219,7 @@ void ImGui::ColorPickerOptionsPopup(const float* ref_col, ImGuiColorEditFlags fl
 {
     bool allow_opt_picker = !(flags & ImGuiColorEditFlags_PickerMask_);
     bool allow_opt_alpha_bar = !(flags & ImGuiColorEditFlags_NoAlpha) && !(flags & ImGuiColorEditFlags_AlphaBar);
-    if ((!allow_opt_picker && !allow_opt_alpha_bar) || !BeginPopup("context"))
+    if ((!allow_opt_picker && !allow_opt_alpha_bar) || !BeginPopup(xorstr_lite("context")))
         return;
     ImGuiContext& g = *GImGui;
     g.LockMarkEdited++;
@@ -6236,12 +6236,12 @@ void ImGui::ColorPickerOptionsPopup(const float* ref_col, ImGuiColorEditFlags fl
             if (picker_type == 0) picker_flags |= ImGuiColorEditFlags_PickerHueBar;
             if (picker_type == 1) picker_flags |= ImGuiColorEditFlags_PickerHueWheel;
             ImVec2 backup_pos = GetCursorScreenPos();
-            if (Selectable("##selectable", false, 0, picker_size)) 
+            if (Selectable(xorstr_lite("##selectable"), false, 0, picker_size)) 
                 g.ColorEditOptions = (g.ColorEditOptions & ~ImGuiColorEditFlags_PickerMask_) | (picker_flags & ImGuiColorEditFlags_PickerMask_);
             SetCursorScreenPos(backup_pos);
             ImVec4 previewing_ref_col;
             memcpy(&previewing_ref_col, ref_col, sizeof(float) * ((picker_flags & ImGuiColorEditFlags_NoAlpha) ? 3 : 4));
-            ColorPicker4("##previewing_picker", &previewing_ref_col.x, picker_flags);
+            ColorPicker4(xorstr_lite("##previewing_picker"), &previewing_ref_col.x, picker_flags);
             PopID();
         }
         PopItemWidth();
@@ -6249,7 +6249,7 @@ void ImGui::ColorPickerOptionsPopup(const float* ref_col, ImGuiColorEditFlags fl
     if (allow_opt_alpha_bar)
     {
         if (allow_opt_picker) Separator();
-        CheckboxFlags("Alpha Bar", &g.ColorEditOptions, ImGuiColorEditFlags_AlphaBar);
+        CheckboxFlags(xorstr_lite("Alpha Bar"), &g.ColorEditOptions, ImGuiColorEditFlags_AlphaBar);
     }
     EndPopup();
     g.LockMarkEdited--;
@@ -6657,7 +6657,7 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
             if (flags & ImGuiTreeNodeFlags_ClipLabelForTrailingButton)
                 frame_bb.Max.x -= g.FontSize + style.FramePadding.x;
             if (g.LogEnabled)
-                LogSetNextTextDecoration("###", "###");
+                LogSetNextTextDecoration(xorstr_lite("###"), xorstr_lite("###"));
         }
         else
         {
@@ -6673,7 +6673,7 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
             else if (!is_leaf)
                 RenderArrow(window->DrawList, ImVec2(text_pos.x - text_offset_x + padding.x, text_pos.y + g.FontSize * 0.15f), text_col, is_open ? ((flags & ImGuiTreeNodeFlags_UpsideDownArrow) ? ImGuiDir_Up : ImGuiDir_Down) : ImGuiDir_Right, 0.70f);
             if (g.LogEnabled)
-                LogSetNextTextDecoration(">", NULL);
+                LogSetNextTextDecoration(xorstr_lite(">"), NULL);
         }
 
         if (span_all_columns)
@@ -7213,9 +7213,9 @@ int ImGui::TypingSelectFindBestLeadingMatch(ImGuiTypingSelectRequest* req, int i
 void ImGui::DebugNodeTypingSelectState(ImGuiTypingSelectState* data)
 {
 #ifndef IMGUI_DISABLE_DEBUG_TOOLS
-    Text("SearchBuffer = \"%s\"", data->SearchBuffer);
-    Text("SingleCharMode = %d, Size = %d, Lock = %d", data->Request.SingleCharMode, data->Request.SingleCharSize, data->SingleCharModeLock);
-    Text("LastRequest = time: %.2f, frame: %d", data->LastRequestTime, data->LastRequestFrame);
+    Text(xorstr_lite("SearchBuffer = \"%s\""), data->SearchBuffer);
+    Text(xorstr_lite("SingleCharMode = %d, Size = %d, Lock = %d"), data->Request.SingleCharMode, data->Request.SingleCharSize, data->SingleCharModeLock);
+    Text(xorstr_lite("LastRequest = time: %.2f, frame: %d"), data->LastRequestTime, data->LastRequestFrame);
 #else
     IM_UNUSED(data);
 #endif
@@ -7252,7 +7252,7 @@ static void BoxSelectPreStartDrag(ImGuiID id, ImGuiSelectionUserData clicked_ite
 static void BoxSelectActivateDrag(ImGuiBoxSelectState* bs, ImGuiWindow* window)
 {
     ImGuiContext& g = *GImGui;
-    IMGUI_DEBUG_LOG_SELECTION("[selection] BeginBoxSelect() 0X%08X: Activate\n", bs->ID);
+    IMGUI_DEBUG_LOG_SELECTION(xorstr_lite("[selection] BeginBoxSelect() 0X%08X: Activate\n"), bs->ID);
     bs->IsActive = true;
     bs->Window = window;
     bs->IsStarting = false;
@@ -7268,7 +7268,7 @@ static void BoxSelectDeactivateDrag(ImGuiBoxSelectState* bs)
     bs->IsActive = bs->IsStarting = false;
     if (g.ActiveId == bs->ID)
     {
-        IMGUI_DEBUG_LOG_SELECTION("[selection] BeginBoxSelect() 0X%08X: Deactivate\n", bs->ID);
+        IMGUI_DEBUG_LOG_SELECTION(xorstr_lite("[selection] BeginBoxSelect() 0X%08X: Deactivate\n"), bs->ID);
         ImGui::ClearActiveID();
     }
     bs->ID = 0;
@@ -7393,7 +7393,7 @@ static void DebugLogMultiSelectRequests(const char* function, const ImGuiMultiSe
     ImGuiContext& g = *GImGui;
     for (const ImGuiSelectionRequest& req : io->Requests)
     {
-        if (req.Type == ImGuiSelectionRequestType_SetAll)    IMGUI_DEBUG_LOG_SELECTION("[selection] %s: Request: SetAll %d (= %s)\n", function, req.Selected, req.Selected ? "SelectAll" : "Clear");
+        if (req.Type == ImGuiSelectionRequestType_SetAll)    IMGUI_DEBUG_LOG_SELECTION(xorstr_lite("[selection] %s: Request: SetAll %d (= %s)\n"), function, req.Selected, req.Selected ? xorstr_lite("SelectAll") : xorstr_lite("Clear"));
         if (req.Type == ImGuiSelectionRequestType_SetRange)  IMGUI_DEBUG_LOG_SELECTION("[selection] %s: Request: SetRange %" IM_PRId64 "..%" IM_PRId64 " (0x%" IM_PRIX64 "..0x%" IM_PRIX64 ") = %d (dir %d)\n", function, req.RangeFirstItem, req.RangeLastItem, req.RangeFirstItem, req.RangeLastItem, req.Selected, req.RangeDirection);
     }
 }
@@ -7500,7 +7500,7 @@ ImGuiMultiSelectIO* ImGui::BeginMultiSelect(ImGuiMultiSelectFlags flags, int sel
     ImGuiBoxSelectState* bs = &g.BoxSelectState;
     if (flags & (ImGuiMultiSelectFlags_BoxSelect1d | ImGuiMultiSelectFlags_BoxSelect2d))
     {
-        ms->BoxSelectId = GetID("##BoxSelect");
+        ms->BoxSelectId = GetID(xorstr_lite("##BoxSelect"));
         if (BeginBoxSelect(CalcScopeRect(ms, window), window, ms->BoxSelectId, flags))
             request_clear |= bs->RequestClear;
     }
@@ -7537,7 +7537,7 @@ ImGuiMultiSelectIO* ImGui::BeginMultiSelect(ImGuiMultiSelectFlags flags, int sel
     ms->LastSubmittedItem = ImGuiSelectionUserData_Invalid;
 
     if (g.DebugLogFlags & ImGuiDebugLogFlags_EventSelection)
-        DebugLogMultiSelectRequests("BeginMultiSelect", &ms->IO);
+        DebugLogMultiSelectRequests(xorstr_lite("BeginMultiSelect"), &ms->IO);
 
     return &ms->IO;
 }
@@ -7560,12 +7560,12 @@ ImGuiMultiSelectIO* ImGui::EndMultiSelect()
         
         if (ms->IO.RangeSrcReset || (ms->RangeSrcPassedBy == false && ms->IO.RangeSrcItem != ImGuiSelectionUserData_Invalid)) 
         {
-            IMGUI_DEBUG_LOG_SELECTION("[selection] EndMultiSelect: Reset RangeSrcItem.\n"); 
+            IMGUI_DEBUG_LOG_SELECTION(xorstr_lite("[selection] EndMultiSelect: Reset RangeSrcItem.\n")); 
             storage->RangeSrcItem = ImGuiSelectionUserData_Invalid;
         }
         if (ms->NavIdPassedBy == false && storage->NavIdItem != ImGuiSelectionUserData_Invalid)
         {
-            IMGUI_DEBUG_LOG_SELECTION("[selection] EndMultiSelect: Reset NavIdItem.\n");
+            IMGUI_DEBUG_LOG_SELECTION(xorstr_lite("[selection] EndMultiSelect: Reset NavIdItem.\n"));
             storage->NavIdItem = ImGuiSelectionUserData_Invalid;
             storage->NavIdSelected = -1;
         }
@@ -7614,7 +7614,7 @@ ImGuiMultiSelectIO* ImGui::EndMultiSelect()
     PopFocusScope();
 
     if (g.DebugLogFlags & ImGuiDebugLogFlags_EventSelection)
-        DebugLogMultiSelectRequests("EndMultiSelect", &ms->IO);
+        DebugLogMultiSelectRequests(xorstr_lite("EndMultiSelect"), &ms->IO);
 
     ms->FocusScopeId = 0;
     ms->Flags = ImGuiMultiSelectFlags_None;
@@ -7943,13 +7943,13 @@ void ImGui::DebugNodeMultiSelectState(ImGuiMultiSelectState* storage)
 #ifndef IMGUI_DISABLE_DEBUG_TOOLS
     const bool is_active = (storage->LastFrameActive >= GetFrameCount() - 2); 
     if (!is_active) { PushStyleColor(ImGuiCol_Text, GetStyleColorVec4(ImGuiCol_TextDisabled)); }
-    bool open = TreeNode((void*)(intptr_t)storage->ID, "MultiSelect 0x%08X in '%s'%s", storage->ID, storage->Window ? storage->Window->Name : "N/A", is_active ? "" : " *Inactive*");
+    bool open = TreeNode((void*)(intptr_t)storage->ID, xorstr_lite("MultiSelect 0x%08X in '%s'%s"), storage->ID, storage->Window ? storage->Window->Name : xorstr_lite("N/A"), is_active ? "" : xorstr_lite(" *Inactive*"));
     if (!is_active) { PopStyleColor(); }
     if (!open)
         return;
     Text("RangeSrcItem = %" IM_PRId64 " (0x%" IM_PRIX64 "), RangeSelected = %d", storage->RangeSrcItem, storage->RangeSrcItem, storage->RangeSelected);
     Text("NavIdItem = %" IM_PRId64 " (0x%" IM_PRIX64 "), NavIdSelected = %d", storage->NavIdItem, storage->NavIdItem, storage->NavIdSelected);
-    Text("LastSelectionSize = %d", storage->LastSelectionSize); 
+    Text(xorstr_lite("LastSelectionSize = %d"), storage->LastSelectionSize); 
     TreePop();
 #else
     IM_UNUSED(storage);
@@ -8243,7 +8243,7 @@ bool ImGui::ListBox(const char* label, int* current_item, const char* (*getter)(
         {
             const char* item_text = getter(user_data, i);
             if (item_text == NULL)
-                item_text = "*Unknown item*";
+                item_text = xorstr_lite("*Unknown item*");
 
             PushID(i);
             const bool item_selected = (i == *current_item);
@@ -8337,9 +8337,9 @@ int ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_get
             const float v0 = values_getter(data, (v_idx + values_offset) % values_count);
             const float v1 = values_getter(data, (v_idx + 1 + values_offset) % values_count);
             if (plot_type == ImGuiPlotType_Lines)
-                SetTooltip("%d: %8.4g\n%d: %8.4g", v_idx, v0, v_idx + 1, v1);
+                SetTooltip(xorstr_lite("%d: %8.4g\n%d: %8.4g"), v_idx, v0, v_idx + 1, v1);
             else if (plot_type == ImGuiPlotType_Histogram)
-                SetTooltip("%d: %8.4g", v_idx, v0);
+                SetTooltip(xorstr_lite("%d: %8.4g"), v_idx, v0);
             idx_hovered = v_idx;
         }
 
@@ -8439,17 +8439,17 @@ void ImGui::PlotHistogram(const char* label, float (*values_getter)(void* data, 
 
 void ImGui::Value(const char* prefix, bool b)
 {
-    Text("%s: %s", prefix, (b ? "true" : "false"));
+    Text(xorstr_lite("%s: %s"), prefix, (b ? xorstr_lite("true") : xorstr_lite("false")));
 }
 
 void ImGui::Value(const char* prefix, int v)
 {
-    Text("%s: %d", prefix, v);
+    Text(xorstr_lite("%s: %d"), prefix, v);
 }
 
 void ImGui::Value(const char* prefix, unsigned int v)
 {
-    Text("%s: %d", prefix, v);
+    Text(xorstr_lite("%s: %d"), prefix, v);
 }
 
 void ImGui::Value(const char* prefix, float v, const char* float_format)
@@ -8457,12 +8457,12 @@ void ImGui::Value(const char* prefix, float v, const char* float_format)
     if (float_format)
     {
         char fmt[64];
-        ImFormatString(fmt, IM_ARRAYSIZE(fmt), "%%s: %s", float_format);
+        ImFormatString(fmt, IM_ARRAYSIZE(fmt), xorstr_lite("%%s: %s"), float_format);
         Text(fmt, prefix, v);
     }
     else
     {
-        Text("%s: %.3f", prefix, v);
+        Text(xorstr_lite("%s: %.3f"), prefix, v);
     }
 }
 
@@ -8537,7 +8537,7 @@ bool ImGui::BeginMenuBar()
 
     IM_ASSERT(!window->DC.MenuBarAppending);
     BeginGroup(); 
-    PushID("##menubar");
+    PushID(xorstr_lite("##menubar"));
 
     
     
@@ -8657,7 +8657,7 @@ bool ImGui::BeginMainMenuBar()
     g.NextWindowData.MenuBarOffsetMinVal = ImVec2(g.Style.DisplaySafeAreaPadding.x, ImMax(g.Style.DisplaySafeAreaPadding.y - g.Style.FramePadding.y, 0.0f));
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
     float height = GetFrameHeight();
-    bool is_open = BeginViewportSideBar("##MainMenuBar", viewport, ImGuiDir_Up, height, window_flags);
+    bool is_open = BeginViewportSideBar(xorstr_lite("##MainMenuBar"), viewport, ImGuiDir_Up, height, window_flags);
     g.NextWindowData.MenuBarOffsetMinVal = ImVec2(0.0f, 0.0f);
 
     if (is_open)
@@ -9721,10 +9721,10 @@ static ImGuiTabItem* ImGui::TabBarScrollingButtons(ImGuiTabBar* tab_bar)
     g.IO.KeyRepeatRate = 0.200f;
     float x = ImMax(tab_bar->BarRect.Min.x, tab_bar->BarRect.Max.x - scrolling_buttons_width);
     window->DC.CursorPos = ImVec2(x, tab_bar->BarRect.Min.y);
-    if (ArrowButtonEx("##<", ImGuiDir_Left, arrow_button_size, ImGuiButtonFlags_PressedOnClick | ImGuiButtonFlags_Repeat))
+    if (ArrowButtonEx(xorstr_lite("##<"), ImGuiDir_Left, arrow_button_size, ImGuiButtonFlags_PressedOnClick | ImGuiButtonFlags_Repeat))
         select_dir = -1;
     window->DC.CursorPos = ImVec2(x + arrow_button_size.x, tab_bar->BarRect.Min.y);
-    if (ArrowButtonEx("##>", ImGuiDir_Right, arrow_button_size, ImGuiButtonFlags_PressedOnClick | ImGuiButtonFlags_Repeat))
+    if (ArrowButtonEx(xorstr_lite("##>"), ImGuiDir_Right, arrow_button_size, ImGuiButtonFlags_PressedOnClick | ImGuiButtonFlags_Repeat))
         select_dir = +1;
     PopStyleColor(2);
     g.IO.KeyRepeatRate = backup_repeat_rate;
@@ -9774,7 +9774,7 @@ static ImGuiTabItem* ImGui::TabBarTabListPopupButton(ImGuiTabBar* tab_bar)
     arrow_col.w *= 0.5f;
     PushStyleColor(ImGuiCol_Text, arrow_col);
     PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-    bool open = BeginCombo("##v", NULL, ImGuiComboFlags_NoPreview | ImGuiComboFlags_HeightLargest);
+    bool open = BeginCombo(xorstr_lite("##v"), NULL, ImGuiComboFlags_NoPreview | ImGuiComboFlags_HeightLargest);
     PopStyleColor(2);
 
     ImGuiTabItem* tab_to_select = NULL;
@@ -10091,7 +10091,7 @@ bool    ImGui::TabItemEx(ImGuiTabBar* tab_bar, const char* label, bool* p_open, 
     
     if (text_clipped && g.HoveredId == id && !held)
         if (!(tab_bar->Flags & ImGuiTabBarFlags_NoTooltip) && !(tab->Flags & ImGuiTabItemFlags_NoTooltip))
-            SetItemTooltip("%.*s", (int)(FindRenderedTextEnd(label) - label), label);
+            SetItemTooltip(xorstr_lite("%.*s"), (int)(FindRenderedTextEnd(label) - label), label);
 
     IM_ASSERT(!is_tab_button || !(tab_bar->SelectedTabId == tab->ID && is_tab_button)); 
     if (is_tab_button)

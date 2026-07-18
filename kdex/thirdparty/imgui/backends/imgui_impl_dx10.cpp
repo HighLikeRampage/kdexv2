@@ -403,7 +403,7 @@ bool    ImGui_ImplDX10_CreateDeviceObjects()
             }";
 
         ID3DBlob* vertexShaderBlob;
-        if (FAILED(D3DCompile(vertexShader, strlen(vertexShader), nullptr, nullptr, nullptr, "main", "vs_4_0", 0, 0, &vertexShaderBlob, nullptr)))
+        if (FAILED(D3DCompile(vertexShader, strlen(vertexShader), nullptr, nullptr, nullptr, xorstr_lite("main"), xorstr_lite("vs_4_0"), 0, 0, &vertexShaderBlob, nullptr)))
             return false; 
         if (bd->pd3dDevice->CreateVertexShader(vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &bd->pVertexShader) != S_OK)
         {
@@ -414,9 +414,9 @@ bool    ImGui_ImplDX10_CreateDeviceObjects()
         
         D3D10_INPUT_ELEMENT_DESC local_layout[] =
         {
-            { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)offsetof(ImDrawVert, pos), D3D10_INPUT_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)offsetof(ImDrawVert, uv),  D3D10_INPUT_PER_VERTEX_DATA, 0 },
-            { "COLOR",    0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, (UINT)offsetof(ImDrawVert, col), D3D10_INPUT_PER_VERTEX_DATA, 0 },
+            { xorstr_lite("POSITION"), 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)offsetof(ImDrawVert, pos), D3D10_INPUT_PER_VERTEX_DATA, 0 },
+            { xorstr_lite("TEXCOORD"), 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)offsetof(ImDrawVert, uv),  D3D10_INPUT_PER_VERTEX_DATA, 0 },
+            { xorstr_lite("COLOR"),    0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, (UINT)offsetof(ImDrawVert, col), D3D10_INPUT_PER_VERTEX_DATA, 0 },
         };
         if (bd->pd3dDevice->CreateInputLayout(local_layout, 3, vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize(), &bd->pInputLayout) != S_OK)
         {
@@ -456,7 +456,7 @@ bool    ImGui_ImplDX10_CreateDeviceObjects()
             }";
 
         ID3DBlob* pixelShaderBlob;
-        if (FAILED(D3DCompile(pixelShader, strlen(pixelShader), nullptr, nullptr, nullptr, "main", "ps_4_0", 0, 0, &pixelShaderBlob, nullptr)))
+        if (FAILED(D3DCompile(pixelShader, strlen(pixelShader), nullptr, nullptr, nullptr, xorstr_lite("main"), xorstr_lite("ps_4_0"), 0, 0, &pixelShaderBlob, nullptr)))
             return false; 
         if (bd->pd3dDevice->CreatePixelShader(pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize(), &bd->pPixelShader) != S_OK)
         {
@@ -540,7 +540,7 @@ bool    ImGui_ImplDX10_Init(ID3D10Device* device)
     
     ImGui_ImplDX10_Data* bd = IM_NEW(ImGui_ImplDX10_Data)();
     io.BackendRendererUserData = (void*)bd;
-    io.BackendRendererName = "imgui_impl_dx10";
+    io.BackendRendererName = xorstr_lite("imgui_impl_dx10");
     io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;  
 
     

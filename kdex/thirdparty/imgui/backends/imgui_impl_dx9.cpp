@@ -291,7 +291,7 @@ bool ImGui_ImplDX9_Init(IDirect3DDevice9* device)
     
     ImGui_ImplDX9_Data* bd = IM_NEW(ImGui_ImplDX9_Data)();
     io.BackendRendererUserData = (void*)bd;
-    io.BackendRendererName = "imgui_impl_dx9";
+    io.BackendRendererName = xorstr_lite("imgui_impl_dx9");
     io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;  
 
     bd->pd3dDevice = device;
