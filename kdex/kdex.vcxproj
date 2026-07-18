@@ -180,6 +180,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "$(ProjectDir)scripts\mangle
     <ClCompile Include="game\Core\SDK\d3dx_impl.cpp" />
     <ClCompile Include="game\Core\SDK\Natives\CrossmapNatives.cpp" />
     <ClCompile Include="game\Core\SDK\Natives\NativeCaller.cpp" />
+    <ClCompile Include="game\Core\SDK\Natives\NativeHashNames.cpp" />
     <ClCompile Include="game\Gui\Overlay\Overlay.cpp" />
     <ClCompile Include="game\nvidia\nvidia_patch.cpp" />
     <ClCompile Include="game\Security\CrashHandler.cpp" />

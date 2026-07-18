@@ -4,7 +4,6 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
-#include <Security/xorstr.hpp>
 
 namespace Natives {
 
@@ -15,8 +14,8 @@ namespace Natives {
 
     extern const std::unordered_map<std::string, NativePattern> CROSSMAP_NATIVES;
 
-    const NativePattern* findNativePattern(std::string name);
+    const NativePattern* findNativePattern(std::string_view name);
 
-    const std::string* findPatternForBuild(std::string name, int build);
+    const std::string* findPatternForBuild(std::string_view name, int build);
 
 }
