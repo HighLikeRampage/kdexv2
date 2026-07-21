@@ -72,9 +72,6 @@ namespace NativeCaller {
         HANDLE   GetHookProc()        const { return Core::Mem.ProcHandle; }
         DWORD    GetHookPid()         const { return Core::Mem.ProcId; }
 
-        // Legacy API preserved. In citizen mode this is the citizen queue base;
-        // in every other mode it's synthesised so `GetQueueBase() + Q_RESULT`
-        // points at the last invocation's 24-byte result slot.
         uintptr_t GetQueueBase()      const;
 
         uintptr_t GetAnchorSlotAddr() const { return m_citSlotVA; }
@@ -142,37 +139,26 @@ namespace NativeCaller {
         std::vector<uint8_t> m_gameImage;
         bool                 m_gameImageTried = false;
 
-        // citizen-scripting-core.dll image — where FiveM registers natives
-        // with BOTH the 1.68 hash and the current-build hash inline. Scanning
-        // this catches natives that aren't in the citizen native table.
         std::vector<uint8_t> m_coreImage;
         bool                 m_coreImageTried = false;
 
-        // Cached ranges of every module loaded in the target process — used
-        // to validate stub-follow targets fall inside real executable code
-        // (not heap allocations that VirtualAllocEx returns in the same VA
-        // space).
         std::vector<Range>   m_modRanges;
 
-        // ── citizen mode ────
         uintptr_t m_citQueueVA = 0;
         uintptr_t m_citCaveVA  = 0;
         uintptr_t m_citSlotVA  = 0;
         uintptr_t m_citOrigFn  = 0;
 
-        // ── mainfn mode ─────
         uintptr_t                          m_mainBase   = 0;
         uintptr_t                          m_mainDataVA = 0;
         ShellcodeBuilder::MainFnShellcode  m_mainMeta{};
         uintptr_t                          m_mainResultVA = 0;
 
-        // ── apc mode ────────
         uintptr_t                            m_apcCodeVA = 0;
         uintptr_t                            m_apcDataVA = 0;
         ShellcodeBuilder::ApcCallShellcode   m_apcMeta{};
         uintptr_t                            m_apcResultVA = 0;
 
-        // ── direct mode ─────
         uintptr_t                              m_dcBase   = 0;
         uintptr_t                              m_dcDataVA = 0;
         ShellcodeBuilder::DirectCallShellcode  m_dcMeta{};
@@ -181,7 +167,6 @@ namespace NativeCaller {
 
         static constexpr std::chrono::milliseconds kCooldownAfterTimeout{ 1500 };
 
-        // ── mode helpers ────
         bool     TryCitizenMode();
         bool     TryMainFnMode();
         bool     TryApcMode();
@@ -190,9 +175,6 @@ namespace NativeCaller {
         bool     ScanCitizenTable();
         void     RefreshModRanges();
 
-        // On-demand scan: search m_gameImage for the 8-byte hash literal, then
-        // look for a nearby LEA rax/rcx/r__ [rip+disp32] that references a
-        // handler stub. Returns the resolved handler VA or 0.
         uint64_t ScanForNativeHandler(uint64_t hash);
         uint64_t CitizenLookup(uint64_t hash) const;
         uint64_t PatternResolve(uint64_t hash);
@@ -203,10 +185,6 @@ namespace NativeCaller {
         int      DetectBuild() const;
         bool     IsNetworkNative(uint64_t hash) const;
 
-        // ── dispatch ────────
-        // The Invoke* mode drivers return true if the shellcode signalled DONE
-        // in time (a legitimate 0 result is `outResult=0, return true`), false
-        // on genuine timeout.
         uint64_t InvokeRaw(uint64_t hash, const std::vector<uint64_t>& args, int timeoutMs);
         bool     InvokeCitizen(uint64_t hash, uint64_t handler, const uint64_t* args, size_t nargs, int timeoutMs, uint64_t& outResult);
         bool     InvokeMainFn (uint64_t hash,                   const uint64_t* args, size_t nargs, int timeoutMs, uint64_t& outResult);

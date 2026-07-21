@@ -57,7 +57,6 @@ public:
         return -1;
     }
 
-    // If the byte at `hitRva` is `E9 rel32`, hop through it once — main.js L1517.
     static size_t unwrapPatternMatch(const uint8_t* image, size_t imageLen, size_t hitRva) {
         if (hitRva + 5 > imageLen) return hitRva;
         if (image[hitRva] != 0xE9) return hitRva;
@@ -68,9 +67,6 @@ public:
         return static_cast<size_t>(target);
     }
 
-    // Buffer-based follow-stub — walks common FiveM/rage native stubs and
-    // returns the resolved handler VA (= moduleBase + rva), or 0 on failure.
-    // Matches main.js _followStub (L1179) for the in-image cases.
     static uint64_t followStubInImage(const uint8_t* image, size_t imageLen,
                                        uint64_t moduleBase, uint64_t startRva) {
         auto isCode = [&](uint64_t addr) {

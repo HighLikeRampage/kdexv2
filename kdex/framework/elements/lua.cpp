@@ -680,8 +680,14 @@ bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, 
     lua_field_state* animstate = gui->anim_container(&animstate, id);
 
     const float side_width{ 10 };
-    const ImRect numbering(window->DC.CursorPos, window->DC.CursorPos + ImVec2(gui->text_size(GetDefaultFont(), xorstr("A")).x * std::to_string(animstate->line_count).length() + SCALE(side_width), size_arg.y));
+    const int digit_count = ImMax(2, (int)std::to_string(animstate->line_count > 0 ? animstate->line_count : 1).length());
+    const ImRect numbering(window->DC.CursorPos, window->DC.CursorPos + ImVec2(gui->text_size(GetDefaultFont(), xorstr("A")).x * digit_count + SCALE(side_width) * 2.f, size_arg.y));
     const ImRect rect(ImVec2(numbering.Max.x, numbering.Min.y), window->DC.CursorPos + size_arg);
+
+    draw->rect_filled(window->DrawList, numbering.Min, rect.Max, draw->get_clr(clr->window.window_layout), SCALE(elements->listbox.rounding));
+    draw->rect_filled(window->DrawList, numbering.Min, numbering.Max, draw->get_clr(ImColor(255, 255, 255), 0.02f), SCALE(elements->listbox.rounding), ImDrawFlags_RoundCornersLeft);
+    draw->rect(window->DrawList, numbering.Min, rect.Max, draw->get_clr(clr->window.window_stroke), SCALE(elements->listbox.rounding));
+    draw->line(window->DrawList, ImVec2(numbering.Max.x, numbering.Min.y + SCALE(8)), ImVec2(numbering.Max.x, numbering.Max.y - SCALE(8)), draw->get_clr(clr->window.separator), 1.f);
 
     ImGuiWindow* draw_window = window;
     ImVec2 inner_size = rect.GetSize();
@@ -722,7 +728,7 @@ bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, 
         }
         draw_window = g.CurrentWindow;
         draw_window->DC.NavLayersActiveMaskNext |= (1 << draw_window->DC.NavLayerCurrent);
-        draw_window->DC.CursorPos += style.FramePadding;
+        draw_window->DC.CursorPos += style.FramePadding + ImVec2(SCALE(6), SCALE(2));
         inner_size.x -= draw_window->ScrollbarSizes.x;
     }
     else
@@ -890,7 +896,7 @@ bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, 
 
         g.ActiveIdAllowOverlap = !io.MouseDown[0];
 
-        const float mouse_x = (io.MousePos.x - rect.Min.x - style.FramePadding.x) + state->Scroll.x;
+        const float mouse_x = (io.MousePos.x - rect.Min.x - style.FramePadding.x - SCALE(6)) + state->Scroll.x;
         const float mouse_y = (is_multiline ? (io.MousePos.y - draw_window->DC.CursorPos.y) : (g.FontSize * 0.5f));
 
         if (select_all)
@@ -1473,10 +1479,34 @@ bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, 
 
     animstate->line_count = line_count;
 
+    int cursor_line_no = -1;
+    if (state != NULL && state->ID == id && g.ActiveId == id)
+    {
+        cursor_line_no = 0;
+        const char* num_txt = state->TextA.Data;
+        const int num_cur = ImClamp(state->Stb->cursor, 0, state->CurLenA);
+        for (int n = 0; n < num_cur && num_txt[n]; n++)
+            if (num_txt[n] == '\n')
+                cursor_line_no++;
+    }
+
+    const float num_off = style.FramePadding.y + SCALE(2);
+
+    if (cursor_line_no >= 0)
+    {
+        const float line_top = numbering.Min.y + num_off + GetTextLineHeight() * cursor_line_no - GetCurrentWindow()->Scroll.y;
+        draw->push_clip_rect(window->DrawList, numbering.Min + ImVec2(SCALE(1), SCALE(1)), rect.Max - ImVec2(SCALE(1), SCALE(1)), true);
+        draw->rect_filled(window->DrawList, ImVec2(numbering.Min.x, line_top - SCALE(1)), ImVec2(rect.Max.x, line_top + GetTextLineHeight() + SCALE(1)), draw->get_clr(clr->base_colors.accent_clr, 0.06f));
+        draw->pop_clip_rect(window->DrawList);
+    }
+
     draw->push_clip_rect(window->DrawList, numbering.Min, numbering.Max, true);
     for (int i = 0; i < animstate->line_count; ++i)
-        draw->text_clipped(window->DrawList, GetFont(), numbering.Min + ImVec2(0, GetTextLineHeight() * i - GetCurrentWindow()->Scroll.y + SCALE(3)), ImVec2(numbering.Max.x - SCALE(8), numbering.Min.y + GetTextLineHeight() * (i + 1) - GetCurrentWindow()->Scroll.y + SCALE(5)), draw->get_clr(ImColor(79, 79, 98)), std::to_string(i).c_str(), NULL, NULL, ImVec2(1.f, 0.f));
+        draw->text_clipped(window->DrawList, GetFont(), numbering.Min + ImVec2(0, GetTextLineHeight() * i - GetCurrentWindow()->Scroll.y + num_off), ImVec2(numbering.Max.x - SCALE(8), numbering.Min.y + GetTextLineHeight() * (i + 1) - GetCurrentWindow()->Scroll.y + num_off + SCALE(2)), i == cursor_line_no ? draw->get_clr(clr->base_colors.accent_clr) : draw->get_clr(ImColor(79, 79, 98)), std::to_string(i + 1).c_str(), NULL, NULL, ImVec2(1.f, 0.f));
     draw->pop_clip_rect(window->DrawList);
+
+    if (buf[0] == '\0' && g.ActiveId != id)
+        draw->text_clipped(window->DrawList, GetFont(), ImVec2(rect.Min.x + style.FramePadding.x + SCALE(6), rect.Min.y + num_off), rect.Max, draw->get_clr(clr->text.text_inactive, 0.55f), xorstr("-- write your lua code here"), NULL, NULL, ImVec2(0.f, 0.f));
 
     if (is_password && !is_displaying_hint)
         PopFont();

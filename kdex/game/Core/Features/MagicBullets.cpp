@@ -59,7 +59,7 @@ void Core::Features::cMagicBullets::Start( )
 		if ( option->param.magic_bullets && !option->param.silent_check_visible && silentActive && GetForegroundWindow( ) != g_Variables.g_hCheatWindow )
 		{
 
-			CPed * Ped = Core::SDK::Game::GetClosestPed( option->param.aim_distance, option->param.silent_ignore_npcs, option->param.silent_check_visible );
+			CPed * Ped = Core::SDK::Game::GetClosestPed( option->param.silent_max_distance, option->param.silent_ignore_npcs, option->param.silent_check_visible );
 			if ( !Ped ) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); continue; }
 
 			D3DXVECTOR3 TargetPos;
@@ -91,7 +91,13 @@ void Core::Features::cMagicBullets::Start( )
 
 			D3DXVECTOR2 HeadToScreen = Core::SDK::Game::WorldToScreen( TargetPos );
 
-			if ( Core::SDK::Game::IsOnScreen( HeadToScreen ) )
+			bool withinMagicRange = true;
+			if (option->param.magic_max_distance > 0 && Core::SDK::Pointers::pLocalPlayer) {
+				float magicDist = Ped->GetDistance(Core::SDK::Pointers::pLocalPlayer->GetPos(), TargetPos);
+				withinMagicRange = magicDist <= static_cast<float>(option->param.magic_max_distance);
+			}
+
+			if ( Core::SDK::Game::IsOnScreen( HeadToScreen ) && withinMagicRange )
 			{
 				int Fov = std::hypot( HeadToScreen.x - g_Variables.g_vGameWindowCenter.x, HeadToScreen.y - g_Variables.g_vGameWindowCenter.y );
 				if ( Fov < option->param.silent_fov_size ) {

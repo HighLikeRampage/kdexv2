@@ -10,7 +10,6 @@ using namespace Core;
 
 namespace {
 
-    // Alertable-thread hint (main.js uses ntdll's NtAlertThread).
     typedef LONG (NTAPI *NtAlertThread_t)(HANDLE ThreadHandle);
     NtAlertThread_t GetNtAlertThread() {
         static NtAlertThread_t fn = []() -> NtAlertThread_t {
@@ -73,7 +72,6 @@ namespace {
         return true;
     }
 
-    // Any of the script/native module prefixes main.js uses to pick a script thread.
     bool IsScriptModule(const std::wstring& name) {
         static const wchar_t* const prefixes[] = {
             L"citizen-scripting-", L"gta-core-five", L"scripting-gta",
@@ -152,8 +150,6 @@ namespace {
         return out;
     }
 
-    // Returns the base of a committed PAGE_EXECUTE_READWRITE region whose first
-    // 22 bytes match `sig` at every position where `mask` is nonzero.
     uintptr_t FindExistingMainFn(HANDLE hProc,
                                   const uint8_t* sig, const uint8_t* mask, size_t sigLen) {
         const uintptr_t START = 0x100000000ULL, END = 0x7FFF00000000ULL;
@@ -181,7 +177,6 @@ namespace {
         return 0;
     }
 
-    // Suspend + read RIP + resume. Returns 0 on failure.
     uint64_t SafeGetThreadRip(HANDLE hT) {
         CONTEXT ctx{};
         ctx.ContextFlags = CONTEXT_FULL;
@@ -246,8 +241,7 @@ namespace NativeCaller {
 
     uintptr_t CNativeCaller::GetQueueBase() const {
         if (m_mode == Mode::Citizen) return m_citQueueVA;
-        // For other modes: return a base such that base + Q_RESULT (0xC8)
-        // lands on the last invocation's 24-byte result slot.
+
         switch (m_mode) {
             case Mode::MainFn: return m_mainResultVA ? m_mainResultVA - Q_RESULT : 0;
             case Mode::Apc:    return m_apcResultVA  ? m_apcResultVA  - Q_RESULT : 0;
@@ -362,17 +356,10 @@ namespace NativeCaller {
     }
 
     uint64_t CNativeCaller::FollowStub(uintptr_t va) const {
-        // Loose check used during traversal — matches main.js `_isValidCodeAddress`.
-        // We deliberately don't test manual-mapped-vs-image here because some
-        // sibling modules (streaming, adhesive, custom-loaders) may not surface
-        // as MEM_IMAGE and rejecting them stalls otherwise-valid stubs.
+
         const uintptr_t end = Mem.ModBase + Mem.ModBaseSize;
         auto isCodeLoose = [end](uint64_t a) { return a >= 0x10000ULL && a < end; };
 
-        // Strict check applied ONLY to the returned handler VA. Accept
-        // MEM_IMAGE outright (normal DLLs) and MEM_PRIVATE only if the
-        // region is large enough to plausibly hold a full manual-mapped
-        // module (>= 64KB). Excludes our own caveVA/apcCodeVA/dcBase.
         auto isRealCode = [this](uint64_t a) {
             if (a < 0x10000ULL) return false;
             if (m_citCaveVA && a >= m_citCaveVA && a < m_citCaveVA + 0x1000) return false;
@@ -391,11 +378,6 @@ namespace NativeCaller {
             return mbi.RegionSize >= 0x10000;
         };
 
-        // Strictly matches main.js's `_isValidHandlerAddress`: only these six
-        // prologue bytes count as a "real handler". Accepting broader bytes
-        // (like 40, 41, 53, 56, 57) treats functions with plausible-looking
-        // prologues as native handlers and calls them with wrong args, which
-        // crashes the game. Reject them.
         auto isHandler = [&](uint64_t a) {
             if (!isCodeLoose(a)) return false;
             const uint8_t b = Mem.Read<uint8_t>(a);
@@ -466,11 +448,6 @@ namespace NativeCaller {
                 if (isCodeLoose(n)) { cur = n; continue; }
             }
 
-            // Fallback: cur is only a valid handler if its first byte is in
-            // the strict prologue set — match main.js's `_isValidHandlerAddress`.
-            // Landing on `40 53 ...` etc. means we can't confidently identify
-            // this as a handler, so we return 0 (UNRESOLVED) instead of calling
-            // an ambiguous function that would crash the game.
             if (isHandler(cur)) return finalize(cur);
             return 0;
         }
@@ -574,13 +551,6 @@ namespace NativeCaller {
             m_handlerCache[hash] = 0; return 0;
         }
 
-        // Preferred: pre-scanned RVA table for b3751 embedded from
-        // patterns_b3751.json. `rva` is the pattern-hit VA — we still need
-        // FollowStub to unwrap through the stub chain (E9 tail-call, then
-        // `48 B8 imm64 FF E0` movabs+jmp, etc.) to reach the real handler.
-        // With strict isHandler (only 55/48/4C/49/E9/EB), FollowStub cleanly
-        // returns 0 when the chain lands on an ambiguous prologue (40 53...),
-        // so we never call a wrong function.
         {
             const auto& rvaMap = Natives::B3751HandlerRvas();
             auto it = rvaMap.find(std::string_view(n->second));
@@ -591,7 +561,8 @@ namespace NativeCaller {
                     m_handlerCache[hash] = handler;
                     if (g_TraceInvoke)
                         DebugLog(xorstr("[NC] rva: %s stub 0x%llX -> handler=0x%llX\n"),
-                            n->second.data(), (unsigned long long)stubVA, (unsigned long long)handler);
+                            n->second.data(),
+                            (unsigned long long)stubVA, (unsigned long long)handler);
                     return handler;
                 }
                 if (g_TraceInvoke)
@@ -600,18 +571,12 @@ namespace NativeCaller {
             }
         }
 
-        // Fallback: on-demand scan for the 8-byte hash literal.
         const uint64_t byScan = ScanForNativeHandler(hash);
         m_handlerCache[hash] = byScan;
 
-        if (g_TraceInvoke) {
-            if (byScan)
-                DebugLog(xorstr("[NC] scan: %s -> handler=0x%llX\n"),
-                    n->second.data(), (unsigned long long)byScan);
-            else
-                DebugLog(xorstr("[NC] %s UNRESOLVED (no rva, no scan hit)\n"),
-                    n->second.data());
-        }
+        if (g_TraceInvoke && byScan)
+            DebugLog(xorstr("[NC] scan: %s -> handler=0x%llX\n"),
+                n->second.data(), (unsigned long long)byScan);
         return byScan;
     }
 
@@ -740,8 +705,6 @@ namespace NativeCaller {
 
         const auto main = ShellcodeBuilder::buildMainFn();
 
-        // Signature: bytes[0..10) exact, [10..14) wild (RIP-rel disp32 of the FLAG read),
-        // [14..22) exact.
         uint8_t sig[22]{}, mask[22]{};
         for (size_t i = 0; i < 22; ++i) {
             sig[i]  = main.buffer[i];
@@ -814,7 +777,6 @@ namespace NativeCaller {
         m_mainMeta.buffer.clear();
         m_mainMeta.buffer.shrink_to_fit();
 
-        // Probe with GET_GAME_TIMER twice (200ms + 300ms) — matches main.js.
         uint64_t rProbe1 = 0;
         bool probe1Ok = InvokeMainFn(Natives::GET_GAME_TIMER, nullptr, 0, 200, rProbe1);
         bool probe2Ok = probe1Ok;
@@ -911,7 +873,6 @@ namespace NativeCaller {
         const uintptr_t stackTop = base + total;
         Mem.Write<uint64_t>(dataVA + dc.D_STACK_TOP, stackTop);
 
-        // Collect script-thread ranges.
         m_dcScriptRanges.clear();
         for (const auto& m : EnumModules(Mem.ProcId)) {
             if (IsScriptModule(m.name))
@@ -961,13 +922,8 @@ namespace NativeCaller {
         }
         if (!m_build) m_build = DetectBuild();
 
-        // Cache loaded-module ranges — FollowStub uses these to validate that
-        // stub targets fall inside real executable code (not heap addresses
-        // VirtualAllocEx returns in the same VA range).
         RefreshModRanges();
 
-        // Every mode benefits from the citizen table (for GET_GAME_TIMER lookup
-        // and pattern-scan-free handler resolution) — scan it once up front.
         ScanCitizenTable();
 
         if (TryCitizenMode())  { m_ready = true; DebugLog(xorstr("NativeCaller: mode=citizen build=%d\n"), m_build); return; }
@@ -1009,8 +965,7 @@ namespace NativeCaller {
                 src = xorstr("pattern");
             }
             if (!handler) {
-                // main.js silently returns zeros for unresolved NETWORK_*
-                // natives; do the same to keep vehicle-spawn flows going.
+
                 if (IsNetworkNative(hash)) {
                     if (g_TraceInvoke) DebugLog(xorstr("[NC] skip unresolved networking native %s\n"), name);
                 } else {
@@ -1062,11 +1017,10 @@ namespace NativeCaller {
         return 0;
     }
 
-    bool CNativeCaller::InvokeCitizen(uint64_t /*hash*/, uint64_t handler,
+    bool CNativeCaller::InvokeCitizen(uint64_t , uint64_t handler,
                                        const uint64_t* args, size_t nargs, int timeoutMs,
                                        uint64_t& outResult) {
-        // Match main.js write order: HANDLER, ARGS, ARGCOUNT, RESULT clear,
-        // DONE=0, TRIGGER=1 last.
+
         Mem.Write<uint64_t>(m_citQueueVA + Q_HANDLER, handler);
 
         uint64_t argBuf[8]{};
@@ -1099,7 +1053,6 @@ namespace NativeCaller {
         const uintptr_t data = m_mainDataVA;
         const auto&    m    = m_mainMeta;
 
-        // header: [D_HASH]=hash u64, [D_ARGCOUNT]=nargs u64 — as one 16-byte block.
         uint8_t header[16]{};
         std::memcpy(header + 0, &hash,   8);
         const uint64_t argCountU64 = nargs;

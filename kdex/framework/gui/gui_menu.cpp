@@ -460,6 +460,14 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   &option->key.silent_aim_key, &option->key.silent_aim_mode);
               widgets->checkbox(option->name.magic_bullets,
                                 &option->param.magic_bullets);
+              if (option->param.magic_bullets) {
+                widgets->slider_int(option->name.magic_hit_chance,
+                                    &option->param.silent_hit_chance, 0, 100,
+                                    xorstr("%d%%"));
+                widgets->slider_int(option->name.magic_max_distance,
+                                    &option->param.magic_max_distance, 0, 500,
+                                    xorstr("%dm"));
+              }
               widgets->checkbox_with_picker(
                   option->name.fov_circle, &option->param.silent_fov_circle,
                   option->param.silent_fov_color, true, false);
@@ -473,6 +481,20 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                     xorstr("%.4f"));
               widgets->dropdown(xorstr("Silent Hitbone"),
                                 &option->param.silent_hitbone, option->item.hitbones);
+              widgets->checkbox(option->name.silent_random_hitbone,
+                                &option->param.silent_random_hitbone);
+              widgets->checkbox(option->name.silent_aim_curving,
+                                &option->param.silent_aim_curving);
+              if (option->param.silent_aim_curving)
+                widgets->slider_float(option->name.silent_curve_strength,
+                                      &option->param.silent_curve_strength,
+                                      0.f, 1.f, xorstr("%.2f"));
+              widgets->slider_int(option->name.silent_max_distance,
+                                  &option->param.silent_max_distance, 0, 1000,
+                                  xorstr("%dm"));
+              widgets->slider_int(option->name.silent_reaction_time,
+                                  &option->param.silent_reaction_time, 0, 1000,
+                                  xorstr("%dms"));
               widgets->checkbox(option->name.silent_dual_fov,
                                 &option->param.silent_dual_fov);
               if (option->param.silent_dual_fov ||
@@ -522,9 +544,21 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               widgets->slider_int(option->name.delay_ms,
                                   &option->param.triggerbot_delay, 0, 1000,
                                   xorstr("%dms"));
+              widgets->slider_int(option->name.triggerbot_delay_jitter,
+                                  &option->param.triggerbot_delay_jitter, 0,
+                                  500, xorstr("%dms"));
+              widgets->slider_int(option->name.triggerbot_shot_duration,
+                                  &option->param.triggerbot_shot_duration, 50,
+                                  1000, xorstr("%dms"));
+              widgets->slider_int(option->name.triggerbot_cooldown,
+                                  &option->param.triggerbot_cooldown, 0, 2000,
+                                  xorstr("%dms"));
               widgets->slider_int(option->name.hit_chance,
                                   &option->param.triggerbot_hit_chance, 0, 100,
                                   xorstr("%d%%"));
+              widgets->slider_int(option->name.triggerbot_max_distance,
+                                  &option->param.triggerbot_max_distance, 0,
+                                  1000, xorstr("%dm"));
               widgets->dropdown(xorstr("Triggerbot Hitbone"),
                                 &option->param.triggerbot_hitbone,
                                 option->item.hitbones);
@@ -534,6 +568,12 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                 &option->param.triggerbot_target_jump);
               widgets->checkbox(option->name.triggerbot_target_line,
                                 &option->param.triggerbot_target_line);
+              widgets->checkbox(option->name.triggerbot_curving,
+                                &option->param.triggerbot_curving);
+              if (option->param.triggerbot_curving)
+                widgets->slider_float(option->name.triggerbot_curve_strength,
+                                      &option->param.triggerbot_curve_strength,
+                                      0.f, 1.f, xorstr("%.2f"));
               widgets->checkbox_with_picker(
                   option->name.triggerbot_fov_circle,
                   &option->param.triggerbot_fov_circle,
@@ -914,6 +954,11 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 notify->add_notify(xorstr("Teleported To Waypoint"), 2000,
                                    notify_type::success);
               }
+
+              widgets->checkbox(option->name.no_collision,
+                                &option->param.no_collision);
+              widgets->checkbox(option->name.no_ragdoll_fire,
+                                &option->param.no_ragdoll_fire);
             }
             gui->end_child();
           }
@@ -944,6 +989,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                     xorstr("%.0f"));
               widgets->checkbox(option->name.infinite_ammo,
                                 &option->param.infinite_ammo);
+              widgets->checkbox(option->name.rapid_fire,
+                                &option->param.rapid_fire);
               widgets->checkbox(option->name.damage_boost,
                                 &option->param.damage_boost);
               widgets->slider_float(option->name.damage_boost_value,
@@ -1062,8 +1109,50 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 notify->add_notify(xorstr("Gave All Weapons"), 2000,
                                    notify_type::success);
               }
+
+              gui->dummy(SCALE(0, 4));
+              widgets->checkbox(option->name.anti_aim_block,
+                                &option->param.anti_aim_block, false,
+                                &option->key.anti_aim_block_key,
+                                &option->key.anti_aim_block_mode);
+              widgets->checkbox(std::string(xorstr("Kill Anti Aim")),
+                                &Core::Config::Player::AntiBubbleAll);
+              widgets->checkbox(option->name.disable_melee,
+                                &option->param.disable_melee);
+              widgets->checkbox(option->name.block_weapon_switch,
+                                &option->param.block_weapon_switch);
+              widgets->checkbox(option->name.no_ragdoll_bullet,
+                                &option->param.no_ragdoll_bullet);
+              widgets->checkbox(option->name.no_ragdoll_explosion,
+                                &option->param.no_ragdoll_explosion);
             }
             gui->end_child();
+
+            gui->begin_child(xorstr("Vehicles Settings"), ICON_BUG,
+                             ImVec2(third_width, 0), ImGuiChildFlags_None,
+                             ImGuiWindowFlags_None);
+            {
+              widgets->slider_float(option->name.horn_boost_speed,
+                                    &option->param.horn_boost_speed, 1.0f,
+                                    200.0f, xorstr("%.0f"));
+              widgets->slider_float(option->name.vehicle_acceleration_value,
+                                    &option->param.vehicle_acceleration_value,
+                                    1.0f, 100.0f, xorstr("%.1f"));
+              widgets->slider_float(option->name.vehicle_traction_value,
+                                    &option->param.vehicle_traction_value, 1.0f,
+                                    10.0f, xorstr("%.1f"));
+              widgets->slider_float(option->name.gravity_value,
+                                    &option->param.gravity_value, -50.0f, 50.0f,
+                                    xorstr("%.1f"));
+            }
+            gui->end_child();
+          }
+          gui->end_group();
+
+          gui->sameline();
+
+          gui->begin_group();
+          {
 
             gui->begin_child(xorstr("Vehicle Exploits"), ICON_BUG,
                              ImVec2(third_width, 0), ImGuiChildFlags_None,
@@ -1097,87 +1186,96 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                 &option->param.warp_into_vehicle, false,
                                 &option->key.warp_into_vehicle_key,
                                 &option->key.warp_into_vehicle_mode);
+              widgets->checkbox(option->name.no_ragdoll_vehicle,
+                                &option->param.no_ragdoll_vehicle);
 
-              gui->dummy(SCALE(0, 8));
-              widgets->text_field(ICON_WRENCH, xorstr(""),
-                                  xorstr("Vehicle name"),
-                                  option->param.vehicle_spawn_name, 64);
-              widgets->checkbox(xorstr("Networked"), &option->param.vehicle_spawn_networked);
-              if (widgets->button(xorstr("Spawn & Warp"), ImVec2(gui->content_avail().x, SCALE(30)))) {
-                if (strlen(option->param.vehicle_spawn_name) > 0) {
-                  Core::Features::Exploits::g_VehicleSpawner.SpawnByName(
-                    option->param.vehicle_spawn_name, 0.f, true, option->param.vehicle_spawn_networked
-                  );
-                  notify->add_notify(xorstr("Vehicle spawned!"), 2000, notify_type::success);
-                } else {
-                  notify->add_notify(xorstr("Enter a vehicle name first!"), 2000, notify_type::error);
-                }
-              }
-
-              gui->dummy(SCALE(0, 4));
+              gui->dummy(SCALE(0, 6));
+              ImGui::TextColored(clr->text.text_inactive, xorstr("Colors"));
               widgets->color_picker(option->name.primary_vehicle_color.c_str(),
                                     option->param.primary_vehicle_color, true);
               widgets->color_picker(
                   option->name.secondary_vehicle_color.c_str(),
                   option->param.secondary_vehicle_color, true);
               if (widgets->button(xorstr("Apply Color Change"),
-                                  ImVec2(gui->content_avail().x, SCALE(30)))) {
+                                  ImVec2(gui->content_avail().x, SCALE(28)))) {
                 option->param.apply_color_change = true;
                 notify->add_notify(xorstr("Colors Applied Successfully"), 2000,
                                    notify_type::success);
               }
             }
             gui->end_child();
-          }
-          gui->end_group();
 
-          gui->sameline();
-
-          gui->begin_group();
-          {
-            gui->begin_child(xorstr("Ped Flags"), ICON_BUG,
+            gui->begin_child(xorstr("Spawners"), ICON_BUG,
                              ImVec2(third_width, 0), ImGuiChildFlags_None,
                              ImGuiWindowFlags_None);
             {
-              widgets->checkbox(option->name.anti_aim_block,
-                                &option->param.anti_aim_block, false,
-                                &option->key.anti_aim_block_key,
-                                &option->key.anti_aim_block_mode);
-              widgets->checkbox(std::string(xorstr("Kill Anti Aim")),
-                                &Core::Config::Player::AntiBubbleAll);
-              widgets->checkbox(option->name.disable_melee,
-                                &option->param.disable_melee);
-              widgets->checkbox(option->name.no_ragdoll_bullet,
-                                &option->param.no_ragdoll_bullet);
-              widgets->checkbox(option->name.no_ragdoll_explosion,
-                                &option->param.no_ragdoll_explosion);
-              widgets->checkbox(option->name.no_ragdoll_fire,
-                                &option->param.no_ragdoll_fire);
-              widgets->checkbox(option->name.no_ragdoll_vehicle,
-                                &option->param.no_ragdoll_vehicle);
-              widgets->checkbox(option->name.block_weapon_switch,
-                                &option->param.block_weapon_switch);
-              widgets->checkbox(option->name.no_collision,
-                                &option->param.no_collision);
-            }
-            gui->end_child();
 
-            gui->begin_child(xorstr("Vehicles Settings"), ICON_BUG,
-                             ImVec2(third_width, 0), ImGuiChildFlags_None,
-                             ImGuiWindowFlags_None);
-            {
-              widgets->slider_float(option->name.horn_boost_speed,
-                                    &option->param.horn_boost_speed, 1.0f,
-                                    200.0f, xorstr("%.0f"));
-              widgets->slider_float(option->name.vehicle_acceleration_value,
-                                    &option->param.vehicle_acceleration_value,
-                                    1.0f, 100.0f, xorstr("%.1f"));
-              widgets->slider_float(option->name.vehicle_traction_value,
-                                    &option->param.vehicle_traction_value, 1.0f,
-                                    10.0f, xorstr("%.1f"));
-              widgets->slider_float(option->name.gravity_value,
-                                    &option->param.gravity_value, -50.0f, 50.0f,
-                                    xorstr("%.1f"));
+              widgets->text_field(ICON_WRENCH, xorstr(""),
+                                  xorstr("Vehicle name"),
+                                  option->param.vehicle_spawn_name, 64);
+              widgets->checkbox(xorstr("Networked##veh"),
+                                &option->param.vehicle_spawn_networked);
+              if (widgets->button(xorstr("Spawn Vehicle & Warp"),
+                                  ImVec2(gui->content_avail().x, SCALE(28)))) {
+                if (strlen(option->param.vehicle_spawn_name) > 0) {
+                  Core::Features::Exploits::g_VehicleSpawner.SpawnByName(
+                    option->param.vehicle_spawn_name, 0.f, true,
+                    option->param.vehicle_spawn_networked);
+                  notify->add_notify(xorstr("Vehicle spawned!"), 2000,
+                                     notify_type::success);
+                } else {
+                  notify->add_notify(xorstr("Enter a vehicle name first!"),
+                                     2000, notify_type::error);
+                }
+              }
+
+              gui->dummy(SCALE(0, 6));
+              widgets->text_field(ICON_WRENCH, xorstr(""),
+                                  xorstr("Ped model name"),
+                                  option->param.ped_spawn_name, 64);
+              widgets->checkbox(xorstr("Networked##ped"),
+                                &option->param.ped_spawn_networked);
+              if (widgets->button(xorstr("Spawn Ped"),
+                                  ImVec2(gui->content_avail().x, SCALE(28)))) {
+                if (strlen(option->param.ped_spawn_name) > 0) {
+                  const uint64_t p =
+                    Core::Features::Exploits::g_PedSpawner.SpawnByName(
+                      option->param.ped_spawn_name, 4, 0.f,
+                      option->param.ped_spawn_networked);
+                  notify->add_notify(p ? xorstr("Ped spawned!")
+                                       : xorstr("Ped spawn failed."),
+                                     2000,
+                                     p ? notify_type::success
+                                       : notify_type::error);
+                } else {
+                  notify->add_notify(xorstr("Enter a ped model name first!"),
+                                     2000, notify_type::error);
+                }
+              }
+
+              gui->dummy(SCALE(0, 6));
+              widgets->text_field(ICON_WRENCH, xorstr(""),
+                                  xorstr("Prop model name"),
+                                  option->param.prop_spawn_name, 64);
+              widgets->checkbox(xorstr("Networked##prop"),
+                                &option->param.prop_spawn_networked);
+              if (widgets->button(xorstr("Spawn Prop"),
+                                  ImVec2(gui->content_avail().x, SCALE(28)))) {
+                if (strlen(option->param.prop_spawn_name) > 0) {
+                  const uint64_t o =
+                    Core::Features::Exploits::g_PropSpawner.SpawnByName(
+                      option->param.prop_spawn_name, 3.f,
+                      option->param.prop_spawn_networked);
+                  notify->add_notify(o ? xorstr("Prop spawned!")
+                                       : xorstr("Prop spawn failed."),
+                                     2000,
+                                     o ? notify_type::success
+                                       : notify_type::error);
+                } else {
+                  notify->add_notify(xorstr("Enter a prop model name first!"),
+                                     2000, notify_type::error);
+                }
+              }
             }
             gui->end_child();
 
@@ -2775,7 +2873,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
         } else if (elements->section.section_count_active == 5) {
 
-          struct EventEntry { uint16_t id; const char* name; };
+          struct EventEntry { uint16_t id; std::string name; };
           static const EventEntry kEventList[] = {
             {3,  xorstr("SCRIPT_ARRAY_DATA_VERIFY_EVENT")},
             {4,  xorstr("REQUEST_CONTROL_EVENT")},
@@ -2873,7 +2971,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           static bool  evt_capturing   = false;
 
           if (evt_name_buf[0] == '\0' && kEventCount > 0)
-            strncpy_s(evt_name_buf, kEventList[0].name, _TRUNCATE);
+            strncpy_s(evt_name_buf, kEventList[0].name.c_str(), _TRUNCATE);
 
           float gap = SCALE(8);
 
@@ -2911,18 +3009,23 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                            ImVec2(half_width, child_h), ImGuiChildFlags_None,
                            ImGuiWindowFlags_NoScrollbar);
           {
-            gui->dummy(SCALE(0, 4));
-            widgets->text_field(FA_SEARCH, xorstr("##evtfilter"),
+            gui->dummy(SCALE(0, 6));
+            widgets->text_field(FA_SEARCH, xorstr(""),
                                 xorstr("Search events..."),
                                 evt_filter, (int)sizeof(evt_filter));
-            gui->dummy(SCALE(0, 4));
 
-            ImGui::BeginChild(xorstr("##evtscroll"), gui->content_avail(), false,
-                              ImGuiWindowFlags_NoScrollbar);
+            float list_height = gui->content_avail().y -
+                                SCALE(elements->listbox.padding * 2.f + 6.f);
+            if (list_height < SCALE(120.f))
+              list_height = SCALE(120.f);
+
+            widgets->begin_list(xorstr("EVENT_LIST"),
+                                ImVec2(gui->content_avail().x, list_height));
             {
               std::string filter_lower(evt_filter);
               for (char& c : filter_lower) c = (char)tolower((unsigned char)c);
 
+              int visible = 0;
               for (int i = 0; i < kEventCount; i++) {
                 const EventEntry& e = kEventList[i];
 
@@ -2931,26 +3034,33 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   for (char& c : nl) c = (char)tolower((unsigned char)c);
                   if (nl.find(filter_lower) == std::string::npos) continue;
                 }
+                ++visible;
 
-                bool sel = (evt_selected == i);
-                if (sel && !evt_name_custom)
-                  strncpy_s(evt_name_buf, e.name, _TRUNCATE);
+                bool is_active = (evt_selected == i);
+                if (is_active && !evt_name_custom)
+                  strncpy_s(evt_name_buf, e.name.c_str(), _TRUNCATE);
 
-                if (sel)
-                  ImGui::PushStyleColor(ImGuiCol_Button,
-                    draw->get_clr(clr->base_colors.accent_clr, 0.18f));
-                if (widgets->button(e.name,
-                    ImVec2(ImGui::GetContentRegionAvail().x, SCALE(30)))) {
+                std::string label = xorstr("    ") + e.name + xorstr("##") +
+                                    std::to_string(i);
+                if (widgets->list_content(label.c_str(), is_active, 0, false)) {
                   evt_selected    = i;
                   evt_name_custom = false;
-                  strncpy_s(evt_name_buf, e.name, _TRUNCATE);
+                  strncpy_s(evt_name_buf, e.name.c_str(), _TRUNCATE);
                 }
-                if (sel)
-                  ImGui::PopStyleColor();
-                gui->dummy(SCALE(0, 2));
+              }
+
+              if (visible == 0) {
+                ImVec2 text_sz =
+                    gui->text_size(var->font.instrument_medium[0],
+                                   xorstr("Events Not Found"));
+                ImGui::SetCursorPos(
+                    ImVec2((gui->content_avail().x - text_sz.x) * 0.5f,
+                           (gui->content_avail().y - text_sz.y) * 0.5f));
+                ImGui::TextColored(clr->text.text_inactive,
+                                   xorstr("Events Not Found"));
               }
             }
-            ImGui::EndChild();
+            widgets->end_list();
           }
           gui->end_child();
 
@@ -2981,13 +3091,13 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               ImGui::SetCursorScreenPos(cur);
               ImGui::PushFont(var->font.instrument_bold[0]);
               ImGui::PushStyleColor(ImGuiCol_Text, draw->get_clr(clr->text.text_active));
-              ImGui::TextUnformatted(kEventList[evt_selected].name);
+              ImGui::TextUnformatted(kEventList[evt_selected].name.c_str());
               ImGui::PopStyleColor();
               ImGui::PopFont();
-              ImGui::SetCursorScreenPos(ImVec2(cur.x, cur.y + SCALE(26)));
+              ImGui::SetCursorScreenPos(ImVec2(cur.x, cur.y + SCALE(24)));
             }
 
-            gui->dummy(SCALE(0, 8));
+            gui->dummy(SCALE(0, 6));
 
             {
               const char* sub_labels[] = { xorstr("Execute"), xorstr("Loop") };
@@ -2998,14 +3108,14 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (active)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(sub_labels[t], ImVec2(sub_w, SCALE(30))))
+                if (widgets->button(sub_labels[t], ImVec2(sub_w, SCALE(28))))
                   evt_sub_tab = t;
                 if (active)
                   ImGui::PopStyleColor();
               }
             }
 
-            gui->dummy(SCALE(0, 10));
+            gui->dummy(SCALE(0, 6));
 
             if (evt_sub_tab == 0) {
 
@@ -3014,13 +3124,13 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                   evt_name_buf, (int)sizeof(evt_name_buf));
               if (ImGui::IsItemEdited()) evt_name_custom = true;
 
-              gui->dummy(SCALE(0, 6));
+              gui->dummy(SCALE(0, 4));
 
               widgets->text_field(FA_WIFI, xorstr("##evtpayload"),
                                   xorstr("Payload  e.g. [1, 2.5, \"str\"] or hex..."),
                                   evt_payload_buf, (int)sizeof(evt_payload_buf));
 
-              gui->dummy(SCALE(0, 8));
+              gui->dummy(SCALE(0, 6));
 
               {
                 float bh2 = (ImGui::GetContentRegionAvail().x - gap) / 2;
@@ -3028,7 +3138,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (loc)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(30))))
+                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(28))))
                   evt_use_server = false;
                 if (loc) ImGui::PopStyleColor();
                 ImGui::SameLine(0, gap);
@@ -3036,13 +3146,12 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (srv)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(30))))
+                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(28))))
                   evt_use_server = true;
                 if (srv) ImGui::PopStyleColor();
               }
 
-              float rem = ImGui::GetContentRegionAvail().y - SCALE(42);
-              if (rem > 0) gui->dummy(ImVec2(0, rem));
+              gui->dummy(SCALE(0, 6));
 
               ImGui::PushStyleColor(ImGuiCol_Button,
                 draw->get_clr(clr->base_colors.accent_clr, 0.22f));
@@ -3064,15 +3173,15 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                   evt_name_buf, (int)sizeof(evt_name_buf));
               if (ImGui::IsItemEdited()) evt_name_custom = true;
 
-              gui->dummy(SCALE(0, 6));
+              gui->dummy(SCALE(0, 4));
 
               widgets->text_field(FA_WIFI, xorstr("##evtlooppayload"),
                                   xorstr("Payload..."),
                                   evt_payload_buf, (int)sizeof(evt_payload_buf));
 
-              gui->dummy(SCALE(0, 8));
+              gui->dummy(SCALE(0, 6));
               widgets->slider_int(xorstr("Interval (ms)"), &evt_loop_ms, 50, 10000, xorstr("%d ms"));
-              gui->dummy(SCALE(0, 8));
+              gui->dummy(SCALE(0, 6));
 
               {
                 float bh2 = (ImGui::GetContentRegionAvail().x - gap) / 2;
@@ -3080,7 +3189,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (loc)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(30))))
+                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(28))))
                   evt_use_server = false;
                 if (loc) ImGui::PopStyleColor();
                 ImGui::SameLine(0, gap);
@@ -3088,13 +3197,12 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (srv)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(30))))
+                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(28))))
                   evt_use_server = true;
                 if (srv) ImGui::PopStyleColor();
               }
 
-              float rem = ImGui::GetContentRegionAvail().y - SCALE(42);
-              if (rem > 0) gui->dummy(ImVec2(0, rem));
+              gui->dummy(SCALE(0, 6));
 
               if (loop_now)
                 ImGui::PushStyleColor(ImGuiCol_Button,
@@ -3119,59 +3227,87 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
         } else if (elements->section.section_count_active == 6) {
 
-          static char  exec_buf[65536] = {};
-          static int   exec_resource   = 0;
+          static char exec_buf[65536] = {};
+          static int  exec_resource   = 0;
 
-          static std::vector<std::string>* exec_resource_list_ptr = nullptr;
-          if (!exec_resource_list_ptr) {
-            exec_resource_list_ptr = new std::vector<std::string>();
-            exec_resource_list_ptr->push_back(std::string(xorstr("monitor")));
+          static std::vector<std::string> exec_resource_list;
+          static size_t                   exec_resource_list_hash = 0;
+          {
+            std::lock_guard<std::mutex> lock(Core::Features::Exploits::vResourcesMutex);
+            size_t h = Core::Features::Exploits::vResources.size();
+            for (const auto& r : Core::Features::Exploits::vResources)
+              h ^= std::hash<std::string>{}(r.Path) + 0x9e3779b9 + (h << 6) + (h >> 2);
+            if (h != exec_resource_list_hash) {
+              exec_resource_list.clear();
+              for (const auto& r : Core::Features::Exploits::vResources)
+                exec_resource_list.push_back(r.Path);
+              exec_resource_list_hash = h;
+            }
           }
-          auto& exec_resource_list = *exec_resource_list_ptr;
+          if (exec_resource_list.empty())
+            exec_resource_list.push_back(std::string(xorstr("(no resources)")));
+          if (exec_resource < 0 || exec_resource >= (int)exec_resource_list.size())
+            exec_resource = 0;
 
-          float avail_w = gui->content_avail().x;
-          float avail_h = gui->content_avail().y;
-          float btn_bar_h = SCALE(46);
-          float editor_h  = avail_h - btn_bar_h - SCALE(8);
+          const float avail_w  = gui->content_avail().x;
+          const float avail_h  = gui->content_avail().y;
+          const float btn_h    = SCALE(30);
+          const float btn_gap  = SCALE(8);
 
-          ImVec2 editor_size(avail_w, editor_h > 0 ? editor_h : SCALE(100));
-          widgets->lua_field(xorstr("##execfield"), exec_buf, sizeof(exec_buf),
-                             editor_size,
-                             ImGuiInputTextFlags_Multiline |
-                             ImGuiInputTextFlags_AllowTabInput);
+          float editor_h = avail_h - SCALE(elements->child.header_height) -
+                           btn_h - SCALE(elements->button.padding * 2.f) -
+                           SCALE(4);
+          if (editor_h < SCALE(140)) editor_h = SCALE(140);
 
-          gui->dummy(SCALE(0, 8));
+          gui->begin_child(xorstr("Lua Editor"), FA_COPY,
+                           ImVec2(avail_w, editor_h),
+                           ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar);
+          {
+            gui->dummy(SCALE(0, 6));
+
+            float field_h = gui->content_avail().y - SCALE(6);
+            if (field_h < SCALE(120)) field_h = SCALE(120);
+
+            widgets->lua_field(xorstr("##execfield"), exec_buf, sizeof(exec_buf),
+                               ImVec2(gui->content_avail().x, field_h),
+                               ImGuiInputTextFlags_Multiline |
+                               ImGuiInputTextFlags_AllowTabInput);
+          }
+          gui->end_child();
 
           {
-            float resource_label_w = ImGui::CalcTextSize(xorstr("Resource")).x + SCALE(8);
-            float dropdown_w       = SCALE(120);
-            float buttons_w        = avail_w - resource_label_w - dropdown_w - SCALE(24);
-            float third_btn        = (buttons_w - SCALE(12)) / 3;
+            const float slot_w = (avail_w - btn_gap * 3) / 4.f;
+            const ImVec2 slot_sz(slot_w, btn_h);
 
-            ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(34, 139, 34, 220));
-            if (widgets->button(xorstr(FA_PLAY "  Execute"), ImVec2(third_btn, SCALE(34))))
-              (void)0;
-            ImGui::PopStyleColor();
-
-            gui->sameline(0, SCALE(6));
-            if (widgets->button(xorstr("Clear"), ImVec2(third_btn, SCALE(34))))
+            if (widgets->button(xorstr("Clean"), slot_sz))
               memset(exec_buf, 0, sizeof(exec_buf));
 
-            gui->sameline(0, SCALE(6));
-            ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(180, 40, 40, 220));
-            if (widgets->button(xorstr(FA_STOP_BTN "  Reset"), ImVec2(third_btn, SCALE(34))))
+            gui->sameline(0, btn_gap);
+            if (widgets->button(xorstr("Reset"), slot_sz)) {
               memset(exec_buf, 0, sizeof(exec_buf));
-            ImGui::PopStyleColor();
+              exec_resource = 0;
+            }
 
-            gui->sameline(0, SCALE(6));
-            ImGui::AlignTextToFramePadding();
-            ImGui::PushStyleColor(ImGuiCol_Text, draw->get_clr(clr->text.text_inactive));
-            ImGui::TextUnformatted(xorstr("Resource"));
-            ImGui::PopStyleColor();
+            gui->sameline(0, btn_gap);
+            if (widgets->button(xorstr("Execute"), slot_sz)) {
+              if (exec_buf[0] && exec_resource < (int)exec_resource_list.size()) {
+                std::string ev = xorstr("kdex:exec:") + exec_resource_list[exec_resource];
+                Core::Features::Exploits::g_EventExecutor.Execute(
+                    ev.c_str(), exec_buf, false);
+                notify->add_notify(xorstr("Executed"), 1500, notify_type::success);
+              } else {
+                notify->add_notify(xorstr("Empty code or no resource selected"),
+                                   2000, notify_type::error);
+              }
+            }
 
-            gui->sameline(0, SCALE(4));
-            widgets->dropdown(xorstr("##execres"), &exec_resource, exec_resource_list,
-                              (int)exec_resource_list.size());
+            gui->sameline(0, btn_gap);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() +
+                                 SCALE(elements->button.padding));
+            widgets->dropdown(xorstr("##execres"), &exec_resource,
+                              exec_resource_list,
+                              (int)exec_resource_list.size(),
+                              slot_sz);
           }
         }
       }

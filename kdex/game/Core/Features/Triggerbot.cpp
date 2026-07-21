@@ -1,13 +1,47 @@
 #include "Triggerbot.hpp"
 #include "HitboneList.hpp"
 #include "../../../framework/settings/search.h"
+#include <cmath>
 
 void Core::Features::cTriggerbot::Shoot( int delay )
 {
+	if (option->param.triggerbot_delay_jitter > 0)
+		delay += Utils::GenRandomInt(0, option->param.triggerbot_delay_jitter);
+
+	if (option->param.triggerbot_curving &&
+	    option->param.triggerbot_curve_strength > 0.001f) {
+		float strength = option->param.triggerbot_curve_strength;
+		int extra = static_cast<int>(delay * strength * 0.75f);
+		delay += extra;
+	}
+
 	std::this_thread::sleep_for( std::chrono::milliseconds( delay ) );
+
+	if (option->param.triggerbot_curving &&
+	    option->param.triggerbot_curve_strength > 0.001f) {
+		float strength = option->param.triggerbot_curve_strength;
+		int steps = 6;
+		int amp = static_cast<int>(std::round(strength * 4.f));
+		if (amp < 1) amp = 1;
+		for (int i = 0; i < steps; ++i) {
+			float phase = (float)i / (float)(steps - 1) * 3.14159f;
+			int dx = static_cast<int>(std::sin(phase) * amp);
+			int dy = static_cast<int>(std::sin(phase * 2.f) * (amp / 2));
+			mouse_event(MOUSEEVENTF_MOVE, dx, dy, 0, 0);
+			std::this_thread::sleep_for(std::chrono::milliseconds(2));
+		}
+	}
+
 	mouse_event( MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0 );
-	std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
+
+	int hold = option->param.triggerbot_shot_duration;
+	hold += Utils::GenRandomInt(-hold / 4, hold / 4);
+	if (hold < 20) hold = 20;
+	std::this_thread::sleep_for( std::chrono::milliseconds( hold ) );
 	mouse_event( MOUSEEVENTF_LEFTUP, 0, 0, 0, 0 );
+
+	if (option->param.triggerbot_cooldown > 0)
+		std::this_thread::sleep_for( std::chrono::milliseconds( option->param.triggerbot_cooldown ) );
 }
 
 void Core::Features::cTriggerbot::Start()
@@ -41,7 +75,7 @@ void Core::Features::cTriggerbot::Start()
         if (triggerActive && GetForegroundWindow() != g_Variables.g_hCheatWindow)
         {
             CPed* Ped = Core::SDK::Game::GetClosestPedEx(
-                option->param.aim_distance,
+                option->param.triggerbot_max_distance,
                 option->param.triggerbot_ignore_npcs,
                 option->param.triggerbot_check_visible,
                 option->param.triggerbot_ignore_friends);

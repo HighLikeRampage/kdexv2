@@ -159,7 +159,8 @@ void Core::Features::cSilentAim::HookSilent() {
 
         if (silentActive && GetForegroundWindow() != g_Variables.g_hCheatWindow) {
             CPed *Ped = Core::SDK::Game::GetClosestPed(
-                option->param.aim_distance, option->param.silent_ignore_npcs,
+                option->param.silent_max_distance,
+                option->param.silent_ignore_npcs,
                 option->param.silent_check_visible);
             if (!Ped) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -214,7 +215,18 @@ void Core::Features::cSilentAim::HookSilent() {
             Skeleton.Arg2 = Mem.Read<uintptr_t>(Skeleton.m_pSkeleton + 0x18);
 
             {
-                unsigned int selectedBone = Core::Features::GetHitboneId(option->param.silent_hitbone);
+                int hitboneIndex = option->param.silent_hitbone;
+                if (option->param.silent_random_hitbone) {
+                    static int randBoneIndex = 0;
+                    static std::chrono::steady_clock::time_point lastBoneRoll{};
+                    auto now = std::chrono::steady_clock::now();
+                    if (std::chrono::duration_cast<std::chrono::milliseconds>(now - lastBoneRoll).count() > 900) {
+                        randBoneIndex = Utils::GenRandomInt(0, 7);
+                        lastBoneRoll = now;
+                    }
+                    hitboneIndex = randBoneIndex;
+                }
+                unsigned int selectedBone = Core::Features::GetHitboneId(hitboneIndex);
                 TargetPos = Core::SDK::Game::GetBonePosComplex(Ped, selectedBone, Skeleton);
                 if (selectedBone == SKEL_Head)
                     lastHitbox = 0;
@@ -251,7 +263,21 @@ void Core::Features::cSilentAim::HookSilent() {
                                    : option->param.silent_fov_near;
                 }
 
-                if (Fov < fovLimit) {
+                bool inFov = Fov < fovLimit;
+
+                static std::chrono::steady_clock::time_point fovEnterTs{};
+                static bool prevInFov = false;
+                if (inFov && !prevInFov)
+                    fovEnterTs = std::chrono::steady_clock::now();
+                prevInFov = inFov;
+
+                bool reactionReady = true;
+                if (inFov && option->param.silent_reaction_time > 0)
+                    reactionReady = std::chrono::duration_cast<std::chrono::milliseconds>(
+                        std::chrono::steady_clock::now() - fovEnterTs).count() >=
+                        option->param.silent_reaction_time;
+
+                if (inFov && reactionReady) {
                     bool Miss = option->param.miss_chance >= Utils::GenRandomInt(0, 100);
                     D3DXVECTOR3 HitOffset;
                     if (Miss) {
@@ -291,6 +317,19 @@ void Core::Features::cSilentAim::HookSilent() {
                     }
 
                     auto FinalPos = TargetPos + HitOffset;
+
+                    if (option->param.silent_aim_curving &&
+                        option->param.silent_curve_strength > 0.001f) {
+                        static auto curveStart = std::chrono::steady_clock::now();
+                        auto now = std::chrono::steady_clock::now();
+                        float t = std::chrono::duration<float>(now - curveStart).count();
+                        float strength = option->param.silent_curve_strength;
+                        float amp = strength * 0.35f;
+                        float phase = t * (2.f + strength * 4.f);
+                        FinalPos.x += std::sin(phase) * amp;
+                        FinalPos.y += std::cos(phase * 1.3f) * amp;
+                        FinalPos.z += std::sin(phase * 0.7f) * amp * 0.5f;
+                    }
 
                     auto updateShellcodes = [&](bool init) {
 

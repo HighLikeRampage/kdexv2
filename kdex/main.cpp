@@ -97,6 +97,13 @@ static void SafeCleanupWork()
 
 static void ClearLoggedState()
 {
+	__try {
+		Core::Features::Exploits::RestoreAll();
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER) {}
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(150));
+
 	Core::g_Variables.g_Unload = true;
 
 	std::thread([]() {

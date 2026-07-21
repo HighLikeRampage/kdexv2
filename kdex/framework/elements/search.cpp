@@ -48,6 +48,8 @@ void c_search::init_options()
 		search_elements.push_back(find_elements_checkbox{ option->name.check_visible + std::string(xorstr(" Silent")), &option->param.silent_check_visible });
 		search_elements.push_back(find_elements_checkbox{ option->name.target_combat_roll + std::string(xorstr(" Silent")), &option->param.silent_target_combat_roll });
 		search_elements.push_back(find_elements_checkbox{ option->name.silent_target_line + std::string(xorstr(" Silent")), &option->param.silent_target_line });
+		search_elements.push_back(find_elements_checkbox{ option->name.silent_aim_curving + std::string(xorstr(" Silent")), &option->param.silent_aim_curving });
+		search_elements.push_back(find_elements_slider_float{ option->name.silent_curve_strength + std::string(xorstr(" Silent")), &option->param.silent_curve_strength, 0.f, 1.f, xorstr("%.2f") });
 		search_elements.push_back(find_elements_slider_int{ option->name.miss_chance, &option->param.miss_chance, 0, 100, xorstr("%d%%") });
 		search_elements.push_back(find_elements_checkbox{ option->name.disable_aimbot_while_flashed + std::string(xorstr(" Silent")), &option->param.disable_aimbot_while_flashed });
 		search_elements.push_back(find_elements_checkbox{ option->name.disable_aimbot_through_smoke + std::string(xorstr(" Silent")), &option->param.disable_aimbot_through_smoke });
@@ -61,6 +63,8 @@ void c_search::init_options()
 		search_elements.push_back(find_elements_checkbox{ option->name.triggerbot_check_visible + std::string(xorstr(" Triggerbot")), &option->param.triggerbot_check_visible });
 		search_elements.push_back(find_elements_checkbox{ option->name.target_combat_roll + std::string(xorstr(" Triggerbot")), &option->param.triggerbot_target_combat_roll });
 		search_elements.push_back(find_elements_checkbox{ option->name.triggerbot_target_line + std::string(xorstr(" Triggerbot")), &option->param.triggerbot_target_line });
+		search_elements.push_back(find_elements_checkbox{ option->name.triggerbot_curving + std::string(xorstr(" Triggerbot")), &option->param.triggerbot_curving });
+		search_elements.push_back(find_elements_slider_float{ option->name.triggerbot_curve_strength + std::string(xorstr(" Triggerbot")), &option->param.triggerbot_curve_strength, 0.f, 1.f, xorstr("%.2f") });
 		search_elements.push_back(find_elements_clr_checkbox{ option->name.triggerbot_fov_circle + std::string(xorstr(" Triggerbot")), &option->param.triggerbot_fov_circle, option->param.triggerbot_fov_color, true, false });
 		search_elements.push_back(find_elements_slider_float{ option->name.triggerbot_fov_size + std::string(xorstr(" Triggerbot")), &option->param.triggerbot_fov_size, 10.f, 1000.f, xorstr("%.1f") });
 		search_elements.push_back(find_elements_dropdown{ option->name.triggerbot_hitbone, &option->param.triggerbot_hitbone, option->item.hitbones });

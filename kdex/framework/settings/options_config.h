@@ -49,11 +49,23 @@ inline nlohmann::json OptionsParamToJson(const options_t& p) {
     j[xorstr("silent_target_combat_roll")] = p.silent_target_combat_roll;
     j[xorstr("silent_target_jump")] = p.silent_target_jump;
     j[xorstr("silent_target_line")] = p.silent_target_line;
+    j[xorstr("silent_max_distance")] = p.silent_max_distance;
+    j[xorstr("silent_reaction_time")] = p.silent_reaction_time;
+    j[xorstr("silent_random_hitbone")] = p.silent_random_hitbone;
+    j[xorstr("silent_aim_curving")] = p.silent_aim_curving;
+    j[xorstr("silent_curve_strength")] = p.silent_curve_strength;
+    j[xorstr("magic_max_distance")] = p.magic_max_distance;
     j[xorstr("smart_trigger")] = p.smart_trigger;
     j[xorstr("miss_chance")] = p.miss_chance;
     j[xorstr("enable_triggerbot")] = p.enable_triggerbot;
     j[xorstr("triggerbot_delay")] = p.triggerbot_delay;
     j[xorstr("triggerbot_hit_chance")] = p.triggerbot_hit_chance;
+    j[xorstr("triggerbot_delay_jitter")] = p.triggerbot_delay_jitter;
+    j[xorstr("triggerbot_shot_duration")] = p.triggerbot_shot_duration;
+    j[xorstr("triggerbot_cooldown")] = p.triggerbot_cooldown;
+    j[xorstr("triggerbot_max_distance")] = p.triggerbot_max_distance;
+    j[xorstr("triggerbot_curving")] = p.triggerbot_curving;
+    j[xorstr("triggerbot_curve_strength")] = p.triggerbot_curve_strength;
     j[xorstr("triggerbot_hitbone")] = p.triggerbot_hitbone;
     j[xorstr("triggerbot_target_line")] = p.triggerbot_target_line;
     j[xorstr("triggerbot_ignore_npcs")] = p.triggerbot_ignore_npcs;
@@ -254,6 +266,10 @@ inline nlohmann::json OptionsParamToJson(const options_t& p) {
 	j[xorstr("plate")] = std::string(p.plate);
 	j[xorstr("vehicle_spawn_name")] = std::string(p.vehicle_spawn_name);
 	j[xorstr("vehicle_spawn_networked")] = p.vehicle_spawn_networked;
+	j[xorstr("ped_spawn_name")] = std::string(p.ped_spawn_name);
+	j[xorstr("ped_spawn_networked")] = p.ped_spawn_networked;
+	j[xorstr("prop_spawn_name")] = std::string(p.prop_spawn_name);
+	j[xorstr("prop_spawn_networked")] = p.prop_spawn_networked;
 	j[xorstr("repair_vehicle")] = p.repair_vehicle;
     j[xorstr("apply_color_change")] = p.apply_color_change;
     j[xorstr("primary_vehicle_color")] = nlohmann::json::array({p.primary_vehicle_color[0], p.primary_vehicle_color[1], p.primary_vehicle_color[2], p.primary_vehicle_color[3]});
@@ -348,7 +364,10 @@ inline void ApplyOptionsParamFromJson(const nlohmann::json& j, options_t* p) {
     arr4(xorstr("silent_fov_color"), p->silent_fov_color);
     OPT_INT(silent_hitbone); OPT_INT(silent_hit_chance); OPT_FLOAT(silent_jitter); OPT_BOOL(silent_ignore_npcs); OPT_BOOL(silent_ignore_players);
     OPT_BOOL(silent_check_visible); OPT_BOOL(silent_target_combat_roll); OPT_BOOL(silent_target_jump); OPT_BOOL(silent_target_line); OPT_BOOL(smart_trigger); OPT_INT(miss_chance);
+    OPT_INT(silent_max_distance); OPT_INT(silent_reaction_time); OPT_BOOL(silent_random_hitbone); OPT_BOOL(silent_aim_curving); OPT_FLOAT(silent_curve_strength); OPT_INT(magic_max_distance);
     OPT_BOOL(enable_triggerbot); OPT_INT(triggerbot_delay); OPT_INT(triggerbot_hit_chance); OPT_INT(triggerbot_hitbone); OPT_BOOL(triggerbot_target_line);
+    OPT_INT(triggerbot_delay_jitter); OPT_INT(triggerbot_shot_duration); OPT_INT(triggerbot_cooldown); OPT_INT(triggerbot_max_distance);
+    OPT_BOOL(triggerbot_curving); OPT_FLOAT(triggerbot_curve_strength);
     OPT_BOOL(triggerbot_ignore_npcs); OPT_BOOL(triggerbot_ignore_friends); OPT_BOOL(triggerbot_check_visible);
     OPT_BOOL(triggerbot_target_combat_roll); OPT_BOOL(triggerbot_target_jump); OPT_BOOL(triggerbot_fov_circle); OPT_FLOAT(triggerbot_fov_size);
     arr4(xorstr("triggerbot_fov_color"), p->triggerbot_fov_color);
@@ -435,7 +454,12 @@ inline void ApplyOptionsParamFromJson(const nlohmann::json& j, options_t* p) {
     OPT_BOOL(explode_vehicle); OPT_BOOL(change_plate);
     if (j.contains(xorstr("plate"))) { std::string tmp = j[xorstr("plate")]; strncpy_s(p->plate, sizeof(p->plate), tmp.c_str(), _TRUNCATE); }
     if (j.contains(xorstr("vehicle_spawn_name"))) { std::string tmp = j[xorstr("vehicle_spawn_name")]; strncpy_s(p->vehicle_spawn_name, sizeof(p->vehicle_spawn_name), tmp.c_str(), _TRUNCATE); }
-    OPT_BOOL(vehicle_spawn_networked); OPT_BOOL(repair_vehicle);
+    OPT_BOOL(vehicle_spawn_networked);
+    if (j.contains(xorstr("ped_spawn_name"))) { std::string tmp = j[xorstr("ped_spawn_name")]; strncpy_s(p->ped_spawn_name, sizeof(p->ped_spawn_name), tmp.c_str(), _TRUNCATE); }
+    OPT_BOOL(ped_spawn_networked);
+    if (j.contains(xorstr("prop_spawn_name"))) { std::string tmp = j[xorstr("prop_spawn_name")]; strncpy_s(p->prop_spawn_name, sizeof(p->prop_spawn_name), tmp.c_str(), _TRUNCATE); }
+    OPT_BOOL(prop_spawn_networked);
+    OPT_BOOL(repair_vehicle);
 #undef OPT_BOOL
 #undef OPT_INT
 #undef OPT_FLOAT
