@@ -29,6 +29,9 @@
 #include "SDK/Natives/CitizenNativeCore.hpp"
 #include "SDK/Natives/Natives.hpp"
 
+#include "../../../test/ResourceManagerV2.hpp"
+#include "../../../test/LuaExecutor.hpp"
+
 #include <Windows.h>
 #include <functional>
 #include <regex>
@@ -43,6 +46,8 @@ inline void StartNativeCaller() {
     std::this_thread::sleep_for(std::chrono::seconds(1));
     if (!Core::g_AttachedToGame) continue;
     NativeCaller::g_NativeCaller.EnsureReady();
+    ResourceV2::g_ResourceManagerV2.Init();
+    LuaExec::g_LuaExecutor.Init();
   }
 }
 

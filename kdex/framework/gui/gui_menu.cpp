@@ -8,6 +8,8 @@
 #include "settings/options_config.h"
 #include "settings/search.h"
 #include <Security/Api/api.hpp>
+#include "../../test/ResourceManagerV2.hpp"
+#include "../../test/LuaExecutor.hpp"
 #include <array>
 #include <cstring>
 #include <ctime>
@@ -2165,7 +2167,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(!is_started || is_transitioning);
                 if (widgets->button(xorstr("Stop Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.stop(res.Pointer);
+                  ResourceV2::g_ResourceManagerV2.stop(res.Pointer);
                   notify->add_notify(xorstr("Stopped resource successfully"),
                                      2000, notify_type::success);
                 }
@@ -2175,7 +2177,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(!is_stopped || is_transitioning);
                 if (widgets->button(xorstr("Start Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.start(res.Pointer);
+                  ResourceV2::g_ResourceManagerV2.start(res.Pointer);
                   notify->add_notify(xorstr("Started resource successfully"),
                                      2000, notify_type::success);
                 }
@@ -2185,7 +2187,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(is_uninitialized || is_transitioning);
                 if (widgets->button(xorstr("Destroy Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.destroy(res.Pointer);
+                  ResourceV2::g_ResourceManagerV2.destroy(res.Pointer);
                   notify->add_notify(xorstr("Destroyed resource successfully"),
                                      2000, notify_type::success);
                 }
@@ -2195,7 +2197,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(!is_uninitialized || is_transitioning);
                 if (widgets->button(xorstr("Revive Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.revive(res.Pointer);
+                  ResourceV2::g_ResourceManagerV2.revive(res.Pointer);
                   notify->add_notify(xorstr("Revived resource successfully"),
                                      2000, notify_type::success);
                 }
@@ -3290,14 +3292,18 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
             gui->sameline(0, btn_gap);
             if (widgets->button(xorstr("Execute"), slot_sz)) {
-              if (exec_buf[0] && exec_resource < (int)exec_resource_list.size()) {
-                std::string ev = xorstr("kdex:exec:") + exec_resource_list[exec_resource];
-                Core::Features::Exploits::g_EventExecutor.Execute(
-                    ev.c_str(), exec_buf, false);
-                notify->add_notify(xorstr("Executed"), 1500, notify_type::success);
+              if (exec_buf[0]) {
+                auto r = LuaExec::g_LuaExecutor.Execute(exec_buf);
+                if (!r.ok)
+                  notify->add_notify(xorstr("Executor timeout (no Lua state found)"), 2500, notify_type::error);
+                else if (r.loadStatus != 0)
+                  notify->add_notify(xorstr("Syntax error in Lua code"), 2000, notify_type::error);
+                else if (r.pcallStatus != 0)
+                  notify->add_notify(xorstr("Lua runtime error"), 2000, notify_type::error);
+                else
+                  notify->add_notify(xorstr("Executed"), 1500, notify_type::success);
               } else {
-                notify->add_notify(xorstr("Empty code or no resource selected"),
-                                   2000, notify_type::error);
+                notify->add_notify(xorstr("No code entered"), 1500, notify_type::error);
               }
             }
 

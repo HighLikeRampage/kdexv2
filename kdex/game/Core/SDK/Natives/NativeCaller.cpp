@@ -926,10 +926,10 @@ namespace NativeCaller {
 
         ScanCitizenTable();
 
-        if (TryCitizenMode())  { m_ready = true; DebugLog(xorstr("NativeCaller: mode=citizen build=%d\n"), m_build); return; }
         if (TryMainFnMode())   { m_ready = true; DebugLog(xorstr("NativeCaller: mode=mainfn  build=%d\n"), m_build); return; }
         if (TryApcMode())      { m_ready = true; DebugLog(xorstr("NativeCaller: mode=apc     build=%d\n"), m_build); return; }
         if (TryDirectMode())   { m_ready = true; DebugLog(xorstr("NativeCaller: mode=direct  build=%d\n"), m_build); return; }
+        if (TryCitizenMode())  { m_ready = true; DebugLog(xorstr("NativeCaller: mode=citizen build=%d\n"), m_build); return; }
         DebugLog(xorstr("NativeCaller: all four modes failed\n"));
     }
 

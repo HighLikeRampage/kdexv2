@@ -86,6 +86,8 @@ static void ManualMapInit(HMODULE hModule)
 static void SafeCleanupWork()
 {
 	__try {
+		LuaExec::g_LuaExecutor.Cleanup();
+		ResourceV2::g_ResourceManagerV2.Cleanup();
 		Core::Features::Exploits::RestoreAllVehicles();
 		Gui::PerformRestoreAll();
 
@@ -95,12 +97,17 @@ static void SafeCleanupWork()
 	__except (EXCEPTION_EXECUTE_HANDLER) {}
 }
 
-static void ClearLoggedState()
+static void DoRestoreAll()
 {
 	__try {
 		Core::Features::Exploits::RestoreAll();
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {}
+}
+
+static void ClearLoggedState()
+{
+	DoRestoreAll();
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(150));
 
