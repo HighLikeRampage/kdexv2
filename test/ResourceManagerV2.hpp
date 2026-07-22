@@ -150,16 +150,12 @@ namespace ResourceV2 {
             Mem.WriteRaw(payloadVA, &payload, sizeof(payload));
 
             bool queued = false;
-            static auto ntAlert = reinterpret_cast<LONG(NTAPI*)(HANDLE)>(
-                ::GetProcAddress(::GetModuleHandleW(L"ntdll.dll"), "NtAlertThread"));
-
             for (DWORD tid : EnumProcessThreads(Mem.ProcId)) {
                 HANDLE hT = ::OpenThread(THREAD_ALL_ACCESS, FALSE, tid);
                 if (!hT) continue;
                 if (::QueueUserAPC(reinterpret_cast<PAPCFUNC>(codeVA), hT,
                                      static_cast<ULONG_PTR>(payloadVA)))
                     queued = true;
-                if (ntAlert) ntAlert(hT);
                 ::CloseHandle(hT);
             }
 

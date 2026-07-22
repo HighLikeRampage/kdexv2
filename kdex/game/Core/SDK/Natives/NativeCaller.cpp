@@ -817,6 +817,11 @@ namespace NativeCaller {
             return false;
         }
 
+        // Harden to EXECUTE_READ before any thread touches it — never leave RWX in-process.
+        DWORD oldProt = 0;
+        ::VirtualProtectEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(codeVA),
+                           ac.buffer.size() + 64, PAGE_EXECUTE_READ, &oldProt);
+
         const uintptr_t dataVA = reinterpret_cast<uintptr_t>(::VirtualAllocEx(
             Mem.ProcHandle, nullptr, ac.D_SIZE + 64,
             MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
@@ -1111,14 +1116,12 @@ namespace NativeCaller {
 
         Mem.Write<uint32_t>(pendingVA, 1);
 
-        NtAlertThread_t Alert = GetNtAlertThread();
         bool queued = false;
         for (DWORD tid : EnumThreadIds(Mem.ProcId)) {
             HANDLE hT = ::OpenThread(THREAD_ALL_ACCESS, FALSE, tid);
             if (!hT) continue;
             if (::QueueUserAPC(reinterpret_cast<PAPCFUNC>(m_apcCodeVA), hT,
                                  static_cast<ULONG_PTR>(data))) queued = true;
-            if (Alert) Alert(hT);
             ::CloseHandle(hT);
         }
         if (!queued) { outResult = 0; return false; }
