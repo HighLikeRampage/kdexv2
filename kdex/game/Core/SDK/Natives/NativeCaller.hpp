@@ -144,10 +144,12 @@ namespace NativeCaller {
 
         std::vector<Range>   m_modRanges;
 
-        uintptr_t m_citQueueVA = 0;
-        uintptr_t m_citCaveVA  = 0;
-        uintptr_t m_citSlotVA  = 0;
-        uintptr_t m_citOrigFn  = 0;
+        uintptr_t            m_citQueueVA       = 0;
+        uintptr_t            m_citCaveVA        = 0;
+        uintptr_t            m_citSlotVA        = 0;
+        uintptr_t            m_citOrigFn        = 0;
+        std::vector<uint8_t> m_citCaveOrigBytes;
+        size_t               m_citCaveSize      = 0;
 
         uintptr_t                          m_mainBase   = 0;
         uintptr_t                          m_mainDataVA = 0;

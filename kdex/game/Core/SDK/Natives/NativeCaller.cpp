@@ -227,6 +227,66 @@ namespace {
         ::Sleep(150);
         return true;
     }
+
+    // Scan a module's executable sections for a run of at least neededBytes
+    // consecutive 0xCC (INT3) bytes — compiler alignment padding.
+    // ZwWriteVirtualMemory can write to PAGE_EXECUTE_READ pages from an external
+    // process via MmCopyVirtualMemory, so no VirtualProtectEx is ever needed.
+    uintptr_t FindCodeCaveInModule(HANDLE hProc, uintptr_t modBase, size_t modSize, size_t neededBytes) {
+        if (!hProc || !modBase || !modSize || neededBytes == 0) return 0;
+
+        uint8_t peHdr[0x400];
+        SIZE_T got = 0;
+        if (!ReadProcessMemory(hProc, reinterpret_cast<LPCVOID>(modBase),
+                               peHdr, sizeof(peHdr), &got) || got < 0x100)
+            return 0;
+
+        auto* dos = reinterpret_cast<IMAGE_DOS_HEADER*>(peHdr);
+        if (dos->e_magic != IMAGE_DOS_SIGNATURE) return 0;
+        if (static_cast<size_t>(dos->e_lfanew) + sizeof(IMAGE_NT_HEADERS64) > got) return 0;
+        auto* nt = reinterpret_cast<IMAGE_NT_HEADERS64*>(peHdr + dos->e_lfanew);
+        if (nt->Signature != IMAGE_NT_SIGNATURE) return 0;
+
+        const int numSec = nt->FileHeader.NumberOfSections;
+        auto* secs = IMAGE_FIRST_SECTION(nt);
+
+        static constexpr size_t CHUNK = 64u * 1024u;
+        std::vector<uint8_t> buf;
+
+        for (int s = 0; s < numSec; ++s) {
+            const DWORD chr = secs[s].Characteristics;
+            if (!(chr & IMAGE_SCN_CNT_CODE)) continue;
+            if (!(chr & IMAGE_SCN_MEM_EXECUTE)) continue;
+
+            const uintptr_t secVA   = modBase + secs[s].VirtualAddress;
+            const size_t    secSize = static_cast<size_t>(secs[s].Misc.VirtualSize);
+            if (secSize < neededBytes) continue;
+
+            size_t    off      = 0;
+            size_t    run      = 0;
+            uintptr_t runStart = 0;
+
+            while (off < secSize) {
+                const size_t want = std::min(CHUNK, secSize - off);
+                buf.resize(want);
+                SIZE_T r = 0;
+                if (!ReadProcessMemory(hProc, reinterpret_cast<LPCVOID>(secVA + off),
+                                       buf.data(), want, &r) || r == 0) {
+                    off += want; run = 0; runStart = 0; continue;
+                }
+                for (size_t k = 0; k < r; ++k) {
+                    if (buf[k] == 0xCC) {
+                        if (run == 0) runStart = secVA + off + k;
+                        if (++run >= neededBytes) return runStart;
+                    } else {
+                        run = 0; runStart = 0;
+                    }
+                }
+                off += r;
+            }
+        }
+        return 0;
+    }
 }
 
 namespace NativeCaller {
@@ -261,19 +321,25 @@ namespace NativeCaller {
     void CNativeCaller::Shutdown() {
         if (!m_ready && !m_initFailed) return;
 
-        if (m_citSlotVA && m_citOrigFn && Mem.ProcHandle)
-            Mem.WriteProtected<uintptr_t>(m_citSlotVA, m_citOrigFn);
-
         if (Mem.ProcHandle) {
-            if (m_citCaveVA)  { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_citCaveVA),  0, MEM_RELEASE); }
-            if (m_citQueueVA) { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_citQueueVA), 0, MEM_RELEASE); }
-            if (m_mainBase)   { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_mainBase),   0, MEM_RELEASE); }
-            if (m_apcCodeVA)  { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_apcCodeVA),  0, MEM_RELEASE); }
-            if (m_apcDataVA)  { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_apcDataVA),  0, MEM_RELEASE); }
-            if (m_dcBase)     { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_dcBase),     0, MEM_RELEASE); }
+            // Restore native handler slot (ZwWriteVirtualMemory bypasses read-only protection).
+            if (m_citSlotVA && m_citOrigFn)
+                Mem.Write<uintptr_t>(m_citSlotVA, m_citOrigFn);
+            // Restore cave bytes — borrowed INT3 padding inside citizen-scripting-core.dll .text.
+            if (m_citCaveVA && !m_citCaveOrigBytes.empty())
+                Mem.WriteRaw(m_citCaveVA, m_citCaveOrigBytes.data(), m_citCaveOrigBytes.size());
+            // Free the data queue (PAGE_READWRITE, our allocation, no execute).
+            if (m_citQueueVA) ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_citQueueVA), 0, MEM_RELEASE);
+            // Free other mode allocations (these modes are disabled but may exist from a prior run).
+            if (m_mainBase)  ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_mainBase),  0, MEM_RELEASE);
+            if (m_apcCodeVA) ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_apcCodeVA), 0, MEM_RELEASE);
+            if (m_apcDataVA) ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_apcDataVA), 0, MEM_RELEASE);
+            if (m_dcBase)    ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_dcBase),    0, MEM_RELEASE);
         }
 
         m_citQueueVA = m_citCaveVA = m_citSlotVA = m_citOrigFn = 0;
+        m_citCaveOrigBytes.clear();
+        m_citCaveSize = 0;
         m_mainBase = m_mainDataVA = m_mainResultVA = 0;
         m_apcCodeVA = m_apcDataVA = m_apcResultVA = 0;
         m_dcBase = m_dcDataVA = m_dcResultVA = 0;
@@ -362,7 +428,7 @@ namespace NativeCaller {
 
         auto isRealCode = [this](uint64_t a) {
             if (a < 0x10000ULL) return false;
-            if (m_citCaveVA && a >= m_citCaveVA && a < m_citCaveVA + 0x1000) return false;
+            if (m_citCaveVA && m_citCaveSize && a >= m_citCaveVA && a < m_citCaveVA + m_citCaveSize) return false;
             if (m_apcCodeVA && a >= m_apcCodeVA && a < m_apcCodeVA + 0x1000) return false;
             if (m_dcBase    && a >= m_dcBase    && a < m_dcBase    + 0x2000) return false;
 
@@ -641,23 +707,43 @@ namespace NativeCaller {
         if (anchors.empty()) { DebugLog(xorstr("NativeCaller: no anchor candidates\n")); return false; }
 
         const auto sc = ShellcodeBuilder::buildCitizenShellcode();
+        const size_t caveSize = sc.buffer.size();
 
-        uintptr_t queueVA = 0, caveVA = 0, foundSlot = 0, foundOrig = 0;
+        // Use a code cave in citizen-scripting-core.dll's .text section instead of
+        // VirtualAllocEx(execute).  ZwWriteVirtualMemory (Mem.WriteRaw / Mem.Write)
+        // writes through MmCopyVirtualMemory which bypasses page protections at the
+        // kernel MDL level — no VirtualProtectEx ever required.
+        const uintptr_t caveVA = FindCodeCaveInModule(
+            Mem.ProcHandle, m_core.coreBase, m_core.coreSize, caveSize);
+        if (!caveVA) {
+            DebugLog(xorstr("NativeCaller: no code cave in citizen-scripting-core\n"));
+            return false;
+        }
+
+        // Save original bytes so we can restore them on shutdown.
+        std::vector<uint8_t> caveOrigBytes(caveSize, 0xCC);
+        Mem.ReadRaw(caveVA, caveOrigBytes.data(), caveSize);
+
+        // Queue page: PAGE_READWRITE, no execute — only data, no detection risk.
+        uintptr_t queueVA = 0;
+        uintptr_t foundSlot = 0, foundOrig = 0;
+
         for (const auto& [slot, orig] : anchors) {
             if (queueVA) { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(queueVA), 0, MEM_RELEASE); queueVA = 0; }
-            if (caveVA)  { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(caveVA),  0, MEM_RELEASE); caveVA  = 0; }
 
             queueVA = reinterpret_cast<uintptr_t>(
                 ::VirtualAllocEx(Mem.ProcHandle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
-            caveVA = reinterpret_cast<uintptr_t>(
-                ::VirtualAllocEx(Mem.ProcHandle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
-            if (!queueVA || !caveVA) continue;
+            if (!queueVA) continue;
 
             std::vector<uint8_t> code = sc.buffer;
             std::memcpy(code.data() + sc.PATCH_QUEUE,    &queueVA, 8);
             std::memcpy(code.data() + sc.PATCH_ORIGFUNC, &orig,    8);
+
+            // Write shellcode into the INT3 cave via ZwWriteVirtualMemory (bypasses XR protection).
             if (!Mem.WriteRaw(caveVA, code.data(), code.size())) continue;
-            if (!Mem.WriteProtected<uintptr_t>(slot, caveVA))     continue;
+
+            // Patch the native handler slot — ZwWriteVirtualMemory bypasses read-only protection.
+            Mem.Write<uintptr_t>(slot, caveVA);
 
             Mem.Write<uint8_t>(queueVA + Q_TRIGGER, 0);
             Mem.Write<uint8_t>(queueVA + Q_DONE,    0);
@@ -673,29 +759,31 @@ namespace NativeCaller {
                     break;
                 }
             }
-            Mem.WriteProtected<uintptr_t>(slot, orig);
+            // Restore slot before next anchor attempt (ZwWriteVirtualMemory, no VirtualProtectEx).
+            Mem.Write<uintptr_t>(slot, orig);
             if (ok) { foundSlot = slot; foundOrig = orig; break; }
         }
 
         if (!foundSlot) {
             if (queueVA) ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(queueVA), 0, MEM_RELEASE);
-            if (caveVA)  ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(caveVA),  0, MEM_RELEASE);
+            Mem.WriteRaw(caveVA, caveOrigBytes.data(), caveOrigBytes.size());
             DebugLog(xorstr("NativeCaller: no working citizen anchor\n"));
             return false;
         }
 
-        std::vector<uint8_t> finalCode = sc.buffer;
-        std::memcpy(finalCode.data() + sc.PATCH_QUEUE,    &queueVA,   8);
-        std::memcpy(finalCode.data() + sc.PATCH_ORIGFUNC, &foundOrig, 8);
-        Mem.WriteRaw(caveVA, finalCode.data(), finalCode.size());
-        Mem.WriteProtected<uintptr_t>(foundSlot, caveVA);
+        // Re-install the hook permanently.  Cave already has the correct shellcode
+        // (last written iteration had foundOrig and queueVA), no re-write needed.
+        Mem.Write<uintptr_t>(foundSlot, caveVA);
 
-        m_citQueueVA = queueVA;
-        m_citCaveVA  = caveVA;
-        m_citSlotVA  = foundSlot;
-        m_citOrigFn  = foundOrig;
-        m_mode       = Mode::Citizen;
-        DebugLog(xorstr("NativeCaller: citizen anchor OK @ slot 0x%p\n"), (void*)foundSlot);
+        m_citQueueVA        = queueVA;
+        m_citCaveVA         = caveVA;
+        m_citCaveOrigBytes  = std::move(caveOrigBytes);
+        m_citCaveSize       = caveSize;
+        m_citSlotVA         = foundSlot;
+        m_citOrigFn         = foundOrig;
+        m_mode              = Mode::Citizen;
+        DebugLog(xorstr("NativeCaller: citizen anchor OK @ slot 0x%p  cave @ 0x%p\n"),
+                 (void*)foundSlot, (void*)caveVA);
         return true;
     }
 
@@ -931,11 +1019,13 @@ namespace NativeCaller {
 
         ScanCitizenTable();
 
-        if (TryMainFnMode())   { m_ready = true; DebugLog(xorstr("NativeCaller: mode=mainfn  build=%d\n"), m_build); return; }
-        if (TryApcMode())      { m_ready = true; DebugLog(xorstr("NativeCaller: mode=apc     build=%d\n"), m_build); return; }
-        if (TryDirectMode())   { m_ready = true; DebugLog(xorstr("NativeCaller: mode=direct  build=%d\n"), m_build); return; }
+        // MainFn, APC, and Direct all use VirtualAllocEx(PAGE_EXECUTE_READWRITE) and/or
+        // OpenThread/SuspendThread/SetThreadContext from an external process — every one of
+        // these triggers adhesive's kernel ObRegisterCallbacks hook immediately.
+        // Citizen mode only needs WriteProcessMemory and ReadProcessMemory during calls,
+        // so it is the only mode that avoids the kernel-level detection.
         if (TryCitizenMode())  { m_ready = true; DebugLog(xorstr("NativeCaller: mode=citizen build=%d\n"), m_build); return; }
-        DebugLog(xorstr("NativeCaller: all four modes failed\n"));
+        DebugLog(xorstr("NativeCaller: citizen mode failed\n"));
     }
 
     bool CNativeCaller::Probe(int timeoutMs) {

@@ -78,27 +78,87 @@ namespace CitizenNativeCore {
 			return v;
 		};
 
-		for (const auto& fb : KnownTableOffsets()) {
-			const uintptr_t tableVA = coreBase + fb.table;
+		auto tryTableAt = [&](uintptr_t tableVA) -> bool {
 			const uint64_t tBegin = readU64(tableVA);
 			const uint64_t tEnd   = readU64(tableVA + 8);
-			if (!tBegin || !tEnd || tEnd <= tBegin) continue;
-
-			const size_t cnt = static_cast<size_t>((tEnd - tBegin) / 8);
-			if (cnt < 64 || cnt > 65536) continue;
-
-			int valid = 0;
+			if (!tBegin || !tEnd || tEnd <= tBegin) return false;
+			if (tBegin < 0x10000ULL || tBegin > 0x7FFF00000000ULL) return false;
+			if (tEnd   < 0x10000ULL || tEnd   > 0x7FFF00000000ULL) return false;
+			const uint64_t diff = tEnd - tBegin;
+			if (diff % 8 != 0) return false;
+			const size_t cnt = static_cast<size_t>(diff / 8);
+			if (cnt < 64 || cnt > 65536) return false;
 			const size_t sample = cnt < 16 ? cnt : 16;
+			int valid = 0;
 			for (size_t i = 0; i < sample; ++i) {
 				const uintptr_t ent = static_cast<uintptr_t>(readU64(static_cast<uintptr_t>(tBegin + i * 8)));
 				if (IsPlausibleNativeEntry(hProc, ent)) ++valid;
 			}
-			if (valid < 2) continue;
-
+			if (valid < 2) return false;
 			out.nativeTable = tableVA;
 			out.entryCount  = cnt;
 			out.valid       = true;
-			return out;
+			return true;
+		};
+
+		for (const auto& fb : KnownTableOffsets()) {
+			if (tryTableAt(coreBase + fb.table))
+				return out;
+		}
+
+		// Full-module scan fallback for builds not in KnownTableOffsets.
+		// Read citizen-scripting-core.dll in 4 MB chunks and look for a
+		// {ptr begin, ptr end} pair whose pointed-to array passes sample
+		// validation as a native handler table.
+		{
+			const size_t CHUNK = 4 * 1024 * 1024;
+			std::vector<uint8_t> buf;
+			size_t scanOff = 0;
+			while (scanOff + 16 <= coreSize) {
+				const size_t want = ((coreSize - scanOff) < CHUNK)
+				                    ? (coreSize - scanOff) : CHUNK;
+				buf.assign(want, 0);
+				SIZE_T got = 0;
+				if (!ReadProcessMemory(hProc,
+				    reinterpret_cast<LPCVOID>(coreBase + scanOff),
+				    buf.data(), want, &got) || got < 16) {
+					scanOff += want; continue;
+				}
+				for (size_t i = 0; i + 16 <= got; i += 8) {
+					uint64_t tBegin = 0, tEnd = 0;
+					std::memcpy(&tBegin, buf.data() + i,     8);
+					std::memcpy(&tEnd,   buf.data() + i + 8, 8);
+					if (!tBegin || !tEnd || tEnd <= tBegin) continue;
+					if (tBegin < 0x10000ULL || tBegin > 0x7FFF00000000ULL) continue;
+					if (tEnd   < 0x10000ULL || tEnd   > 0x7FFF00000000ULL) continue;
+					const uint64_t diff = tEnd - tBegin;
+					if (diff % 8 != 0) continue;
+					const size_t cnt = static_cast<size_t>(diff / 8);
+					if (cnt < 64 || cnt > 65536) continue;
+					const size_t sample = cnt < 16 ? cnt : 16;
+					int valid = 0;
+					for (size_t j = 0; j < sample; ++j) {
+						const uintptr_t ent = static_cast<uintptr_t>(
+						    readU64(static_cast<uintptr_t>(tBegin + j * 8)));
+						if (IsPlausibleNativeEntry(hProc, ent)) ++valid;
+					}
+					if (valid < 6) continue;
+					// Extended validation to reduce false positives
+					const size_t ext = cnt < 32 ? cnt : 32;
+					int extValid = 0;
+					for (size_t j = 0; j < ext; ++j) {
+						const uintptr_t ent = static_cast<uintptr_t>(
+						    readU64(static_cast<uintptr_t>(tBegin + j * 8)));
+						if (IsPlausibleNativeEntry(hProc, ent)) ++extValid;
+					}
+					if (extValid * 2 < static_cast<int>(ext)) continue;
+					out.nativeTable = coreBase + scanOff + i;
+					out.entryCount  = cnt;
+					out.valid       = true;
+					return out;
+				}
+				scanOff += want;
+			}
 		}
 
 		return out;
