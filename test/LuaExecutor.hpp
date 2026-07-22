@@ -255,6 +255,15 @@ namespace LuaExec {
         bool Init() {
             if (m_ready) return true;
             if (!Mem.ProcHandle || !Mem.ProcId) return false;
+
+            // FindLuaApi reads ~8 MB from the target — throttle retries to avoid
+            // triggering adhesive's "excessive external ReadProcessMemory" heuristic.
+            const auto now = std::chrono::steady_clock::now();
+            if (m_lastInitAttempt != std::chrono::steady_clock::time_point{} &&
+                now - m_lastInitAttempt < std::chrono::seconds(30))
+                return false;
+            m_lastInitAttempt = now;
+
             m_api = FindLuaApi(Mem.ProcHandle, Mem.ProcId);
             if (!m_api.complete()) {
                 DebugLog(xorstr("[LuaExec] Lua API not found\n"));
@@ -272,6 +281,7 @@ namespace LuaExec {
             m_luaState = 0;
             m_api = {};
             m_ready = false;
+            m_lastInitAttempt = {};
         }
 
         Result Execute(const std::string& code, int timeoutMs = 5000) {
@@ -371,6 +381,7 @@ namespace LuaExec {
         LuaApi    m_api{};
         uintptr_t m_luaState = 0;
         std::mutex m_mtx;
+        std::chrono::steady_clock::time_point m_lastInitAttempt{};
 
         uintptr_t GetLuaState() {
             if (m_luaState && ValidateState(m_luaState)) return m_luaState;

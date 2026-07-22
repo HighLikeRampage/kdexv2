@@ -97,33 +97,12 @@ namespace ResourceV2 {
         bool Init() {
             if (m_ready) return true;
             if (!Mem.ProcHandle) return false;
-
             m_shellcode = BuildApcShellcode();
-
-            m_codeVA = reinterpret_cast<uintptr_t>(
-                ::VirtualAllocEx(Mem.ProcHandle, nullptr,
-                    m_shellcode.size() + 64, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
-            if (!m_codeVA) return false;
-
-            if (!Mem.WriteRaw(m_codeVA, m_shellcode.data(), m_shellcode.size())) {
-                Cleanup(); return false;
-            }
-
-            m_payloadVA = reinterpret_cast<uintptr_t>(
-                ::VirtualAllocEx(Mem.ProcHandle, nullptr,
-                    sizeof(ApcPayload) + 64, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
-            if (!m_payloadVA) { Cleanup(); return false; }
-
             m_ready = true;
             return true;
         }
 
         void Cleanup() {
-            if (Mem.ProcHandle) {
-                if (m_codeVA)    ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_codeVA),    0, MEM_RELEASE);
-                if (m_payloadVA) ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_payloadVA), 0, MEM_RELEASE);
-            }
-            m_codeVA = m_payloadVA = 0;
             m_ready = false;
         }
 
@@ -142,11 +121,33 @@ namespace ResourceV2 {
 
             std::lock_guard<std::mutex> lk(m_mtx);
 
+            // Allocate code page fresh for this call only — no persistent RWX in the target.
+            const size_t codeSz = m_shellcode.size() + 64;
+            uintptr_t codeVA = reinterpret_cast<uintptr_t>(
+                ::VirtualAllocEx(Mem.ProcHandle, nullptr,
+                    codeSz, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
+            if (!codeVA) return false;
+
+            Mem.WriteRaw(codeVA, m_shellcode.data(), m_shellcode.size());
+
+            // Harden to EXECUTE_READ before queuing so the page is never RWX when threads touch it.
+            DWORD oldProt = 0;
+            ::VirtualProtectEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(codeVA),
+                               codeSz, PAGE_EXECUTE_READ, &oldProt);
+
+            uintptr_t payloadVA = reinterpret_cast<uintptr_t>(
+                ::VirtualAllocEx(Mem.ProcHandle, nullptr,
+                    sizeof(ApcPayload) + 64, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
+            if (!payloadVA) {
+                ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(codeVA), 0, MEM_RELEASE);
+                return false;
+            }
+
             ApcPayload payload{};
             payload.resource_ptr = resource_ptr;
             payload.vtable_slot  = slot;
             payload.done         = 0;
-            Mem.WriteRaw(m_payloadVA, &payload, sizeof(payload));
+            Mem.WriteRaw(payloadVA, &payload, sizeof(payload));
 
             bool queued = false;
             static auto ntAlert = reinterpret_cast<LONG(NTAPI*)(HANDLE)>(
@@ -155,25 +156,35 @@ namespace ResourceV2 {
             for (DWORD tid : EnumProcessThreads(Mem.ProcId)) {
                 HANDLE hT = ::OpenThread(THREAD_ALL_ACCESS, FALSE, tid);
                 if (!hT) continue;
-                if (::QueueUserAPC(reinterpret_cast<PAPCFUNC>(m_codeVA), hT,
-                                     static_cast<ULONG_PTR>(m_payloadVA)))
+                if (::QueueUserAPC(reinterpret_cast<PAPCFUNC>(codeVA), hT,
+                                     static_cast<ULONG_PTR>(payloadVA)))
                     queued = true;
                 if (ntAlert) ntAlert(hT);
                 ::CloseHandle(hT);
             }
-            if (!queued) return false;
 
-            const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeoutMs);
-            while (std::chrono::steady_clock::now() < deadline) {
-                if (Mem.Read<uint32_t>(m_payloadVA + offsetof(ApcPayload, done)))
-                    return true;
-                std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            bool done = false;
+            if (queued) {
+                const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeoutMs);
+                while (std::chrono::steady_clock::now() < deadline) {
+                    if (Mem.Read<uint32_t>(payloadVA + offsetof(ApcPayload, done))) {
+                        done = true;
+                        break;
+                    }
+                    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                }
             }
-            return false;
+
+            // Shellcode sets done=1 as its last instruction before ret, so the
+            // moment done=1 the thread has already returned from the APC — safe to free.
+            // On timeout we still free; if the APC fires later it will fault in freed
+            // memory, but that's preferable to leaving a tracked anonymous code page.
+            ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(codeVA),    0, MEM_RELEASE);
+            ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(payloadVA), 0, MEM_RELEASE);
+            return done;
         }
 
         void stop(uintptr_t resource_ptr) {
-            // Signal Stopping so the game's own scheduler cooperates
             Mem.Write<uint32_t>(resource_ptr + 0x118, static_cast<uint32_t>(Features::Exploits::eResourceState::Stopping));
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
             CallSlot(resource_ptr, 9);
@@ -194,9 +205,7 @@ namespace ResourceV2 {
         }
 
     private:
-        bool      m_ready     = false;
-        uintptr_t m_codeVA    = 0;
-        uintptr_t m_payloadVA = 0;
+        bool      m_ready = false;
         std::vector<uint8_t> m_shellcode;
         std::mutex m_mtx;
     };
