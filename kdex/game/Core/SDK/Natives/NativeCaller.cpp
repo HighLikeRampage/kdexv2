@@ -388,7 +388,9 @@ namespace {
             const uintptr_t regEnd   = regBase + mbi.RegionSize;
             const uintptr_t nextAddr = regEnd;
 
-            if (mbi.State == MEM_COMMIT && mbi.Protect == PAGE_READWRITE) {
+            if (mbi.State == MEM_COMMIT &&
+                (mbi.Protect == PAGE_READWRITE ||
+                 mbi.Protect == PAGE_EXECUTE_WRITECOPY)) {
                 const uintptr_t lo = std::max(regBase, scanStart);
                 const uintptr_t hi = std::min(regEnd,  scanEnd);
                 if (hi > lo + 7) {
@@ -893,6 +895,41 @@ namespace NativeCaller {
             return false;
         }
 
+        // Cross-validate each candidate: in rage::scrEngine's NativeRegistrationNew layout
+        //   handlers[i]  lives at node + 0x08 + i*8
+        //   hashes[i]    lives at node + 0x48 + i*8
+        // so   hash_addr = handler_addr + 0x40   for every index i.
+        //
+        // This filters ~5000 LuaJIT/unordered_map false positives down to the
+        // ~187 real dispatch slots.  Also checks handler_addr − 8 for the
+        // MSVC std::unordered_map node layout (key just before value).
+        // If neither check matches anything, keep the unvalidated list so the
+        // probe loop can still try — callCnt output will tell us what's wrong.
+        {
+            std::unordered_map<uint64_t, uint64_t> wrapperToHash;
+            for (const auto& ce : m_citizen)
+                if (ce.hash1 > 0x10000ULL && ce.hash0 > 0x10000ULL)
+                    wrapperToHash.emplace(ce.hash1, ce.hash0);
+
+            std::vector<std::pair<uintptr_t, uintptr_t>> validated;
+            validated.reserve(m_citizen.size());
+            for (const auto& p : anchors) {
+                const auto mapIt = wrapperToHash.find(static_cast<uint64_t>(p.second));
+                if (mapIt == wrapperToHash.end()) continue;
+                const uint64_t expectedHash = mapIt->second;
+                if (Mem.Read<uint64_t>(p.first + 0x40) == expectedHash ||
+                    Mem.Read<uint64_t>(p.first - 8)    == expectedHash) {
+                    validated.push_back(p);
+                }
+            }
+            DebugLog(xorstr("NativeCaller: %zu→%zu anchors after hash cross-validation\n"),
+                     anchors.size(), validated.size());
+            if (!validated.empty())
+                anchors = std::move(validated);
+            // If 0 validated: keep the full unvalidated list — probe will show
+            // us via callCnt which slot (if any) the dispatch actually touches.
+        }
+
         const auto sc = ShellcodeBuilder::buildCitizenShellcode();
         const size_t caveSize = sc.buffer.size();
 
@@ -952,7 +989,14 @@ namespace NativeCaller {
         uintptr_t foundSlot = 0, foundOrig = 0;
 
         size_t allocFailCnt = 0, writeFailCnt = 0, attemptIdx = 0;
+        const auto probeDeadline =
+            std::chrono::steady_clock::now() + std::chrono::seconds(30);
         for (const auto& [slot, orig] : anchors) {
+            if (std::chrono::steady_clock::now() > probeDeadline) {
+                DebugLog(xorstr("NativeCaller: anchor probe 30s deadline reached (tried %zu)\n"),
+                         attemptIdx);
+                break;
+            }
             const size_t thisIdx = attemptIdx++;
             if (queueVA) { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(queueVA), 0, MEM_RELEASE); queueVA = 0; }
 
