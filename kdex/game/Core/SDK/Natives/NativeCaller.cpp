@@ -316,6 +316,50 @@ namespace {
         }
         return 0;
     }
+
+    // Scan the process VA map for an already-existing PAGE_EXECUTE_READWRITE region
+    // (e.g. LuaJIT mcode pages that FiveM's Lua runtime allocates legitimately) and
+    // return the start of a zero-filled run of at least neededBytes within it.
+    // Writing there via ZwWriteVirtualMemory succeeds because the page IS writable —
+    // no VirtualProtectEx, no adhesive trigger.  The region was created by the game
+    // itself, so the kernel does not flag it as an external injection attempt.
+    uintptr_t FindExistingRwxCave(HANDLE hProc, size_t neededBytes) {
+        static constexpr size_t CHUNK = 64u * 1024u;
+        std::vector<uint8_t> buf;
+        MEMORY_BASIC_INFORMATION mbi{};
+        uintptr_t addr = 0;
+        while (::VirtualQueryEx(hProc, reinterpret_cast<LPCVOID>(addr),
+                                 &mbi, sizeof(mbi)) == sizeof(mbi)) {
+            const uintptr_t regBase = reinterpret_cast<uintptr_t>(mbi.BaseAddress);
+            const uintptr_t nextAddr = regBase + mbi.RegionSize;
+            if (mbi.State == MEM_COMMIT &&
+                (mbi.Protect == PAGE_EXECUTE_READWRITE ||
+                 mbi.Protect == PAGE_EXECUTE_WRITECOPY)) {
+                const size_t regSz = static_cast<size_t>(mbi.RegionSize);
+                size_t off = 0, run = 0;
+                uintptr_t runStart = 0;
+                while (off < regSz) {
+                    const size_t want = std::min(CHUNK, regSz - off);
+                    buf.resize(want);
+                    SIZE_T got = 0;
+                    if (!::ReadProcessMemory(hProc, reinterpret_cast<LPCVOID>(regBase + off),
+                                             buf.data(), want, &got) || got == 0) {
+                        off += want; run = 0; runStart = 0; continue;
+                    }
+                    for (size_t k = 0; k < got; ++k) {
+                        if (buf[k] == 0x00 || buf[k] == 0xCC) {
+                            if (run == 0) runStart = regBase + off + k;
+                            if (++run >= neededBytes) return runStart;
+                        } else { run = 0; runStart = 0; }
+                    }
+                    off += got;
+                }
+            }
+            if (nextAddr <= addr) break;
+            addr = nextAddr;
+        }
+        return 0;
+    }
 }
 
 namespace NativeCaller {
@@ -766,27 +810,55 @@ namespace NativeCaller {
         const auto sc = ShellcodeBuilder::buildCitizenShellcode();
         const size_t caveSize = sc.buffer.size();
 
-        // Find a code cave: section-end zero padding or INT3 runs in any executable module.
-        // ZwWriteVirtualMemory bypasses PAGE_EXECUTE_READ via kernel MDL — no VirtualProtectEx.
-        uintptr_t caveVA = FindCodeCaveInModule(
-            Mem.ProcHandle, m_core.coreBase, m_core.coreSize, caveSize);
-        if (caveVA) {
-            DebugLog(xorstr("NativeCaller: cave in citizen-scripting-core @ 0x%p\n"), (void*)caveVA);
-        } else {
-            // LTCG Release builds often have no INT3 padding; fall back to GTA5.exe
-            // which always has a large .text section with section-end slack.
+        // Cave strategy (in priority order):
+        //   1. Section-end zeros in citizen-scripting-core.dll
+        //   2. Section-end zeros in GTA5.exe
+        //   3. Existing PAGE_EXECUTE_READWRITE region (LuaJIT mcode pages)
+        //
+        // ZwWriteVirtualMemory returns STATUS_PARTIAL_COPY on PAGE_EXECUTE_READ pages
+        // on Windows 10+ — the kernel path does NOT bypass PTE write protection for
+        // user-mode callers.  Strategy 3 succeeds because those pages are already RW+X
+        // (LuaJIT allocated them itself) so no VirtualProtectEx is needed.
+        auto tryWriteProbe = [&](uintptr_t va) -> bool {
+            const uint8_t z = 0;
+            SIZE_T w = 0;
+            return NT_SUCCESS(ZwWriteVirtualMemory(
+                Mem.ProcHandle, reinterpret_cast<LPVOID>(va), &z, 1, &w));
+        };
+
+        uintptr_t caveVA = 0;
+        // Strategy 1
+        caveVA = FindCodeCaveInModule(Mem.ProcHandle, m_core.coreBase, m_core.coreSize, caveSize);
+        if (caveVA && !tryWriteProbe(caveVA)) {
+            DebugLog(xorstr("NativeCaller: cit cave@%p PAGE_EXECUTE_READ — not writable\n"), (void*)caveVA);
+            caveVA = 0;
+        }
+        if (caveVA) DebugLog(xorstr("NativeCaller: cave in citizen-scripting-core @ 0x%p\n"), (void*)caveVA);
+
+        // Strategy 2
+        if (!caveVA) {
             caveVA = FindCodeCaveInModule(
                 Mem.ProcHandle, Mem.ModBase, static_cast<size_t>(Mem.ModBaseSize), caveSize);
-            if (caveVA) {
-                DebugLog(xorstr("NativeCaller: cave in GTA5.exe @ 0x%p\n"), (void*)caveVA);
-            } else {
-                DebugLog(xorstr("NativeCaller: no executable code cave found\n"));
-                return false;
+            if (caveVA && !tryWriteProbe(caveVA)) {
+                DebugLog(xorstr("NativeCaller: GTA5 cave@%p PAGE_EXECUTE_READ — not writable\n"), (void*)caveVA);
+                caveVA = 0;
             }
+            if (caveVA) DebugLog(xorstr("NativeCaller: cave in GTA5.exe @ 0x%p\n"), (void*)caveVA);
+        }
+
+        // Strategy 3: use a zero-filled tail of an existing RWX page (LuaJIT mcode).
+        if (!caveVA) {
+            caveVA = FindExistingRwxCave(Mem.ProcHandle, caveSize);
+            if (caveVA) DebugLog(xorstr("NativeCaller: cave in RWX region @ 0x%p\n"), (void*)caveVA);
+        }
+
+        if (!caveVA) {
+            DebugLog(xorstr("NativeCaller: no writable cave found\n"));
+            return false;
         }
 
         // Save original bytes so we can restore them on shutdown.
-        std::vector<uint8_t> caveOrigBytes(caveSize, 0xCC);
+        std::vector<uint8_t> caveOrigBytes(caveSize, 0x00);
         Mem.ReadRaw(caveVA, caveOrigBytes.data(), caveSize);
 
         // Queue page: PAGE_READWRITE, no execute — only data, no detection risk.
@@ -806,21 +878,15 @@ namespace NativeCaller {
             std::memcpy(code.data() + sc.PATCH_QUEUE,    &queueVA, 8);
             std::memcpy(code.data() + sc.PATCH_ORIGFUNC, &orig,    8);
 
-            // Write shellcode into the INT3 cave via ZwWriteVirtualMemory (bypasses XR protection).
+            // Write shellcode into the cave (cave was write-probed above; break on surprise fail).
             if (!Mem.WriteRaw(caveVA, code.data(), code.size())) {
-                if (thisIdx == 0) {
-                    // Capture the real NTSTATUS on the first failure — WriteRaw collapses
-                    // it to a bool, hiding whether this is STATUS_ACCESS_DENIED (kernel AC
-                    // callback stripping VM_WRITE) vs. a hard address/size bug.
-                    SIZE_T written = 0;
-                    const NTSTATUS st = ZwWriteVirtualMemory(
-                        Mem.ProcHandle, reinterpret_cast<LPVOID>(caveVA),
-                        code.data(), code.size(), &written);
-                    DebugLog(xorstr("NativeCaller: cave write failed status=0x%08X written=%zu caveVA=%p size=%zu procHandle=%p\n"),
-                             static_cast<unsigned>(st), static_cast<size_t>(written),
-                             (void*)caveVA, code.size(), (void*)Mem.ProcHandle);
-                }
-                ++writeFailCnt; continue;
+                SIZE_T written = 0;
+                const NTSTATUS st = ZwWriteVirtualMemory(
+                    Mem.ProcHandle, reinterpret_cast<LPVOID>(caveVA),
+                    code.data(), code.size(), &written);
+                DebugLog(xorstr("NativeCaller: cave write failed status=0x%08X written=%zu\n"),
+                         static_cast<unsigned>(st), static_cast<size_t>(written));
+                ++writeFailCnt; break; // same cave for all anchors — no point retrying
             }
 
             // Patch the native handler slot — ZwWriteVirtualMemory bypasses read-only protection.
