@@ -706,7 +706,10 @@ namespace NativeCaller {
             ce.hash0   = Mem.Read<uint64_t>(ent + E_HASH0);
             ce.hash1   = Mem.Read<uint64_t>(ent + E_HASH1);
             ce.handler = Mem.Read<uint64_t>(ent + E_HANDLER);
-            ce.slot    = ent + E_HANDLER;
+            // Dispatch slot is at +0x08 (citizen-scripting-core wrapper read by the
+            // scripting engine at call time).  E_HANDLER (+0x18) is the GTA5 native
+            // implementation — used as ggtHandler but NOT what the dispatcher reads.
+            ce.slot    = ent + 0x08;
             m_citizen.push_back(ce);
 
             if (ce.handler > 0x10000ULL) {
@@ -735,7 +738,7 @@ namespace NativeCaller {
                 if (ce.hash0 == ggtHash || ce.hash1 == ggtHash ||
                     (ce.hash0 & 0xFFFFFFFFULL) == (ggtHash & 0xFFFFFFFFULL) ||
                     (ce.hash1 & 0xFFFFFFFFULL) == (ggtHash & 0xFFFFFFFFULL)) {
-                    const uintptr_t ent = ce.slot - E_HANDLER;
+                    const uintptr_t ent = ce.slot - 0x08; // ce.slot = ent+0x08 after the fix
                     const uint64_t v0  = Mem.Read<uint64_t>(ent + 0x00);
                     const uint64_t v8  = Mem.Read<uint64_t>(ent + 0x08);
                     const uint64_t v10 = Mem.Read<uint64_t>(ent + 0x10);
@@ -755,7 +758,7 @@ namespace NativeCaller {
         std::vector<std::pair<uintptr_t, uintptr_t>> anchors;
         for (const auto& ce : m_citizen)
             if (ce.handler >= base && ce.handler < end)
-                anchors.emplace_back(ce.slot, static_cast<uintptr_t>(ce.handler));
+                anchors.emplace_back(ce.slot, static_cast<uintptr_t>(ce.hash1));
         DebugLog(xorstr("NativeCaller: %zu citizen entries, %zu anchors in GTA5 range, ggtHandler=%p\n"),
                  m_citizen.size(), anchors.size(), (void*)ggtHandler);
         if (anchors.empty()) { DebugLog(xorstr("NativeCaller: no anchor candidates\n")); return false; }
