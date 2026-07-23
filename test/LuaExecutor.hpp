@@ -167,23 +167,74 @@ namespace LuaExec {
             if (api.complete()) break;
         }
 
-        // Pattern fallback for luaL_loadbuffer if not exported by name
+        // Pattern fallback for luaL_loadbuffer if not exported by name.
+        // luaL_loadbufferx prologue (Lua 5.4.x Windows x64 MSVC Release):
         if (!api.loadbuffer) {
-            // luaL_loadbuffer calls luaL_loadbufferx with a NULL mode arg.
-            // luaL_loadbufferx prologue (Lua 5.4.x Windows x64 release build):
-            static const uint8_t kPat[] = {
+            static const uint8_t kPatLB[] = {
                 0x48, 0x89, 0x5C, 0x24, 0x08,   // mov [rsp+8], rbx
                 0x48, 0x89, 0x74, 0x24, 0x10,   // mov [rsp+16], rsi
                 0x57,                            // push rdi
                 0x48, 0x83, 0xEC, 0x30           // sub rsp, 0x30
             };
-            for (size_t off = 0; off + sizeof(kPat) < img.size(); ++off) {
-                if (std::memcmp(img.data() + off, kPat, sizeof(kPat)) == 0) {
+            for (size_t off = 0; off + sizeof(kPatLB) < img.size(); ++off) {
+                if (std::memcmp(img.data() + off, kPatLB, sizeof(kPatLB)) == 0) {
                     api.loadbuffer = luaBase + off;
                     DebugLog(xorstr("[LuaExec] luaL_loadbuffer pattern @ RVA 0x%zX\n"), off);
                     break;
                 }
             }
+        }
+
+        // Pattern fallback for lua_pcall.
+        // lua_pcall(L,nargs,nresults,msgh) calls lua_pcallk with ctx=0, k=NULL.
+        // MSVC x64 Release compiles this as:
+        //   sub rsp, 0x38  — 48 83 EC 38
+        //   xor eax, eax   — 33 C0
+        //   mov [rsp+20], rax — 48 89 44 24 20  (ctx = 0)
+        //   mov [rsp+28], rax — 48 89 44 24 28  (k = NULL)
+        if (!api.pcall) {
+            // Variant A: xor eax,eax
+            static const uint8_t kPatPC_A[] = {
+                0x48, 0x83, 0xEC, 0x38,           // sub rsp, 0x38
+                0x33, 0xC0,                       // xor eax, eax
+                0x48, 0x89, 0x44, 0x24, 0x20,     // mov [rsp+0x20], rax
+                0x48, 0x89, 0x44, 0x24, 0x28      // mov [rsp+0x28], rax
+            };
+            // Variant B: xor rax,rax (REX.W prefix)
+            static const uint8_t kPatPC_B[] = {
+                0x48, 0x83, 0xEC, 0x38,           // sub rsp, 0x38
+                0x48, 0x33, 0xC0,                 // xor rax, rax
+                0x48, 0x89, 0x44, 0x24, 0x20,     // mov [rsp+0x20], rax
+                0x48, 0x89, 0x44, 0x24, 0x28      // mov [rsp+0x28], rax
+            };
+            // Variant C: mov immediate 0 (no scratch register needed)
+            static const uint8_t kPatPC_C[] = {
+                0x48, 0x83, 0xEC, 0x38,           // sub rsp, 0x38
+                0x48, 0xC7, 0x44, 0x24, 0x20, 0x00, 0x00, 0x00, 0x00,  // mov qword[rsp+0x20], 0
+                0x48, 0xC7, 0x44, 0x24, 0x28, 0x00, 0x00, 0x00, 0x00   // mov qword[rsp+0x28], 0
+            };
+
+            for (size_t off = 0; off + sizeof(kPatPC_C) < img.size(); ++off) {
+                if      (off + sizeof(kPatPC_A) < img.size() &&
+                         std::memcmp(img.data() + off, kPatPC_A, sizeof(kPatPC_A)) == 0) {
+                    api.pcall = luaBase + off;
+                    DebugLog(xorstr("[LuaExec] lua_pcall pattern-A @ RVA 0x%zX\n"), off);
+                    break;
+                }
+                else if (off + sizeof(kPatPC_B) < img.size() &&
+                         std::memcmp(img.data() + off, kPatPC_B, sizeof(kPatPC_B)) == 0) {
+                    api.pcall = luaBase + off;
+                    DebugLog(xorstr("[LuaExec] lua_pcall pattern-B @ RVA 0x%zX\n"), off);
+                    break;
+                }
+                else if (std::memcmp(img.data() + off, kPatPC_C, sizeof(kPatPC_C)) == 0) {
+                    api.pcall = luaBase + off;
+                    DebugLog(xorstr("[LuaExec] lua_pcall pattern-C @ RVA 0x%zX\n"), off);
+                    break;
+                }
+            }
+            if (!api.pcall)
+                DebugLog(xorstr("[LuaExec] lua_pcall pattern not found\n"));
         }
         return api;
     }

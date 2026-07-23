@@ -228,10 +228,15 @@ namespace {
         return true;
     }
 
-    // Scan a module's executable sections for a run of at least neededBytes
-    // consecutive 0xCC (INT3) bytes — compiler alignment padding.
-    // ZwWriteVirtualMemory can write to PAGE_EXECUTE_READ pages from an external
-    // process via MmCopyVirtualMemory, so no VirtualProtectEx is ever needed.
+    // Find a block of unused executable bytes in a module for shellcode placement.
+    // ZwWriteVirtualMemory (Mem.WriteRaw) writes through MmCopyVirtualMemory at the
+    // kernel MDL level, bypassing virtual page protections without NtProtectVirtualMemory.
+    //
+    // Strategy (in order):
+    //  1. Section-end zero padding — the fractional page between VirtualSize and
+    //     the next 4KB boundary is guaranteed zeros by the OS page loader.
+    //     The page itself is PAGE_EXECUTE_READ (part of the code section).
+    //  2. 0xCC (INT3) runs in the section body — classic code cave from MSVC alignment.
     uintptr_t FindCodeCaveInModule(HANDLE hProc, uintptr_t modBase, size_t modSize, size_t neededBytes) {
         if (!hProc || !modBase || !modSize || neededBytes == 0) return 0;
 
@@ -260,8 +265,32 @@ namespace {
 
             const uintptr_t secVA   = modBase + secs[s].VirtualAddress;
             const size_t    secSize = static_cast<size_t>(secs[s].Misc.VirtualSize);
-            if (secSize < neededBytes) continue;
+            if (!secSize) continue;
 
+            // Strategy 1: fractional-page zero padding at the end of the section.
+            // Bytes from VirtualSize to ROUNDUP(VirtualSize, 0x1000) are guaranteed
+            // to be zero by the OS page-zeroing loader — safe, always executable.
+            {
+                const uintptr_t vEnd    = secVA + secSize;
+                const uintptr_t pageEnd = (vEnd + 0xFFFu) & ~uintptr_t(0xFFFu);
+                const size_t    slack   = static_cast<size_t>(pageEnd - vEnd);
+                if (slack >= neededBytes) {
+                    // Quick sanity-read to confirm the bytes are accessible and zero.
+                    const size_t checkSz = std::min(neededBytes, size_t(64));
+                    uint8_t sample[64]{};
+                    SIZE_T r2 = 0;
+                    if (ReadProcessMemory(hProc, reinterpret_cast<LPCVOID>(vEnd),
+                                         sample, checkSz, &r2) && r2 == checkSz) {
+                        bool clean = true;
+                        for (size_t k = 0; k < checkSz; ++k)
+                            if (sample[k] != 0x00 && sample[k] != 0xCC) { clean = false; break; }
+                        if (clean) return vEnd;
+                    }
+                }
+            }
+
+            // Strategy 2: scan section body for 0xCC (INT3) alignment padding.
+            if (secSize < neededBytes) continue;
             size_t    off      = 0;
             size_t    run      = 0;
             uintptr_t runStart = 0;
@@ -709,15 +738,23 @@ namespace NativeCaller {
         const auto sc = ShellcodeBuilder::buildCitizenShellcode();
         const size_t caveSize = sc.buffer.size();
 
-        // Use a code cave in citizen-scripting-core.dll's .text section instead of
-        // VirtualAllocEx(execute).  ZwWriteVirtualMemory (Mem.WriteRaw / Mem.Write)
-        // writes through MmCopyVirtualMemory which bypasses page protections at the
-        // kernel MDL level — no VirtualProtectEx ever required.
-        const uintptr_t caveVA = FindCodeCaveInModule(
+        // Find a code cave: section-end zero padding or INT3 runs in any executable module.
+        // ZwWriteVirtualMemory bypasses PAGE_EXECUTE_READ via kernel MDL — no VirtualProtectEx.
+        uintptr_t caveVA = FindCodeCaveInModule(
             Mem.ProcHandle, m_core.coreBase, m_core.coreSize, caveSize);
-        if (!caveVA) {
-            DebugLog(xorstr("NativeCaller: no code cave in citizen-scripting-core\n"));
-            return false;
+        if (caveVA) {
+            DebugLog(xorstr("NativeCaller: cave in citizen-scripting-core @ 0x%p\n"), (void*)caveVA);
+        } else {
+            // LTCG Release builds often have no INT3 padding; fall back to GTA5.exe
+            // which always has a large .text section with section-end slack.
+            caveVA = FindCodeCaveInModule(
+                Mem.ProcHandle, Mem.ModBase, static_cast<size_t>(Mem.ModBaseSize), caveSize);
+            if (caveVA) {
+                DebugLog(xorstr("NativeCaller: cave in GTA5.exe @ 0x%p\n"), (void*)caveVA);
+            } else {
+                DebugLog(xorstr("NativeCaller: no executable code cave found\n"));
+                return false;
+            }
         }
 
         // Save original bytes so we can restore them on shutdown.
