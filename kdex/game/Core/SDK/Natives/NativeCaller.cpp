@@ -793,19 +793,21 @@ namespace NativeCaller {
         uintptr_t queueVA = 0;
         uintptr_t foundSlot = 0, foundOrig = 0;
 
+        size_t allocFailCnt = 0, writeFailCnt = 0, attemptIdx = 0;
         for (const auto& [slot, orig] : anchors) {
+            const size_t thisIdx = attemptIdx++;
             if (queueVA) { ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(queueVA), 0, MEM_RELEASE); queueVA = 0; }
 
             queueVA = reinterpret_cast<uintptr_t>(
                 ::VirtualAllocEx(Mem.ProcHandle, nullptr, 0x1000, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
-            if (!queueVA) continue;
+            if (!queueVA) { ++allocFailCnt; continue; }
 
             std::vector<uint8_t> code = sc.buffer;
             std::memcpy(code.data() + sc.PATCH_QUEUE,    &queueVA, 8);
             std::memcpy(code.data() + sc.PATCH_ORIGFUNC, &orig,    8);
 
             // Write shellcode into the INT3 cave via ZwWriteVirtualMemory (bypasses XR protection).
-            if (!Mem.WriteRaw(caveVA, code.data(), code.size())) continue;
+            if (!Mem.WriteRaw(caveVA, code.data(), code.size())) { ++writeFailCnt; continue; }
 
             // Patch the native handler slot — ZwWriteVirtualMemory bypasses read-only protection.
             Mem.Write<uintptr_t>(slot, caveVA);
@@ -828,11 +830,15 @@ namespace NativeCaller {
 
             // Diagnose: call counter (shellcode increments queueVA+0xC0 on every entry).
             const uint64_t callCnt = Mem.Read<uint64_t>(queueVA + 0xC0);
-            DebugLog(xorstr("anchor slot=%p orig=%p writeOk=%d callCnt=%llu done=%u result=%016llX\n"),
-                     (void*)slot, (void*)orig, (int)writeOk,
-                     (unsigned long long)callCnt,
-                     (unsigned)Mem.Read<uint8_t>(queueVA + Q_DONE),
-                     (unsigned long long)Mem.Read<uint64_t>(queueVA + Q_RESULT));
+            // Only log anchors that actually got called (or the very first attempt) —
+            // logging all ~124 candidates floods the console and scrolls the summary off.
+            if (callCnt != 0 || thisIdx == 0) {
+                DebugLog(xorstr("anchor slot=%p orig=%p writeOk=%d callCnt=%llu done=%u result=%016llX\n"),
+                         (void*)slot, (void*)orig, (int)writeOk,
+                         (unsigned long long)callCnt,
+                         (unsigned)Mem.Read<uint8_t>(queueVA + Q_DONE),
+                         (unsigned long long)Mem.Read<uint64_t>(queueVA + Q_RESULT));
+            }
 
             // Restore slot before next anchor attempt (ZwWriteVirtualMemory, no VirtualProtectEx).
             Mem.Write<uintptr_t>(slot, orig);
@@ -842,7 +848,8 @@ namespace NativeCaller {
         if (!foundSlot) {
             if (queueVA) ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(queueVA), 0, MEM_RELEASE);
             Mem.WriteRaw(caveVA, caveOrigBytes.data(), caveOrigBytes.size());
-            DebugLog(xorstr("NativeCaller: no working citizen anchor\n"));
+            DebugLog(xorstr("NativeCaller: no working citizen anchor (tried=%zu allocFail=%zu writeFail=%zu)\n"),
+                     anchors.size(), allocFailCnt, writeFailCnt);
             return false;
         }
 
