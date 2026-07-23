@@ -807,7 +807,21 @@ namespace NativeCaller {
             std::memcpy(code.data() + sc.PATCH_ORIGFUNC, &orig,    8);
 
             // Write shellcode into the INT3 cave via ZwWriteVirtualMemory (bypasses XR protection).
-            if (!Mem.WriteRaw(caveVA, code.data(), code.size())) { ++writeFailCnt; continue; }
+            if (!Mem.WriteRaw(caveVA, code.data(), code.size())) {
+                if (thisIdx == 0) {
+                    // Capture the real NTSTATUS on the first failure — WriteRaw collapses
+                    // it to a bool, hiding whether this is STATUS_ACCESS_DENIED (kernel AC
+                    // callback stripping VM_WRITE) vs. a hard address/size bug.
+                    SIZE_T written = 0;
+                    const NTSTATUS st = ZwWriteVirtualMemory(
+                        Mem.ProcHandle, reinterpret_cast<LPVOID>(caveVA),
+                        code.data(), code.size(), &written);
+                    DebugLog(xorstr("NativeCaller: cave write failed status=0x%08X written=%zu caveVA=%p size=%zu procHandle=%p\n"),
+                             static_cast<unsigned>(st), static_cast<size_t>(written),
+                             (void*)caveVA, code.size(), (void*)Mem.ProcHandle);
+                }
+                ++writeFailCnt; continue;
+            }
 
             // Patch the native handler slot — ZwWriteVirtualMemory bypasses read-only protection.
             Mem.Write<uintptr_t>(slot, caveVA);
