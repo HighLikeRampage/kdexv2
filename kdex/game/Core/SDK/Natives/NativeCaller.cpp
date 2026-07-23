@@ -728,11 +728,36 @@ namespace NativeCaller {
             return false;
         }
 
+        // Dump the GET_GAME_TIMER entry bytes to identify the correct handler offset.
+        {
+            const uint64_t ggtHash = Natives::GET_GAME_TIMER;
+            for (const auto& ce : m_citizen) {
+                if (ce.hash0 == ggtHash || ce.hash1 == ggtHash ||
+                    (ce.hash0 & 0xFFFFFFFFULL) == (ggtHash & 0xFFFFFFFFULL) ||
+                    (ce.hash1 & 0xFFFFFFFFULL) == (ggtHash & 0xFFFFFFFFULL)) {
+                    const uintptr_t ent = ce.slot - E_HANDLER;
+                    const uint64_t v0  = Mem.Read<uint64_t>(ent + 0x00);
+                    const uint64_t v8  = Mem.Read<uint64_t>(ent + 0x08);
+                    const uint64_t v10 = Mem.Read<uint64_t>(ent + 0x10);
+                    const uint64_t v18 = Mem.Read<uint64_t>(ent + 0x18);
+                    const uint64_t v20 = Mem.Read<uint64_t>(ent + 0x20);
+                    DebugLog(xorstr("GGT entry ent=%p: +00=%016llX +08=%016llX +10=%016llX +18=%016llX +20=%016llX\n"),
+                             (void*)ent, (unsigned long long)v0, (unsigned long long)v8,
+                             (unsigned long long)v10, (unsigned long long)v18, (unsigned long long)v20);
+                    DebugLog(xorstr("GGT ce.handler(+18)=%p  ggtHandler=%p\n"),
+                             (void*)ce.handler, (void*)ggtHandler);
+                    break;
+                }
+            }
+        }
+
         const uintptr_t base = Mem.ModBase, end = Mem.ModBase + Mem.ModBaseSize;
         std::vector<std::pair<uintptr_t, uintptr_t>> anchors;
         for (const auto& ce : m_citizen)
             if (ce.handler >= base && ce.handler < end)
                 anchors.emplace_back(ce.slot, static_cast<uintptr_t>(ce.handler));
+        DebugLog(xorstr("NativeCaller: %zu citizen entries, %zu anchors in GTA5 range, ggtHandler=%p\n"),
+                 m_citizen.size(), anchors.size(), (void*)ggtHandler);
         if (anchors.empty()) { DebugLog(xorstr("NativeCaller: no anchor candidates\n")); return false; }
 
         const auto sc = ShellcodeBuilder::buildCitizenShellcode();
@@ -781,6 +806,7 @@ namespace NativeCaller {
 
             // Patch the native handler slot — ZwWriteVirtualMemory bypasses read-only protection.
             Mem.Write<uintptr_t>(slot, caveVA);
+            const bool writeOk = (Mem.Read<uintptr_t>(slot) == caveVA);
 
             Mem.Write<uint8_t>(queueVA + Q_TRIGGER, 0);
             Mem.Write<uint8_t>(queueVA + Q_DONE,    0);
@@ -796,6 +822,15 @@ namespace NativeCaller {
                     break;
                 }
             }
+
+            // Diagnose: call counter (shellcode increments queueVA+0xC0 on every entry).
+            const uint64_t callCnt = Mem.Read<uint64_t>(queueVA + 0xC0);
+            DebugLog(xorstr("anchor slot=%p orig=%p writeOk=%d callCnt=%llu done=%u result=%016llX\n"),
+                     (void*)slot, (void*)orig, (int)writeOk,
+                     (unsigned long long)callCnt,
+                     (unsigned)Mem.Read<uint8_t>(queueVA + Q_DONE),
+                     (unsigned long long)Mem.Read<uint64_t>(queueVA + Q_RESULT));
+
             // Restore slot before next anchor attempt (ZwWriteVirtualMemory, no VirtualProtectEx).
             Mem.Write<uintptr_t>(slot, orig);
             if (ok) { foundSlot = slot; foundOrig = orig; break; }
