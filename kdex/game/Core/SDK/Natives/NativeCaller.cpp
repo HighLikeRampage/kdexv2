@@ -360,6 +360,64 @@ namespace {
         }
         return 0;
     }
+
+    // Scan all PAGE_READWRITE regions in [scanStart, scanEnd) for 8-byte-aligned values
+    // that appear in wrapperSet.  Returns (slot_address, original_value) pairs.
+    //
+    // Why: rage::scrEngine copies citizen-wrapper pointers from the citizen registration
+    // table into its own NativeRegistrationNew nodes at startup.  Those nodes live in
+    // GTA5.exe's static data (.data section, PAGE_READWRITE).  Patching ent+0x08 in the
+    // registration table has no effect at call time because scrEngine reads its own copy.
+    // Scanning GTA5.exe's writable data for the known wrapper values finds the LIVE slots.
+    std::vector<std::pair<uintptr_t, uintptr_t>> ScanForWrapperSlots(
+        HANDLE hProc, uintptr_t scanStart, uintptr_t scanEnd,
+        const std::unordered_set<uint64_t>& wrapperSet)
+    {
+        std::vector<std::pair<uintptr_t, uintptr_t>> out;
+        if (scanStart >= scanEnd || wrapperSet.empty()) return out;
+
+        static constexpr size_t CHUNK = 65536;
+        std::vector<uint8_t> buf;
+        MEMORY_BASIC_INFORMATION mbi{};
+        uintptr_t addr = scanStart;
+
+        while (addr < scanEnd &&
+               ::VirtualQueryEx(hProc, reinterpret_cast<LPCVOID>(addr),
+                                &mbi, sizeof(mbi)) == sizeof(mbi)) {
+            const uintptr_t regBase  = reinterpret_cast<uintptr_t>(mbi.BaseAddress);
+            const uintptr_t regEnd   = regBase + mbi.RegionSize;
+            const uintptr_t nextAddr = regEnd;
+
+            if (mbi.State == MEM_COMMIT && mbi.Protect == PAGE_READWRITE) {
+                const uintptr_t lo = std::max(regBase, scanStart);
+                const uintptr_t hi = std::min(regEnd,  scanEnd);
+                if (hi > lo + 7) {
+                    const size_t sz = static_cast<size_t>(hi - lo);
+                    size_t off = 0;
+                    while (off + 8 <= sz) {
+                        const size_t want = std::min(CHUNK, sz - off);
+                        buf.resize(want);
+                        SIZE_T got = 0;
+                        if (!::ReadProcessMemory(hProc, reinterpret_cast<LPCVOID>(lo + off),
+                                                 buf.data(), want, &got) || got < 8) {
+                            off += want; continue;
+                        }
+                        for (size_t k = 0; k + 8 <= got; k += 8) {
+                            uint64_t val = 0;
+                            std::memcpy(&val, buf.data() + k, 8);
+                            if (wrapperSet.count(val))
+                                out.emplace_back(lo + off + k, static_cast<uintptr_t>(val));
+                        }
+                        off += got;
+                    }
+                }
+            }
+
+            if (nextAddr <= addr) break;
+            addr = nextAddr;
+        }
+        return out;
+    }
 }
 
 namespace NativeCaller {
@@ -798,14 +856,42 @@ namespace NativeCaller {
             }
         }
 
-        const uintptr_t base = Mem.ModBase, end = Mem.ModBase + Mem.ModBaseSize;
-        std::vector<std::pair<uintptr_t, uintptr_t>> anchors;
+        // Build the set of known citizen-scripting-core dispatch wrappers (hash1 = ent+0x08).
+        // Then scan GTA5.exe's PAGE_READWRITE sections — that is where rage::scrEngine stores
+        // its NativeRegistrationNew handler fields after FiveM patches them at startup.
+        // Patching those live slots (not ent+0x08 in the registration table) is what makes
+        // the shellcode actually fire when Lua calls a native.
+        std::unordered_set<uint64_t> wrapperSet;
         for (const auto& ce : m_citizen)
-            if (ce.handler >= base && ce.handler < end)
-                anchors.emplace_back(ce.slot, static_cast<uintptr_t>(ce.hash1));
-        DebugLog(xorstr("NativeCaller: %zu citizen entries, %zu anchors in GTA5 range, ggtHandler=%p\n"),
+            if (ce.hash1 > 0x10000ULL)
+                wrapperSet.insert(static_cast<uint64_t>(ce.hash1));
+
+        auto anchors = ScanForWrapperSlots(
+            Mem.ProcHandle, Mem.ModBase,
+            Mem.ModBase + static_cast<uintptr_t>(Mem.ModBaseSize), wrapperSet);
+        DebugLog(xorstr("NativeCaller: %zu citizen entries, %zu scrEngine slots in GTA5 data, ggtHandler=%p\n"),
                  m_citizen.size(), anchors.size(), (void*)ggtHandler);
-        if (anchors.empty()) { DebugLog(xorstr("NativeCaller: no anchor candidates\n")); return false; }
+
+        // Fallback: scrEngine nodes may be heap-allocated by FiveM rather than static.
+        // Scan all other PAGE_READWRITE memory, excluding the citizen registration table
+        // slots themselves (those are heap entries at ent+0x08, not live dispatch).
+        if (anchors.empty()) {
+            std::unordered_set<uintptr_t> citSlots;
+            for (const auto& ce : m_citizen) citSlots.insert(ce.slot);
+
+            const uintptr_t scanEnd = Mem.ModBase + static_cast<uintptr_t>(Mem.ModBaseSize);
+            auto below = ScanForWrapperSlots(Mem.ProcHandle, 0x10000ULL, Mem.ModBase, wrapperSet);
+            auto above = ScanForWrapperSlots(Mem.ProcHandle, scanEnd, 0x7FFF00000000ULL, wrapperSet);
+            anchors.reserve(below.size() + above.size());
+            for (auto& p : below) if (!citSlots.count(p.first)) anchors.push_back(p);
+            for (auto& p : above) if (!citSlots.count(p.first)) anchors.push_back(p);
+            DebugLog(xorstr("NativeCaller: heap fallback: %zu scrEngine slots total\n"), anchors.size());
+        }
+
+        if (anchors.empty()) {
+            DebugLog(xorstr("NativeCaller: no scrEngine slots found — citizen dispatch path unknown\n"));
+            return false;
+        }
 
         const auto sc = ShellcodeBuilder::buildCitizenShellcode();
         const size_t caveSize = sc.buffer.size();
