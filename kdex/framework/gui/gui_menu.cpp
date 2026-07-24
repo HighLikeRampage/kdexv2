@@ -8,8 +8,6 @@
 #include "settings/options_config.h"
 #include "settings/search.h"
 #include <Security/Api/api.hpp>
-#include "../../test/ResourceManagerV2.hpp"
-#include "../../test/LuaExecutor.hpp"
 #include <array>
 #include <cstring>
 #include <ctime>
@@ -2167,7 +2165,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(!is_started || is_transitioning);
                 if (widgets->button(xorstr("Stop Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  ResourceV2::g_ResourceManagerV2.stop(res.Pointer);
+                  Core::Features::Exploits::g_ResourceList.stop(res.Pointer);
                   notify->add_notify(xorstr("Stopped resource successfully"),
                                      2000, notify_type::success);
                 }
@@ -2177,7 +2175,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(!is_stopped || is_transitioning);
                 if (widgets->button(xorstr("Start Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  ResourceV2::g_ResourceManagerV2.start(res.Pointer);
+                  Core::Features::Exploits::g_ResourceList.start(res.Pointer);
                   notify->add_notify(xorstr("Started resource successfully"),
                                      2000, notify_type::success);
                 }
@@ -2187,7 +2185,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(is_uninitialized || is_transitioning);
                 if (widgets->button(xorstr("Destroy Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  ResourceV2::g_ResourceManagerV2.destroy(res.Pointer);
+                  Core::Features::Exploits::g_ResourceList.destroy(res.Pointer);
                   notify->add_notify(xorstr("Destroyed resource successfully"),
                                      2000, notify_type::success);
                 }
@@ -2197,7 +2195,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(!is_uninitialized || is_transitioning);
                 if (widgets->button(xorstr("Revive Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  ResourceV2::g_ResourceManagerV2.revive(res.Pointer);
+                  Core::Features::Exploits::g_ResourceList.revive(res.Pointer);
                   notify->add_notify(xorstr("Revived resource successfully"),
                                      2000, notify_type::success);
                 }

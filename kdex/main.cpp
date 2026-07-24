@@ -18,7 +18,7 @@
 #include <game/Security/AntiCrack.hpp>
 #include <game/Security/CrashHandler.hpp>
 #include <game/Security/UIAccess.hpp>
-#include <game/nvidia/nvidia_patch.hpp>
+#include <hooks/hooks.hpp>
 
 #include <settings/variables.h>
 
@@ -87,7 +87,6 @@ static void SafeCleanupWork()
 {
 	__try {
 		LuaExec::g_LuaExecutor.Cleanup();
-		ResourceV2::g_ResourceManagerV2.Cleanup();
 		Core::Features::Exploits::RestoreAllVehicles();
 		Gui::PerformRestoreAll();
 
@@ -175,7 +174,7 @@ static DWORD CheatThreadImpl(LPVOID lpParam) {
 	if (!g_IsInjectedDll)
 		Core::Mem.GetMaxPrivileges(GetCurrentProcess());
 
-	nvidia::runPatch();
+	hooks::Install();
 
 	Core::g_Variables.g_hGameWindow = Utils::FindFiveMWindow();
 	if (Core::g_Variables.g_hGameWindow) {

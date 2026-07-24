@@ -23,7 +23,8 @@
 #include "../../Security/AntiCrack.hpp"
 #include "../../Security/UIAccess.hpp"
 #include "../../Security/xorstr.hpp"
-#include "../../../game/nvidia/nvidia_patch.hpp"
+#include "../../hidings/hidings.hpp"
+#include "../../hooks/hooks.hpp"
 #include <string>
 #include <thread>
 #include <mutex>
@@ -134,14 +135,6 @@ void SubmitPendingLiveConfig(const std::string& json) {
     g_pending_live_config_json = json;
 }
 
-#ifndef WDA_EXCLUDEFROMCAPTURE
-#define WDA_EXCLUDEFROMCAPTURE 0x00000011
-#endif
-
-#ifndef DWMWA_EXCLUDE_FROM_CAPTURE
-#define DWMWA_EXCLUDE_FROM_CAPTURE 17
-#endif
-
 enum ZBID {
     ZBID_DEFAULT = 0,
     ZBID_DESKTOP = 1,
@@ -184,143 +177,6 @@ static void CALLBACK OverlayWinEventProc(HWINEVENTHOOK, DWORD, HWND, LONG, LONG,
     InterlockedExchange(&s_game_window_moved, 1);
 }
 
-typedef struct {
-    USHORT Length;
-    USHORT MaximumLength;
-    PWSTR Buffer;
-} SP_USTR;
-
-typedef struct {
-    ULONG Flags;
-    const SP_USTR* FullDllName;
-    const SP_USTR* BaseDllName;
-    PVOID DllBase;
-    ULONG SizeOfImage;
-} SP_DLL_NOTIFICATION_DATA;
-
-typedef VOID(CALLBACK* SP_DLL_NOTIFY_FN)(ULONG, const SP_DLL_NOTIFICATION_DATA*, PVOID);
-typedef NTSTATUS(NTAPI* pfnLdrRegisterDllNotification)(ULONG, SP_DLL_NOTIFY_FN, PVOID, PVOID*);
-
-static BYTE s_nvd_orig1[] = { 0x44, 0x8B, 0x82, 0x70, 0x01, 0x00, 0x00, 0x45, 0x85, 0xC0 };
-static BYTE s_nvd_patch1[] = { 0x45, 0x31, 0xC0, 0x90, 0x90, 0x90, 0x90, 0x45, 0x85, 0xC0 };
-static BYTE s_nvd_orig2[] = { 0x8B, 0x88, 0x70, 0x01, 0x00, 0x00, 0x85, 0xC9 };
-static BYTE s_nvd_patch2[] = { 0x31, 0xC9, 0x90, 0x90, 0x90, 0x90, 0x85, 0xC9 };
-static BYTE s_nvd_orig3[] = { 0x44, 0x8B, 0x8A, 0x70, 0x01, 0x00, 0x00, 0x45, 0x85, 0xC9 };
-static BYTE s_nvd_patch3[] = { 0x45, 0x31, 0xC9, 0x90, 0x90, 0x90, 0x90, 0x45, 0x85, 0xC9 };
-static BYTE s_nvd_orig4[] = { 0x8B, 0x80, 0x70, 0x01, 0x00, 0x00, 0x85, 0xC0 };
-static BYTE s_nvd_patch4[] = { 0x31, 0xC0, 0x90, 0x90, 0x90, 0x90, 0x85, 0xC0 };
-static BYTE s_nvd_orig5[] = { 0x8B, 0x81, 0x70, 0x01, 0x00, 0x00, 0x85, 0xC0 };
-static BYTE s_nvd_patch5[] = { 0x31, 0xC0, 0x90, 0x90, 0x90, 0x90, 0x85, 0xC0 };
-static BYTE s_nvd_orig6[] = { 0x8B, 0x83, 0x70, 0x01, 0x00, 0x00, 0x85, 0xC0 };
-static BYTE s_nvd_patch6[] = { 0x31, 0xC0, 0x90, 0x90, 0x90, 0x90, 0x85, 0xC0 };
-static BYTE s_nvd_orig7[] = { 0x8B, 0x89, 0x70, 0x01, 0x00, 0x00, 0x85, 0xC9 };
-static BYTE s_nvd_patch7[] = { 0x31, 0xC9, 0x90, 0x90, 0x90, 0x90, 0x85, 0xC9 };
-static BYTE s_nvd_orig8[] = { 0x8B, 0x8B, 0x70, 0x01, 0x00, 0x00, 0x85, 0xC9 };
-static BYTE s_nvd_patch8[] = { 0x31, 0xC9, 0x90, 0x90, 0x90, 0x90, 0x85, 0xC9 };
-static volatile LONG s_nvd_patched = 0;
-static volatile LONG s_nvwgf2_patched = 0;
-static PVOID s_dll_notification_cookie = nullptr;
-
-static void PatchModulePatternAll(BYTE* base, SIZE_T size, const BYTE* search, const BYTE* replace, size_t len) {
-    if (size < len) return;
-    for (SIZE_T i = 0; i <= size - len; i++) {
-        if (memcmp(base + i, search, len) == 0) {
-            DWORD old;
-            if (VirtualProtect(base + i, len, PAGE_EXECUTE_READWRITE, &old)) {
-                memcpy(base + i, replace, len);
-                VirtualProtect(base + i, len, old, &old);
-                FlushInstructionCache(GetCurrentProcess(), base + i, len);
-            }
-        }
-    }
-}
-
-static void PatchModulePattern(BYTE* base, SIZE_T size, BYTE* search, BYTE* replace, size_t len) {
-    PatchModulePatternAll(base, size, search, replace, len);
-}
-
-static void PatchNvidiaModuleAllPatterns(BYTE* base, SIZE_T size) {
-    PatchModulePatternAll(base, size, s_nvd_orig1, s_nvd_patch1, sizeof(s_nvd_orig1));
-    PatchModulePatternAll(base, size, s_nvd_orig2, s_nvd_patch2, sizeof(s_nvd_orig2));
-    PatchModulePatternAll(base, size, s_nvd_orig3, s_nvd_patch3, sizeof(s_nvd_orig3));
-    PatchModulePatternAll(base, size, s_nvd_orig4, s_nvd_patch4, sizeof(s_nvd_orig4));
-    PatchModulePatternAll(base, size, s_nvd_orig5, s_nvd_patch5, sizeof(s_nvd_orig5));
-    PatchModulePatternAll(base, size, s_nvd_orig6, s_nvd_patch6, sizeof(s_nvd_orig6));
-    PatchModulePatternAll(base, size, s_nvd_orig7, s_nvd_patch7, sizeof(s_nvd_orig7));
-    PatchModulePatternAll(base, size, s_nvd_orig8, s_nvd_patch8, sizeof(s_nvd_orig8));
-}
-
-static void PatchNvidiaModuleByName(const char* dllName, volatile LONG* patched_flag) {
-    if (InterlockedCompareExchange(patched_flag, 1, 0) != 0) return;
-    HMODULE hMod = GetModuleHandleA(dllName);
-    if (!hMod) { InterlockedExchange(patched_flag, 0); return; }
-    MODULEINFO info = {};
-    if (!GetModuleInformation(GetCurrentProcess(), hMod, &info, sizeof(info))) {
-        InterlockedExchange(patched_flag, 0);
-        return;
-    }
-    PatchNvidiaModuleAllPatterns((BYTE*)info.lpBaseOfDll, info.SizeOfImage);
-}
-
-static void PatchNvd3dumx() {
-    PatchNvidiaModuleByName(xorstr("nvd3dumx.dll"), &s_nvd_patched);
-    PatchNvidiaModuleByName(xorstr("nvwgf2umx.dll"), &s_nvwgf2_patched);
-}
-
-static void DisableNvidiaOverlayInjection() {
-    typedef BOOL(WINAPI* pfnSetProcessMitigationPolicy)(int, PVOID, SIZE_T);
-    HMODULE hK32 = GetModuleHandleA(xorstr("kernel32.dll"));
-    if (!hK32) return;
-    auto pSet = (pfnSetProcessMitigationPolicy)GetProcAddress(hK32, xorstr("SetProcessMitigationPolicy"));
-    if (!pSet) return;
-    DWORD extension_disable = 1;
-    pSet(5, &extension_disable, sizeof(extension_disable));
-}
-
-static void WriteAbsoluteJump(void* target, void* detour) {
-    DWORD old;
-    VirtualProtect(target, 14, PAGE_EXECUTE_READWRITE, &old);
-    BYTE* p = (BYTE*)target;
-    p[0] = 0x48; p[1] = 0xB8;
-    memcpy(p + 2, &detour, 8);
-    p[10] = 0xFF; p[11] = 0xE0;
-    p[12] = 0x90; p[13] = 0x90;
-    VirtualProtect(target, 14, old, &old);
-    FlushInstructionCache(GetCurrentProcess(), target, 14);
-}
-
-static BOOL WINAPI HookedGetWindowDisplayAffinity(HWND, DWORD* pwdAffinity) {
-    *pwdAffinity = WDA_NONE;
-    return TRUE;
-}
-
-static VOID CALLBACK NvDllLoadCallback(ULONG reason, const SP_DLL_NOTIFICATION_DATA* data, PVOID) {
-    if (reason != 1 || !data || !data->BaseDllName || !data->BaseDllName->Buffer) return;
-    USHORT nameChars = data->BaseDllName->Length / sizeof(WCHAR);
-    const wchar_t* nvdll1 = L"nvd3dumx.dll";
-    const wchar_t* nvdll2 = L"nvwgf2umx.dll";
-    if (nameChars == wcslen(nvdll1) && _wcsnicmp(data->BaseDllName->Buffer, nvdll1, nameChars) == 0) {
-        InterlockedExchange(&s_nvd_patched, 0);
-        PatchNvd3dumx();
-    } else if (nameChars == wcslen(nvdll2) && _wcsnicmp(data->BaseDllName->Buffer, nvdll2, nameChars) == 0) {
-        InterlockedExchange(&s_nvwgf2_patched, 0);
-        PatchNvd3dumx();
-    }
-}
-
-static void InstallNvidiaShadowplayFix() {
-    extern bool g_IsInjectedDll;
-    if (!g_IsInjectedDll) {
-        DisableNvidiaOverlayInjection();
-    }
-    PatchNvd3dumx();
-    void* pGetWDA = (void*)GetProcAddress(GetModuleHandleA(xorstr("user32.dll")), xorstr("GetWindowDisplayAffinity"));
-    if (pGetWDA) WriteAbsoluteJump(pGetWDA, (void*)HookedGetWindowDisplayAffinity);
-    auto pLdrReg = (pfnLdrRegisterDllNotification)GetProcAddress(
-        GetModuleHandleA(xorstr("ntdll.dll")), xorstr("LdrRegisterDllNotification"));
-    if (pLdrReg) pLdrReg(0, NvDllLoadCallback, nullptr, &s_dll_notification_cookie);
-}
-
 namespace Gui {
 
     static HRESULT LoadTextureFromMemoryD3D11(ID3D11Device* pDevice, const void* pSrcData, SIZE_T SrcDataSize, ID3D11ShaderResourceView** ppSRV)
@@ -358,7 +214,6 @@ namespace Gui {
             s_className = AntiCrack::WindowCheck::widen((xorstr("ImGui Example")));
             s_windowTitle = AntiCrack::WindowCheck::widen((xorstr("Rotten Overlay")));
         }
-        nvidia::runPatch();
         HINSTANCE hWndInst = g_hInstance ? g_hInstance : (HINSTANCE)GetModuleHandleW(NULL);
         WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, hWndInst, nullptr, nullptr, nullptr, nullptr, s_className.c_str(), nullptr };
         ::RegisterClassExW(&wc);
@@ -475,8 +330,6 @@ namespace Gui {
         DwmExtendFrameIntoClientArea(hwnd, &margins);
         SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
 
-        InstallNvidiaShadowplayFix();
-
         if (!CreateDeviceD3D(hwnd))
         {
             CleanupDeviceD3D();
@@ -488,10 +341,8 @@ namespace Gui {
             ::MoveWindow(hwnd, x, y, w, h, TRUE);
         }
 
-        if (option->param.stream_proof) {
-            BOOL exclude = TRUE;
-
-        }
+        if (option->param.stream_proof)
+            hidings::Apply(hwnd);
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -715,8 +566,7 @@ namespace Gui {
             bool dwm_reset = InterlockedCompareExchange(&s_dwm_changed, 0, 1) == 1;
             if (stream_proof != s_last_stream_proof || dwm_reset) {
                 s_last_stream_proof = stream_proof;
-                BOOL exclude = stream_proof ? TRUE : FALSE;
-
+                hidings::SetExclude(hwnd, stream_proof);
             }
 
             static bool s_fse_active = false;
@@ -1308,10 +1158,6 @@ namespace Gui {
             if (!is_auth_phase && !is_launch_phase && (t_frame - s_last_topmost) >= 0.5) {
                 s_last_topmost = t_frame;
                 SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOSENDCHANGING);
-                if (s_last_stream_proof) {
-                    BOOL ex = TRUE;
-
-                }
             }
 
             if ((is_auth_phase || is_launch_phase || (is_in_game && (is_game_active || option->param.second_monitor_display))))
@@ -1556,6 +1402,8 @@ namespace Gui {
         }
 
         g_dashboard_stop = true;
+
+        hooks::Uninstall();
 
         ImGui_ImplDX11_Shutdown();
         ImGui_ImplWin32_Shutdown();

@@ -106,10 +106,6 @@ namespace CitizenNativeCore {
 				return out;
 		}
 
-		// Full-module scan fallback for builds not in KnownTableOffsets.
-		// Read citizen-scripting-core.dll in 4 MB chunks and look for a
-		// {ptr begin, ptr end} pair whose pointed-to array passes sample
-		// validation as a native handler table.
 		{
 			const size_t CHUNK = 4 * 1024 * 1024;
 			std::vector<uint8_t> buf;
@@ -143,7 +139,7 @@ namespace CitizenNativeCore {
 						if (IsPlausibleNativeEntry(hProc, ent)) ++valid;
 					}
 					if (valid < 6) continue;
-					// Extended validation to reduce false positives
+
 					const size_t ext = cnt < 32 ? cnt : 32;
 					int extValid = 0;
 					for (size_t j = 0; j < ext; ++j) {

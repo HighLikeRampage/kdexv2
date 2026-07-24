@@ -228,15 +228,6 @@ namespace {
         return true;
     }
 
-    // Find a block of unused executable bytes in a module for shellcode placement.
-    // ZwWriteVirtualMemory (Mem.WriteRaw) writes through MmCopyVirtualMemory at the
-    // kernel MDL level, bypassing virtual page protections without NtProtectVirtualMemory.
-    //
-    // Strategy (in order):
-    //  1. Section-end zero padding — the fractional page between VirtualSize and
-    //     the next 4KB boundary is guaranteed zeros by the OS page loader.
-    //     The page itself is PAGE_EXECUTE_READ (part of the code section).
-    //  2. 0xCC (INT3) runs in the section body — classic code cave from MSVC alignment.
     uintptr_t FindCodeCaveInModule(HANDLE hProc, uintptr_t modBase, size_t modSize, size_t neededBytes) {
         if (!hProc || !modBase || !modSize || neededBytes == 0) return 0;
 
@@ -267,15 +258,12 @@ namespace {
             const size_t    secSize = static_cast<size_t>(secs[s].Misc.VirtualSize);
             if (!secSize) continue;
 
-            // Strategy 1: fractional-page zero padding at the end of the section.
-            // Bytes from VirtualSize to ROUNDUP(VirtualSize, 0x1000) are guaranteed
-            // to be zero by the OS page-zeroing loader — safe, always executable.
             {
                 const uintptr_t vEnd    = secVA + secSize;
                 const uintptr_t pageEnd = (vEnd + 0xFFFu) & ~uintptr_t(0xFFFu);
                 const size_t    slack   = static_cast<size_t>(pageEnd - vEnd);
                 if (slack >= neededBytes) {
-                    // Quick sanity-read to confirm the bytes are accessible and zero.
+
                     const size_t checkSz = std::min(neededBytes, size_t(64));
                     uint8_t sample[64]{};
                     SIZE_T r2 = 0;
@@ -289,7 +277,6 @@ namespace {
                 }
             }
 
-            // Strategy 2: scan section body for 0xCC (INT3) alignment padding.
             if (secSize < neededBytes) continue;
             size_t    off      = 0;
             size_t    run      = 0;
@@ -317,12 +304,6 @@ namespace {
         return 0;
     }
 
-    // Scan the process VA map for an already-existing PAGE_EXECUTE_READWRITE region
-    // (e.g. LuaJIT mcode pages that FiveM's Lua runtime allocates legitimately) and
-    // return the start of a zero-filled run of at least neededBytes within it.
-    // Writing there via ZwWriteVirtualMemory succeeds because the page IS writable —
-    // no VirtualProtectEx, no adhesive trigger.  The region was created by the game
-    // itself, so the kernel does not flag it as an external injection attempt.
     uintptr_t FindExistingRwxCave(HANDLE hProc, size_t neededBytes) {
         static constexpr size_t CHUNK = 64u * 1024u;
         std::vector<uint8_t> buf;
@@ -361,14 +342,6 @@ namespace {
         return 0;
     }
 
-    // Scan all PAGE_READWRITE regions in [scanStart, scanEnd) for 8-byte-aligned values
-    // that appear in wrapperSet.  Returns (slot_address, original_value) pairs.
-    //
-    // Why: rage::scrEngine copies citizen-wrapper pointers from the citizen registration
-    // table into its own NativeRegistrationNew nodes at startup.  Those nodes live in
-    // GTA5.exe's static data (.data section, PAGE_READWRITE).  Patching ent+0x08 in the
-    // registration table has no effect at call time because scrEngine reads its own copy.
-    // Scanning GTA5.exe's writable data for the known wrapper values finds the LIVE slots.
     std::vector<std::pair<uintptr_t, uintptr_t>> ScanForWrapperSlots(
         HANDLE hProc, uintptr_t scanStart, uintptr_t scanEnd,
         const std::unordered_set<uint64_t>& wrapperSet)
@@ -455,15 +428,15 @@ namespace NativeCaller {
         if (!m_ready && !m_initFailed) return;
 
         if (Mem.ProcHandle) {
-            // Restore native handler slot (ZwWriteVirtualMemory bypasses read-only protection).
+
             if (m_citSlotVA && m_citOrigFn)
                 Mem.Write<uintptr_t>(m_citSlotVA, m_citOrigFn);
-            // Restore cave bytes — borrowed INT3 padding inside citizen-scripting-core.dll .text.
+
             if (m_citCaveVA && !m_citCaveOrigBytes.empty())
                 Mem.WriteRaw(m_citCaveVA, m_citCaveOrigBytes.data(), m_citCaveOrigBytes.size());
-            // Free the data queue (PAGE_READWRITE, our allocation, no execute).
+
             if (m_citQueueVA) ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_citQueueVA), 0, MEM_RELEASE);
-            // Free other mode allocations (these modes are disabled but may exist from a prior run).
+
             if (m_mainBase)  ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_mainBase),  0, MEM_RELEASE);
             if (m_apcCodeVA) ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_apcCodeVA), 0, MEM_RELEASE);
             if (m_apcDataVA) ::VirtualFreeEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(m_apcDataVA), 0, MEM_RELEASE);
@@ -810,9 +783,7 @@ namespace NativeCaller {
             ce.hash0   = Mem.Read<uint64_t>(ent + E_HASH0);
             ce.hash1   = Mem.Read<uint64_t>(ent + E_HASH1);
             ce.handler = Mem.Read<uint64_t>(ent + E_HANDLER);
-            // Dispatch slot is at +0x08 (citizen-scripting-core wrapper read by the
-            // scripting engine at call time).  E_HANDLER (+0x18) is the GTA5 native
-            // implementation — used as ggtHandler but NOT what the dispatcher reads.
+
             ce.slot    = ent + 0x08;
             m_citizen.push_back(ce);
 
@@ -835,14 +806,13 @@ namespace NativeCaller {
             return false;
         }
 
-        // Dump the GET_GAME_TIMER entry bytes to identify the correct handler offset.
         {
             const uint64_t ggtHash = Natives::GET_GAME_TIMER;
             for (const auto& ce : m_citizen) {
                 if (ce.hash0 == ggtHash || ce.hash1 == ggtHash ||
                     (ce.hash0 & 0xFFFFFFFFULL) == (ggtHash & 0xFFFFFFFFULL) ||
                     (ce.hash1 & 0xFFFFFFFFULL) == (ggtHash & 0xFFFFFFFFULL)) {
-                    const uintptr_t ent = ce.slot - 0x08; // ce.slot = ent+0x08 after the fix
+                    const uintptr_t ent = ce.slot - 0x08;
                     const uint64_t v0  = Mem.Read<uint64_t>(ent + 0x00);
                     const uint64_t v8  = Mem.Read<uint64_t>(ent + 0x08);
                     const uint64_t v10 = Mem.Read<uint64_t>(ent + 0x10);
@@ -858,11 +828,6 @@ namespace NativeCaller {
             }
         }
 
-        // Build the set of known citizen-scripting-core dispatch wrappers (hash1 = ent+0x08).
-        // Then scan GTA5.exe's PAGE_READWRITE sections — that is where rage::scrEngine stores
-        // its NativeRegistrationNew handler fields after FiveM patches them at startup.
-        // Patching those live slots (not ent+0x08 in the registration table) is what makes
-        // the shellcode actually fire when Lua calls a native.
         std::unordered_set<uint64_t> wrapperSet;
         for (const auto& ce : m_citizen)
             if (ce.hash1 > 0x10000ULL)
@@ -874,9 +839,6 @@ namespace NativeCaller {
         DebugLog(xorstr("NativeCaller: %zu citizen entries, %zu scrEngine slots in GTA5 data, ggtHandler=%p\n"),
                  m_citizen.size(), anchors.size(), (void*)ggtHandler);
 
-        // Fallback: scrEngine nodes may be heap-allocated by FiveM rather than static.
-        // Scan all other PAGE_READWRITE memory, excluding the citizen registration table
-        // slots themselves (those are heap entries at ent+0x08, not live dispatch).
         if (anchors.empty()) {
             std::unordered_set<uintptr_t> citSlots;
             for (const auto& ce : m_citizen) citSlots.insert(ce.slot);
@@ -895,16 +857,6 @@ namespace NativeCaller {
             return false;
         }
 
-        // Cross-validate each candidate: in rage::scrEngine's NativeRegistrationNew layout
-        //   handlers[i]  lives at node + 0x08 + i*8
-        //   hashes[i]    lives at node + 0x48 + i*8
-        // so   hash_addr = handler_addr + 0x40   for every index i.
-        //
-        // This filters ~5000 LuaJIT/unordered_map false positives down to the
-        // ~187 real dispatch slots.  Also checks handler_addr − 8 for the
-        // MSVC std::unordered_map node layout (key just before value).
-        // If neither check matches anything, keep the unvalidated list so the
-        // probe loop can still try — callCnt output will tell us what's wrong.
         {
             std::unordered_map<uint64_t, uint64_t> wrapperToHash;
             for (const auto& ce : m_citizen)
@@ -926,22 +878,12 @@ namespace NativeCaller {
                      anchors.size(), validated.size());
             if (!validated.empty())
                 anchors = std::move(validated);
-            // If 0 validated: keep the full unvalidated list — probe will show
-            // us via callCnt which slot (if any) the dispatch actually touches.
+
         }
 
         const auto sc = ShellcodeBuilder::buildCitizenShellcode();
         const size_t caveSize = sc.buffer.size();
 
-        // Cave strategy (in priority order):
-        //   1. Section-end zeros in citizen-scripting-core.dll
-        //   2. Section-end zeros in GTA5.exe
-        //   3. Existing PAGE_EXECUTE_READWRITE region (LuaJIT mcode pages)
-        //
-        // ZwWriteVirtualMemory returns STATUS_PARTIAL_COPY on PAGE_EXECUTE_READ pages
-        // on Windows 10+ — the kernel path does NOT bypass PTE write protection for
-        // user-mode callers.  Strategy 3 succeeds because those pages are already RW+X
-        // (LuaJIT allocated them itself) so no VirtualProtectEx is needed.
         auto tryWriteProbe = [&](uintptr_t va) -> bool {
             const uint8_t z = 0;
             SIZE_T w = 0;
@@ -950,7 +892,7 @@ namespace NativeCaller {
         };
 
         uintptr_t caveVA = 0;
-        // Strategy 1
+
         caveVA = FindCodeCaveInModule(Mem.ProcHandle, m_core.coreBase, m_core.coreSize, caveSize);
         if (caveVA && !tryWriteProbe(caveVA)) {
             DebugLog(xorstr("NativeCaller: cit cave@%p PAGE_EXECUTE_READ — not writable\n"), (void*)caveVA);
@@ -958,7 +900,6 @@ namespace NativeCaller {
         }
         if (caveVA) DebugLog(xorstr("NativeCaller: cave in citizen-scripting-core @ 0x%p\n"), (void*)caveVA);
 
-        // Strategy 2
         if (!caveVA) {
             caveVA = FindCodeCaveInModule(
                 Mem.ProcHandle, Mem.ModBase, static_cast<size_t>(Mem.ModBaseSize), caveSize);
@@ -969,7 +910,6 @@ namespace NativeCaller {
             if (caveVA) DebugLog(xorstr("NativeCaller: cave in GTA5.exe @ 0x%p\n"), (void*)caveVA);
         }
 
-        // Strategy 3: use a zero-filled tail of an existing RWX page (LuaJIT mcode).
         if (!caveVA) {
             caveVA = FindExistingRwxCave(Mem.ProcHandle, caveSize);
             if (caveVA) DebugLog(xorstr("NativeCaller: cave in RWX region @ 0x%p\n"), (void*)caveVA);
@@ -980,11 +920,9 @@ namespace NativeCaller {
             return false;
         }
 
-        // Save original bytes so we can restore them on shutdown.
         std::vector<uint8_t> caveOrigBytes(caveSize, 0x00);
         Mem.ReadRaw(caveVA, caveOrigBytes.data(), caveSize);
 
-        // Queue page: PAGE_READWRITE, no execute — only data, no detection risk.
         uintptr_t queueVA = 0;
         uintptr_t foundSlot = 0, foundOrig = 0;
 
@@ -1008,7 +946,6 @@ namespace NativeCaller {
             std::memcpy(code.data() + sc.PATCH_QUEUE,    &queueVA, 8);
             std::memcpy(code.data() + sc.PATCH_ORIGFUNC, &orig,    8);
 
-            // Write shellcode into the cave (cave was write-probed above; break on surprise fail).
             if (!Mem.WriteRaw(caveVA, code.data(), code.size())) {
                 SIZE_T written = 0;
                 const NTSTATUS st = ZwWriteVirtualMemory(
@@ -1016,10 +953,9 @@ namespace NativeCaller {
                     code.data(), code.size(), &written);
                 DebugLog(xorstr("NativeCaller: cave write failed status=0x%08X written=%zu\n"),
                          static_cast<unsigned>(st), static_cast<size_t>(written));
-                ++writeFailCnt; break; // same cave for all anchors — no point retrying
+                ++writeFailCnt; break;
             }
 
-            // Patch the native handler slot — ZwWriteVirtualMemory bypasses read-only protection.
             Mem.Write<uintptr_t>(slot, caveVA);
             const bool writeOk = (Mem.Read<uintptr_t>(slot) == caveVA);
 
@@ -1038,10 +974,8 @@ namespace NativeCaller {
                 }
             }
 
-            // Diagnose: call counter (shellcode increments queueVA+0xC0 on every entry).
             const uint64_t callCnt = Mem.Read<uint64_t>(queueVA + 0xC0);
-            // Only log anchors that actually got called (or the very first attempt) —
-            // logging all ~124 candidates floods the console and scrolls the summary off.
+
             if (callCnt != 0 || thisIdx == 0) {
                 DebugLog(xorstr("anchor slot=%p orig=%p writeOk=%d callCnt=%llu done=%u result=%016llX\n"),
                          (void*)slot, (void*)orig, (int)writeOk,
@@ -1050,7 +984,6 @@ namespace NativeCaller {
                          (unsigned long long)Mem.Read<uint64_t>(queueVA + Q_RESULT));
             }
 
-            // Restore slot before next anchor attempt (ZwWriteVirtualMemory, no VirtualProtectEx).
             Mem.Write<uintptr_t>(slot, orig);
             if (ok) { foundSlot = slot; foundOrig = orig; break; }
         }
@@ -1063,8 +996,6 @@ namespace NativeCaller {
             return false;
         }
 
-        // Re-install the hook permanently.  Cave already has the correct shellcode
-        // (last written iteration had foundOrig and queueVA), no re-write needed.
         Mem.Write<uintptr_t>(foundSlot, caveVA);
 
         m_citQueueVA        = queueVA;
@@ -1197,7 +1128,6 @@ namespace NativeCaller {
             return false;
         }
 
-        // Harden to EXECUTE_READ before any thread touches it — never leave RWX in-process.
         DWORD oldProt = 0;
         ::VirtualProtectEx(Mem.ProcHandle, reinterpret_cast<LPVOID>(codeVA),
                            ac.buffer.size() + 64, PAGE_EXECUTE_READ, &oldProt);
@@ -1311,11 +1241,6 @@ namespace NativeCaller {
 
         ScanCitizenTable();
 
-        // MainFn, APC, and Direct all use VirtualAllocEx(PAGE_EXECUTE_READWRITE) and/or
-        // OpenThread/SuspendThread/SetThreadContext from an external process — every one of
-        // these triggers adhesive's kernel ObRegisterCallbacks hook immediately.
-        // Citizen mode only needs WriteProcessMemory and ReadProcessMemory during calls,
-        // so it is the only mode that avoids the kernel-level detection.
         if (TryCitizenMode())  { m_ready = true; DebugLog(xorstr("NativeCaller: mode=citizen build=%d\n"), m_build); return; }
         DebugLog(xorstr("NativeCaller: citizen mode failed\n"));
     }
