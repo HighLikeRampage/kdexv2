@@ -642,7 +642,7 @@ namespace PlayerList {
 		int targetId = Core::Mem.Read<int>(playerInfo + Core::g_Offsets.m_PlayerId);
 		if (targetId <= 0) return xorstr("NPC");
 
-		if (now_ms() - g_lastNameCacheUpdate > 2000) {
+		if (now_ms() - g_lastNameCacheUpdate > 500) {
 			UpdateNameCache();
 		}
 

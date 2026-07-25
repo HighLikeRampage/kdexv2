@@ -199,13 +199,19 @@ namespace Core
 			}
 		public:
 
+			std::string CachedServerToken;
+
 			nlohmann::json GetPlayerData() {
-				ServerToken = GetServerToken();
+				if (CachedServerToken.empty())
+					CachedServerToken = GetServerToken();
+				if (CachedServerToken.empty()) {
+					ServerToken = GetServerToken();
+					if (ServerToken.empty())
+						return NULL;
+					CachedServerToken = ServerToken;
+				}
 
-				if (ServerToken.empty())
-					return NULL;
-
-				std::string ApiUrl = xorstr("https://servers-frontend.fivem.net/api/servers/single/") + ServerToken;
+				std::string ApiUrl = xorstr("https://servers-frontend.fivem.net/api/servers/single/") + CachedServerToken;
 
 				std::string ResponseStr;
 				CURL* hnd;
@@ -214,7 +220,8 @@ namespace Core
 				if (hnd) {
 					curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, xorstr("GET"));
 					curl_easy_setopt(hnd, CURLOPT_URL, ApiUrl.c_str());
-					curl_easy_setopt(hnd, CURLOPT_TIMEOUT, 10L);
+					curl_easy_setopt(hnd, CURLOPT_TIMEOUT, 5L);
+					curl_easy_setopt(hnd, CURLOPT_CONNECTTIMEOUT, 3L);
 					struct curl_slist* headers = NULL;
 					headers = curl_slist_append(headers, xorstr("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"));
 					curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);
@@ -222,10 +229,13 @@ namespace Core
 					curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &ResponseStr);
 					res = curl_easy_perform(hnd);
 					curl_easy_cleanup(hnd);
+					curl_slist_free_all(headers);
 				}
 
-				if (ResponseStr.empty())
+				if (ResponseStr.empty()) {
+					CachedServerToken.clear();
 					return NULL;
+				}
 
 				nlohmann::json ResponseJson;
 				try { ResponseJson = json::parse(ResponseStr); } catch (...) { return NULL; }
@@ -243,7 +253,7 @@ namespace Core
 				if (!PlayersArray.is_array())
 					return NULL;
 
-				LastWorkingToken() = ServerToken;
+				LastWorkingToken() = CachedServerToken;
 				return PlayersArray;
 			}
 
@@ -282,7 +292,7 @@ namespace Core
 								}
 
 								if (currentId.empty()) {
-									std::this_thread::sleep_for(std::chrono::milliseconds(500));
+									std::this_thread::sleep_for(std::chrono::milliseconds(100));
 									continue;
 								}
 
@@ -359,7 +369,7 @@ namespace Core
 								if (!success) {
 								}
 
-								std::this_thread::sleep_for(std::chrono::milliseconds(50));
+								std::this_thread::sleep_for(std::chrono::milliseconds(20));
 							}
 						}).detach();
 					}
@@ -372,11 +382,8 @@ namespace Core
 			{
 				nlohmann::json PlayersArr = GetPlayerData();
 
-				if (PlayersArr == NULL) {
-					std::lock_guard<std::mutex> lock(NamesMutex);
-					NetworkMap.clear();
+				if (PlayersArr == NULL)
 					return;
-				}
 
 				std::unordered_map<int, Core::SDK::Game::NetworkInfo> newMap;
 				newMap.reserve(256);
@@ -422,10 +429,12 @@ namespace Core
 
 			void Update()
 			{
+				int fetchCount = 0;
 				while (!g_Variables.g_Unload)
 				{
 					try {
 						GetPlayerNames();
+						fetchCount++;
 					}
 					catch (const std::exception& e) {
 						std::string errorMessage = xorstr("Crash Detected. Code: 2\nException: ");
@@ -436,7 +445,8 @@ namespace Core
 						break;
 					}
 
-					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					int sleepMs = (fetchCount < 3) ? 200 : 1000;
+					std::this_thread::sleep_for(std::chrono::milliseconds(sleepMs));
 				}
 			}
 		};
