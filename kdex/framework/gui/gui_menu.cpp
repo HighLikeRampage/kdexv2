@@ -2191,16 +2191,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                      2000, notify_type::success);
                 }
                 ImGui::EndDisabled();
-
-                gui->dummy(SCALE(0, 8));
-                ImGui::BeginDisabled(!is_uninitialized || is_transitioning);
-                if (widgets->button(xorstr("Revive Resource"),
-                        ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.revive(res.Pointer);
-                  notify->add_notify(xorstr("Revived resource successfully"),
-                                     2000, notify_type::success);
-                }
-                ImGui::EndDisabled();
               } else {
                 ImVec2 text_sz = gui->text_size(var->font.instrument_medium[0],
                                                 xorstr("Select a resource"));
