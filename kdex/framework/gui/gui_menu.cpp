@@ -2166,7 +2166,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(!is_started || is_transitioning);
                 if (widgets->button(xorstr("Stop Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.stop(res.Path);
+                  Core::Features::Exploits::g_ResourceList.stop(res.Pointer);
                   notify->add_notify(xorstr("Stopped resource successfully"),
                                      2000, notify_type::success);
                 }
@@ -2176,7 +2176,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(!is_stopped || is_transitioning);
                 if (widgets->button(xorstr("Start Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.start(res.Path);
+                  Core::Features::Exploits::g_ResourceList.start(res.Pointer);
                   notify->add_notify(xorstr("Started resource successfully"),
                                      2000, notify_type::success);
                 }
@@ -2186,7 +2186,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::BeginDisabled(is_uninitialized || is_transitioning);
                 if (widgets->button(xorstr("Destroy Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.destroy(res.Path);
+                  Core::Features::Exploits::g_ResourceList.destroy(res.Pointer);
                   notify->add_notify(xorstr("Destroyed resource successfully"),
                                      2000, notify_type::success);
                 }
