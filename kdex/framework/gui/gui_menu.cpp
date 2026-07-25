@@ -3323,19 +3323,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             SCALE(6, 0),
             ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar);
         {
-          if (var->window.top_left_glow_texture && var->window.bot_right_glow_texture) {
-            ImDrawList* nav_dl = ImGui::GetWindowDrawList();
-            ImVec2 nav_pos = ImGui::GetWindowPos();
-            ImVec2 nav_size = ImGui::GetWindowSize();
-            ImU32 glow_color = draw->get_clr(clr->base_colors.accent_clr, 0.50f);
-            nav_dl->PushClipRect(nav_pos, nav_pos + nav_size, true);
-            draw->image_rounded(nav_dl, var->window.top_left_glow_texture,
-                pos, pos + size, ImVec2(0, 0), ImVec2(1, 1), glow_color, 0.f);
-            draw->image_rounded(nav_dl, var->window.bot_right_glow_texture,
-                pos, pos + size, ImVec2(0, 0), ImVec2(1, 1), glow_color, 0.f);
-            nav_dl->PopClipRect();
-          }
-
           int tab_count = (int)elements->section.section_list[0].size();
 
           float total_w = 0.f;
