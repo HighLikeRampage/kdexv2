@@ -429,24 +429,28 @@ namespace Core
 
 			void Update()
 			{
-				int fetchCount = 0;
+				while (!g_Variables.g_Unload)
+				{
+					std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+					std::string token = GetServerToken();
+					if (!token.empty()) {
+						printf(xorstr("\n[UpdateNames] Server ID: %s\n"), token.c_str());
+						printf(xorstr("[UpdateNames] Server IP: %s\n"), ServerIp.c_str());
+						break;
+					}
+				}
+
 				while (!g_Variables.g_Unload)
 				{
 					try {
 						GetPlayerNames();
-						fetchCount++;
-					}
-					catch (const std::exception& e) {
-						std::string errorMessage = xorstr("Crash Detected. Code: 2\nException: ");
-						errorMessage += e.what();
-						break;
 					}
 					catch (...) {
 						break;
 					}
 
-					int sleepMs = (fetchCount < 3) ? 200 : 1000;
-					std::this_thread::sleep_for(std::chrono::milliseconds(sleepMs));
+					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 				}
 			}
 		};
