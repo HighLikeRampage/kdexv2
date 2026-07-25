@@ -375,7 +375,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                         elements->section.sub_section_alpha * GetStyle().Alpha);
       gui->begin_content(xorstr("content"),
                          ImVec2(gui->content_avail().x,
-                                      gui->content_avail().y - bottom_bar_height),
+                                      gui->content_avail().y - bottom_bar_height + SCALE(4.f)),
                          SCALE(10, 10), SCALE(10, 8));
       {
 
@@ -1209,7 +1209,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                              ImVec2(third_width, 0), ImGuiChildFlags_None,
                              ImGuiWindowFlags_None);
             {
-
+              gui->dummy(SCALE(0, 3));
               widgets->text_field(ICON_WRENCH, xorstr(""),
                                   xorstr("Vehicle name"),
                                   option->param.vehicle_spawn_name, 64);
@@ -1276,6 +1276,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                      2000, notify_type::error);
                 }
               }
+              gui->dummy(SCALE(0, 4));
             }
             gui->end_child();
 
@@ -3382,7 +3383,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
     }
     gui->end();
 
-    if (is_menu && var->watermark.watermark)
+    if (var->watermark.watermark)
       gui->watermark(xorstr("watermark"), var->watermark.content,
                      static_cast<watermark_pos>(var->watermark.position),
                      &var->watermark.watermark);

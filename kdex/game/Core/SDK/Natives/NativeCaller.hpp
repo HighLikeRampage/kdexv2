@@ -1,200 +1,119 @@
 #pragma once
 
-#include <Core/SDK/Natives/B3751HandlerRvas.hpp>
-#include <Core/SDK/Natives/CitizenNativeCore.hpp>
-#include <Core/SDK/Natives/CrossmapNatives.hpp>
-#include <Core/SDK/Natives/NativeHashNames.hpp>
-#include <Core/SDK/Natives/Natives.hpp>
-#include <Core/SDK/Natives/PatternResolver.hpp>
-#include <Core/SDK/Natives/ShellcodeBuilder.hpp>
-#include <Core/SDK/Memory.hpp>
-#include <Core/SDK/DebugLog.hpp>
+#include "Invoker.hpp"
 #include <Security/xorstr.hpp>
-
+#include <atomic>
 #include <cstdint>
-#include <cstring>
-#include <chrono>
+#include <cstdio>
 #include <initializer_list>
-#include <mutex>
 #include <string>
-#include <string_view>
-#include <type_traits>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
-#include <Windows.h>
-
-using namespace Core;
+#include <windows.h>
 
 namespace NativeCaller {
 
-    inline bool g_TraceInvoke = true;
-
-    enum class Mode : int { Dead, Citizen, MainFn, Apc, Direct };
-
-    constexpr size_t Q_TRIGGER  = 0x00;
-    constexpr size_t Q_DONE     = 0x01;
-    constexpr size_t Q_HANDLER  = 0x08;
-    constexpr size_t Q_ARGCOUNT = 0x18;
-    constexpr size_t Q_ARGS     = 0x20;
-    constexpr size_t Q_RESULT   = 0xC8;
-
-    constexpr size_t E_HASH0    = 0x00;
-    constexpr size_t E_HASH1    = 0x08;
-    constexpr size_t E_HANDLER  = 0x18;
-
-    struct CitizenEntry {
-        uint64_t  hash0;
-        uint64_t  hash1;
-        uint64_t  handler;
-        uintptr_t slot;
-    };
-
-    struct SHVExports {
-        uint64_t reg  = 0;
-        uint64_t wait = 0;
-        uint64_t init = 0;
-        uint64_t push = 0;
-        uint64_t call = 0;
-        bool complete() const { return reg && wait && init && push && call; }
-    };
-
-    struct Range { uintptr_t begin; uintptr_t end; };
-
-    const char* NameOf(uint64_t hash);
-
-    class CNativeCaller {
-    public:
-        bool IsReady()  const { return m_ready; }
-        Mode GetMode()  const { return m_mode; }
-
-        HANDLE   GetHookProc()        const { return Core::Mem.ProcHandle; }
-        DWORD    GetHookPid()         const { return Core::Mem.ProcId; }
-
-        uintptr_t GetQueueBase()      const;
-
-        uintptr_t GetAnchorSlotAddr() const { return m_citSlotVA; }
-        const CitizenNativeCore::SCitizenCore& GetCitizenCore() const { return m_core; }
-
-        bool EnsureReady();
-        void Shutdown();
-        void Initialize();
-        bool Probe(int timeoutMs = 2500);
-
-        uint64_t Invoke(uint64_t hash,
-                        std::initializer_list<uint64_t> args = {},
-                        int timeoutMs = 400);
-
-        template<typename First, typename... Rest>
-        std::enable_if_t<!std::is_same_v<std::decay_t<First>, std::initializer_list<uint64_t>>, uint64_t>
-        Invoke(uint64_t hash, First first, Rest... rest) {
-            std::lock_guard<std::mutex> lk(m_mtx);
-            if (!m_ready) return 0;
-            std::vector<uint64_t> packed;
-            packed.reserve(1 + sizeof...(Rest));
-            packed.push_back(PackArg(first));
-            (packed.push_back(PackArg(rest)), ...);
-            return InvokeRaw(hash, packed, 400);
-        }
-
-        template<typename T>
-        static uint64_t PackArg(T value) {
-            using U = std::decay_t<T>;
-            if constexpr (std::is_same_v<U, float>) {
-                uint64_t bits = 0; std::memcpy(&bits, &value, sizeof(value)); return bits;
-            } else if constexpr (std::is_same_v<U, double>) {
-                uint64_t bits = 0; std::memcpy(&bits, &value, sizeof(value)); return bits;
-            } else if constexpr (std::is_same_v<U, bool>) {
-                return value ? 1ULL : 0ULL;
-            } else if constexpr (std::is_same_v<U, uint64_t>) {
-                return value;
-            } else if constexpr (std::is_same_v<U, int64_t>) {
-                return static_cast<uint64_t>(value);
-            } else if constexpr (std::is_pointer_v<U>) {
-                return reinterpret_cast<uint64_t>(value);
-            } else if constexpr (std::is_integral_v<U>) {
-                return static_cast<uint64_t>(static_cast<int64_t>(value));
-            } else if constexpr (std::is_enum_v<U>) {
-                return static_cast<uint64_t>(static_cast<std::underlying_type_t<U>>(value));
-            } else {
-                return static_cast<uint64_t>(value);
+    inline std::string ResolveInvokerPath(const wchar_t* leaf) {
+        wchar_t exePath[MAX_PATH] = {};
+        GetModuleFileNameW(nullptr, exePath, MAX_PATH);
+        std::wstring dir = exePath;
+        size_t slash = dir.find_last_of(xorstr(L"\\/"));
+        if (slash != std::wstring::npos) dir.resize(slash);
+        for (int i = 0; i < 8; ++i) {
+            std::wstring c1 = dir + xorstr(L"\\") + leaf;
+            if (GetFileAttributesW(c1.c_str()) != INVALID_FILE_ATTRIBUTES) {
+                char n[MAX_PATH] = {};
+                WideCharToMultiByte(CP_UTF8, 0, c1.c_str(), -1, n, MAX_PATH, nullptr, nullptr);
+                return n;
             }
+            std::wstring c2 = dir + xorstr(L"\\kdex\\") + leaf;
+            if (GetFileAttributesW(c2.c_str()) != INVALID_FILE_ATTRIBUTES) {
+                char n[MAX_PATH] = {};
+                WideCharToMultiByte(CP_UTF8, 0, c2.c_str(), -1, n, MAX_PATH, nullptr, nullptr);
+                return n;
+            }
+            size_t up = dir.find_last_of(xorstr(L"\\/"));
+            if (up == std::wstring::npos) break;
+            dir.resize(up);
+        }
+        return {};
+    }
+
+    inline std::atomic<bool> g_InvokerBootStarted{false};
+    inline std::atomic<bool> g_InvokerBootDone{false};
+
+    inline bool BootInvoker(uint32_t pid) {
+        if (g_InvokerBootDone.load()) return true;
+        bool expected = false;
+        if (!g_InvokerBootStarted.compare_exchange_strong(expected, true)) {
+            return g_InvokerBootDone.load();
+        }
+        std::string nativesPath = ResolveInvokerPath(xorstr(L"game\\Core\\SDK\\Natives\\Natives.hpp"));
+        if (nativesPath.empty()) nativesPath = ResolveInvokerPath(xorstr(L"Natives.hpp"));
+        std::string crossmapPath = ResolveInvokerPath(xorstr(L"game\\Core\\SDK\\Natives\\Crossmap.hpp"));
+        if (crossmapPath.empty()) crossmapPath = ResolveInvokerPath(xorstr(L"Crossmap.hpp"));
+        if (!nativesPath.empty()) Invoker::SetNativesHppPath(nativesPath);
+        if (!crossmapPath.empty()) Invoker::SetCrossmapPath(crossmapPath);
+        std::fprintf(stderr, xorstr("[Invoker] using natives=%s crossmap=%s\n"),
+            nativesPath.empty() ? xorstr("<default>") : nativesPath.c_str(),
+            crossmapPath.empty() ? xorstr("<default>") : crossmapPath.c_str());
+
+        Invoker::EnableLogging(true);
+        if (!Invoker::AttachExternal(pid)) {
+            std::fprintf(stderr, xorstr("[Invoker] AttachExternal(%u) failed\n"), pid);
+            g_InvokerBootStarted.store(false);
+            return false;
+        }
+        if (!Invoker::Initialize()) {
+            std::fprintf(stderr, xorstr("[Invoker] Initialize failed (missing Natives.hpp / Crossmap.hpp?)\n"));
+            g_InvokerBootStarted.store(false);
+            return false;
+        }
+        if (!Invoker::Scan()) {
+            std::fprintf(stderr, xorstr("[Invoker] Scan failed\n"));
+            g_InvokerBootStarted.store(false);
+            return false;
+        }
+        if (!Invoker::InstallCitizenHook()) {
+            std::fprintf(stderr, xorstr("[Invoker] InstallCitizenHook failed\n"));
+            g_InvokerBootStarted.store(false);
+            return false;
+        }
+        std::fprintf(stderr, xorstr("[Invoker] ready: %u natives, queue @ 0x%llx\n"),
+            Invoker::NativeCount(), (unsigned long long)Invoker::CitizenQueueBase());
+        g_InvokerBootDone.store(true);
+        return true;
+    }
+
+    struct NativeCallerShim {
+        bool EnsureReady() {
+            return g_InvokerBootDone.load() && Invoker::IsCitizenHookInstalled();
         }
 
-    private:
-        Mode m_mode        = Mode::Dead;
-        bool m_ready       = false;
-        bool m_initFailed  = false;
-        int  m_build       = 0;
-        mutable std::mutex m_mtx;
+        bool IsReady() const {
+            return Invoker::IsCitizenHookInstalled();
+        }
 
-        CitizenNativeCore::SCitizenCore                                       m_core{};
-        std::vector<CitizenEntry>                                             m_citizen;
-        std::unordered_map<uint64_t, uint64_t>                                m_citizenIndex;
-        std::unordered_map<uint64_t, uint64_t>                                m_handlerCache;
-        std::unordered_set<uint64_t>                                          m_unresolvedHash;
-        std::unordered_map<uint64_t, std::chrono::steady_clock::time_point>   m_coolDownUntil;
+        uintptr_t GetQueueBase() const {
+            return Invoker::CitizenQueueBase();
+        }
 
-        std::vector<uint8_t> m_gameImage;
-        bool                 m_gameImageTried = false;
+        template <typename... Args>
+        uint64_t Invoke(uint64_t hash, Args... args) {
+            const uint64_t* r = Invoker::Call(hash, args...);
+            return r ? r[0] : 0ull;
+        }
 
-        std::vector<uint8_t> m_coreImage;
-        bool                 m_coreImageTried = false;
+        uint64_t Invoke(uint64_t hash, std::initializer_list<uint64_t> args, uint32_t /*timeoutMs*/ = 0) {
+            const uint64_t* r = Invoker::Invoke(hash, args.begin(), static_cast<uint32_t>(args.size()));
+            return r ? r[0] : 0ull;
+        }
 
-        std::vector<Range>   m_modRanges;
-
-        uintptr_t            m_citQueueVA       = 0;
-        uintptr_t            m_citCaveVA        = 0;
-        uintptr_t            m_citSlotVA        = 0;
-        uintptr_t            m_citOrigFn        = 0;
-        std::vector<uint8_t> m_citCaveOrigBytes;
-        size_t               m_citCaveSize      = 0;
-
-        uintptr_t                          m_mainBase   = 0;
-        uintptr_t                          m_mainDataVA = 0;
-        ShellcodeBuilder::MainFnShellcode  m_mainMeta{};
-        uintptr_t                          m_mainResultVA = 0;
-
-        uintptr_t                            m_apcCodeVA = 0;
-        uintptr_t                            m_apcDataVA = 0;
-        ShellcodeBuilder::ApcCallShellcode   m_apcMeta{};
-        uintptr_t                            m_apcResultVA = 0;
-
-        uintptr_t                              m_dcBase   = 0;
-        uintptr_t                              m_dcDataVA = 0;
-        ShellcodeBuilder::DirectCallShellcode  m_dcMeta{};
-        std::vector<Range>                     m_dcScriptRanges;
-        uintptr_t                              m_dcResultVA = 0;
-
-        static constexpr std::chrono::milliseconds kCooldownAfterTimeout{ 1500 };
-
-        bool     TryCitizenMode();
-        bool     TryMainFnMode();
-        bool     TryApcMode();
-        bool     TryDirectMode();
-
-        bool     ScanCitizenTable();
-        void     RefreshModRanges();
-
-        uint64_t ScanForNativeHandler(uint64_t hash);
-        uint64_t CitizenLookup(uint64_t hash) const;
-        uint64_t PatternResolve(uint64_t hash);
-        uint64_t FollowStub(uintptr_t va) const;
-        bool     EnsureGameImage();
-        bool     EnsureCoreImage();
-        int64_t  FindInGameImage(const PatternResolver::Pattern& p) const;
-        int      DetectBuild() const;
-        bool     IsNetworkNative(uint64_t hash) const;
-
-        uint64_t InvokeRaw(uint64_t hash, const std::vector<uint64_t>& args, int timeoutMs);
-        bool     InvokeCitizen(uint64_t hash, uint64_t handler, const uint64_t* args, size_t nargs, int timeoutMs, uint64_t& outResult);
-        bool     InvokeMainFn (uint64_t hash,                   const uint64_t* args, size_t nargs, int timeoutMs, uint64_t& outResult);
-        bool     InvokeApc    (uint64_t handler,                const uint64_t* args, size_t nargs, int timeoutMs, uint64_t& outResult);
-        bool     InvokeDirect (uint64_t handler,                const uint64_t* args, size_t nargs, int timeoutMs, uint64_t& outResult);
+        template <typename... Args>
+        uint64_t InvokeByName(const std::string& name, Args... args) {
+            const uint64_t* r = Invoker::CallByName(name, args...);
+            return r ? r[0] : 0ull;
+        }
     };
 
-    extern CNativeCaller g_NativeCaller;
-}
+    inline NativeCallerShim g_NativeCaller;
 
-using NativeCaller::g_NativeCaller;
+}

@@ -166,17 +166,8 @@
     <ClCompile Include="game\Core\SDK\Memory.cpp">
       <Filter>game\Core\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="game\Core\SDK\Natives\CrossmapNatives.cpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClCompile>
-    <ClCompile Include="game\Core\SDK\Natives\NativeCaller.cpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClCompile>
     <ClCompile Include="game\Gui\Overlay\Overlay.cpp">
       <Filter>game\Gui\Overlay</Filter>
-    </ClCompile>
-    <ClCompile Include="game\nvidia\nvidia_patch.cpp">
-      <Filter>game\nvidia</Filter>
     </ClCompile>
     <ClCompile Include="game\Security\CrashHandler.cpp">
       <Filter>game\Security</Filter>
@@ -228,6 +219,12 @@
     </ClCompile>
     <ClCompile Include="framework\gui\gui_spinner.cpp">
       <Filter>game\Gui\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="game\hidings\hidings.cpp" />
+    <ClCompile Include="game\hooks\hooks.cpp" />
+    <ClCompile Include="Invoker.cpp">
+      <Filter>game\Core\SDK\Natives</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -387,9 +384,6 @@
     <ClInclude Include="game\Gui\Overlay\Overlay.hpp">
       <Filter>game\Gui\Overlay</Filter>
     </ClInclude>
-    <ClInclude Include="game\nvidia\nvidia_patch.hpp">
-      <Filter>game\nvidia</Filter>
-    </ClInclude>
     <ClInclude Include="game\Security\AntiCrack.hpp">
       <Filter>game\Security</Filter>
     </ClInclude>
@@ -498,25 +492,13 @@
     <ClInclude Include="thirdparty\imgui\backends\imgui_impl_win32.h">
       <Filter>thirdparty\imgui\backends</Filter>
     </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\NativeHooker.hpp">
+    <ClInclude Include="game\Core\SDK\Natives\Invoker.hpp">
       <Filter>game\Core\SDK\Natives</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\SDK\Natives\NativeCaller.hpp">
       <Filter>game\Core\SDK\Natives</Filter>
     </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\CrossmapNatives.hpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\NativeHashNames.hpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\PatternResolver.hpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClInclude>
     <ClInclude Include="game\Core\SDK\Natives\Natives.hpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\CitizenNativeCore.hpp">
       <Filter>game\Core\SDK\Natives</Filter>
     </ClInclude>
     <ClInclude Include="Globals.hpp">
@@ -554,6 +536,11 @@
     </ClInclude>
     <ClInclude Include="game\Core\Features\Exploits\ExploitTest.hpp">
       <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\hidings\hidings.hpp" />
+    <ClInclude Include="game\hooks\hooks.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\Crossmap.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

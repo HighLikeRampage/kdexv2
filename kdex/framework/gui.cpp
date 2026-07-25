@@ -188,16 +188,14 @@ void c_gui::render() {
     ImDrawList *drawlist = GetWindowDrawList();
     float menu_alpha = 1.0f;
 
-    if (is_menu) {
-      var->watermark.watermark = option->param.watermark;
-      if (var->watermark.watermark) {
-        ImGuiIO &io = GetIO();
-        int fps_i = (int)(io.Framerate + 0.5f);
-        int ms_i = fps_i > 0 ? (int)(1000.0f / (float)fps_i + 0.5f) : 0;
-        var->watermark.content = {xorstr("Rotten"),
-                                  std::to_string(fps_i) + xorstr("FPS"),
-                                  std::to_string(ms_i) + xorstr("ms")};
-      }
+    var->watermark.watermark = option->param.watermark;
+    if (var->watermark.watermark) {
+      ImGuiIO &io = GetIO();
+      int fps_i = (int)(io.Framerate + 0.5f);
+      int ms_i = fps_i > 0 ? (int)(1000.0f / (float)fps_i + 0.5f) : 0;
+      var->watermark.content = {xorstr("Rotten"),
+                                std::to_string(fps_i) + xorstr("FPS"),
+                                std::to_string(ms_i) + xorstr("ms")};
     }
     GuiFrameContext ctx{is_menu, is_launch, pos, size, drawlist, menu_alpha};
 

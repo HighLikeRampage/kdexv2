@@ -140,6 +140,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Invoker.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -176,14 +179,10 @@
     <ClCompile Include="game\Core\Features\Triggerbot.cpp" />
     <ClCompile Include="game\Core\SDK\Memory.cpp" />
     <ClCompile Include="game\Core\SDK\d3dx_impl.cpp" />
-    <ClCompile Include="game\Core\SDK\Natives\CrossmapNatives.cpp" />
-    <ClCompile Include="game\Core\SDK\Natives\NativeCaller.cpp" />
-    <ClCompile Include="game\Core\SDK\Natives\NativeHashNames.cpp" />
     <ClCompile Include="game\Gui\Overlay\Overlay.cpp" />
     <ClCompile Include="game\hidings\hidings.cpp" />
     <ClCompile Include="game\hooks\hooks.cpp" />
     <ClCompile Include="game\Security\CrashHandler.cpp" />
-
     <ClCompile Include="thirdparty\dxsdk\Include\detours.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
@@ -285,13 +284,10 @@
     <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp" />
     <ClInclude Include="game\Core\SDK\SDK.hpp" />
     <ClInclude Include="game\Core\SDK\Memory.hpp" />
-    <ClInclude Include="game\Core\SDK\Natives\CitizenNativeCore.hpp" />
-    <ClInclude Include="game\Core\SDK\Natives\CrossmapNatives.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\Crossmap.hpp" />
+    <ClInclude Include="game\Core\SDK\Natives\Invoker.hpp" />
     <ClInclude Include="game\Core\SDK\Natives\NativeCaller.hpp" />
-    <ClInclude Include="game\Core\SDK\Natives\NativeHashNames.hpp" />
-    <ClInclude Include="game\Core\SDK\Natives\NativeHooker.hpp" />
     <ClInclude Include="game\Core\SDK\Natives\Natives.hpp" />
-    <ClInclude Include="game\Core\SDK\Natives\PatternResolver.hpp" />
     <ClInclude Include="game\Core\SDK\Structs\GameClasses.hpp" />
     <ClInclude Include="game\Core\SDK\Structs\Structs.hpp" />
     <ClInclude Include="game\Core\Threads\EntityList.hpp" />
@@ -313,7 +309,6 @@
     <ClInclude Include="game\Security\anticrack\WindowCheck.hpp" />
     <ClInclude Include="game\Security\LazyImporter.hpp" />
     <ClInclude Include="game\Security\xorstr.hpp" />
-
     <ClInclude Include="game\Security\Api\api.hpp" />
     <ClInclude Include="game\Security\Api\json.hpp" />
     <ClInclude Include="game\Security\Api\structs\structs.hpp" />

@@ -26,7 +26,6 @@
 
 #include "SDK/Natives/NativeCaller.hpp"
 
-#include "SDK/Natives/CitizenNativeCore.hpp"
 #include "SDK/Natives/Natives.hpp"
 
 #include "Features/Exploits/LuaExecutor.hpp"
@@ -44,7 +43,9 @@ inline void StartNativeCaller() {
   while (!g_Variables.g_Unload) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
     if (!Core::g_AttachedToGame) continue;
-    NativeCaller::g_NativeCaller.EnsureReady();
+    if (!NativeCaller::g_InvokerBootDone.load() && Core::g_Variables.ProcIdFiveM != 0) {
+      NativeCaller::BootInvoker(Core::g_Variables.ProcIdFiveM);
+    }
     LuaExec::g_LuaExecutor.Init();
   }
 }
