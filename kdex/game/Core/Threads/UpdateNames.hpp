@@ -8,7 +8,6 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include <deque>
 
 #define CURL_STATICLIB
 #include <Security/Api/curl/curl.h>
@@ -28,9 +27,9 @@ namespace Core
 		{
 		private:
 			std::string ServerIp;
-			std::string ServerToken;
 			std::string DirFiveM;
 			std::string RedirectUrl;
+			std::string CachedServerToken;
 			std::mutex NamesMutex;
 		public:
 			std::unordered_map<int, Core::SDK::Game::NetworkInfo> NetworkMap;
@@ -114,8 +113,6 @@ namespace Core
 				return "";
 			}
 
-			static std::string& LastWorkingToken() { static std::string s; return s; }
-
 			std::string TryReadTokenFromFile(const std::string& path) {
 				std::ifstream f(path, std::ios::binary);
 				if (!f) return "";
@@ -132,6 +129,8 @@ namespace Core
 			}
 
 			std::string GetServerToken() {
+				if (!CachedServerToken.empty())
+					return CachedServerToken;
 
 				if (DirFiveM.empty())
 				{
@@ -182,7 +181,10 @@ namespace Core
 				for (const std::string& p : paths) {
 					if (p.empty()) continue;
 					std::string tok = TryReadTokenFromFile(p);
-					if (!tok.empty()) return tok;
+					if (!tok.empty()) {
+						CachedServerToken = tok;
+						return CachedServerToken;
+					}
 				}
 
 				if (ServerIp.empty() && !g_Variables.ServerIp.empty())
@@ -193,205 +195,82 @@ namespace Core
 				g_Variables.ServerIp = ServerIp;
 
 				std::string Token = TryExtractTokenFromRedirect();
-				if (!Token.empty()) return Token;
-				if (!LastWorkingToken().empty()) return LastWorkingToken();
+				if (!Token.empty()) {
+					CachedServerToken = Token;
+					return CachedServerToken;
+				}
 				return xorstr("");
 			}
-		public:
 
-			std::string CachedServerToken;
-
-			nlohmann::json GetPlayerData() {
-				if (CachedServerToken.empty())
-					CachedServerToken = GetServerToken();
-				if (CachedServerToken.empty()) {
-					ServerToken = GetServerToken();
-					if (ServerToken.empty())
-						return NULL;
-					CachedServerToken = ServerToken;
-				}
-
-				std::string ApiUrl = xorstr("https://servers-frontend.fivem.net/api/servers/single/") + CachedServerToken;
+			nlohmann::json FetchCfxRayData(const std::string& token) {
+				std::string ApiUrl = std::string(xorstr("https://cfxray.com/api/lookup?input=")) + token;
 
 				std::string ResponseStr;
-				CURL* hnd;
-				CURLcode res;
-				hnd = curl_easy_init();
-				if (hnd) {
-					curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, xorstr("GET"));
-					curl_easy_setopt(hnd, CURLOPT_URL, ApiUrl.c_str());
-					curl_easy_setopt(hnd, CURLOPT_TIMEOUT, 5L);
-					curl_easy_setopt(hnd, CURLOPT_CONNECTTIMEOUT, 3L);
-					struct curl_slist* headers = NULL;
-					headers = curl_slist_append(headers, xorstr("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"));
-					curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);
-					curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, WriteCallBack);
-					curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &ResponseStr);
-					res = curl_easy_perform(hnd);
-					curl_easy_cleanup(hnd);
-					curl_slist_free_all(headers);
+				CURL* hnd = curl_easy_init();
+				if (!hnd) return nullptr;
+
+				struct curl_slist* headers = NULL;
+				headers = curl_slist_append(headers, xorstr("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"));
+				headers = curl_slist_append(headers, xorstr("Accept: */*"));
+
+				curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, xorstr("GET"));
+				curl_easy_setopt(hnd, CURLOPT_URL, ApiUrl.c_str());
+				curl_easy_setopt(hnd, CURLOPT_TIMEOUT, 5L);
+				curl_easy_setopt(hnd, CURLOPT_CONNECTTIMEOUT, 3L);
+				curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);
+				curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, WriteCallBack);
+				curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &ResponseStr);
+
+				CURLcode res = curl_easy_perform(hnd);
+				curl_easy_cleanup(hnd);
+				curl_slist_free_all(headers);
+
+				if (res != CURLE_OK || ResponseStr.empty())
+					return nullptr;
+
+				try {
+					return json::parse(ResponseStr);
 				}
-
-				if (ResponseStr.empty()) {
-					CachedServerToken.clear();
-					return NULL;
+				catch (...) {
+					return nullptr;
 				}
-
-				nlohmann::json ResponseJson;
-				try { ResponseJson = json::parse(ResponseStr); } catch (...) { return NULL; }
-				if (!ResponseJson.is_object() && !ResponseJson.is_array())
-					return NULL;
-				nlohmann::json ServerData = ResponseJson;
-				if (ResponseJson.contains(xorstr("Data")))
-					ServerData = ResponseJson[xorstr("Data")];
-				else if (ResponseJson.contains((xorstr("data"))))
-					ServerData = ResponseJson[(xorstr("data"))];
-				if (!ServerData.contains(xorstr("players")) && !ServerData.contains((xorstr("players"))))
-					return NULL;
-				nlohmann::json PlayersObj = ServerData.contains(xorstr("players")) ? ServerData[xorstr("players")] : ServerData[(xorstr("players"))];
-				nlohmann::json PlayersArray = PlayersObj.contains(xorstr("list")) ? PlayersObj[xorstr("list")] : (PlayersObj.contains((xorstr("list"))) ? PlayersObj[(xorstr("list"))] : PlayersObj);
-				if (!PlayersArray.is_array())
-					return NULL;
-
-				LastWorkingToken() = CachedServerToken;
-				return PlayersArray;
 			}
 
-			std::unordered_map<std::string, std::string> DiscordUsernameCache;
-			std::mutex DiscordUsernameCacheMutex;
+			void UpdatePlayerNames(const nlohmann::json& cfxData) {
+				if (cfxData.is_null() || !cfxData.is_object())
+					return;
 
-			std::deque<std::string> DiscordIdQueue;
-			std::mutex DiscordIdQueueMutex;
-			bool WorkerThreadStarted = false;
+				nlohmann::json playersList;
 
-			std::string GetDiscordUsername(const std::string& discordId) {
-				if (discordId.empty()) return "";
-
-				{
-					std::lock_guard<std::mutex> lock(DiscordUsernameCacheMutex);
-					auto dit = DiscordUsernameCache.find(discordId);
-					if (dit != DiscordUsernameCache.end()) return dit->second;
-
-					DiscordUsernameCache[discordId] = discordId;
+				if (cfxData.contains(xorstr("players_list")) && cfxData[xorstr("players_list")].is_array()) {
+					playersList = cfxData[xorstr("players_list")];
 				}
-
-				{
-					std::lock_guard<std::mutex> lock(DiscordIdQueueMutex);
-					DiscordIdQueue.push_back(discordId);
-					if (!WorkerThreadStarted) {
-						WorkerThreadStarted = true;
-						std::thread([this]() {
-							while (!g_Variables.g_Unload) {
-								std::string currentId = "";
-								{
-									std::lock_guard<std::mutex> lock(DiscordIdQueueMutex);
-									if (!DiscordIdQueue.empty()) {
-										currentId = DiscordIdQueue.front();
-										DiscordIdQueue.pop_front();
-									}
+				else if (cfxData.contains(xorstr("endpoints")) && cfxData[xorstr("endpoints")].is_array()) {
+					for (const auto& ep : cfxData[xorstr("endpoints")]) {
+						if (ep.contains(xorstr("players")) && ep[xorstr("players")].is_object()) {
+							auto& pl = ep[xorstr("players")];
+							if (pl.contains(xorstr("available")) && pl[xorstr("available")].get<bool>()) {
+								if (pl.contains(xorstr("data")) && pl[xorstr("data")].is_array()) {
+									playersList = pl[xorstr("data")];
+									break;
 								}
-
-								if (currentId.empty()) {
-									std::this_thread::sleep_for(std::chrono::milliseconds(100));
-									continue;
-								}
-
-								std::string ApiUrl = xorstr("https://discord-lookup-api.vercel.app/v1/user/") + currentId;
-								std::string ResponseStr;
-								CURL* hnd = curl_easy_init();
-								if (hnd) {
-									curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, xorstr("GET"));
-									curl_easy_setopt(hnd, CURLOPT_URL, ApiUrl.c_str());
-									curl_easy_setopt(hnd, CURLOPT_TIMEOUT, 3L);
-									struct curl_slist* headers = NULL;
-									headers = curl_slist_append(headers, xorstr("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)"));
-									curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);
-									curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, WriteCallBack);
-									curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &ResponseStr);
-									curl_easy_perform(hnd);
-									curl_easy_cleanup(hnd);
-								}
-
-								bool success = false;
-								if (!ResponseStr.empty()) {
-									try {
-										nlohmann::json ResponseJson = json::parse(ResponseStr);
-										std::string finalName = "";
-										if (ResponseJson.contains(xorstr("global_name")) && !ResponseJson[xorstr("global_name")].is_null()) {
-											finalName = ResponseJson[xorstr("global_name")].get<std::string>();
-										} else if (ResponseJson.contains(xorstr("username")) && !ResponseJson[xorstr("username")].is_null()) {
-											finalName = ResponseJson[xorstr("username")].get<std::string>();
-										}
-
-										if (!finalName.empty()) {
-											std::lock_guard<std::mutex> lock(DiscordUsernameCacheMutex);
-											DiscordUsernameCache[currentId] = finalName;
-											success = true;
-										}
-									} catch (...) {}
-								}
-
-								if (!success) {
-									std::string FallbackApiUrl = xorstr("") + currentId;
-									ResponseStr.clear();
-									hnd = curl_easy_init();
-									if (hnd) {
-										curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, xorstr("GET"));
-										curl_easy_setopt(hnd, CURLOPT_URL, FallbackApiUrl.c_str());
-										curl_easy_setopt(hnd, CURLOPT_TIMEOUT, 3L);
-										struct curl_slist* headers = NULL;
-										headers = curl_slist_append(headers, xorstr("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)"));
-										curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, headers);
-										curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, WriteCallBack);
-										curl_easy_setopt(hnd, CURLOPT_WRITEDATA, &ResponseStr);
-										curl_easy_perform(hnd);
-										curl_easy_cleanup(hnd);
-									}
-									if (!ResponseStr.empty()) {
-										try {
-											nlohmann::json ResponseJson = json::parse(ResponseStr);
-											std::string finalName = "";
-											if (ResponseJson.contains(xorstr("display_name")) && !ResponseJson[xorstr("display_name")].is_null()) {
-												finalName = ResponseJson[xorstr("display_name")].get<std::string>();
-											} else if (ResponseJson.contains(xorstr("username")) && !ResponseJson[xorstr("username")].is_null()) {
-												finalName = ResponseJson[xorstr("username")].get<std::string>();
-											}
-
-											if (!finalName.empty()) {
-												std::lock_guard<std::mutex> lock(DiscordUsernameCacheMutex);
-												DiscordUsernameCache[currentId] = finalName;
-												success = true;
-											}
-										} catch (...) {}
-									}
-								}
-
-								if (!success) {
-								}
-
-								std::this_thread::sleep_for(std::chrono::milliseconds(20));
 							}
-						}).detach();
+						}
 					}
 				}
 
-				return discordId;
-			}
-
-			void GetPlayerNames()
-			{
-				nlohmann::json PlayersArr = GetPlayerData();
-
-				if (PlayersArr == NULL)
+				if (!playersList.is_array() || playersList.empty())
 					return;
 
 				std::unordered_map<int, Core::SDK::Game::NetworkInfo> newMap;
-				newMap.reserve(256);
+				newMap.reserve(playersList.size());
 
-				for (const auto& Player : PlayersArr)
-				{
-					if (!Player.is_object() || !Player.contains(xorstr("id")) || !Player.contains(xorstr("name")))
+				for (const auto& Player : playersList) {
+					if (!Player.is_object())
 						continue;
+					if (!Player.contains(xorstr("id")) || !Player.contains(xorstr("name")))
+						continue;
+
 					int PlayerId = 0;
 					if (Player[xorstr("id")].is_number_integer())
 						PlayerId = Player[xorstr("id")].get<int>();
@@ -399,26 +278,10 @@ namespace Core
 						PlayerId = std::atoi(Player[xorstr("id")].get<std::string>().c_str());
 					else
 						continue;
+
 					std::string PlayerName = Player[xorstr("name")].is_string() ? Player[xorstr("name")].get<std::string>() : std::string();
 
-					std::string Discord, SteamId;
-					if (Player.contains(xorstr("identifiers")) && Player[xorstr("identifiers")].is_array())
-					{
-						for (const auto& Identifier : Player[xorstr("identifiers")])
-						{
-							if (!Identifier.is_string())
-								continue;
-
-							std::string IdentifierVal = Identifier.get<std::string>();
-
-							if (IdentifierVal.find(xorstr("discord:")) != std::string::npos)
-								Discord = GetDiscordUsername(IdentifierVal.substr(8));
-							else if (IdentifierVal.find(xorstr("steam:")) != std::string::npos)
-								SteamId = IdentifierVal.substr(6);
-						}
-					}
-
-					newMap[PlayerId] = { PlayerName, Discord, SteamId };
+					newMap[PlayerId] = { PlayerName, "", "" };
 				}
 
 				{
@@ -427,30 +290,31 @@ namespace Core
 				}
 			}
 
+		public:
 			void Update()
 			{
+				std::string token;
+
 				while (!g_Variables.g_Unload)
 				{
 					std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-					std::string token = GetServerToken();
-					if (!token.empty()) {
-						printf(xorstr("\n[UpdateNames] Server ID: %s\n"), token.c_str());
-						printf(xorstr("[UpdateNames] Server IP: %s\n"), ServerIp.c_str());
+					token = GetServerToken();
+					if (!token.empty())
 						break;
-					}
 				}
+
+				if (g_Variables.g_Unload)
+					return;
 
 				while (!g_Variables.g_Unload)
 				{
 					try {
-						GetPlayerNames();
+						nlohmann::json cfxData = FetchCfxRayData(token);
+						UpdatePlayerNames(cfxData);
 					}
-					catch (...) {
-						break;
-					}
+					catch (...) {}
 
-					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					std::this_thread::sleep_for(std::chrono::milliseconds(3000));
 				}
 			}
 		};
