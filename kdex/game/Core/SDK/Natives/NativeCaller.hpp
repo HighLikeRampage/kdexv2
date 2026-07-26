@@ -102,7 +102,7 @@ namespace NativeCaller {
             return r ? r[0] : 0ull;
         }
 
-        uint64_t Invoke(uint64_t hash, std::initializer_list<uint64_t> args, uint32_t /*timeoutMs*/ = 0) {
+        uint64_t Invoke(uint64_t hash, std::initializer_list<uint64_t> args, uint32_t = 0) {
             const uint64_t* r = Invoker::Invoke(hash, args.begin(), static_cast<uint32_t>(args.size()));
             return r ? r[0] : 0ull;
         }

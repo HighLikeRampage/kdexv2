@@ -1054,7 +1054,7 @@ namespace Invoker {
         return false;
     }
 
-    void LoadBlacklist(const std::string& /*unused*/) {
+    void LoadBlacklist(const std::string&) {
         s_blacklist.clear();
         for (const char* const* p = kBuiltinBlacklist; *p; ++p) {
             uint64_t h = NativeHashFromName(*p);
@@ -1063,7 +1063,7 @@ namespace Invoker {
         Log(xorstr("[blacklist] %zu built-in entries\n"), s_blacklist.size());
     }
 
-    void SaveBlacklist(const std::string& /*unused*/) {}
+    void SaveBlacklist(const std::string&) {}
 
     void AddToBlacklist(uint64_t hash) {
         s_blacklist[hash] = true;
