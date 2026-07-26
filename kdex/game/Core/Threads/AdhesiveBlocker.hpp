@@ -3,6 +3,7 @@
 #include <tlhelp32.h>
 #include <psapi.h>
 #include <vector>
+#include <set>
 #include <algorithm>
 #include <Includes/Includes.hpp>
 #include <Security/xorstr.hpp>
@@ -25,7 +26,7 @@ namespace Core
 				unsigned __int64 userTime;
 			};
 
-			bool Done = false;
+			std::set<DWORD> SuspendedIds;
 
 			uintptr_t FindAdhesiveBase(HANDLE hProcess, size_t& modSize) {
 				HMODULE hMods[1024];
@@ -78,22 +79,21 @@ namespace Core
 
 				THREADENTRY32 te;
 				te.dwSize = sizeof(te);
-				int alreadySuspended = 0;
+				int alreadyCount = 0;
+				int totalAdhesive = 0;
 				if (Thread32First(hSnap, &te)) {
 					do {
 						if (te.th32OwnerProcessID != pid) continue;
-						HANDLE hThread = OpenThread(THREAD_QUERY_INFORMATION | THREAD_SUSPEND_RESUME, FALSE, te.th32ThreadID);
+						HANDLE hThread = OpenThread(THREAD_QUERY_INFORMATION, FALSE, te.th32ThreadID);
 						if (!hThread) continue;
 						uintptr_t startAddr = 0;
 						if (NtQueryInfoThread(hThread, 9, &startAddr, sizeof(startAddr), NULL) == 0) {
 							if (startAddr >= adhesiveBase && startAddr < adhesiveBase + adhesiveSize) {
-								DWORD prevCount = SuspendThread(hThread);
-								if (prevCount > 0) {
-									ResumeThread(hThread);
-									alreadySuspended++;
+								totalAdhesive++;
+								if (SuspendedIds.count(te.th32ThreadID)) {
+									alreadyCount++;
 								}
-								else if (prevCount == 0) {
-									ResumeThread(hThread);
+								else {
 									FILETIME c, e, k, u;
 									if (GetThreadTimes(hThread, &c, &e, &k, &u)) {
 										ULARGE_INTEGER uli;
@@ -109,9 +109,9 @@ namespace Core
 				}
 				CloseHandle(hSnap);
 
-				if (alreadySuspended > 0 && candidates.empty()) {
+				if (totalAdhesive > 0 && alreadyCount == totalAdhesive) {
 					CloseHandle(hProcess);
-					std::fprintf(stderr, xorstr("[Adhesive] already blocked (%d threads)\n"), alreadySuspended);
+					std::fprintf(stderr, xorstr("[Adhesive] already blocked (%d threads)\n"), alreadyCount);
 					return true;
 				}
 
@@ -131,6 +131,7 @@ namespace Core
 					HANDLE hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, candidates[i].id);
 					if (!hThread) continue;
 					SuspendThread(hThread);
+					SuspendedIds.insert(candidates[i].id);
 					suspended++;
 					CloseHandle(hThread);
 				}
@@ -144,15 +145,10 @@ namespace Core
 			{
 				while (!g_Variables.g_Unload)
 				{
-					if (Done) {
-						std::this_thread::sleep_for(std::chrono::seconds(5));
-						continue;
-					}
-
 					if (g_Variables.ProcIdFiveM != 0) {
 						if (SuspendAdhesiveThreads(g_Variables.ProcIdFiveM)) {
-							Done = true;
 							std::fprintf(stderr, xorstr("[Adhesive] blocked\n"));
+							return;
 						}
 					}
 
