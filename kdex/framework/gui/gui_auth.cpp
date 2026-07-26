@@ -304,10 +304,10 @@ bool c_gui::render_auth_screens(const GuiFrameContext& ctx) {
             for (char &c : key_str)
               if (c >= 'a' && c <= 'z')
                 c = (char)(c - 32);
-            bool key_ok = key_str.length() == 12 &&
+            bool key_ok = key_str.length() == 10 &&
                           key_str.compare(0, 5, xorstr("KDEX-")) == 0 &&
                           [](const std::string &s) {
-                            for (size_t i = 5; i < 12; i++)
+                            for (size_t i = 5; i < 10; i++)
                               if (!((s[i] >= 'A' && s[i] <= 'Z') ||
                                     (s[i] >= '0' && s[i] <= '9')))
                                 return false;
