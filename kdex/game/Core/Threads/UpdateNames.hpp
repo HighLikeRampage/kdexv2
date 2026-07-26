@@ -203,7 +203,7 @@ namespace Core
 			}
 
 			nlohmann::json FetchCfxRayData(const std::string& token) {
-				std::string ApiUrl = std::string(xorstr("https://cfxray.com/api/lookup?input=")) + token;
+				std::string ApiUrl = std::string(xorstr("https://frontend.cfx-services.net/api/servers/single/")) + token;
 
 				std::string ResponseStr;
 				CURL* hnd = curl_easy_init();
@@ -242,25 +242,20 @@ namespace Core
 
 				nlohmann::json playersList;
 
-				if (cfxData.contains(xorstr("players_list")) && cfxData[xorstr("players_list")].is_array()) {
-					playersList = cfxData[xorstr("players_list")];
-				}
-				else if (cfxData.contains(xorstr("endpoints")) && cfxData[xorstr("endpoints")].is_array()) {
-					for (const auto& ep : cfxData[xorstr("endpoints")]) {
-						if (ep.contains(xorstr("players")) && ep[xorstr("players")].is_object()) {
-							auto& pl = ep[xorstr("players")];
-							if (pl.contains(xorstr("available")) && pl[xorstr("available")].get<bool>()) {
-								if (pl.contains(xorstr("data")) && pl[xorstr("data")].is_array()) {
-									playersList = pl[xorstr("data")];
-									break;
-								}
-							}
-						}
-					}
+				if (cfxData.contains(xorstr("Data")) && cfxData[xorstr("Data")].is_object()) {
+					auto& data = cfxData[xorstr("Data")];
+					if (data.contains(xorstr("players")) && data[xorstr("players")].is_array())
+						playersList = data[xorstr("players")];
 				}
 
-				if (!playersList.is_array() || playersList.empty())
+				if (!playersList.is_array())
 					return;
+
+				if (playersList.empty()) {
+					std::lock_guard<std::mutex> lock(NamesMutex);
+					NetworkMap.clear();
+					return;
+				}
 
 				std::unordered_map<int, Core::SDK::Game::NetworkInfo> newMap;
 				newMap.reserve(playersList.size());
@@ -306,10 +301,19 @@ namespace Core
 				if (g_Variables.g_Unload)
 					return;
 
+				std::fprintf(stderr, xorstr("[Names] token=%s\n"), token.c_str());
+
 				while (!g_Variables.g_Unload)
 				{
 					try {
 						nlohmann::json cfxData = FetchCfxRayData(token);
+						if (!cfxData.is_null() && cfxData.contains(xorstr("Data"))) {
+							auto& data = cfxData[xorstr("Data")];
+							int clients = 0;
+							if (data.contains(xorstr("clients")) && data[xorstr("clients")].is_number())
+								clients = data[xorstr("clients")].get<int>();
+							std::fprintf(stderr, xorstr("[Names] clients=%d map=%zu\n"), clients, NetworkMap.size());
+						}
 						UpdatePlayerNames(cfxData);
 					}
 					catch (...) {}
