@@ -480,7 +480,7 @@ inline std::string map_error_code(const std::string &code) {
                   "device you used to register.");
   if (code == xorstr("register_failed"))
     return xorstr("Check: username 3-32 chars, valid email, password 8+ chars, "
-                  "key format NUVIA-XXXXX (5 letters/numbers)");
+                  "key format KDEX-XXXXX (5 letters/numbers)");
   if (code == xorstr("invalid_input"))
     return xorstr("Invalid request. Check your input.");
   if (code == xorstr("already_exists"))
