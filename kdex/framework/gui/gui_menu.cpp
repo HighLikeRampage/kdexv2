@@ -2867,94 +2867,9 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
         } else if (elements->section.section_count_active == 5) {
 
-          struct EventEntry { uint16_t id; std::string name; };
-          static const EventEntry kEventList[] = {
-            {3,  xorstr("SCRIPT_ARRAY_DATA_VERIFY_EVENT")},
-            {4,  xorstr("REQUEST_CONTROL_EVENT")},
-            {5,  xorstr("GIVE_CONTROL_EVENT")},
-            {6,  xorstr("WEAPON_DAMAGE_EVENT")},
-            {7,  xorstr("REQUEST_PICKUP_EVENT")},
-            {8,  xorstr("REQUEST_MAP_PICKUP_EVENT")},
-            {11, xorstr("RESPAWN_PLAYER_PED_EVENT")},
-            {12, xorstr("GIVE_WEAPON_EVENT")},
-            {13, xorstr("REMOVE_WEAPON_EVENT")},
-            {14, xorstr("REMOVE_ALL_WEAPONS_EVENT")},
-            {15, xorstr("VEHICLE_COMPONENT_CONTROL_EVENT")},
-            {16, xorstr("FIRE_EVENT")},
-            {17, xorstr("EXPLOSION_EVENT")},
-            {18, xorstr("START_PROJECTILE_EVENT")},
-            {19, xorstr("UPDATE_PROJECTILE_TARGET_EVENT")},
-            {20, xorstr("REMOVE_PROJECTILE_ENTITY_EVENT")},
-            {21, xorstr("BREAK_PROJECTILE_TARGET_LOCK_EVENT")},
-            {22, xorstr("ALTER_WANTED_LEVEL_EVENT")},
-            {23, xorstr("CHANGE_RADIO_STATION_EVENT")},
-            {24, xorstr("RAGDOLL_REQUEST_EVENT")},
-            {25, xorstr("PLAYER_TAUNT_EVENT")},
-            {26, xorstr("PLAYER_CARD_STAT_EVENT")},
-            {27, xorstr("DOOR_BREAK_EVENT")},
-            {28, xorstr("SCRIPTED_GAME_EVENT")},
-            {29, xorstr("REMOTE_SCRIPT_INFO_EVENT")},
-            {30, xorstr("REMOTE_SCRIPT_LEAVE_EVENT")},
-            {31, xorstr("MARK_AS_NO_LONGER_NEEDED_EVENT")},
-            {32, xorstr("CONVERT_TO_SCRIPT_ENTITY_EVENT")},
-            {33, xorstr("SCRIPT_WORLD_STATE_EVENT")},
-            {34, xorstr("CLEAR_AREA_EVENT")},
-            {35, xorstr("CLEAR_RECTANGLE_AREA_EVENT")},
-            {36, xorstr("NETWORK_REQUEST_SYNCED_SCENE_EVENT")},
-            {37, xorstr("NETWORK_START_SYNCED_SCENE_EVENT")},
-            {38, xorstr("NETWORK_STOP_SYNCED_SCENE_EVENT")},
-            {39, xorstr("NETWORK_UPDATE_SYNCED_SCENE_EVENT")},
-            {40, xorstr("INCIDENT_ENTITY_EVENT")},
-            {41, xorstr("GIVE_PED_SCRIPTED_TASK_EVENT")},
-            {42, xorstr("GIVE_PED_SEQUENCE_TASK_EVENT")},
-            {43, xorstr("NETWORK_CLEAR_PED_TASKS_EVENT")},
-            {44, xorstr("NETWORK_START_PED_ARREST_EVENT")},
-            {45, xorstr("NETWORK_START_PED_UNCUFF_EVENT")},
-            {46, xorstr("NETWORK_SOUND_CAR_HORN_EVENT")},
-            {47, xorstr("NETWORK_ENTITY_AREA_STATUS_EVENT")},
-            {48, xorstr("NETWORK_GARAGE_OCCUPIED_STATUS_EVENT")},
-            {49, xorstr("PED_CONVERSATION_LINE_EVENT")},
-            {50, xorstr("SCRIPT_ENTITY_STATE_CHANGE_EVENT")},
-            {51, xorstr("NETWORK_PLAY_SOUND_EVENT")},
-            {52, xorstr("NETWORK_STOP_SOUND_EVENT")},
-            {53, xorstr("NETWORK_PLAY_AIRDEFENSE_FIRE_EVENT")},
-            {54, xorstr("NETWORK_BANK_REQUEST_EVENT")},
-            {55, xorstr("NETWORK_AUDIO_BARK_EVENT")},
-            {56, xorstr("REQUEST_DOOR_EVENT")},
-            {57, xorstr("NETWORK_TRAIN_REPORT_EVENT")},
-            {58, xorstr("NETWORK_TRAIN_REQUEST_EVENT")},
-            {59, xorstr("NETWORK_INCREMENT_STAT_EVENT")},
-            {60, xorstr("MODIFY_VEHICLE_LOCK_WORLD_STATE_DATA")},
-            {61, xorstr("MODIFY_PTFX_WORD_STATE_DATA_SCRIPTED_EVOLVE_EVENT")},
-            {62, xorstr("REQUEST_PHONE_EXPLOSION_EVENT")},
-            {63, xorstr("REQUEST_DETACHMENT_EVENT")},
-            {64, xorstr("KICK_VOTES_EVENT")},
-            {65, xorstr("GIVE_PICKUP_REWARDS_EVENT")},
-            {66, xorstr("BLOW_UP_VEHICLE_EVENT")},
-            {67, xorstr("NETWORK_SPECIAL_FIRE_EQUIPPED_WEAPON")},
-            {68, xorstr("NETWORK_RESPONDED_TO_THREAT_EVENT")},
-            {69, xorstr("NETWORK_SHOUT_TARGET_POSITION")},
-            {70, xorstr("VOICE_DRIVEN_MOUTH_MOVEMENT_FINISHED_EVENT")},
-            {71, xorstr("PICKUP_DESTROYED_EVENT")},
-            {72, xorstr("UPDATE_PLAYER_SCARS_EVENT")},
-            {73, xorstr("NETWORK_CHECK_EXE_SIZE_EVENT")},
-            {74, xorstr("NETWORK_PTFX_EVENT")},
-            {75, xorstr("NETWORK_PED_SEEN_DEAD_PED_EVENT")},
-            {76, xorstr("REMOVE_STICKY_BOMB_EVENT")},
-            {77, xorstr("NETWORK_CHECK_CODE_CRCS_EVENT")},
-            {78, xorstr("INFORM_SILENCED_GUNSHOT_EVENT")},
-            {79, xorstr("PED_PLAY_PAIN_EVENT")},
-            {80, xorstr("CACHE_PLAYER_HEAD_BLEND_DATA_EVENT")},
-            {81, xorstr("REMOVE_PED_FROM_PEDGROUP_EVENT")},
-            {82, xorstr("REPORT_MYSELF_EVENT")},
-            {83, xorstr("REPORT_CASH_SPAWN_EVENT")},
-            {84, xorstr("ACTIVATE_VEHICLE_SPECIAL_ABILITY_EVENT")},
-            {85, xorstr("BLOCK_WEAPON_SELECTION")},
-            {86, xorstr("NETWORK_CHECK_CATALOG_CRC")},
-          };
-          static constexpr int kEventCount = (int)(sizeof(kEventList) / sizeof(kEventList[0]));
+          auto& scanner = Core::Threads::g_EventScanner;
 
-          static int   evt_selected    = 0;
+          static int   evt_selected_id = -1;
           static char  evt_name_buf[256]     = {};
           static char  evt_payload_buf[2048] = {};
           static bool  evt_use_server  = false;
@@ -2962,34 +2877,39 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           static int   evt_sub_tab     = 0;
           static char  evt_filter[128] = {};
           static bool  evt_name_custom = false;
-          static bool  evt_capturing   = false;
-
-          if (evt_name_buf[0] == '\0' && kEventCount > 0)
-            strncpy_s(evt_name_buf, kEventList[0].name.c_str(), _TRUNCATE);
 
           float gap = SCALE(8);
 
           {
-            float btn_half = (gui->content_avail().x - gap) / 2;
-            bool  cap_now  = evt_capturing;
-            if (cap_now)
+            float btn_third = (gui->content_avail().x - gap * 2) / 3;
+            bool is_running = scanner.IsRunning();
+
+            if (is_running)
               ImGui::PushStyleColor(ImGuiCol_Button,
                 draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-            if (widgets->button(xorstr("Start Capturing"), ImVec2(btn_half, SCALE(30))))
-              evt_capturing = true;
-            if (cap_now)
+            if (widgets->button(xorstr("Start Capturing"), ImVec2(btn_third, SCALE(30)))) {
+              if (!is_running) scanner.Start();
+            }
+            if (is_running)
               ImGui::PopStyleColor();
 
             ImGui::SameLine(0, gap);
 
-            bool stop_now = !evt_capturing;
-            if (stop_now)
+            if (!is_running)
               ImGui::PushStyleColor(ImGuiCol_Button,
                 draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-            if (widgets->button(xorstr("Stop Capturing"), ImVec2(btn_half, SCALE(30))))
-              evt_capturing = false;
-            if (stop_now)
+            if (widgets->button(xorstr("Stop Capturing"), ImVec2(btn_third, SCALE(30)))) {
+              if (is_running) scanner.Stop();
+            }
+            if (!is_running)
               ImGui::PopStyleColor();
+
+            ImGui::SameLine(0, gap);
+
+            if (widgets->button(xorstr("Clear"), ImVec2(btn_third, SCALE(30)))) {
+              scanner.Clear();
+              evt_selected_id = -1;
+            }
           }
 
           gui->dummy(SCALE(0, 4));
@@ -2998,6 +2918,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           float child_h    = gui->content_avail().y - SCALE(38);
           float origin_x   = ImGui::GetCursorPosX();
           float origin_y   = ImGui::GetCursorPosY();
+
+          auto captured = scanner.GetEvents();
 
           gui->begin_child(xorstr("Event List"), FA_COPY,
                            ImVec2(half_width, child_h), ImGuiChildFlags_None,
@@ -3016,42 +2938,54 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             widgets->begin_list(xorstr("EVENT_LIST"),
                                 ImVec2(gui->content_avail().x, list_height));
             {
-              std::string filter_lower(evt_filter);
-              for (char& c : filter_lower) c = (char)tolower((unsigned char)c);
-
-              int visible = 0;
-              for (int i = 0; i < kEventCount; i++) {
-                const EventEntry& e = kEventList[i];
-
-                if (!filter_lower.empty()) {
-                  std::string nl(e.name);
-                  for (char& c : nl) c = (char)tolower((unsigned char)c);
-                  if (nl.find(filter_lower) == std::string::npos) continue;
-                }
-                ++visible;
-
-                bool is_active = (evt_selected == i);
-                if (is_active && !evt_name_custom)
-                  strncpy_s(evt_name_buf, e.name.c_str(), _TRUNCATE);
-
-                std::string label = xorstr("    ") + e.name + xorstr("##") +
-                                    std::to_string(i);
-                if (widgets->list_content(label.c_str(), is_active, 0, false)) {
-                  evt_selected    = i;
-                  evt_name_custom = false;
-                  strncpy_s(evt_name_buf, e.name.c_str(), _TRUNCATE);
-                }
-              }
-
-              if (visible == 0) {
+              if (!scanner.IsRunning() && captured.empty()) {
+                const char* msg = xorstr("Press Start Capturing");
                 ImVec2 text_sz =
-                    gui->text_size(var->font.instrument_medium[0],
-                                   xorstr("Events Not Found"));
+                    gui->text_size(var->font.instrument_medium[0], msg);
                 ImGui::SetCursorPos(
                     ImVec2((gui->content_avail().x - text_sz.x) * 0.5f,
                            (gui->content_avail().y - text_sz.y) * 0.5f));
-                ImGui::TextColored(clr->text.text_inactive,
-                                   xorstr("Events Not Found"));
+                ImGui::TextColored(clr->text.text_inactive, msg);
+              } else {
+                std::string filter_lower(evt_filter);
+                for (char& c : filter_lower) c = (char)tolower((unsigned char)c);
+
+                int visible = 0;
+                for (int i = 0; i < (int)captured.size(); i++) {
+                  const auto& ev = captured[i];
+                  const char* name = Core::Threads::cEventScanner::EventName(ev.id);
+
+                  if (!filter_lower.empty()) {
+                    std::string nl(name);
+                    for (char& c : nl) c = (char)tolower((unsigned char)c);
+                    if (nl.find(filter_lower) == std::string::npos) continue;
+                  }
+                  ++visible;
+
+                  bool is_active = (evt_selected_id == (int)ev.id);
+                  bool is_blocked = scanner.IsBlocked(ev.id);
+
+                  char count_label[64];
+                  snprintf(count_label, sizeof(count_label), "    %s (%u)%s##evt%d",
+                           name, ev.count, is_blocked ? xorstr(" [B]") : "", (int)ev.id);
+
+                  if (widgets->list_content(count_label, is_active, 0, false)) {
+                    evt_selected_id = (int)ev.id;
+                    if (!evt_name_custom)
+                      strncpy_s(evt_name_buf, name, _TRUNCATE);
+                  }
+                }
+
+                if (visible == 0 && scanner.IsRunning()) {
+                  const char* msg2 = captured.empty() ?
+                    xorstr("Scanning...") : xorstr("Events Not Found");
+                  ImVec2 text_sz =
+                      gui->text_size(var->font.instrument_medium[0], msg2);
+                  ImGui::SetCursorPos(
+                      ImVec2((gui->content_avail().x - text_sz.x) * 0.5f,
+                             (gui->content_avail().y - text_sz.y) * 0.5f));
+                  ImGui::TextColored(clr->text.text_inactive, msg2);
+                }
               }
             }
             widgets->end_list();
@@ -3066,14 +3000,32 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           {
             gui->dummy(SCALE(0, 8));
 
+            uint16_t sel_id = 0;
+            const char* sel_name = xorstr("No event selected");
+            uint32_t sel_count = 0;
+            uint32_t sel_blocked_count = 0;
+
+            for (const auto& ev : captured) {
+              if ((int)ev.id == evt_selected_id) {
+                sel_id = ev.id;
+                sel_name = Core::Threads::cEventScanner::EventName(ev.id);
+                sel_count = ev.count;
+                sel_blocked_count = ev.blockedCount;
+                break;
+              }
+            }
+
             {
               ImDrawList* dl  = ImGui::GetWindowDrawList();
               ImVec2      cur = ImGui::GetCursorScreenPos();
               float       aw  = ImGui::GetContentRegionAvail().x;
               float       bh  = SCALE(22);
               float       bp  = SCALE(8);
-              char        id_label[32];
-              snprintf(id_label, sizeof(id_label), xorstr("ID: %d"), kEventList[evt_selected].id);
+              char        id_label[64];
+              if (sel_id > 0)
+                snprintf(id_label, sizeof(id_label), xorstr("ID: %d | x%u"), sel_id, sel_count);
+              else
+                snprintf(id_label, sizeof(id_label), xorstr("--"));
               ImVec2 id_sz = ImGui::CalcTextSize(id_label);
               float  bw    = id_sz.x + bp * 2;
               ImVec2 bmin(cur.x + aw - bw, cur.y + (bh - bh) * 0.5f);
@@ -3085,13 +3037,26 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               ImGui::SetCursorScreenPos(cur);
               ImGui::PushFont(var->font.instrument_bold[0]);
               ImGui::PushStyleColor(ImGuiCol_Text, draw->get_clr(clr->text.text_active));
-              ImGui::TextUnformatted(kEventList[evt_selected].name.c_str());
+              ImGui::TextUnformatted(sel_name);
               ImGui::PopStyleColor();
               ImGui::PopFont();
               ImGui::SetCursorScreenPos(ImVec2(cur.x, cur.y + SCALE(24)));
             }
 
             gui->dummy(SCALE(0, 6));
+
+            if (sel_id > 0) {
+              bool blocked = scanner.IsBlocked(sel_id);
+              if (blocked)
+                ImGui::PushStyleColor(ImGuiCol_Button,
+                  draw->get_clr(clr->base_colors.accent_clr, 0.22f));
+              if (widgets->button(blocked ? xorstr("Unblock Event") : xorstr("Block Event"),
+                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(28)))) {
+                scanner.ToggleBlock(sel_id);
+              }
+              if (blocked) ImGui::PopStyleColor();
+              gui->dummy(SCALE(0, 6));
+            }
 
             {
               const char* sub_labels[] = { xorstr("Execute"), xorstr("Loop") };

@@ -373,6 +373,9 @@
     <ClInclude Include="game\Core\Threads\AdhesiveBlocker.hpp">
       <Filter>game\Core\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="game\Core\Threads\EventScanner.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
     <ClInclude Include="game\Core\Threads\EntityList.hpp">
       <Filter>game\Core\Threads</Filter>
     </ClInclude>

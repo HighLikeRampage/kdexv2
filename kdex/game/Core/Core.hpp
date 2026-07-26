@@ -13,6 +13,7 @@
 #include "Threads/VehicleList.hpp"
 #include "Threads/ObjectList.hpp"
 #include "Threads/AdhesiveBlocker.hpp"
+#include "Threads/EventScanner.hpp"
 
 #include "Features/Aimbot.hpp"
 #include "Features/ESP.hpp"
