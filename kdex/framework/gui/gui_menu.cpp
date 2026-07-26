@@ -1462,6 +1462,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   std::string player_name = entity.NetworkInfo.UserName;
                   if (!entity.IsPlayer)
                     player_name = xorstr("NPC");
+                  if (entity.NetworkInfo.IsAdmin)
+                    player_name = std::string(xorstr("[Admin] ")) + player_name;
 
                   if (var->friends_tab.player_search[0] != '\0') {
                     std::string search_term = var->friends_tab.player_search;

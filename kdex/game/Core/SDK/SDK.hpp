@@ -47,6 +47,7 @@ namespace Core {
 				std::string DiscordId;
 				std::string SteamId;
 				int Ping = 0;
+				bool IsAdmin = false;
 			};
 
 			struct EntityStruct {

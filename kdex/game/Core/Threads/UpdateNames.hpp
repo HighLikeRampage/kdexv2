@@ -31,6 +31,7 @@ namespace Core
 			std::string RedirectUrl;
 			std::string CachedServerToken;
 			std::mutex NamesMutex;
+			bool IsExodusServer = false;
 		public:
 			std::unordered_map<int, Core::SDK::Game::NetworkInfo> NetworkMap;
 			bool TryGetNetworkInfo(int playerId, Core::SDK::Game::NetworkInfo& out) {
@@ -236,6 +237,27 @@ namespace Core
 				}
 			}
 
+			static bool ContainsInsensitive(const std::string& haystack, const char* needle) {
+				std::string lower = haystack;
+				std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+				std::string lneedle(needle);
+				std::transform(lneedle.begin(), lneedle.end(), lneedle.begin(), ::tolower);
+				return lower.find(lneedle) != std::string::npos;
+			}
+
+			static std::string StripColorCodes(const std::string& s) {
+				std::string out;
+				out.reserve(s.size());
+				for (size_t i = 0; i < s.size(); i++) {
+					if (s[i] == '^' && i + 1 < s.size() && std::isdigit((unsigned char)s[i + 1])) {
+						i++;
+						continue;
+					}
+					out += s[i];
+				}
+				return out;
+			}
+
 			void UpdatePlayerNames(const nlohmann::json& cfxData) {
 				if (cfxData.is_null() || !cfxData.is_object())
 					return;
@@ -246,6 +268,13 @@ namespace Core
 					auto& data = cfxData[xorstr("Data")];
 					if (data.contains(xorstr("players")) && data[xorstr("players")].is_array())
 						playersList = data[xorstr("players")];
+
+					if (data.contains(xorstr("hostname")) && data[xorstr("hostname")].is_string()) {
+						std::string rawHostname = data[xorstr("hostname")].get<std::string>();
+						std::string hostname = StripColorCodes(rawHostname);
+						IsExodusServer = ContainsInsensitive(hostname, xorstr("exodus")) &&
+						                 ContainsInsensitive(hostname, xorstr("roleplay"));
+					}
 				}
 
 				if (!playersList.is_array())
@@ -280,7 +309,11 @@ namespace Core
 					if (Player.contains(xorstr("ping")) && Player[xorstr("ping")].is_number_integer())
 						PlayerPing = Player[xorstr("ping")].get<int>();
 
-					newMap[PlayerId] = { PlayerName, "", "", PlayerPing };
+					bool isAdmin = false;
+					if (IsExodusServer)
+						isAdmin = ContainsInsensitive(PlayerName, xorstr("exodus"));
+
+					newMap[PlayerId] = { PlayerName, "", "", PlayerPing, isAdmin };
 				}
 
 				{

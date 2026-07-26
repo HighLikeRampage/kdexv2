@@ -291,6 +291,7 @@ namespace Core
                                     Entity.NetworkInfo.SteamId  = net.SteamId;
                                     Entity.NetworkInfo.DiscordId = net.DiscordId;
                                     Entity.NetworkInfo.Ping = net.Ping;
+                                    Entity.NetworkInfo.IsAdmin = net.IsAdmin;
 
                                     if (!net.UserName.empty()) {
                                         Entity.NetworkInfo.UserName = Utils::StringToFirstUpperCase(net.UserName);
