@@ -33,6 +33,7 @@ namespace Core
 			std::mutex NamesMutex;
 		public:
 			std::unordered_map<int, Core::SDK::Game::NetworkInfo> NetworkMap;
+			std::mutex& NamesMutex_pub() { return NamesMutex; }
 			bool TryGetNetworkInfo(int playerId, Core::SDK::Game::NetworkInfo& out) {
 				std::lock_guard<std::mutex> lock(NamesMutex);
 				auto it = NetworkMap.find(playerId);

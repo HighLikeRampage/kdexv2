@@ -13,6 +13,7 @@
 #include <ctime>
 #include <functional>
 #include <mutex>
+#include <unordered_set>
 #include <thread>
 #include <atomic>
 
@@ -1397,9 +1398,32 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
             player_list_copy = Core::SDK::Game::EntityList;
 
+            {
+              std::unordered_set<int> memoryIds;
+              for (const auto &e : player_list_copy)
+                if (e.IsPlayer) memoryIds.insert(e.Id);
+
+              std::lock_guard<std::mutex> nLock(Core::Threads::g_UpdateNames.NamesMutex_pub());
+              for (const auto &[pid, net] : Core::Threads::g_UpdateNames.NetworkMap) {
+                if (memoryIds.count(pid)) continue;
+                Core::SDK::Game::EntityStruct apiEnt{};
+                apiEnt.Ped = nullptr;
+                apiEnt.Id = pid;
+                apiEnt.IsPlayer = true;
+                apiEnt.Distance = 99999.f;
+                apiEnt.Health = 0.f;
+                apiEnt.MaxHealth = 0.f;
+                apiEnt.Armor = 0.f;
+                apiEnt.NetworkInfo.UserName = net.UserName;
+                player_list_copy.push_back(apiEnt);
+              }
+            }
+
             std::sort(player_list_copy.begin(), player_list_copy.end(),
                       [](const Core::SDK::Game::EntityStruct &a,
                          const Core::SDK::Game::EntityStruct &b) {
+                        if (a.Ped && !b.Ped) return true;
+                        if (!a.Ped && b.Ped) return false;
                         return a.Distance < b.Distance;
                       });
 
