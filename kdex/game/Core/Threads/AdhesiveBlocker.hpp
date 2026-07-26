@@ -26,7 +26,7 @@ namespace Core
 				unsigned __int64 userTime;
 			};
 
-			std::set<DWORD> SuspendedIds;
+			std::set<DWORD> ThrottledIds;
 			fnNtQueryInformationThread NtQueryInfoThread = nullptr;
 			uintptr_t CachedAdhesiveBase = 0;
 			size_t CachedAdhesiveSize = 0;
@@ -101,7 +101,7 @@ namespace Core
 						if (NtQueryInfoThread(hThread, 9, &startAddr, sizeof(startAddr), NULL) == 0) {
 							if (startAddr >= adhesiveBase && startAddr < adhesiveBase + adhesiveSize) {
 								totalAdhesive++;
-								if (SuspendedIds.count(te.th32ThreadID)) {
+								if (ThrottledIds.count(te.th32ThreadID)) {
 									alreadyCount++;
 								}
 								else {
@@ -136,19 +136,19 @@ namespace Core
 						return a.userTime > b.userTime;
 					});
 
-				int suspended = 0;
+				int throttled = 0;
 				for (size_t i = 0; i < candidates.size() && i < 3; i++) {
 					if (candidates[i].userTime <= 500000) continue;
-					HANDLE hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, candidates[i].id);
+					HANDLE hThread = OpenThread(THREAD_SET_INFORMATION, FALSE, candidates[i].id);
 					if (!hThread) continue;
-					SuspendThread(hThread);
-					SuspendedIds.insert(candidates[i].id);
-					suspended++;
+					SetThreadPriority(hThread, THREAD_PRIORITY_IDLE);
+					ThrottledIds.insert(candidates[i].id);
+					throttled++;
 					CloseHandle(hThread);
 				}
 
 				CloseHandle(hProcess);
-				return suspended > 0;
+				return throttled > 0;
 			}
 
 		public:
