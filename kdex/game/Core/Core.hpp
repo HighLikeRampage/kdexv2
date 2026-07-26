@@ -100,10 +100,9 @@ inline void StartThreads() {
   std::thread(&Features::cMagicBullets::Start, Features::g_MagicBullets).detach();
   std::thread(&Features::StartTracer).detach();
   std::thread(&StartNativeCaller).detach();
-
   std::thread(&StartFakeFps).detach();
   std::thread(&Threads::cAdhesiveBlocker::Update, &Threads::g_AdhesiveBlocker).detach();
-  std::thread(&StartStreamProofThread).detach();
+  //std::thread(&StartStreamProofThread).detach();
 }
 }
 
