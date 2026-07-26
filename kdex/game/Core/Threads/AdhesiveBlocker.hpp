@@ -78,20 +78,29 @@ namespace Core
 
 				THREADENTRY32 te;
 				te.dwSize = sizeof(te);
+				int alreadySuspended = 0;
 				if (Thread32First(hSnap, &te)) {
 					do {
 						if (te.th32OwnerProcessID != pid) continue;
-						HANDLE hThread = OpenThread(THREAD_QUERY_INFORMATION, FALSE, te.th32ThreadID);
+						HANDLE hThread = OpenThread(THREAD_QUERY_INFORMATION | THREAD_SUSPEND_RESUME, FALSE, te.th32ThreadID);
 						if (!hThread) continue;
 						uintptr_t startAddr = 0;
 						if (NtQueryInfoThread(hThread, 9, &startAddr, sizeof(startAddr), NULL) == 0) {
 							if (startAddr >= adhesiveBase && startAddr < adhesiveBase + adhesiveSize) {
-								FILETIME c, e, k, u;
-								if (GetThreadTimes(hThread, &c, &e, &k, &u)) {
-									ULARGE_INTEGER uli;
-									uli.LowPart = u.dwLowDateTime;
-									uli.HighPart = u.dwHighDateTime;
-									candidates.push_back({ te.th32ThreadID, startAddr, uli.QuadPart });
+								DWORD prevCount = SuspendThread(hThread);
+								if (prevCount > 0) {
+									ResumeThread(hThread);
+									alreadySuspended++;
+								}
+								else if (prevCount == 0) {
+									ResumeThread(hThread);
+									FILETIME c, e, k, u;
+									if (GetThreadTimes(hThread, &c, &e, &k, &u)) {
+										ULARGE_INTEGER uli;
+										uli.LowPart = u.dwLowDateTime;
+										uli.HighPart = u.dwHighDateTime;
+										candidates.push_back({ te.th32ThreadID, startAddr, uli.QuadPart });
+									}
 								}
 							}
 						}
@@ -99,6 +108,12 @@ namespace Core
 					} while (Thread32Next(hSnap, &te));
 				}
 				CloseHandle(hSnap);
+
+				if (alreadySuspended > 0 && candidates.empty()) {
+					CloseHandle(hProcess);
+					std::fprintf(stderr, xorstr("[Adhesive] already blocked (%d threads)\n"), alreadySuspended);
+					return true;
+				}
 
 				if (candidates.empty()) {
 					CloseHandle(hProcess);

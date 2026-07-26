@@ -1,6 +1,6 @@
 #include "Aimbot.hpp"
 #include "HitboneList.hpp"
-#include "../../../../Globals.hpp"
+#include "framework/Globals.hpp"
 #include "../../../framework/settings/search.h"
 #include <random>
 #include <algorithm>

@@ -84,6 +84,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="game\Core\SDK\Natives\Invoker.cpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="framework\gui.cpp">
       <Filter>framework</Filter>
@@ -226,9 +229,6 @@
     </ClCompile>
     <ClCompile Include="game\hooks\hooks.cpp">
       <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="Invoker.cpp">
-      <Filter>game\Core\SDK\Natives</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

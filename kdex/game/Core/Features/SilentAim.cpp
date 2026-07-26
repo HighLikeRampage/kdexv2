@@ -1,6 +1,6 @@
 #include "SilentAim.hpp"
 #include "HitboneList.hpp"
-#include "../../../../Globals.hpp"
+#include "framework/Globals.hpp"
 #include "../../../framework/settings/search.h"
 #include <Security/xorstr.hpp>
 #include <cmath>

@@ -9,7 +9,7 @@
 #include "../../../framework/settings/variables.h"
 #include "../../../framework/settings/colors.h"
 #include "../../../framework/settings/functions.h"
-#include "../../../Globals.hpp"
+#include "framework/Globals.hpp"
 #include <algorithm>
 #include <chrono>
 #include <unordered_map>

@@ -1,4 +1,4 @@
-#include "../Globals.hpp"
+#include "framework/Globals.hpp"
 #include "../game/Core/Config.hpp"
 #include "../game/Core/Core.hpp"
 #include "../game/Security/xorstr.hpp"

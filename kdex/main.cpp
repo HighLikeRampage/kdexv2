@@ -193,7 +193,6 @@ static DWORD CheatThreadImpl(LPVOID lpParam) {
 			Core::Mem.ProcName = std::wstring(procName.begin(), procName.end());
 		}
 		Core::Mem.OpenProcByPid();
-		Core::StartThreads();
 	}
 
 	Gui::cOverlay.Render();

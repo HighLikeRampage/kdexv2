@@ -1,5 +1,5 @@
 #include "CrashHandler.hpp"
-#include "../../Globals.hpp"
+#include "framework/Globals.hpp"
 #include "Api/api.hpp"
 #include "../Gui/Overlay/Overlay.hpp"
 #include "../Core/Features/SilentAim.hpp"

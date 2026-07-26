@@ -140,12 +140,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Invoker.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="game\Core\SDK\Natives\Invoker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="framework\gui.cpp" />
     <ClCompile Include="framework\gui\gui_auth.cpp" />

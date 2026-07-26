@@ -1,5 +1,5 @@
 #include "Overlay.hpp"
-#include "../../../Globals.hpp"
+#include "framework/Globals.hpp"
 #include <d3d11.h>
 #include <Windows.h>
 #include <tchar.h>

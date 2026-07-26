@@ -3,7 +3,7 @@
 #include <Includes/Utils.hpp>
 #include <Core/Offsets.hpp>
 #include "UpdateNames.hpp"
-#include "../../Globals.hpp"
+#include "framework/Globals.hpp"
 #include <string>
 #include <vector>
 #include <algorithm>
