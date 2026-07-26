@@ -329,10 +329,10 @@ namespace Core
 
 				while (!g_Variables.g_Unload)
 				{
-					std::this_thread::sleep_for(std::chrono::milliseconds(500));
 					token = GetServerToken();
 					if (!token.empty())
 						break;
+					std::this_thread::sleep_for(std::chrono::milliseconds(500));
 				}
 
 				if (g_Variables.g_Unload)
@@ -355,7 +355,7 @@ namespace Core
 					}
 					catch (...) {}
 
-					std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+					std::this_thread::sleep_for(std::chrono::milliseconds(1500));
 				}
 			}
 		};
