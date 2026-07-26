@@ -147,6 +147,44 @@ private:
 		return false;
 	}
 
+	void HeapScan(HANDLE hProc, const std::vector<ModRange>& allMods, std::unordered_set<uintptr_t>& seenHeap)
+	{
+		MEMORY_BASIC_INFORMATION mbi;
+		uintptr_t addr = 0;
+
+		while (VirtualQueryEx(hProc, (LPCVOID)addr, &mbi, sizeof(mbi))) {
+			uintptr_t regionEnd = (uintptr_t)mbi.BaseAddress + mbi.RegionSize;
+			if (regionEnd <= addr) break;
+			addr = regionEnd;
+
+			if (mbi.State != MEM_COMMIT) continue;
+			if (mbi.Type != MEM_PRIVATE) continue;
+			if (!(mbi.Protect & PAGE_READWRITE)) continue;
+			if (mbi.RegionSize > 64 * 1024 * 1024) continue;
+
+			std::vector<uint8_t> buf(mbi.RegionSize);
+			SIZE_T n = 0;
+			if (!ReadProcessMemory(hProc, mbi.BaseAddress, buf.data(), mbi.RegionSize, &n)) continue;
+
+			for (size_t i = 0; i + 16 <= n; i += 8) {
+				uintptr_t vtable = *(uintptr_t*)(buf.data() + i);
+				if (!IsInAnyModule(vtable, allMods)) continue;
+
+				uint16_t evType = *(uint16_t*)(buf.data() + i + 8);
+				if (evType == 0 || evType > 200) continue;
+
+				uintptr_t objAddr = (uintptr_t)mbi.BaseAddress + i;
+				if (seenHeap.count(objAddr)) continue;
+				seenHeap.insert(objAddr);
+
+				bool blocked = CheckBlocked(evType);
+				if (blocked) BlockEvent(hProc, objAddr);
+
+				RecordEvent(evType, objAddr, blocked);
+			}
+		}
+	}
+
 	uintptr_t FindModuleBase(DWORD pid, const wchar_t* name, DWORD& outSize)
 	{
 		outSize = 0;
@@ -253,7 +291,7 @@ private:
 				if (!IsInAnyModule(vtable, allMods)) continue;
 
 				uint16_t evType = 0;
-				if (!ReadProcessMemory(hProc, (LPCVOID)(dataPtr + 0x08), &evType, 2, &n) || evType > 200)
+				if (!ReadProcessMemory(hProc, (LPCVOID)(dataPtr + 0x08), &evType, 2, &n) || evType == 0 || evType > 200)
 					continue;
 
 				seen.insert(node);
@@ -433,8 +471,10 @@ private:
 		std::fprintf(stderr, xorstr("[EventScanner] trees=%d roots=%zu\n"), (int)foundTrees, roots.size());
 
 		std::unordered_set<uintptr_t> seenTree;
+		std::unordered_set<uintptr_t> seenHeap;
 		auto lastClean = std::chrono::steady_clock::now();
 		auto lastRetry = std::chrono::steady_clock::now();
+		auto lastHeapScan = std::chrono::steady_clock::now();
 
 		while (m_running.load()) {
 			DWORD exitCode = 0;
@@ -453,6 +493,12 @@ private:
 				}
 			}
 
+			auto heapElapsed = std::chrono::duration_cast<std::chrono::seconds>(now - lastHeapScan).count();
+			if (heapElapsed >= 3) {
+				HeapScan(hProc, allMods, seenHeap);
+				lastHeapScan = now;
+			}
+
 			if (!foundTrees) {
 				auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - lastRetry).count();
 				if (elapsed >= 15) {
@@ -461,8 +507,9 @@ private:
 				}
 			}
 
-			if (std::chrono::duration_cast<std::chrono::seconds>(now - lastClean).count() > 60) {
+			if (std::chrono::duration_cast<std::chrono::seconds>(now - lastClean).count() > 15) {
 				seenTree.clear();
+				seenHeap.clear();
 				lastClean = now;
 			}
 

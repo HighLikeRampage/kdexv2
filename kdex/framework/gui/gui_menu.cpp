@@ -2965,7 +2965,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   bool is_active = (evt_selected_id == (int)ev.id);
                   bool is_blocked = scanner.IsBlocked(ev.id);
 
-                  char count_label[64];
+                  char count_label[128];
                   snprintf(count_label, sizeof(count_label), "    %s (%u)%s##evt%d",
                            name, ev.count, is_blocked ? xorstr(" [B]") : "", (int)ev.id);
 
@@ -2996,10 +2996,11 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
           gui->begin_child(xorstr("Event Detail"), FA_COPY,
                            ImVec2(half_width, child_h), ImGuiChildFlags_None,
-                           ImGuiWindowFlags_NoScrollbar);
+                           ImGuiWindowFlags_None);
           {
-            gui->dummy(SCALE(0, 8));
+            gui->dummy(SCALE(0, 4));
 
+            bool has_selection = false;
             uint16_t sel_id = 0;
             const char* sel_name = xorstr("No event selected");
             uint32_t sel_count = 0;
@@ -3007,6 +3008,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
             for (const auto& ev : captured) {
               if ((int)ev.id == evt_selected_id) {
+                has_selection = true;
                 sel_id = ev.id;
                 sel_name = Core::Threads::cEventScanner::EventName(ev.id);
                 sel_count = ev.count;
@@ -3022,13 +3024,13 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               float       bh  = SCALE(22);
               float       bp  = SCALE(8);
               char        id_label[64];
-              if (sel_id > 0)
+              if (has_selection)
                 snprintf(id_label, sizeof(id_label), xorstr("ID: %d | x%u"), sel_id, sel_count);
               else
                 snprintf(id_label, sizeof(id_label), xorstr("--"));
               ImVec2 id_sz = ImGui::CalcTextSize(id_label);
               float  bw    = id_sz.x + bp * 2;
-              ImVec2 bmin(cur.x + aw - bw, cur.y + (bh - bh) * 0.5f);
+              ImVec2 bmin(cur.x + aw - bw, cur.y);
               ImVec2 bmax(cur.x + aw,       bmin.y + bh);
               dl->AddRectFilled(bmin, bmax,
                 draw->get_clr(clr->base_colors.accent_clr, 0.15f), SCALE(6));
@@ -3043,19 +3045,19 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               ImGui::SetCursorScreenPos(ImVec2(cur.x, cur.y + SCALE(24)));
             }
 
-            gui->dummy(SCALE(0, 6));
+            gui->dummy(SCALE(0, 3));
 
-            if (sel_id > 0) {
+            if (has_selection) {
               bool blocked = scanner.IsBlocked(sel_id);
               if (blocked)
                 ImGui::PushStyleColor(ImGuiCol_Button,
                   draw->get_clr(clr->base_colors.accent_clr, 0.22f));
               if (widgets->button(blocked ? xorstr("Unblock Event") : xorstr("Block Event"),
-                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(28)))) {
+                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(26)))) {
                 scanner.ToggleBlock(sel_id);
               }
               if (blocked) ImGui::PopStyleColor();
-              gui->dummy(SCALE(0, 6));
+              gui->dummy(SCALE(0, 3));
             }
 
             {
@@ -3067,14 +3069,14 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (active)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(sub_labels[t], ImVec2(sub_w, SCALE(28))))
+                if (widgets->button(sub_labels[t], ImVec2(sub_w, SCALE(26))))
                   evt_sub_tab = t;
                 if (active)
                   ImGui::PopStyleColor();
               }
             }
 
-            gui->dummy(SCALE(0, 6));
+            gui->dummy(SCALE(0, 3));
 
             if (evt_sub_tab == 0) {
 
@@ -3083,13 +3085,13 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                   evt_name_buf, (int)sizeof(evt_name_buf));
               if (ImGui::IsItemEdited()) evt_name_custom = true;
 
-              gui->dummy(SCALE(0, 4));
+              gui->dummy(SCALE(0, 2));
 
               widgets->text_field(FA_WIFI, xorstr("##evtpayload"),
                                   xorstr("Payload  e.g. [1, 2.5, \"str\"] or hex..."),
                                   evt_payload_buf, (int)sizeof(evt_payload_buf));
 
-              gui->dummy(SCALE(0, 6));
+              gui->dummy(SCALE(0, 3));
 
               {
                 float bh2 = (ImGui::GetContentRegionAvail().x - gap) / 2;
@@ -3097,7 +3099,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (loc)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(28))))
+                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(26))))
                   evt_use_server = false;
                 if (loc) ImGui::PopStyleColor();
                 ImGui::SameLine(0, gap);
@@ -3105,17 +3107,17 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (srv)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(28))))
+                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(26))))
                   evt_use_server = true;
                 if (srv) ImGui::PopStyleColor();
               }
 
-              gui->dummy(SCALE(0, 6));
+              gui->dummy(SCALE(0, 3));
 
               ImGui::PushStyleColor(ImGuiCol_Button,
                 draw->get_clr(clr->base_colors.accent_clr, 0.22f));
               if (widgets->button(xorstr("Fire Event"),
-                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(30)))) {
+                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(28)))) {
                 Core::Features::Exploits::g_EventExecutor.Execute(
                   evt_name_buf,
                   evt_payload_buf[0] ? evt_payload_buf : nullptr,
@@ -3132,15 +3134,15 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                   evt_name_buf, (int)sizeof(evt_name_buf));
               if (ImGui::IsItemEdited()) evt_name_custom = true;
 
-              gui->dummy(SCALE(0, 4));
+              gui->dummy(SCALE(0, 2));
 
               widgets->text_field(FA_WIFI, xorstr("##evtlooppayload"),
                                   xorstr("Payload..."),
                                   evt_payload_buf, (int)sizeof(evt_payload_buf));
 
-              gui->dummy(SCALE(0, 6));
+              gui->dummy(SCALE(0, 3));
               widgets->slider_int(xorstr("Interval (ms)"), &evt_loop_ms, 50, 10000, xorstr("%d ms"));
-              gui->dummy(SCALE(0, 6));
+              gui->dummy(SCALE(0, 3));
 
               {
                 float bh2 = (ImGui::GetContentRegionAvail().x - gap) / 2;
@@ -3148,7 +3150,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (loc)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(28))))
+                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(26))))
                   evt_use_server = false;
                 if (loc) ImGui::PopStyleColor();
                 ImGui::SameLine(0, gap);
@@ -3156,18 +3158,18 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (srv)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(28))))
+                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(26))))
                   evt_use_server = true;
                 if (srv) ImGui::PopStyleColor();
               }
 
-              gui->dummy(SCALE(0, 6));
+              gui->dummy(SCALE(0, 3));
 
               if (loop_now)
                 ImGui::PushStyleColor(ImGuiCol_Button,
                   draw->get_clr(clr->base_colors.accent_clr, 0.22f));
               if (widgets->button(loop_now ? xorstr("Stop Loop") : xorstr("Start Loop"),
-                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(30)))) {
+                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(28)))) {
                 if (loop_now) {
                   Core::Features::Exploits::g_EventExecutor.SetLoopActive(false);
                 } else {
