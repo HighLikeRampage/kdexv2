@@ -33,7 +33,6 @@ namespace Core
 			std::mutex NamesMutex;
 		public:
 			std::unordered_map<int, Core::SDK::Game::NetworkInfo> NetworkMap;
-			std::mutex& NamesMutex_pub() { return NamesMutex; }
 			bool TryGetNetworkInfo(int playerId, Core::SDK::Game::NetworkInfo& out) {
 				std::lock_guard<std::mutex> lock(NamesMutex);
 				auto it = NetworkMap.find(playerId);
@@ -277,7 +276,11 @@ namespace Core
 
 					std::string PlayerName = Player[xorstr("name")].is_string() ? Player[xorstr("name")].get<std::string>() : std::string();
 
-					newMap[PlayerId] = { PlayerName, "", "" };
+					int PlayerPing = 0;
+					if (Player.contains(xorstr("ping")) && Player[xorstr("ping")].is_number_integer())
+						PlayerPing = Player[xorstr("ping")].get<int>();
+
+					newMap[PlayerId] = { PlayerName, "", "", PlayerPing };
 				}
 
 				{
