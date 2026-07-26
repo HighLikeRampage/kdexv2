@@ -18,7 +18,7 @@
 #include <game/Security/AntiCrack.hpp>
 #include <game/Security/CrashHandler.hpp>
 #include <game/Security/UIAccess.hpp>
-#include <hooks/hooks.hpp>
+
 
 #include <settings/variables.h>
 
@@ -173,8 +173,6 @@ static DWORD CheatThreadImpl(LPVOID lpParam) {
 
 	if (!g_IsInjectedDll)
 		Core::Mem.GetMaxPrivileges(GetCurrentProcess());
-
-	hooks::Install();
 
 	Core::g_Variables.g_hGameWindow = Utils::FindFiveMWindow();
 	if (Core::g_Variables.g_hGameWindow) {

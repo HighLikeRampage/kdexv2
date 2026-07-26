@@ -178,8 +178,6 @@
     <ClCompile Include="game\Core\SDK\Memory.cpp" />
     <ClCompile Include="game\Core\SDK\d3dx_impl.cpp" />
     <ClCompile Include="game\Gui\Overlay\Overlay.cpp" />
-    <ClCompile Include="game\hidings\hidings.cpp" />
-    <ClCompile Include="game\hooks\hooks.cpp" />
     <ClCompile Include="game\Security\CrashHandler.cpp" />
     <ClCompile Include="thirdparty\dxsdk\Include\detours.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -304,8 +302,6 @@
     <ClInclude Include="game\Core\Threads\VehicleList.hpp" />
     <ClInclude Include="game\Gui\gui.hpp" />
     <ClInclude Include="game\Gui\Overlay\Overlay.hpp" />
-    <ClInclude Include="game\hidings\hidings.hpp" />
-    <ClInclude Include="game\hooks\hooks.hpp" />
     <ClInclude Include="game\Security\AntiCrack.hpp" />
     <ClInclude Include="game\Security\CrashHandler.hpp" />
     <ClInclude Include="game\Security\JunkCode.hpp" />

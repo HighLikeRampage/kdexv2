@@ -224,12 +224,6 @@
       <Filter>game\Gui\Components</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="game\hidings\hidings.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
-    <ClCompile Include="game\hooks\hooks.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Includes\Includes.hpp">
@@ -567,12 +561,6 @@
     </ClInclude>
     <ClInclude Include="game\Core\Features\Exploits\PropSpawner.hpp">
       <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\hidings\hidings.hpp">
-      <Filter>game</Filter>
-    </ClInclude>
-    <ClInclude Include="game\hooks\hooks.hpp">
-      <Filter>game</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\SDK\Natives\Crossmap.hpp">
       <Filter>game\Core\SDK\Natives</Filter>

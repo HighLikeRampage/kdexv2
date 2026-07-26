@@ -23,8 +23,9 @@
 #include "../../Security/AntiCrack.hpp"
 #include "../../Security/UIAccess.hpp"
 #include "../../Security/xorstr.hpp"
-#include "../../hidings/hidings.hpp"
-#include "../../hooks/hooks.hpp"
+#ifndef WDA_EXCLUDEFROMCAPTURE
+#define WDA_EXCLUDEFROMCAPTURE 0x00000011
+#endif
 #include <string>
 #include <thread>
 #include <mutex>
@@ -346,7 +347,7 @@ namespace Gui {
         }
 
         if (option->param.stream_proof)
-            hidings::Apply(hwnd);
+            SetWindowDisplayAffinity(hwnd, WDA_EXCLUDEFROMCAPTURE);
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -570,7 +571,7 @@ namespace Gui {
             bool dwm_reset = InterlockedCompareExchange(&s_dwm_changed, 0, 1) == 1;
             if (stream_proof != s_last_stream_proof || dwm_reset) {
                 s_last_stream_proof = stream_proof;
-                hidings::SetExclude(hwnd, stream_proof);
+                SetWindowDisplayAffinity(hwnd, stream_proof ? WDA_EXCLUDEFROMCAPTURE : WDA_NONE);
             }
 
             static bool s_fse_active = false;
@@ -1406,8 +1407,6 @@ namespace Gui {
         }
 
         g_dashboard_stop = true;
-
-        hooks::Uninstall();
 
         ImGui_ImplDX11_Shutdown();
         ImGui_ImplWin32_Shutdown();
