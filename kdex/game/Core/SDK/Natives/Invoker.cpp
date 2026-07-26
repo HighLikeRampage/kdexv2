@@ -11,6 +11,16 @@
 #include <sstream>
 #include <mutex>
 #include <cstdio>
+#include <string_view>
+
+namespace {
+    constexpr const char kNativesHppText[] =
+        #include "NativesEmbedded.inc"
+        ;
+    constexpr const char kCrossmapText[] =
+        #include "CrossmapEmbedded.inc"
+        ;
+}
 
 namespace Invoker {
 
@@ -22,8 +32,6 @@ namespace Invoker {
     static uint32_t                                          s_pid = 0;
     static std::string                                       s_processName;
     static std::string                                       s_buildTag;
-    static std::string                                       s_nativesHppPath = xorstr("Natives.hpp");
-    static std::string                                       s_crossmapPath = xorstr("Crossmap.hpp");
     static std::vector<Section>                              s_sections;
     static std::unordered_map<std::string, uint64_t>         s_hashes;
     static std::unordered_map<uint64_t, uint64_t>            s_crossmap;
@@ -106,20 +114,6 @@ namespace Invoker {
         return std::stoull(s);
     }
 
-    static std::string ReadFile(const std::string& path) {
-        FILE* f = std::fopen(path.c_str(), xorstr("rb"));
-        if (!f) return {};
-        std::fseek(f, 0, SEEK_END);
-        long sz = std::ftell(f);
-        std::fseek(f, 0, SEEK_SET);
-        if (sz <= 0) { std::fclose(f); return {}; }
-        std::string out(static_cast<size_t>(sz), '\0');
-        size_t got = std::fread(out.data(), 1, static_cast<size_t>(sz), f);
-        std::fclose(f);
-        out.resize(got);
-        return out;
-    }
-
     static bool IsIdentChar(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
             (c >= '0' && c <= '9') || c == '_';
@@ -129,8 +123,8 @@ namespace Invoker {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
 
-    static bool LoadNativesHpp(const std::string& path) {
-        std::string text = ReadFile(path);
+    static bool LoadNativesHpp() {
+        std::string_view text(kNativesHppText, sizeof(kNativesHppText) - 1);
         if (text.empty()) return false;
         const std::string kw = xorstr("constexpr");
         size_t pos = 0;
@@ -144,22 +138,22 @@ namespace Invoker {
             size_t nameStart = p;
             while (p < text.size() && IsIdentChar(text[p])) ++p;
             if (p == nameStart) continue;
-            std::string name = text.substr(nameStart, p - nameStart);
+            std::string name(text.substr(nameStart, p - nameStart));
             while (p < text.size() && (text[p] == ' ' || text[p] == '\t' || text[p] == '=')) ++p;
             if (p + 2 > text.size() || text[p] != '0' || (text[p + 1] != 'x' && text[p + 1] != 'X')) continue;
             p += 2;
             size_t hexStart = p;
             while (p < text.size() && IsHexChar(text[p])) ++p;
             if (p == hexStart) continue;
-            uint64_t hash = std::stoull(text.substr(hexStart, p - hexStart), nullptr, 16);
+            uint64_t hash = std::stoull(std::string(text.substr(hexStart, p - hexStart)), nullptr, 16);
             s_hashes[name] = hash;
             s_nameLower[ToLower(name)] = hash;
         }
         return !s_hashes.empty();
     }
 
-    static bool LoadCrossmap(const std::string& path) {
-        std::string text = ReadFile(path);
+    static bool LoadCrossmap() {
+        std::string_view text(kCrossmapText, sizeof(kCrossmapText) - 1);
         if (text.empty()) return false;
         size_t pos = 0;
         while (pos < text.size()) {
@@ -172,14 +166,14 @@ namespace Invoker {
             size_t h1s = p;
             while (p < text.size() && IsHexChar(text[p])) ++p;
             if (p == h1s) { pos = brace + 1; continue; }
-            uint64_t orig = std::stoull(text.substr(h1s, p - h1s), nullptr, 16);
+            uint64_t orig = std::stoull(std::string(text.substr(h1s, p - h1s)), nullptr, 16);
             while (p < text.size() && (text[p] == ' ' || text[p] == '\t' || text[p] == ',')) ++p;
             if (p + 2 > text.size() || text[p] != '0' || (text[p + 1] != 'x' && text[p + 1] != 'X')) { pos = brace + 1; continue; }
             p += 2;
             size_t h2s = p;
             while (p < text.size() && IsHexChar(text[p])) ++p;
             if (p == h2s) { pos = brace + 1; continue; }
-            uint64_t trans = std::stoull(text.substr(h2s, p - h2s), nullptr, 16);
+            uint64_t trans = std::stoull(std::string(text.substr(h2s, p - h2s)), nullptr, 16);
             s_crossmap[orig] = trans;
             pos = p;
         }
@@ -587,17 +581,17 @@ namespace Invoker {
         }
 
         if (s_hashes.empty()) {
-            Log(xorstr("[scan] loading %s\n"), s_nativesHppPath.c_str());
-            if (!LoadNativesHpp(s_nativesHppPath)) {
-                Log(xorstr("[scan] failed to load %s\n"), s_nativesHppPath.c_str());
+            Log(xorstr("[scan] loading embedded Natives.hpp\n"));
+            if (!LoadNativesHpp()) {
+                Log(xorstr("[scan] failed to load embedded Natives.hpp\n"));
                 return false;
             }
             Log(xorstr("[scan] Natives.hpp = %zu entries\n"), s_hashes.size());
         }
         if (s_crossmap.empty()) {
-            Log(xorstr("[scan] loading %s\n"), s_crossmapPath.c_str());
-            if (!LoadCrossmap(s_crossmapPath)) {
-                Log(xorstr("[scan] failed to load %s\n"), s_crossmapPath.c_str());
+            Log(xorstr("[scan] loading embedded Crossmap.hpp\n"));
+            if (!LoadCrossmap()) {
+                Log(xorstr("[scan] failed to load embedded Crossmap.hpp\n"));
                 return false;
             }
             Log(xorstr("[scan] crossmap = %zu entries\n"), s_crossmap.size());
@@ -1144,8 +1138,8 @@ namespace Invoker {
     const std::unordered_map<std::string, uint64_t>& AllHashes() { return s_hashes; }
     const std::unordered_map<uint64_t, NativeInfo>& AllNatives() { return s_natives; }
 
-    void SetNativesHppPath(std::string path) { s_nativesHppPath = std::move(path); }
-    void SetCrossmapPath(std::string path) { s_crossmapPath = std::move(path); }
+    void SetNativesHppPath(std::string) {}
+    void SetCrossmapPath(std::string) {}
     void EnableLogging(bool on) { s_logging = on; }
 
 }

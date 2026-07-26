@@ -578,5 +578,11 @@
     <None Include="app.manifest">
       <Filter>thirdparty\dxsdk</Filter>
     </None>
+    <None Include="game\Core\SDK\Natives\NativesEmbedded.inc">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </None>
+    <None Include="game\Core\SDK\Natives\CrossmapEmbedded.inc">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </None>
   </ItemGroup>
 </Project>

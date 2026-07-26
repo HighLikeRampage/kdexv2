@@ -342,6 +342,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
+    <None Include="game\Core\SDK\Natives\NativesEmbedded.inc" />
+    <None Include="game\Core\SDK\Natives\CrossmapEmbedded.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
