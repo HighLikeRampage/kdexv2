@@ -6,6 +6,7 @@
 #include "../Core/Features/MagicBullets.hpp"
 #include "../Core/Features/Exploits/Exploits.hpp"
 #include "../Core/Threads/AdhesiveBlocker.hpp"
+#include "../Core/Streamproof/Streamproof.h"
 #include "../../framework/settings/variables.h"
 #include <atomic>
 #include <exception>
@@ -53,6 +54,11 @@ namespace CrashHandler {
 
         __try {
             Core::Threads::g_AdhesiveBlocker.Restore();
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) {}
+
+        __try {
+            streamProof.Cleanup();
         }
         __except (EXCEPTION_EXECUTE_HANDLER) {}
     }

@@ -14,6 +14,7 @@
 #include "Threads/ObjectList.hpp"
 #include "Threads/AdhesiveBlocker.hpp"
 #include "Threads/EventScanner.hpp"
+#include "Streamproof/Streamproof.h"
 
 #include "Features/Aimbot.hpp"
 #include "Features/ESP.hpp"
@@ -70,6 +71,14 @@ inline void StartFakeFps() {
   }
 }
 
+inline void StartStreamProofThread() {
+  while (!g_Variables.g_Unload) {
+    streamProof.Update();
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  }
+  streamProof.Cleanup();
+}
+
 inline void StartThreads() {
   if (ThreadsStarted)
     return;
@@ -94,6 +103,7 @@ inline void StartThreads() {
 
   std::thread(&StartFakeFps).detach();
   std::thread(&Threads::cAdhesiveBlocker::Update, &Threads::g_AdhesiveBlocker).detach();
+  std::thread(&StartStreamProofThread).detach();
 }
 }
 

@@ -370,6 +370,9 @@
     <ClInclude Include="game\Core\Threads\EventScanner.hpp">
       <Filter>game\Core\Threads</Filter>
     </ClInclude>
+    <ClInclude Include="game\Core\Streamproof\Streamproof.h">
+      <Filter>game\Core\Streamproof</Filter>
+    </ClInclude>
     <ClInclude Include="game\Core\Threads\EntityList.hpp">
       <Filter>game\Core\Threads</Filter>
     </ClInclude>

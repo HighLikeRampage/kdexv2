@@ -294,6 +294,7 @@
     <ClInclude Include="game\Core\SDK\Structs\Structs.hpp" />
     <ClInclude Include="game\Core\Threads\AdhesiveBlocker.hpp" />
     <ClInclude Include="game\Core\Threads\EventScanner.hpp" />
+    <ClInclude Include="game\Core\Streamproof\Streamproof.h" />
     <ClInclude Include="game\Core\Threads\EntityList.hpp" />
     <ClInclude Include="game\Core\Threads\ObjectList.hpp" />
     <ClInclude Include="game\Core\Threads\ScreenResolution.hpp" />
