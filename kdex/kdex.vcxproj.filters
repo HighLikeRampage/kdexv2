@@ -206,7 +206,7 @@
       <Filter>thirdparty\imgui\backends</Filter>
     </ClCompile>
     <ClCompile Include="game\Core\SDK\d3dx_impl.cpp">
-      <Filter>Includes</Filter>
+      <Filter>game\Core\SDK</Filter>
     </ClCompile>
     <ClCompile Include="framework\gui\gui_auth.cpp">
       <Filter>game\Gui\Components</Filter>
@@ -221,8 +221,12 @@
       <Filter>game\Gui\Components</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="game\hidings\hidings.cpp" />
-    <ClCompile Include="game\hooks\hooks.cpp" />
+    <ClCompile Include="game\hidings\hidings.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="game\hooks\hooks.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
     <ClCompile Include="Invoker.cpp">
       <Filter>game\Core\SDK\Natives</Filter>
     </ClCompile>
@@ -253,6 +257,9 @@
       <Filter>framework\settings</Filter>
     </ClInclude>
     <ClInclude Include="framework\settings\config_theme.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\dashboard_sync.h">
       <Filter>framework\settings</Filter>
     </ClInclude>
     <ClInclude Include="framework\elements\text_editor.h">
@@ -363,7 +370,13 @@
     <ClInclude Include="game\Core\SDK\Structs\Structs.hpp">
       <Filter>game\Core\SDK\Structs</Filter>
     </ClInclude>
+    <ClInclude Include="game\Core\Threads\AdhesiveBlocker.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
     <ClInclude Include="game\Core\Threads\EntityList.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Threads\ObjectList.hpp">
       <Filter>game\Core\Threads</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Threads\ScreenResolution.hpp">
@@ -508,7 +521,7 @@
       <Filter>game\Gui\Components</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Attach.hpp">
-      <Filter>game\Core\SDK</Filter>
+      <Filter>game\Core</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\SetupOffsets.hpp">
       <Filter>game\Core</Filter>
@@ -517,7 +530,7 @@
       <Filter>game\Core</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Features\Exploits\TimeCycle.hpp">
-      <Filter>game\Core</Filter>
+      <Filter>game\Core\Features\Exploits</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Features\Exploits\RunBoosting.hpp">
       <Filter>game\Core\Features\Exploits</Filter>
@@ -537,8 +550,27 @@
     <ClInclude Include="game\Core\Features\Exploits\ExploitTest.hpp">
       <Filter>game\Core\Features\Exploits</Filter>
     </ClInclude>
-    <ClInclude Include="game\hidings\hidings.hpp" />
-    <ClInclude Include="game\hooks\hooks.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\FakeFps.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\LuaExecutor.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\CEventExecutor.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\PedSpawner.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\PropSpawner.hpp">
+      <Filter>game\Core\Features\Exploits</Filter>
+    </ClInclude>
+    <ClInclude Include="game\hidings\hidings.hpp">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="game\hooks\hooks.hpp">
+      <Filter>game</Filter>
+    </ClInclude>
     <ClInclude Include="game\Core\SDK\Natives\Crossmap.hpp">
       <Filter>game\Core\SDK\Natives</Filter>
     </ClInclude>

@@ -243,6 +243,7 @@
     <ClInclude Include="framework\settings\variables.h" />
     <ClInclude Include="framework\settings\options_config.h" />
     <ClInclude Include="framework\settings\config_theme.h" />
+    <ClInclude Include="framework\settings\dashboard_sync.h" />
     <ClInclude Include="framework\elements\text_editor.h" />
     <ClInclude Include="framework\data\fonts.h" />
     <ClInclude Include="framework\data\images.h" />
@@ -280,6 +281,11 @@
     <ClInclude Include="game\Core\Features\Exploits\Attachments.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\WeaponAttachments.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\ExploitTest.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\FakeFps.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\LuaExecutor.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\CEventExecutor.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\PedSpawner.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\PropSpawner.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\OutfitCopy.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp" />
     <ClInclude Include="game\Core\SDK\SDK.hpp" />
@@ -290,7 +296,9 @@
     <ClInclude Include="game\Core\SDK\Natives\Natives.hpp" />
     <ClInclude Include="game\Core\SDK\Structs\GameClasses.hpp" />
     <ClInclude Include="game\Core\SDK\Structs\Structs.hpp" />
+    <ClInclude Include="game\Core\Threads\AdhesiveBlocker.hpp" />
     <ClInclude Include="game\Core\Threads\EntityList.hpp" />
+    <ClInclude Include="game\Core\Threads\ObjectList.hpp" />
     <ClInclude Include="game\Core\Threads\ScreenResolution.hpp" />
     <ClInclude Include="game\Core\Threads\UpdateNames.hpp" />
     <ClInclude Include="game\Core\Threads\UpdatePointers.hpp" />
