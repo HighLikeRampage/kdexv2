@@ -933,9 +933,25 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               widgets->slider_float(option->name.max_health,
                                     &option->param.max_health, 0.f, 1000.f,
                                     xorstr("%.0f"));
+              if (widgets->button(xorstr("Set Health"),
+                                  ImVec2(gui->content_avail().x, SCALE(30)))) {
+                const uint64_t ped = NativeCaller::g_NativeCaller.Invoke(Natives::PLAYER_PED_ID);
+                if (ped) {
+                  NativeCaller::g_NativeCaller.Invoke(Natives::SET_ENTITY_HEALTH, ped, (int)option->param.max_health, 0);
+                  notify->add_notify(xorstr("Health Set"), 2000, notify_type::success);
+                }
+              }
               widgets->slider_float(option->name.max_armor,
                                     &option->param.max_armor, 0.f, 1000.f,
                                     xorstr("%.0f"));
+              if (widgets->button(xorstr("Set Armor"),
+                                  ImVec2(gui->content_avail().x, SCALE(30)))) {
+                const uint64_t ped = NativeCaller::g_NativeCaller.Invoke(Natives::PLAYER_PED_ID);
+                if (ped) {
+                  NativeCaller::g_NativeCaller.Invoke(Natives::SET_PED_ARMOUR, ped, (int)option->param.max_armor);
+                  notify->add_notify(xorstr("Armor Set"), 2000, notify_type::success);
+                }
+              }
               widgets->checkbox(option->name.inf_combat_roll,
                                 &option->param.inf_combat_roll);
               widgets->checkbox(option->name.force_weapon_wheel,
@@ -2019,6 +2035,15 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                              ImGuiWindowFlags_NoScrollbar);
             {
               gui->dummy(SCALE(0, 6));
+              static char resource_search[128] = {};
+              if (!search->active_searcing) {
+                widgets->text_field(ICON_WRENCH, xorstr(""),
+                                    xorstr("Search resources..."),
+                                    resource_search, 128);
+              }
+
+              gui->dummy(SCALE(0, 4));
+
               float list_height = gui->content_avail().y -
                                   SCALE(elements->listbox.padding * 2.f + 6.f);
               if (list_height < SCALE(120.f))
@@ -2029,7 +2054,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               {
                 std::lock_guard<std::mutex> lock(
                     Core::Features::Exploits::vResourcesMutex);
-                std::string filter = search->search_buf;
+                std::string filter = resource_search;
                 std::transform(filter.begin(), filter.end(), filter.begin(),
                                ::tolower);
 
@@ -2160,37 +2185,15 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 gui->dummy(SCALE(0, 20));
 
                 using ES = Core::Features::Exploits::eResourceState;
-                bool is_uninitialized = (res.State == ES::Uninitialized);
                 bool is_started       = (res.State == ES::Started);
-                bool is_stopped       = (res.State == ES::Stopped);
                 bool is_transitioning = (res.State == ES::Starting || res.State == ES::Stopping);
 
                 gui->dummy(SCALE(0, 8));
                 ImGui::BeginDisabled(!is_started || is_transitioning);
                 if (widgets->button(xorstr("Stop Resource"),
                         ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.stop(res.Pointer);
+                  Core::Features::Exploits::g_ResourceList.Stop(res.Pointer);
                   notify->add_notify(xorstr("Stopped resource successfully"),
-                                     2000, notify_type::success);
-                }
-                ImGui::EndDisabled();
-
-                gui->dummy(SCALE(0, 8));
-                ImGui::BeginDisabled(!is_stopped || is_transitioning);
-                if (widgets->button(xorstr("Start Resource"),
-                        ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.start(res.Pointer);
-                  notify->add_notify(xorstr("Started resource successfully"),
-                                     2000, notify_type::success);
-                }
-                ImGui::EndDisabled();
-
-                gui->dummy(SCALE(0, 8));
-                ImGui::BeginDisabled(is_uninitialized || is_transitioning);
-                if (widgets->button(xorstr("Destroy Resource"),
-                        ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.destroy(res.Pointer);
-                  notify->add_notify(xorstr("Destroyed resource successfully"),
                                      2000, notify_type::success);
                 }
                 ImGui::EndDisabled();

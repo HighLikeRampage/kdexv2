@@ -14,12 +14,15 @@
 #include <string_view>
 
 namespace {
-    constexpr const char kNativesHppText[] =
+    struct NativeEntry { const char* name; uint64_t hash; };
+    static const NativeEntry kNativeEntries[] = {
         #include "NativesEmbedded.inc"
-        ;
-    constexpr const char kCrossmapText[] =
+    };
+
+    struct CrossmapEntry { uint64_t orig; uint64_t trans; };
+    static const CrossmapEntry kCrossmapEntries[] = {
         #include "CrossmapEmbedded.inc"
-        ;
+    };
 }
 
 namespace Invoker {
@@ -114,68 +117,17 @@ namespace Invoker {
         return std::stoull(s);
     }
 
-    static bool IsIdentChar(char c) {
-        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-            (c >= '0' && c <= '9') || c == '_';
-    }
-
-    static bool IsHexChar(char c) {
-        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
-    }
-
     static bool LoadNativesHpp() {
-        std::string_view text(kNativesHppText, sizeof(kNativesHppText) - 1);
-        if (text.empty()) return false;
-        const std::string kw = xorstr("constexpr");
-        size_t pos = 0;
-        while ((pos = text.find(kw, pos)) != std::string::npos) {
-            size_t p = pos + kw.size();
-            pos = p;
-            while (p < text.size() && (text[p] == ' ' || text[p] == '\t')) ++p;
-            if (text.compare(p, 8, xorstr("uint64_t")) != 0) continue;
-            p += 8;
-            while (p < text.size() && (text[p] == ' ' || text[p] == '\t')) ++p;
-            size_t nameStart = p;
-            while (p < text.size() && IsIdentChar(text[p])) ++p;
-            if (p == nameStart) continue;
-            std::string name(text.substr(nameStart, p - nameStart));
-            while (p < text.size() && (text[p] == ' ' || text[p] == '\t' || text[p] == '=')) ++p;
-            if (p + 2 > text.size() || text[p] != '0' || (text[p + 1] != 'x' && text[p + 1] != 'X')) continue;
-            p += 2;
-            size_t hexStart = p;
-            while (p < text.size() && IsHexChar(text[p])) ++p;
-            if (p == hexStart) continue;
-            uint64_t hash = std::stoull(std::string(text.substr(hexStart, p - hexStart)), nullptr, 16);
-            s_hashes[name] = hash;
-            s_nameLower[ToLower(name)] = hash;
+        for (const auto& e : kNativeEntries) {
+            s_hashes[e.name] = e.hash;
+            s_nameLower[ToLower(e.name)] = e.hash;
         }
         return !s_hashes.empty();
     }
 
     static bool LoadCrossmap() {
-        std::string_view text(kCrossmapText, sizeof(kCrossmapText) - 1);
-        if (text.empty()) return false;
-        size_t pos = 0;
-        while (pos < text.size()) {
-            size_t brace = text.find('{', pos);
-            if (brace == std::string::npos) break;
-            size_t p = brace + 1;
-            while (p < text.size() && (text[p] == ' ' || text[p] == '\t')) ++p;
-            if (p + 2 > text.size() || text[p] != '0' || (text[p + 1] != 'x' && text[p + 1] != 'X')) { pos = brace + 1; continue; }
-            p += 2;
-            size_t h1s = p;
-            while (p < text.size() && IsHexChar(text[p])) ++p;
-            if (p == h1s) { pos = brace + 1; continue; }
-            uint64_t orig = std::stoull(std::string(text.substr(h1s, p - h1s)), nullptr, 16);
-            while (p < text.size() && (text[p] == ' ' || text[p] == '\t' || text[p] == ',')) ++p;
-            if (p + 2 > text.size() || text[p] != '0' || (text[p + 1] != 'x' && text[p + 1] != 'X')) { pos = brace + 1; continue; }
-            p += 2;
-            size_t h2s = p;
-            while (p < text.size() && IsHexChar(text[p])) ++p;
-            if (p == h2s) { pos = brace + 1; continue; }
-            uint64_t trans = std::stoull(std::string(text.substr(h2s, p - h2s)), nullptr, 16);
-            s_crossmap[orig] = trans;
-            pos = p;
+        for (const auto& e : kCrossmapEntries) {
+            s_crossmap[e.orig] = e.trans;
         }
         return !s_crossmap.empty();
     }
