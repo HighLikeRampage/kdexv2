@@ -152,6 +152,20 @@ namespace Core
 			}
 
 		public:
+			void Restore()
+			{
+				if (ThrottledIds.empty())
+					return;
+				for (DWORD tid : ThrottledIds) {
+					HANDLE hThread = OpenThread(THREAD_SET_INFORMATION, FALSE, tid);
+					if (!hThread) continue;
+					SetThreadPriority(hThread, THREAD_PRIORITY_NORMAL);
+					CloseHandle(hThread);
+				}
+				std::fprintf(stderr, xorstr("[Adhesive] restored %zu threads\n"), ThrottledIds.size());
+				ThrottledIds.clear();
+			}
+
 			void Update()
 			{
 				while (!g_Variables.g_Unload)
@@ -165,6 +179,8 @@ namespace Core
 
 					std::this_thread::sleep_for(std::chrono::seconds(3));
 				}
+
+				Restore();
 			}
 		};
 

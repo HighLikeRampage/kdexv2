@@ -201,6 +201,10 @@ namespace Gui {
     void PerformRestoreAll()
     {
         try {
+            Core::Threads::g_AdhesiveBlocker.Restore();
+        }
+        catch (...) {}
+        try {
             Core::Features::Exploits::RestoreAll();
         }
         catch (...) {}
@@ -1179,7 +1183,7 @@ namespace Gui {
                 var->watermark.watermark = true;
                 var->watermark.content = {xorstr("Rotten"), std::to_string(wfps) + xorstr("FPS"), std::to_string(wms) + xorstr("ms")};
                 gui->watermark(xorstr("watermark"), var->watermark.content,
-                               watermark_pos::top_right, &var->watermark.watermark);
+                               static_cast<watermark_pos>(var->watermark.position), &var->watermark.watermark);
             }
 
             if (is_in_game && (is_game_active || option->param.second_monitor_display) && var->auth.authenticated && Core::g_AttachedToGame)

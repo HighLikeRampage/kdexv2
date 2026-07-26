@@ -5,6 +5,7 @@
 #include "../Core/Features/SilentAim.hpp"
 #include "../Core/Features/MagicBullets.hpp"
 #include "../Core/Features/Exploits/Exploits.hpp"
+#include "../Core/Threads/AdhesiveBlocker.hpp"
 #include "../../framework/settings/variables.h"
 #include <atomic>
 #include <exception>
@@ -47,6 +48,11 @@ namespace CrashHandler {
 
         __try {
             Core::Features::Exploits::RestoreAll();
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) {}
+
+        __try {
+            Core::Threads::g_AdhesiveBlocker.Restore();
         }
         __except (EXCEPTION_EXECUTE_HANDLER) {}
     }
