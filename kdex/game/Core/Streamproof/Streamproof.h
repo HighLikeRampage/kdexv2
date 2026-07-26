@@ -4,6 +4,7 @@
 #include <TlHelp32.h>
 #include <vector>
 #include <cstring>
+#include <Security/xorstr.hpp>
 
 class StreamProof {
 public:
@@ -106,7 +107,7 @@ private:
         TOKEN_PRIVILEGES tp{};
         tp.PrivilegeCount = 1;
         tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
-        if (!LookupPrivilegeValueW(nullptr, L"SeDebugPrivilege", &tp.Privileges[0].Luid)) {
+        if (!LookupPrivilegeValueW(nullptr, xorstr(L"SeDebugPrivilege"), &tp.Privileges[0].Luid)) {
             CloseHandle(tok); return false;
         }
         AdjustTokenPrivileges(tok, FALSE, &tp, sizeof(tp), nullptr, nullptr);
@@ -115,19 +116,19 @@ private:
     }
 
     static bool IsNvProc(const wchar_t* exe) {
-        return !_wcsicmp(exe, L"nvcontainer.exe")
-            || !_wcsicmp(exe, L"NVIDIA Share.exe")
-            || !_wcsicmp(exe, L"NVIDIA ShareSrv.exe")
-            || !_wcsicmp(exe, L"nvsphelper64.exe");
+        return !_wcsicmp(exe, xorstr(L"nvcontainer.exe"))
+            || !_wcsicmp(exe, xorstr(L"NVIDIA Share.exe"))
+            || !_wcsicmp(exe, xorstr(L"NVIDIA ShareSrv.exe"))
+            || !_wcsicmp(exe, xorstr(L"nvsphelper64.exe"));
     }
 
     static bool IsAmdProc(const wchar_t* exe) {
-        return !_wcsicmp(exe, L"RadeonSoftware.exe")
-            || !_wcsicmp(exe, L"AMDRSServ.exe")
-            || !_wcsicmp(exe, L"AMDRSSrcExt.exe")
-            || !_wcsicmp(exe, L"AMDRSSrcTab.exe")
-            || !_wcsicmp(exe, L"amdow.exe")
-            || !_wcsicmp(exe, L"atieclxx.exe");
+        return !_wcsicmp(exe, xorstr(L"RadeonSoftware.exe"))
+            || !_wcsicmp(exe, xorstr(L"AMDRSServ.exe"))
+            || !_wcsicmp(exe, xorstr(L"AMDRSSrcExt.exe"))
+            || !_wcsicmp(exe, xorstr(L"AMDRSSrcTab.exe"))
+            || !_wcsicmp(exe, xorstr(L"amdow.exe"))
+            || !_wcsicmp(exe, xorstr(L"atieclxx.exe"));
     }
 
     static bool ModInfo(DWORD pid, const wchar_t* name, uintptr_t& base, size_t& size) {
@@ -198,10 +199,10 @@ private:
 
     bool PatchAffinity(HANDLE hp, DWORD pid) {
         uintptr_t remoteU32 = 0; size_t sz = 0;
-        if (!ModInfo(pid, L"user32.dll", remoteU32, sz) || !remoteU32) return false;
-        HMODULE local = GetModuleHandleW(L"user32.dll");
+        if (!ModInfo(pid, xorstr(L"user32.dll"), remoteU32, sz) || !remoteU32) return false;
+        HMODULE local = GetModuleHandleW(xorstr(L"user32.dll"));
         if (!local) return false;
-        FARPROC fn = GetProcAddress(local, "GetWindowDisplayAffinity");
+        FARPROC fn = GetProcAddress(local, xorstr("GetWindowDisplayAffinity"));
         if (!fn) return false;
         const uintptr_t remote = remoteU32 + ((uintptr_t)fn - (uintptr_t)local);
         return ApplyTracked(hp, pid, remote, kAffinityRetFalse, sizeof(kAffinityRetFalse), PatchRecord::Affinity);
@@ -209,7 +210,7 @@ private:
 
     bool PatchEnum(HANDLE hp, DWORD pid) {
         bool any = false;
-        const wchar_t* mods[] = { L"nvspcap64.dll", L"_nvspcaps64.dll" };
+        const wchar_t* mods[] = { xorstr(L"nvspcap64.dll"), xorstr(L"_nvspcaps64.dll") };
         for (auto* name : mods) {
             uintptr_t base = 0; size_t sz = 0;
             if (!ModInfo(pid, name, base, sz) || !base) continue;
@@ -223,15 +224,15 @@ private:
         if (m_RegApplied) return true;
         HKEY hk = nullptr;
         if (RegCreateKeyExW(HKEY_LOCAL_MACHINE,
-            L"SOFTWARE\\NVIDIA Corporation\\Global\\NvApp\\ShadowPlay\\FTS",
+            xorstr(L"SOFTWARE\\NVIDIA Corporation\\Global\\NvApp\\ShadowPlay\\FTS"),
             0, nullptr, 0,
             KEY_READ | KEY_WRITE | KEY_WOW64_64KEY, nullptr, &hk, nullptr) != ERROR_SUCCESS) return false;
         DWORD type = 0, old = 0, cb = sizeof(old);
-        if (RegQueryValueExW(hk, L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}", nullptr, &type, (LPBYTE)&old, &cb) == ERROR_SUCCESS && type == REG_DWORD) {
+        if (RegQueryValueExW(hk, xorstr(L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}"), nullptr, &type, (LPBYTE)&old, &cb) == ERROR_SUCCESS && type == REG_DWORD) {
             m_RegHadValue = true; m_RegOldValue = old;
         } else { m_RegHadValue = false; m_RegOldValue = 0; }
         DWORD val = kFtsDxgiValue;
-        const LONG st = RegSetValueExW(hk, L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}", 0, REG_DWORD, (const BYTE*)&val, sizeof(val));
+        const LONG st = RegSetValueExW(hk, xorstr(L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}"), 0, REG_DWORD, (const BYTE*)&val, sizeof(val));
         RegCloseKey(hk);
         if (st != ERROR_SUCCESS) return false;
         m_RegApplied = true;
@@ -242,14 +243,14 @@ private:
         if (!m_RegApplied) return true;
         HKEY hk = nullptr;
         if (RegOpenKeyExW(HKEY_LOCAL_MACHINE,
-            L"SOFTWARE\\NVIDIA Corporation\\Global\\NvApp\\ShadowPlay\\FTS",
+            xorstr(L"SOFTWARE\\NVIDIA Corporation\\Global\\NvApp\\ShadowPlay\\FTS"),
             0, KEY_READ | KEY_WRITE | KEY_WOW64_64KEY, &hk) != ERROR_SUCCESS) {
             m_RegApplied = false; return true;
         }
         if (m_RegHadValue)
-            RegSetValueExW(hk, L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}", 0, REG_DWORD, (const BYTE*)&m_RegOldValue, sizeof(m_RegOldValue));
+            RegSetValueExW(hk, xorstr(L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}"), 0, REG_DWORD, (const BYTE*)&m_RegOldValue, sizeof(m_RegOldValue));
         else
-            RegDeleteValueW(hk, L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}");
+            RegDeleteValueW(hk, xorstr(L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}"));
         RegCloseKey(hk);
         m_RegApplied = false;
         m_RegHadValue = false;
@@ -261,10 +262,10 @@ private:
         out = 0;
         HKEY hk = nullptr;
         if (RegOpenKeyExW(HKEY_LOCAL_MACHINE,
-            L"SOFTWARE\\NVIDIA Corporation\\Global\\NvApp\\ShadowPlay\\FTS",
+            xorstr(L"SOFTWARE\\NVIDIA Corporation\\Global\\NvApp\\ShadowPlay\\FTS"),
             0, KEY_READ | KEY_WOW64_64KEY, &hk) != ERROR_SUCCESS) return false;
         DWORD type = 0, cb = sizeof(out);
-        const LONG st = RegQueryValueExW(hk, L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}", nullptr, &type, (LPBYTE)&out, &cb);
+        const LONG st = RegQueryValueExW(hk, xorstr(L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}"), nullptr, &type, (LPBYTE)&out, &cb);
         RegCloseKey(hk);
         return st == ERROR_SUCCESS && type == REG_DWORD;
     }
@@ -272,9 +273,9 @@ private:
     bool EraseFtsValue() {
         HKEY hk = nullptr;
         if (RegOpenKeyExW(HKEY_LOCAL_MACHINE,
-            L"SOFTWARE\\NVIDIA Corporation\\Global\\NvApp\\ShadowPlay\\FTS",
+            xorstr(L"SOFTWARE\\NVIDIA Corporation\\Global\\NvApp\\ShadowPlay\\FTS"),
             0, KEY_READ | KEY_WRITE | KEY_WOW64_64KEY, &hk) != ERROR_SUCCESS) return false;
-        const LONG st = RegDeleteValueW(hk, L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}");
+        const LONG st = RegDeleteValueW(hk, xorstr(L"{497B8458-4244-4EE6-BFEA-F3D2BA294F21}"));
         RegCloseKey(hk);
         if (st != ERROR_SUCCESS && st != ERROR_FILE_NOT_FOUND) return false;
         m_RegApplied = false;
@@ -296,7 +297,7 @@ private:
         PROCESSENTRY32W pe{ sizeof(pe) };
         if (Process32FirstW(snap, &pe)) {
             do {
-                if (_wcsicmp(pe.szExeFile, L"nvcontainer.exe") != 0) continue;
+                if (_wcsicmp(pe.szExeFile, xorstr(L"nvcontainer.exe")) != 0) continue;
                 HANDLE hp = OpenProcess(PROCESS_TERMINATE, FALSE, pe.th32ProcessID);
                 if (hp) { TerminateProcess(hp, 0); CloseHandle(hp); }
             } while (Process32NextW(snap, &pe));
