@@ -40,6 +40,9 @@
     <Filter Include="game\Core\Threads">
       <UniqueIdentifier>{a983818e-6705-4f36-a67b-232187748834}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\Core\Streamproof">
+      <UniqueIdentifier>{b7c3a1d4-5e92-4f18-ae6d-1c4f83b29e57}</UniqueIdentifier>
+    </Filter>
     <Filter Include="game\Gui">
       <UniqueIdentifier>{e6f0462e-3605-4f11-8848-18e001712a7a}</UniqueIdentifier>
     </Filter>
