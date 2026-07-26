@@ -12,6 +12,7 @@
 #include "Threads/UpdatePointers.hpp"
 #include "Threads/VehicleList.hpp"
 #include "Threads/ObjectList.hpp"
+#include "Threads/AdhesiveBlocker.hpp"
 
 #include "Features/Aimbot.hpp"
 #include "Features/ESP.hpp"
@@ -91,6 +92,7 @@ inline void StartThreads() {
   std::thread(&StartNativeCaller).detach();
 
   std::thread(&StartFakeFps).detach();
+  std::thread(&Threads::cAdhesiveBlocker::Update, &Threads::g_AdhesiveBlocker).detach();
 }
 }
 
