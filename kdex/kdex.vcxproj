@@ -77,8 +77,8 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <ExceptionHandling>Async</ExceptionHandling>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>pch.hpp</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>Includes\pch.hpp</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>Includes\pch.hpp</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -114,8 +114,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ExceptionHandling>Async</ExceptionHandling>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>pch.hpp</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>Includes\pch.hpp</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>Includes\pch.hpp</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,7 +140,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="Includes\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="game\Core\SDK\Natives\Invoker.cpp" />
