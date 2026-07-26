@@ -29,21 +29,24 @@ struct CapturedEvent {
 class cEventScanner
 {
 public:
+	~cEventScanner()
+	{
+		m_running.store(false);
+		if (m_thread.joinable()) m_thread.join();
+	}
+
 	void Start()
 	{
 		if (m_running.load()) return;
+		if (m_thread.joinable()) m_thread.join();
 		m_running.store(true);
-		{
-			std::lock_guard<std::mutex> lk(m_mutex);
-			m_events.clear();
-		}
 		m_thread = std::thread(&cEventScanner::ScanLoop, this);
-		m_thread.detach();
 	}
 
 	void Stop()
 	{
 		m_running.store(false);
+		if (m_thread.joinable()) m_thread.join();
 	}
 
 	bool IsRunning() const { return m_running.load(); }
@@ -426,18 +429,14 @@ private:
 
 	void ScanLoop()
 	{
-		std::fprintf(stderr, xorstr("[EventScanner] started\n"));
-
 		DWORD pid = g_Variables.ProcIdFiveM;
 		if (pid == 0) {
-			std::fprintf(stderr, xorstr("[EventScanner] no PID\n"));
 			m_running.store(false);
 			return;
 		}
 
 		HANDLE hProc = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION | PROCESS_QUERY_INFORMATION, FALSE, pid);
 		if (!hProc) {
-			std::fprintf(stderr, xorstr("[EventScanner] cannot open process\n"));
 			m_running.store(false);
 			return;
 		}
@@ -448,17 +447,15 @@ private:
 		for (int attempt = 0; attempt < 30 && m_running.load(); attempt++) {
 			dllBase = FindModuleBase(pid, L"gta-net-five.dll", dllSize);
 			if (dllBase) break;
-			std::this_thread::sleep_for(std::chrono::seconds(1));
+			for (int s = 0; s < 10 && m_running.load(); s++)
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
 
 		if (!dllBase) {
-			std::fprintf(stderr, xorstr("[EventScanner] gta-net-five.dll not found\n"));
 			CloseHandle(hProc);
 			m_running.store(false);
 			return;
 		}
-
-		std::fprintf(stderr, xorstr("[EventScanner] dll base=0x%llx size=0x%x\n"), dllBase, dllSize);
 
 		auto allMods = GetAllModules(pid);
 		std::vector<uintptr_t> roots;
@@ -467,8 +464,6 @@ private:
 
 		if (!foundTrees)
 			foundTrees = ScanDataSection(hProc, dllBase, dllSize, allMods, roots, nilOffset);
-
-		std::fprintf(stderr, xorstr("[EventScanner] trees=%d roots=%zu\n"), (int)foundTrees, roots.size());
 
 		std::unordered_set<uintptr_t> seenTree;
 		std::unordered_set<uintptr_t> seenHeap;
@@ -518,7 +513,6 @@ private:
 
 		CloseHandle(hProc);
 		m_running.store(false);
-		std::fprintf(stderr, xorstr("[EventScanner] stopped\n"));
 	}
 };
 
