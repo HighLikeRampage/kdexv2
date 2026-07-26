@@ -27,8 +27,16 @@ namespace Core
 			};
 
 			std::set<DWORD> SuspendedIds;
+			fnNtQueryInformationThread NtQueryInfoThread = nullptr;
+			uintptr_t CachedAdhesiveBase = 0;
+			size_t CachedAdhesiveSize = 0;
 
 			uintptr_t FindAdhesiveBase(HANDLE hProcess, size_t& modSize) {
+				if (CachedAdhesiveBase) {
+					modSize = CachedAdhesiveSize;
+					return CachedAdhesiveBase;
+				}
+
 				HMODULE hMods[1024];
 				DWORD cbNeeded;
 				if (!EnumProcessModulesEx(hProcess, hMods, sizeof(hMods), &cbNeeded, LIST_MODULES_ALL))
@@ -45,7 +53,9 @@ namespace Core
 					MODULEINFO modInfo;
 					GetModuleInformation(hProcess, hMods[i], &modInfo, sizeof(modInfo));
 					modSize = modInfo.SizeOfImage;
-					return (uintptr_t)modInfo.lpBaseOfDll;
+					CachedAdhesiveBase = (uintptr_t)modInfo.lpBaseOfDll;
+					CachedAdhesiveSize = modSize;
+					return CachedAdhesiveBase;
 				}
 				return 0;
 			}
@@ -61,17 +71,18 @@ namespace Core
 					return false;
 				}
 
-				fnNtQueryInformationThread NtQueryInfoThread =
-					(fnNtQueryInformationThread)GetProcAddress(
+				if (!NtQueryInfoThread) {
+					NtQueryInfoThread = (fnNtQueryInformationThread)GetProcAddress(
 						GetModuleHandleA(xorstr("ntdll.dll")),
 						xorstr("NtQueryInformationThread"));
-				if (!NtQueryInfoThread) {
-					CloseHandle(hProcess);
-					return false;
+					if (!NtQueryInfoThread) {
+						CloseHandle(hProcess);
+						return false;
+					}
 				}
 
 				std::vector<ThreadProfile> candidates;
-				HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+				HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pid);
 				if (hSnap == INVALID_HANDLE_VALUE) {
 					CloseHandle(hProcess);
 					return false;
@@ -152,7 +163,7 @@ namespace Core
 						}
 					}
 
-					std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+					std::this_thread::sleep_for(std::chrono::seconds(3));
 				}
 			}
 		};
