@@ -93,10 +93,6 @@ bool c_widgets::lua(std::string_view name, std::string_view desc, bool* active)
     gui->set_screen_pos(ImVec2(rect.Min.x + SCALE(50), rect.Max.y - SCALE(12 + elements->lua.button_size.y)), pos_all);
     f_button((std::stringstream{} << name << xorstr("three_button")).str(), xorstr("C"), false);
 
-    gui->set_screen_pos(ImVec2(rect.Min.x + SCALE(70), rect.Max.y - SCALE(12 + elements->lua.button_size.y)), pos_all);
-    if (f_button((std::stringstream{} << name << xorstr("four_button")).str(), xorstr("A"), false))
-        elements->section.section_count = 6;
-
     gui->set_screen_pos(stored_pos, pos_all);
 
     return true;
