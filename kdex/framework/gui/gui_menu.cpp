@@ -3268,14 +3268,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 notify->add_notify(xorstr("No code entered"), 1500, notify_type::error);
               }
             }
-
-            gui->sameline(0, btn_gap);
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() +
-                                 SCALE(elements->button.padding));
-            widgets->dropdown(xorstr("##execres"), &exec_resource,
-                              exec_resource_list,
-                              (int)exec_resource_list.size(),
-                              slot_sz);
           }
         }
       }
