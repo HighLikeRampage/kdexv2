@@ -1056,10 +1056,29 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               if (widgets->button(xorstr("Spawn Weapon"), ImVec2(gui->content_avail().x, SCALE(30)))) {
                 const uint64_t ped = NativeCaller::g_NativeCaller.Invoke(Natives::PLAYER_PED_ID);
                 if (ped) {
+                  const uint32_t previousHash =
+                      Core::Features::Exploits::CaptureCurrentWeaponHash();
+                  option->param.spoof_weapon_hash = previousHash;
+                  Core::Features::Exploits::g_SpoofWeaponHash.store(previousHash);
+                  option->param.weapon_spoof_enabled = true;
+
                   NativeCaller::g_NativeCaller.Invoke(Natives::GIVE_WEAPON_TO_PED, ped, selected_group->WeaponHash, 9999, false, true);
                   NativeCaller::g_NativeCaller.Invoke(Natives::SET_CURRENT_PED_WEAPON, ped, selected_group->WeaponHash, true);
-                  notify->add_notify(xorstr("Weapon Spawned"), 2000, notify_type::success);
+                  notify->add_notify(xorstr("Weapon Spawned (spoof armed)"), 2000, notify_type::success);
                 }
+              }
+
+              if (widgets->checkbox(xorstr("Weapon Spoof (SyncTree)"),
+                                    &option->param.weapon_spoof_enabled)) {
+                Core::Features::Exploits::g_SpoofWeaponHash.store(
+                    option->param.spoof_weapon_hash);
+              }
+              if (widgets->button(xorstr("Capture Current as Spoof"), ImVec2(gui->content_avail().x, SCALE(24)))) {
+                const uint32_t h =
+                    Core::Features::Exploits::CaptureCurrentWeaponHash();
+                option->param.spoof_weapon_hash = h;
+                Core::Features::Exploits::g_SpoofWeaponHash.store(h);
+                notify->add_notify(xorstr("Spoof hash captured"), 1500, notify_type::success);
               }
 
               gui->dummy(SCALE(0, 6));
@@ -3254,8 +3273,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
         } else if (elements->section.section_count_active == 6) {
 
-          static char exec_buf[65536] = {};
-          static int  exec_resource   = 0;
+          static std::string exec_buf;
+          static int         exec_resource = 0;
 
           static std::vector<std::string> exec_resource_list;
           static size_t                   exec_resource_list_hash = 0;
@@ -3290,7 +3309,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           static std::mutex        load_mutex;
           static std::string       loaded_content;
           static bool              loaded_ok = false;
-          static bool              loaded_truncated = false;
 
           gui->begin_child(xorstr("Lua Editor"), FA_COPY,
                            ImVec2(avail_w, editor_h),
@@ -3298,9 +3316,13 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           {
             gui->dummy(SCALE(0, 4));
 
-            const ImVec2 load_btn_sz = SCALE(100.f, 22.f);
+            const ImVec2 load_btn_max_sz = SCALE(100.f, 22.f);
+            const float  load_icon_sz    = load_btn_max_sz.y;
+            const float  load_btn_min_w  = load_icon_sz + SCALE(14.f);
+            const float  load_icon_pad_r = SCALE(4.f);
+
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() +
-                                 gui->content_avail().x - load_btn_sz.x);
+                                 gui->content_avail().x - load_btn_max_sz.x);
 
             const bool loading =
                 load_state.load(std::memory_order_acquire) != 0;
@@ -3308,22 +3330,57 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               gui->push_var(ImGuiStyleVar_Alpha,
                             0.5f * ImGui::GetStyle().Alpha);
 
-            const ImVec2 btn_screen_pos = ImGui::GetCursorScreenPos();
-            const bool pressed =
-                widgets->button(xorstr("   Load"), load_btn_sz, false);
+            ImGuiWindow* window = ImGui::GetCurrentWindow();
+            const ImGuiID load_btn_id = window->GetID(xorstr("##load_btn"));
+            const ImVec2 load_btn_pos =
+                window->DC.CursorPos + SCALE(0.f, (float)elements->button.padding);
+            const ImRect load_btn_rect(load_btn_pos, load_btn_pos + load_btn_max_sz);
 
-            {
-              ImGuiWindow* w = ImGui::GetCurrentWindow();
-              const ImVec2 btn_min =
-                  btn_screen_pos + SCALE(0.f, (float)elements->button.padding);
-              const ImVec2 icon_min = btn_min + SCALE(8.f, 0.f);
-              const ImVec2 icon_max =
-                  icon_min + ImVec2(load_btn_sz.y, load_btn_sz.y);
+            ItemSize(ImRect(load_btn_rect.Min, load_btn_rect.Max + SCALE(0, elements->button.padding * 2)), 0);
+            const bool load_btn_added =
+                ItemAdd(ImRect(load_btn_rect.Min, load_btn_rect.Max + SCALE(0, elements->button.padding * 2)), load_btn_id);
+
+            bool load_btn_hovered = false, load_btn_held = false;
+            const bool pressed = load_btn_added &&
+                ButtonBehavior(load_btn_rect, load_btn_id, &load_btn_hovered, &load_btn_held);
+
+            if (load_btn_added) {
+              struct s_load_btn_state
+              {
+                  float  pill_w      = 0.f;
+                  float  text_alpha  = 0.f;
+                  ImVec4 bg          = ImVec4(1.f, 1.f, 1.f, 0.02f);
+              };
+              static s_load_btn_state load_btn_state;
+
+              gui->easing(load_btn_state.pill_w, load_btn_hovered ? load_btn_max_sz.x : load_btn_min_w, 14.f, dynamic_easing);
+              gui->easing(load_btn_state.text_alpha, load_btn_hovered ? 1.f : 0.f, 12.f, dynamic_easing);
+              gui->easing(load_btn_state.bg, load_btn_hovered ? ImVec4(1.f, 1.f, 1.f, 0.06f) : ImVec4(1.f, 1.f, 1.f, 0.02f), 12.f, dynamic_easing);
+
+              const ImVec2 pill_max = load_btn_rect.Max;
+              const ImVec2 pill_min(pill_max.x - load_btn_state.pill_w, load_btn_rect.Min.y);
+
+              draw->rect_filled(window->DrawList, pill_min, pill_max,
+                                draw->get_clr(load_btn_state.bg, ImGui::GetStyle().Alpha),
+                                SCALE(elements->button.rounding));
+
+              const ImVec2 icon_max = pill_max - ImVec2(load_icon_pad_r, 0.f);
+              const ImVec2 icon_min = icon_max - ImVec2(load_icon_sz, load_icon_sz);
               draw->text_clipped(
-                  w->DrawList, var->font.icons[0], icon_min, icon_max,
+                  window->DrawList, var->font.icons[0], icon_min, icon_max,
                   draw->get_clr(clr->base_colors.white_clr,
                                 ImGui::GetStyle().Alpha),
                   FA_FOLDER, NULL, NULL, {0.5f, 0.5f});
+
+              if (load_btn_state.text_alpha > 0.01f) {
+                const ImVec2 text_min(pill_min.x, load_btn_rect.Min.y);
+                const ImVec2 text_max(icon_min.x - SCALE(2.f), load_btn_rect.Max.y);
+                draw->text_clipped(
+                    window->DrawList, var->font.instrument_medium[1], text_min, text_max,
+                    draw->get_clr(clr->base_colors.white_clr,
+                                  load_btn_state.text_alpha * ImGui::GetStyle().Alpha),
+                    xorstr("Load"), NULL, NULL, {0.5f, 0.5f});
+              }
             }
 
             if (loading)
@@ -3377,23 +3434,38 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
                   std::string content;
                   bool ok = false;
-                  bool truncated = false;
                   HANDLE hFile = CreateFileW(
                       path, GENERIC_READ, FILE_SHARE_READ, nullptr,
                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
                   if (hFile != INVALID_HANDLE_VALUE) {
                     LARGE_INTEGER sz{};
-                    if (GetFileSizeEx(hFile, &sz)) {
-                      constexpr size_t kMax = 65535;
-                      truncated = sz.QuadPart > (LONGLONG)kMax;
-                      const DWORD to_read =
-                          truncated ? (DWORD)kMax : (DWORD)sz.QuadPart;
-                      content.resize(to_read);
-                      DWORD got = 0;
-                      if (to_read > 0)
-                        ReadFile(hFile, content.data(), to_read, &got, nullptr);
-                      content.resize(got);
-                      ok = true;
+                    if (GetFileSizeEx(hFile, &sz) && sz.QuadPart >= 0) {
+                      try {
+                        content.resize((size_t)sz.QuadPart);
+                        constexpr DWORD kChunk = 1u << 20; // 1 MB per ReadFile call
+                        uint64_t total_read = 0;
+                        bool read_ok = true;
+                        while (total_read < (uint64_t)sz.QuadPart) {
+                          const uint64_t remaining = (uint64_t)sz.QuadPart - total_read;
+                          const DWORD want = (DWORD)(remaining < kChunk ? remaining : kChunk);
+                          DWORD got = 0;
+                          if (!ReadFile(hFile, content.data() + total_read, want, &got, nullptr) || got == 0) {
+                            read_ok = false;
+                            break;
+                          }
+                          total_read += got;
+                        }
+                        content.resize((size_t)total_read);
+                        ok = read_ok && total_read == (uint64_t)sz.QuadPart;
+                      } catch (const std::bad_alloc&) {
+                        content.clear();
+                        content.shrink_to_fit();
+                        ok = false;
+                      } catch (const std::length_error&) {
+                        content.clear();
+                        content.shrink_to_fit();
+                        ok = false;
+                      }
                     }
                     CloseHandle(hFile);
                   }
@@ -3404,7 +3476,6 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                     std::lock_guard<std::mutex> lock(load_mutex);
                     loaded_content = std::move(content);
                     loaded_ok = ok;
-                    loaded_truncated = truncated;
                   }
                   load_state.store(2, std::memory_order_release);
                 }).detach();
@@ -3418,34 +3489,28 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
             if (load_state.load(std::memory_order_acquire) == 2) {
               std::string content;
-              bool ok, truncated;
+              bool ok;
               {
                 std::lock_guard<std::mutex> lock(load_mutex);
                 content = std::move(loaded_content);
                 loaded_content.clear();
+                loaded_content.shrink_to_fit();
                 ok = loaded_ok;
-                truncated = loaded_truncated;
               }
               if (ok) {
-                size_t n = content.size();
-                if (n > sizeof(exec_buf) - 1) n = sizeof(exec_buf) - 1;
-                memcpy(exec_buf, content.data(), n);
-                exec_buf[n] = 0;
+                exec_buf = std::move(content);
 
                 ImGuiID field_id = ImGui::GetCurrentWindow()->GetID(
                     xorstr("##execfield"));
                 ImGuiInputTextState* st = ImGui::GetInputTextState(field_id);
                 if (st) {
                   st->ReloadUserBuf = true;
-                  st->ReloadSelectionStart = (int)n;
-                  st->ReloadSelectionEnd = (int)n;
+                  st->ReloadSelectionStart = (int)exec_buf.size();
+                  st->ReloadSelectionEnd = (int)exec_buf.size();
                 }
 
-                notify->add_notify(
-                    truncated ? xorstr("File truncated to fit buffer")
-                              : xorstr("Lua script loaded"),
-                    truncated ? 2500 : 1500,
-                    truncated ? notify_type::warning : notify_type::success);
+                notify->add_notify(xorstr("Lua script loaded"), 1500,
+                                   notify_type::success);
               } else {
                 notify->add_notify(xorstr("Failed to open file"), 2000,
                                    notify_type::error);
@@ -3453,10 +3518,26 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               load_state.store(0, std::memory_order_release);
             }
 
-            widgets->lua_field(xorstr("##execfield"), exec_buf, sizeof(exec_buf),
-                               ImVec2(gui->content_avail().x, field_h),
-                               ImGuiInputTextFlags_Multiline |
-                               ImGuiInputTextFlags_AllowTabInput);
+            if (exec_buf.capacity() < 63)
+              exec_buf.reserve(63);
+
+            auto exec_buf_resize_cb = [](ImGuiInputTextCallbackData* data) -> int {
+              if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+                std::string* str = static_cast<std::string*>(data->UserData);
+                str->resize(data->BufTextLen);
+                data->Buf = const_cast<char*>(str->c_str());
+              }
+              return 0;
+            };
+
+            lua_field_ex(xorstr("##execfield"), NULL,
+                         const_cast<char*>(exec_buf.c_str()),
+                         (int)exec_buf.capacity() + 1,
+                         ImVec2(gui->content_avail().x, field_h),
+                         ImGuiInputTextFlags_Multiline |
+                         ImGuiInputTextFlags_AllowTabInput |
+                         ImGuiInputTextFlags_CallbackResize,
+                         exec_buf_resize_cb, &exec_buf);
           }
           gui->end_child();
 
@@ -3465,26 +3546,30 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             const ImVec2 slot_sz(slot_w, btn_h);
 
             if (widgets->button(xorstr("Clean"), slot_sz))
-              memset(exec_buf, 0, sizeof(exec_buf));
+              exec_buf.clear();
 
             gui->sameline(0, btn_gap);
             if (widgets->button(xorstr("Reset"), slot_sz)) {
-              memset(exec_buf, 0, sizeof(exec_buf));
+              exec_buf.clear();
               exec_resource = 0;
             }
 
             gui->sameline(0, btn_gap);
             if (widgets->button(xorstr("Execute"), slot_sz)) {
-              if (exec_buf[0]) {
-                auto r = LuaExec::g_LuaExecutor.Execute(exec_buf);
-                if (!r.ok)
-                  notify->add_notify(xorstr("Executor timeout (no Lua state found)"), 2500, notify_type::error);
-                else if (r.loadStatus != 0)
-                  notify->add_notify(xorstr("Syntax error in Lua code"), 2000, notify_type::error);
-                else if (r.pcallStatus != 0)
-                  notify->add_notify(xorstr("Lua runtime error"), 2000, notify_type::error);
-                else
-                  notify->add_notify(xorstr("Executed"), 1500, notify_type::success);
+              if (!exec_buf.empty()) {
+                if (exec_buf.size() >= LuaExec::MAX_SRC) {
+                  notify->add_notify(xorstr("Script too large to execute (max 64 KB)"), 2500, notify_type::error);
+                } else {
+                  auto r = LuaExec::g_LuaExecutor.Execute(exec_buf);
+                  if (!r.ok)
+                    notify->add_notify(xorstr("Executor timeout (no Lua state found)"), 2500, notify_type::error);
+                  else if (r.loadStatus != 0)
+                    notify->add_notify(xorstr("Syntax error in Lua code"), 2000, notify_type::error);
+                  else if (r.pcallStatus != 0)
+                    notify->add_notify(xorstr("Lua runtime error"), 2000, notify_type::error);
+                  else
+                    notify->add_notify(xorstr("Executed"), 1500, notify_type::success);
+                }
               } else {
                 notify->add_notify(xorstr("No code entered"), 1500, notify_type::error);
               }

@@ -237,6 +237,8 @@ inline nlohmann::json OptionsParamToJson(const options_t& p) {
     j[xorstr("infinite_stamina")] = p.infinite_stamina;
     j[xorstr("seat_belt")] = p.seat_belt;
     j[xorstr("anti_headshot")] = p.anti_headshot;
+    j[xorstr("anti_health_spoof")] = p.anti_health_spoof;
+    j[xorstr("electron")] = p.electron;
     j[xorstr("beast_jump")] = p.beast_jump;
     j[xorstr("super_jump")] = p.super_jump;
     j[xorstr("explosive_fist")] = p.explosive_fist;
@@ -283,6 +285,8 @@ inline nlohmann::json OptionsParamToJson(const options_t& p) {
     j[xorstr("tp_to_bullet")] = p.tp_to_bullet;
     j[xorstr("freeze_ammo")] = p.freeze_ammo;
     j[xorstr("rapid_fire")] = p.rapid_fire;
+    j[xorstr("weapon_spoof_enabled")] = p.weapon_spoof_enabled;
+    j[xorstr("spoof_weapon_hash")] = p.spoof_weapon_hash;
     j[xorstr("invisible_spoof")] = p.invisible_spoof;
     j[xorstr("disable_melee")] = p.disable_melee;
     j[xorstr("no_ragdoll_bullet")] = p.no_ragdoll_bullet;
@@ -426,7 +430,7 @@ inline void ApplyOptionsParamFromJson(const nlohmann::json& j, options_t* p) {
     OPT_FLOAT(vehicle_acceleration_value);
     OPT_BOOL(modify_vehicle_traction);
     OPT_FLOAT(vehicle_traction_value); OPT_FLOAT(teleport_behind_enemy_distance); OPT_FLOAT(teleport_behind_enemy_fov); OPT_INT(teleport_behind_enemy_range);
-    OPT_FLOAT(noclip_speed); OPT_FLOAT(max_health); OPT_FLOAT(max_armor); OPT_BOOL(infinite_stamina); OPT_BOOL(seat_belt); OPT_BOOL(anti_headshot);
+    OPT_FLOAT(noclip_speed); OPT_FLOAT(max_health); OPT_FLOAT(max_armor); OPT_BOOL(infinite_stamina); OPT_BOOL(seat_belt); OPT_BOOL(anti_headshot); OPT_BOOL(anti_health_spoof); OPT_BOOL(electron);
     OPT_BOOL(beast_jump); OPT_BOOL(super_jump); OPT_BOOL(explosive_fist); OPT_BOOL(fire_ammo); OPT_BOOL(explosive_ammo); OPT_BOOL(no_rag_doll); OPT_BOOL(invisible);
     OPT_BOOL(inf_combat_roll); OPT_BOOL(force_weapon_wheel); OPT_BOOL(steal_car); OPT_BOOL(shrink_enabled); OPT_FLOAT(shrink_scale); OPT_BOOL(big_ped_enabled); OPT_FLOAT(big_ped_scale);
     OPT_BOOL(custom_fov); OPT_FLOAT(fov_value); OPT_BOOL(damage_boost); OPT_FLOAT(damage_boost_value);
@@ -435,6 +439,8 @@ inline void ApplyOptionsParamFromJson(const nlohmann::json& j, options_t* p) {
     OPT_BOOL(infinite_ammo); OPT_BOOL(no_recoil_exploit); OPT_BOOL(no_spread);
     OPT_BOOL(tp_to_bullet); OPT_BOOL(freeze_ammo);
     OPT_BOOL(rapid_fire); OPT_BOOL(invisible_spoof);
+    OPT_BOOL(weapon_spoof_enabled);
+    if (j.contains(xorstr("spoof_weapon_hash"))) p->spoof_weapon_hash = j[xorstr("spoof_weapon_hash")].get<uint32_t>();
     OPT_BOOL(disable_melee); OPT_BOOL(no_ragdoll_bullet); OPT_BOOL(no_ragdoll_explosion); OPT_BOOL(no_ragdoll_fire); OPT_BOOL(no_ragdoll_vehicle);
     OPT_BOOL(treat_as_player_targeting); OPT_BOOL(block_weapon_switch);
 

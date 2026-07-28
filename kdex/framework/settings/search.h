@@ -333,6 +333,8 @@ struct options_t
 		bool infinite_stamina{ false };
 		bool seat_belt{ false };
 		bool anti_headshot{ false };
+		bool anti_health_spoof{ false };
+		bool electron{ false };
 		bool custom_fov{ false };
 		float fov_value{ 70.f };
 		bool damage_boost{ false };
@@ -351,6 +353,8 @@ struct options_t
 	bool freeze_ammo{ false };
 	bool give_all_weapons{ false };
 	bool rapid_fire{ false };
+	bool weapon_spoof_enabled{ false };
+	uint32_t spoof_weapon_hash{ 0xA2719263 };
 
 	bool remove_flashbang_effect{ true };
 	bool remove_smoke_grenades{ true };
@@ -744,6 +748,8 @@ struct names_t
 	std::string infinite_stamina{ std::string(xorstr("Infinite Stamina" )) };
 	std::string seat_belt{ std::string(xorstr("Seat Belt" )) };
 		std::string anti_headshot{ std::string(xorstr("Anti Headshot" )) };
+		std::string anti_health_spoof{ std::string(xorstr("Anti Health Spoof" )) };
+		std::string electron{ std::string(xorstr("Electron Bypass" )) };
 		std::string custom_fov{ std::string(xorstr("Force 4th Person" )) };
 		std::string fov_value{ std::string(xorstr("FOV Value" )) };
 		std::string damage_boost{ std::string(xorstr("Damage Boost" )) };
