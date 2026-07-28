@@ -552,9 +552,6 @@
     <ClInclude Include="game\Core\Features\Exploits\WeaponAttachments.hpp">
       <Filter>game\Core\Features\Exploits</Filter>
     </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\ExploitTest.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
     <ClInclude Include="game\Core\Features\Exploits\FakeFps.hpp">
       <Filter>game\Core\Features\Exploits</Filter>
     </ClInclude>

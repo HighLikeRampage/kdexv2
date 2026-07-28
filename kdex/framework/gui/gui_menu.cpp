@@ -2026,7 +2026,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           float half_width = (gui->content_avail().x - SCALE(10)) / 2;
           float height = gui->content_avail().y - SCALE(40);
 
-          static int selected_resource_idx = -1;
+          static uintptr_t selected_resource_ptr = 0;
 
           gui->begin_group();
           {
@@ -2073,13 +2073,27 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
                   std::string label = xorstr("    ") + res.Path + xorstr("##") +
                                       std::to_string(i);
-                  bool is_active = (selected_resource_idx == i);
+                  bool is_active = (selected_resource_ptr == res.Pointer);
 
-                  ImU32 dot_col =
-                      (res.State ==
-                       Core::Features::Exploits::eResourceState::Started)
-                          ? IM_COL32(0, 255, 0, 255)
-                          : IM_COL32(255, 0, 0, 255);
+                  ImU32 dot_col;
+                  switch (res.State) {
+                  case Core::Features::Exploits::eResourceState::Started:
+                    dot_col = IM_COL32(0, 200, 80, 255);
+                    break;
+                  case Core::Features::Exploits::eResourceState::Starting:
+                    dot_col = IM_COL32(230, 200, 40, 255);
+                    break;
+                  case Core::Features::Exploits::eResourceState::Stopping:
+                    dot_col = IM_COL32(230, 140, 40, 255);
+                    break;
+                  case Core::Features::Exploits::eResourceState::Stopped:
+                    dot_col = IM_COL32(220, 60, 60, 255);
+                    break;
+                  case Core::Features::Exploits::eResourceState::Uninitialized:
+                  default:
+                    dot_col = IM_COL32(150, 150, 150, 255);
+                    break;
+                  }
 
                   ImVec2 cursor_pos = ImGui::GetCursorScreenPos();
                   ImDrawList *draw_list = ImGui::GetWindowDrawList();
@@ -2091,7 +2105,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                       dot_radius, dot_col);
 
                   if (widgets->list_content(label.c_str(), is_active, 0, false))
-                    selected_resource_idx = i;
+                    selected_resource_ptr = res.Pointer;
                 }
 
                 if (Core::Features::Exploits::vResources.empty()) {
@@ -2124,12 +2138,14 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               {
                 std::lock_guard<std::mutex> lock(
                     Core::Features::Exploits::vResourcesMutex);
-                if (selected_resource_idx >= 0 &&
-                    selected_resource_idx <
-                        (int)Core::Features::Exploits::vResources.size()) {
-                  res = Core::Features::Exploits::vResources
-                      [selected_resource_idx];
-                  found = true;
+                if (selected_resource_ptr) {
+                  for (const auto &r : Core::Features::Exploits::vResources) {
+                    if (r.Pointer == selected_resource_ptr) {
+                      res = r;
+                      found = true;
+                      break;
+                    }
+                  }
                 }
               }
 
@@ -2185,18 +2201,65 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 gui->dummy(SCALE(0, 20));
 
                 using ES = Core::Features::Exploits::eResourceState;
-                bool is_started       = (res.State == ES::Started);
-                bool is_transitioning = (res.State == ES::Starting || res.State == ES::Stopping);
+                bool is_ripped =
+                    Core::Features::Exploits::g_ResourceList.IsRipped(res.Pointer);
 
                 gui->dummy(SCALE(0, 8));
-                ImGui::BeginDisabled(!is_started || is_transitioning);
-                if (widgets->button(xorstr("Stop Resource"),
-                        ImVec2(gui->content_avail().x, SCALE(30)))) {
-                  Core::Features::Exploits::g_ResourceList.Stop(res.Pointer);
-                  notify->add_notify(xorstr("Stopped resource successfully"),
-                                     2000, notify_type::success);
+
+                if (is_ripped) {
+                  const char *start_label =
+                      (res.State == ES::Starting) ? xorstr("Starting...")
+                                                  : xorstr("Start Resource");
+                  ImGui::BeginDisabled(res.State == ES::Starting);
+                  if (widgets->button(start_label,
+                          ImVec2(gui->content_avail().x, SCALE(30)))) {
+                    uintptr_t ptr = res.Pointer;
+                    {
+                      std::lock_guard<std::mutex> lock(
+                          Core::Features::Exploits::vResourcesMutex);
+                      for (auto &r : Core::Features::Exploits::vResources) {
+                        if (r.Pointer == ptr) {
+                          r.State = ES::Starting;
+                          break;
+                        }
+                      }
+                    }
+                    std::thread([ptr]() {
+                      bool ok = Core::Features::Exploits::g_ResourceList.Start(ptr);
+                      notify->add_notify(
+                          ok ? xorstr("Resource restored")
+                             : xorstr("Restore failed"),
+                          2000,
+                          ok ? notify_type::success : notify_type::error);
+                    }).detach();
+                  }
+                  ImGui::EndDisabled();
+                } else {
+                  const char *stop_label =
+                      (res.State == ES::Stopping) ? xorstr("Stopping...")
+                                                  : xorstr("Stop Resource");
+                  ImGui::BeginDisabled(res.State == ES::Stopping);
+                  if (widgets->button(stop_label,
+                          ImVec2(gui->content_avail().x, SCALE(30)))) {
+                    uintptr_t ptr = res.Pointer;
+                    {
+                      std::lock_guard<std::mutex> lock(
+                          Core::Features::Exploits::vResourcesMutex);
+                      for (auto &r : Core::Features::Exploits::vResources) {
+                        if (r.Pointer == ptr) {
+                          r.State = ES::Stopping;
+                          break;
+                        }
+                      }
+                    }
+                    std::thread([ptr]() {
+                      Core::Features::Exploits::g_ResourceList.Stop(ptr);
+                    }).detach();
+                    notify->add_notify(xorstr("Stopping resource..."), 1500,
+                                       notify_type::warning);
+                  }
+                  ImGui::EndDisabled();
                 }
-                ImGui::EndDisabled();
               } else {
                 ImVec2 text_sz = gui->text_size(var->font.instrument_medium[0],
                                                 xorstr("Select a resource"));
@@ -3223,14 +3286,172 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                            SCALE(4);
           if (editor_h < SCALE(140)) editor_h = SCALE(140);
 
+          static std::atomic<int>  load_state{0};
+          static std::mutex        load_mutex;
+          static std::string       loaded_content;
+          static bool              loaded_ok = false;
+          static bool              loaded_truncated = false;
+
           gui->begin_child(xorstr("Lua Editor"), FA_COPY,
                            ImVec2(avail_w, editor_h),
                            ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar);
           {
-            gui->dummy(SCALE(0, 6));
+            gui->dummy(SCALE(0, 4));
+
+            const ImVec2 load_btn_sz = SCALE(100.f, 22.f);
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() +
+                                 gui->content_avail().x - load_btn_sz.x);
+
+            const bool loading =
+                load_state.load(std::memory_order_acquire) != 0;
+            if (loading)
+              gui->push_var(ImGuiStyleVar_Alpha,
+                            0.5f * ImGui::GetStyle().Alpha);
+
+            const ImVec2 btn_screen_pos = ImGui::GetCursorScreenPos();
+            const bool pressed =
+                widgets->button(xorstr("   Load"), load_btn_sz, false);
+
+            {
+              ImGuiWindow* w = ImGui::GetCurrentWindow();
+              const ImVec2 btn_min =
+                  btn_screen_pos + SCALE(0.f, (float)elements->button.padding);
+              const ImVec2 icon_min = btn_min + SCALE(8.f, 0.f);
+              const ImVec2 icon_max =
+                  icon_min + ImVec2(load_btn_sz.y, load_btn_sz.y);
+              draw->text_clipped(
+                  w->DrawList, var->font.icons[0], icon_min, icon_max,
+                  draw->get_clr(clr->base_colors.white_clr,
+                                ImGui::GetStyle().Alpha),
+                  FA_FOLDER, NULL, NULL, {0.5f, 0.5f});
+            }
+
+            if (loading)
+              gui->pop_var(1);
+
+            if (pressed && !loading) {
+              int expected = 0;
+              if (load_state.compare_exchange_strong(
+                      expected, 1, std::memory_order_acq_rel)) {
+                std::thread([]() {
+                  HRESULT com_hr = OleInitialize(nullptr);
+
+                  wchar_t path[MAX_PATH] = {};
+                  wchar_t filter[128] = {};
+                  wchar_t title[64] = {};
+                  {
+                    size_t off = 0;
+                    auto append = [&](const wchar_t* s) {
+                      size_t n = wcslen(s);
+                      if (off + n + 1 >= 128) return;
+                      memcpy(filter + off, s, (n + 1) * sizeof(wchar_t));
+                      off += n + 1;
+                    };
+                    append(xorstr(L"Lua files (*.lua)"));
+                    append(xorstr(L"*.lua"));
+                    append(xorstr(L"All files (*.*)"));
+                    append(xorstr(L"*.*"));
+                    filter[off] = 0;
+
+                    const wchar_t* t = xorstr(L"Load Lua Script");
+                    size_t tn = wcslen(t);
+                    if (tn >= 64) tn = 63;
+                    memcpy(title, t, tn * sizeof(wchar_t));
+                    title[tn] = 0;
+                  }
+                  OPENFILENAMEW ofn = {};
+                  ofn.lStructSize = sizeof(ofn);
+                  ofn.lpstrFilter = filter;
+                  ofn.lpstrFile = path;
+                  ofn.nMaxFile = MAX_PATH;
+                  ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY |
+                              OFN_NOCHANGEDIR | OFN_EXPLORER;
+                  ofn.lpstrTitle = title;
+
+                  BOOL dlg_ok = GetOpenFileNameW(&ofn);
+                  if (!dlg_ok) {
+                    if (SUCCEEDED(com_hr)) OleUninitialize();
+                    load_state.store(0, std::memory_order_release);
+                    return;
+                  }
+
+                  std::string content;
+                  bool ok = false;
+                  bool truncated = false;
+                  HANDLE hFile = CreateFileW(
+                      path, GENERIC_READ, FILE_SHARE_READ, nullptr,
+                      OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+                  if (hFile != INVALID_HANDLE_VALUE) {
+                    LARGE_INTEGER sz{};
+                    if (GetFileSizeEx(hFile, &sz)) {
+                      constexpr size_t kMax = 65535;
+                      truncated = sz.QuadPart > (LONGLONG)kMax;
+                      const DWORD to_read =
+                          truncated ? (DWORD)kMax : (DWORD)sz.QuadPart;
+                      content.resize(to_read);
+                      DWORD got = 0;
+                      if (to_read > 0)
+                        ReadFile(hFile, content.data(), to_read, &got, nullptr);
+                      content.resize(got);
+                      ok = true;
+                    }
+                    CloseHandle(hFile);
+                  }
+
+                  if (SUCCEEDED(com_hr)) OleUninitialize();
+
+                  {
+                    std::lock_guard<std::mutex> lock(load_mutex);
+                    loaded_content = std::move(content);
+                    loaded_ok = ok;
+                    loaded_truncated = truncated;
+                  }
+                  load_state.store(2, std::memory_order_release);
+                }).detach();
+              }
+            }
+
+            gui->dummy(SCALE(0, 2));
 
             float field_h = gui->content_avail().y - SCALE(6);
             if (field_h < SCALE(120)) field_h = SCALE(120);
+
+            if (load_state.load(std::memory_order_acquire) == 2) {
+              std::string content;
+              bool ok, truncated;
+              {
+                std::lock_guard<std::mutex> lock(load_mutex);
+                content = std::move(loaded_content);
+                loaded_content.clear();
+                ok = loaded_ok;
+                truncated = loaded_truncated;
+              }
+              if (ok) {
+                size_t n = content.size();
+                if (n > sizeof(exec_buf) - 1) n = sizeof(exec_buf) - 1;
+                memcpy(exec_buf, content.data(), n);
+                exec_buf[n] = 0;
+
+                ImGuiID field_id = ImGui::GetCurrentWindow()->GetID(
+                    xorstr("##execfield"));
+                ImGuiInputTextState* st = ImGui::GetInputTextState(field_id);
+                if (st) {
+                  st->ReloadUserBuf = true;
+                  st->ReloadSelectionStart = (int)n;
+                  st->ReloadSelectionEnd = (int)n;
+                }
+
+                notify->add_notify(
+                    truncated ? xorstr("File truncated to fit buffer")
+                              : xorstr("Lua script loaded"),
+                    truncated ? 2500 : 1500,
+                    truncated ? notify_type::warning : notify_type::success);
+              } else {
+                notify->add_notify(xorstr("Failed to open file"), 2000,
+                                   notify_type::error);
+              }
+              load_state.store(0, std::memory_order_release);
+            }
 
             widgets->lua_field(xorstr("##execfield"), exec_buf, sizeof(exec_buf),
                                ImVec2(gui->content_avail().x, field_h),
@@ -3240,7 +3461,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           gui->end_child();
 
           {
-            const float slot_w = (avail_w - btn_gap * 3) / 4.f;
+            const float slot_w = (avail_w - btn_gap * 2) / 3.f;
             const ImVec2 slot_sz(slot_w, btn_h);
 
             if (widgets->button(xorstr("Clean"), slot_sz))

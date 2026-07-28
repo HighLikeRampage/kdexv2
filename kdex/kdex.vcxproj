@@ -276,7 +276,6 @@
     <ClInclude Include="game\Core\Features\Exploits\OutfitChanger.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\Attachments.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\WeaponAttachments.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\ExploitTest.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\FakeFps.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\LuaExecutor.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\CEventExecutor.hpp" />
