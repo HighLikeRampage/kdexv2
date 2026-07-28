@@ -226,6 +226,7 @@ void c_search::init_options()
 		search_elements.push_back(find_elements_checkbox{ option->name.infinite_stamina, &option->param.infinite_stamina });
 		search_elements.push_back(find_elements_checkbox{ option->name.seat_belt, &option->param.seat_belt });
 		search_elements.push_back(find_elements_checkbox{ option->name.anti_headshot, &option->param.anti_headshot });
+		search_elements.push_back(find_elements_checkbox{ option->name.electron, &option->param.electron });
 		search_elements.push_back(find_elements_checkbox{ option->name.custom_fov, &option->param.custom_fov });
 		search_elements.push_back(find_elements_slider_float{ option->name.fov_value, &option->param.fov_value, 10.f, 150.f, xorstr("%.1f") });
 		search_elements.push_back(find_elements_checkbox{ option->name.damage_boost, &option->param.damage_boost });

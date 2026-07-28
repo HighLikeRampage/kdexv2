@@ -210,6 +210,8 @@ public:
 
 inline std::unique_ptr<c_gui> gui = std::make_unique<c_gui>();
 
+bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, const ImVec2& size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback, void* callback_user_data);
+
 class c_widgets
 {
 public:

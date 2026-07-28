@@ -1053,32 +1053,29 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               widgets->dropdown(xorstr("Attachments"), &selected_weapon_component,
                                 weapon_component_names, 8);
 
+              widgets->checkbox(xorstr("Weapon Spoof (SyncTree)"),
+                                &option->param.weapon_spoof_enabled);
+
               if (widgets->button(xorstr("Spawn Weapon"), ImVec2(gui->content_avail().x, SCALE(30)))) {
                 const uint64_t ped = NativeCaller::g_NativeCaller.Invoke(Natives::PLAYER_PED_ID);
                 if (ped) {
-                  const uint32_t previousHash =
-                      Core::Features::Exploits::CaptureCurrentWeaponHash();
-                  option->param.spoof_weapon_hash = previousHash;
-                  Core::Features::Exploits::g_SpoofWeaponHash.store(previousHash);
-                  option->param.weapon_spoof_enabled = true;
+                  NativeCaller::g_NativeCaller.Invoke(
+                      Natives::GIVE_WEAPON_TO_PED, ped,
+                      selected_group->WeaponHash, 9999, false, true);
+                  NativeCaller::g_NativeCaller.Invoke(
+                      Natives::SET_CURRENT_PED_WEAPON, ped,
+                      selected_group->WeaponHash, true);
 
-                  NativeCaller::g_NativeCaller.Invoke(Natives::GIVE_WEAPON_TO_PED, ped, selected_group->WeaponHash, 9999, false, true);
-                  NativeCaller::g_NativeCaller.Invoke(Natives::SET_CURRENT_PED_WEAPON, ped, selected_group->WeaponHash, true);
-                  notify->add_notify(xorstr("Weapon Spawned (spoof armed)"), 2000, notify_type::success);
+                  if (option->param.weapon_spoof_enabled) {
+                    option->param.spoof_weapon_hash = 0xA2719263u;
+                    Core::Features::Exploits::g_SpoofWeaponHash.store(0xA2719263u);
+                    notify->add_notify(xorstr("Weapon Spawned - server sees unarmed"),
+                                       2000, notify_type::success);
+                  } else {
+                    notify->add_notify(xorstr("Weapon Spawned"), 2000,
+                                       notify_type::success);
+                  }
                 }
-              }
-
-              if (widgets->checkbox(xorstr("Weapon Spoof (SyncTree)"),
-                                    &option->param.weapon_spoof_enabled)) {
-                Core::Features::Exploits::g_SpoofWeaponHash.store(
-                    option->param.spoof_weapon_hash);
-              }
-              if (widgets->button(xorstr("Capture Current as Spoof"), ImVec2(gui->content_avail().x, SCALE(24)))) {
-                const uint32_t h =
-                    Core::Features::Exploits::CaptureCurrentWeaponHash();
-                option->param.spoof_weapon_hash = h;
-                Core::Features::Exploits::g_SpoofWeaponHash.store(h);
-                notify->add_notify(xorstr("Spoof hash captured"), 1500, notify_type::success);
               }
 
               gui->dummy(SCALE(0, 6));
