@@ -114,73 +114,102 @@ void lua_text(const std::vector<std::pair<std::string, ImU32>>& text_with_colors
 {
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     ImVec2 offset = { 0, 0 };
-    float max_width = 0;
-    float total_height = 0;
 
-    float y_spacing = 0.0f;
+    const float line_height = ImGui::GetTextLineHeight();
+    const float y_spacing = 0.0f;
+
+    const ImVec4 clip = draw_list->_CmdHeader.ClipRect;
+    const float vis_y_min = clip.y - pos.y - line_height;
+    const float vis_y_max = clip.w - pos.y + line_height;
 
     for (size_t i = 0; i < text_with_colors.size(); ++i)
     {
         const std::string& text = text_with_colors[i].first;
         ImU32 color = text_with_colors[i].second;
 
-        std::string full_text = text;
-        std::string line;
         size_t start_pos = 0;
-
-        while (start_pos < full_text.size())
+        while (start_pos < text.size())
         {
-            size_t end_pos = full_text.find('\n', start_pos);
+            size_t end_pos = text.find('\n', start_pos);
             if (end_pos == std::string::npos)
-                end_pos = full_text.size();
+                end_pos = text.size();
 
-            line = full_text.substr(start_pos, end_pos - start_pos);
+            const char* line_beg = text.data() + start_pos;
+            const char* line_end = text.data() + end_pos;
 
-            draw_list->AddText(pos + offset, color, line.c_str());
+            if (offset.y >= vis_y_min && offset.y <= vis_y_max) {
+                draw_list->AddText(NULL, 0.f, pos + offset, color, line_beg, line_end);
+                offset.x += ImGui::CalcTextSize(line_beg, line_end).x;
+            }
 
-            offset.x += ImGui::CalcTextSize(line.c_str()).x;
-
-            if (end_pos < full_text.size())
+            if (end_pos < text.size())
             {
                 offset.x = 0;
-                offset.y += ImGui::GetTextLineHeight() + y_spacing;
+                offset.y += line_height + y_spacing;
+                if (offset.y > vis_y_max)
+                    return;
             }
 
             start_pos = end_pos + 1;
         }
-
-        max_width = (std::max)(max_width, offset.x);
-        total_height = offset.y + ImGui::GetTextLineHeight();
     }
-
-    offset.x += max_width;
-    offset.y = total_height;
 }
 
-void lua_syntax(const std::string& text, const ImVec2& pos)
+static void lua_syntax_impl(const char* text, size_t len, const ImVec2& pos)
 {
-    std::vector<std::pair<std::string, ImU32>> text_with_colors;
-    size_t start_pos = 0, len = text.size();
+    static std::size_t cache_hash = 0;
+    static size_t      cache_len  = 0;
+    static std::vector<std::pair<std::string, ImU32>> cache_tokens;
 
-    auto handle_string = [&](const std::string& content, size_t& pos)
+    std::size_t h = 1469598103934665603ull;
+    for (size_t i = 0; i < len; i++) { h ^= (unsigned char)text[i]; h *= 1099511628211ull; }
+
+    if (h == cache_hash && cache_len == len && !cache_tokens.empty()) {
+        lua_text(cache_tokens, pos);
+        return;
+    }
+
+    cache_tokens.clear();
+    cache_hash = h;
+    cache_len  = len;
+
+    if (len > 256u * 1024u) {
+        cache_tokens.push_back({ std::string(text, len), draw->get_clr(ImColor(220, 220, 220)) });
+        lua_text(cache_tokens, pos);
+        return;
+    }
+
+    std::vector<std::pair<std::string, ImU32>>& text_with_colors = cache_tokens;
+    size_t start_pos = 0;
+
+    auto handle_string = [&](size_t& p)
         {
-            char quote_char = content[pos];
-            size_t end_pos = pos + 1;
+            char quote_char = text[p];
+            size_t end_pos = p + 1;
 
-            while (end_pos < content.size())
+            while (end_pos < len)
             {
-                if (content[end_pos] == '\\' && end_pos + 1 < content.size() && (content[end_pos + 1] == quote_char || content[end_pos + 1] == '\\'))
+                if (text[end_pos] == '\\' && end_pos + 1 < len && (text[end_pos + 1] == quote_char || text[end_pos + 1] == '\\'))
                     end_pos += 2;
-                else if (content[end_pos] == quote_char)
+                else if (text[end_pos] == quote_char)
                     break;
                 else
                     end_pos++;
             }
 
-            std::string str = content.substr(pos, end_pos - pos + 1);
-            text_with_colors.push_back({ str, draw->get_clr(ImColor(206, 145, 120)) });
-            pos = end_pos + 1;
+            text_with_colors.push_back({ std::string(text + p, ImMin(end_pos + 1, len) - p), draw->get_clr(ImColor(206, 145, 120)) });
+            p = end_pos + 1;
         };
+
+    auto find_at = [&](const char* needle, size_t needle_len, size_t from) -> size_t {
+        if (needle_len == 0 || from + needle_len > len) return std::string::npos;
+        for (size_t i = from; i + needle_len <= len; i++) {
+            bool ok = true;
+            for (size_t j = 0; j < needle_len; j++) { if (text[i + j] != needle[j]) { ok = false; break; } }
+            if (ok) return i;
+        }
+        return std::string::npos;
+    };
 
     while (start_pos < len)
     {
@@ -195,23 +224,22 @@ void lua_syntax(const std::string& text, const ImVec2& pos)
 
         if (text[start_pos] == '-' && start_pos + 1 < len && text[start_pos + 1] == '-')
         {
-            if (start_pos + 2 < len && text[start_pos + 2] == '[' && text[start_pos + 3] == '[')
+            if (start_pos + 3 < len && text[start_pos + 2] == '[' && text[start_pos + 3] == '[')
             {
-                size_t comment_end = text.find(xorstr("--]]"), start_pos + 4);
+                const char* close_tok = xorstr("--]]");
+                size_t comment_end = find_at(close_tok, 4, start_pos + 4);
                 if (comment_end != std::string::npos)
                 {
-                    std::string multi_line_comment = text.substr(start_pos, comment_end - start_pos + 4);
-                    text_with_colors.push_back({ multi_line_comment, draw->get_clr(ImColor(106, 153, 85)) });
+                    text_with_colors.push_back({ std::string(text + start_pos, comment_end - start_pos + 4), draw->get_clr(ImColor(106, 153, 85)) });
                     start_pos = comment_end + 4;
                     continue;
                 }
             }
             else
             {
-                size_t comment_end = text.find(xorstr("\n"), start_pos);
-                comment_end = (comment_end == std::string::npos) ? len : comment_end;
-                std::string comment = text.substr(start_pos, comment_end - start_pos);
-                text_with_colors.push_back({ comment, draw->get_clr(ImColor(106, 153, 85)) });
+                size_t comment_end = start_pos;
+                while (comment_end < len && text[comment_end] != '\n') comment_end++;
+                text_with_colors.push_back({ std::string(text + start_pos, comment_end - start_pos), draw->get_clr(ImColor(106, 153, 85)) });
                 start_pos = comment_end;
                 continue;
             }
@@ -219,21 +247,20 @@ void lua_syntax(const std::string& text, const ImVec2& pos)
 
         if (text[start_pos] == '"' || text[start_pos] == '\'')
         {
-            handle_string(text, start_pos);
+            handle_string(start_pos);
             continue;
         }
 
-        if (isdigit(text[start_pos]) || (text[start_pos] == '.' && isdigit(text[start_pos + 1])))
+        if (isdigit((unsigned char)text[start_pos]) || (text[start_pos] == '.' && start_pos + 1 < len && isdigit((unsigned char)text[start_pos + 1])))
         {
-            size_t number_end = start_pos;
-            bool has_dot = (text[start_pos] == '.');
-            while (number_end < len && (isdigit(text[number_end]) || (text[number_end] == '.' && !has_dot)))
+            bool   has_dot    = (text[start_pos] == '.');
+            size_t number_end = start_pos + 1;
+            while (number_end < len && (isdigit((unsigned char)text[number_end]) || (text[number_end] == '.' && !has_dot)))
             {
                 if (text[number_end] == '.') has_dot = true;
                 number_end++;
             }
-            std::string number = text.substr(start_pos, number_end - start_pos);
-            text_with_colors.push_back({ number, draw->get_clr(ImColor(181, 206, 168)) });
+            text_with_colors.push_back({ std::string(text + start_pos, number_end - start_pos), draw->get_clr(ImColor(181, 206, 168)) });
             start_pos = number_end;
             continue;
         }
@@ -245,29 +272,42 @@ void lua_syntax(const std::string& text, const ImVec2& pos)
             continue;
         }
 
-        while (end_pos < len && !isspace(text[end_pos]) && text[end_pos] != '(' && text[end_pos] != ')' && text[end_pos] != '{' && text[end_pos] != '}')
+        while (end_pos < len && !isspace((unsigned char)text[end_pos]) && text[end_pos] != '(' && text[end_pos] != ')' && text[end_pos] != '{' && text[end_pos] != '}')
             end_pos++;
 
-        std::string word = text.substr(start_pos, end_pos - start_pos);
+        if (end_pos == start_pos) { start_pos++; continue; }
+
+        std::string word(text + start_pos, end_pos - start_pos);
 
         if (main_keywords.find(word) != main_keywords.end())
-            text_with_colors.push_back({ word, draw->get_clr(ImColor(197, 134, 192)) });
+            text_with_colors.push_back({ std::move(word), draw->get_clr(ImColor(197, 134, 192)) });
         else if (add_keywords.find(word) != add_keywords.end())
-            text_with_colors.push_back({ word, draw->get_clr(ImColor(86, 156, 214)) });
+            text_with_colors.push_back({ std::move(word), draw->get_clr(ImColor(86, 156, 214)) });
         else if (end_pos < len && text[end_pos] == '(')
-            text_with_colors.push_back({ word, draw->get_clr(ImColor(220, 220, 170)) });
+            text_with_colors.push_back({ std::move(word), draw->get_clr(ImColor(220, 220, 170)) });
         else
         {
-            if (isalpha(word[0]) || word[0] == '_')
-                text_with_colors.push_back({ word, draw->get_clr(ImColor(156, 220, 254)) });
+            unsigned char c0 = (unsigned char)word[0];
+            if (isalpha(c0) || c0 == '_')
+                text_with_colors.push_back({ std::move(word), draw->get_clr(ImColor(156, 220, 254)) });
             else
-                text_with_colors.push_back({ word, draw->get_clr(ImColor(255, 255, 255)) });
+                text_with_colors.push_back({ std::move(word), draw->get_clr(ImColor(255, 255, 255)) });
         }
 
         start_pos = end_pos;
     }
 
     lua_text(text_with_colors, pos);
+}
+
+void lua_syntax(const std::string& text, const ImVec2& pos)
+{
+    lua_syntax_impl(text.data(), text.size(), pos);
+}
+
+void lua_syntax_range(const char* text_begin, const char* text_end, const ImVec2& pos)
+{
+    lua_syntax_impl(text_begin, (size_t)(text_end - text_begin), pos);
 }
 
 namespace ImStb
@@ -1424,7 +1464,7 @@ bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, 
         if (is_multiline || (buf_display_end - buf_display) < buf_display_max_length)
         {
             ImU32 col = GetColorU32(is_displaying_hint ? ImGuiCol_TextDisabled : ImGuiCol_Text);
-            lua_syntax(buf_display, draw_pos - draw_scroll);
+            lua_syntax_range(buf_display, buf_display_end, draw_pos - draw_scroll);
         }
 
         ImVec2* animstate = gui->anim_container(&animstate, id);
@@ -1461,15 +1501,19 @@ bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, 
         if (is_multiline || (buf_display_end - buf_display) < buf_display_max_length)
         {
             ImU32 col = GetColorU32(is_displaying_hint ? ImGuiCol_TextDisabled : ImGuiCol_Text);
-            lua_syntax(buf_display, draw_pos);
+            lua_syntax_range(buf_display, buf_display_end ? buf_display_end : buf_display + strlen(buf_display), draw_pos);
         }
     }
 
     int line_count = 1;
-
-    for (const char* p = buf_display; *p != '\0'; ++p) {
-        if (*p == '\n') {
+    {
+        const char* p = buf_display;
+        const char* pend = buf_display_end ? buf_display_end : buf_display + strlen(buf_display);
+        while (p < pend) {
+            const char* nl = (const char*)memchr(p, '\n', (size_t)(pend - p));
+            if (!nl) break;
             line_count++;
+            p = nl + 1;
         }
     }
 
@@ -1497,8 +1541,24 @@ bool lua_field_ex(const char* label, const char* hint, char* buf, int buf_size, 
     }
 
     draw->push_clip_rect(window->DrawList, numbering.Min, numbering.Max, true);
-    for (int i = 0; i < animstate->line_count; ++i)
-        draw->text_clipped(window->DrawList, GetFont(), numbering.Min + ImVec2(0, GetTextLineHeight() * i - GetCurrentWindow()->Scroll.y + num_off), ImVec2(numbering.Max.x - SCALE(8), numbering.Min.y + GetTextLineHeight() * (i + 1) - GetCurrentWindow()->Scroll.y + num_off + SCALE(2)), i == cursor_line_no ? draw->get_clr(clr->base_colors.accent_clr) : draw->get_clr(ImColor(79, 79, 98)), std::to_string(i + 1).c_str(), NULL, NULL, ImVec2(1.f, 0.f));
+    {
+        const float line_h  = GetTextLineHeight();
+        const float scroll_y = GetCurrentWindow()->Scroll.y;
+        const float base_y  = numbering.Min.y + num_off - scroll_y;
+        const int   first_visible = ImMax(0, (int)((numbering.Min.y - base_y) / line_h) - 1);
+        const int   last_visible  = ImMin(animstate->line_count - 1, (int)((numbering.Max.y - base_y) / line_h) + 1);
+        char lbuf[16];
+        for (int i = first_visible; i <= last_visible; ++i) {
+            const float y0 = base_y + line_h * i;
+            const float y1 = base_y + line_h * (i + 1) + SCALE(2);
+            snprintf(lbuf, sizeof(lbuf), "%d", i + 1);
+            draw->text_clipped(window->DrawList, GetFont(),
+                ImVec2(numbering.Min.x, y0),
+                ImVec2(numbering.Max.x - SCALE(8), y1),
+                i == cursor_line_no ? draw->get_clr(clr->base_colors.accent_clr) : draw->get_clr(ImColor(79, 79, 98)),
+                lbuf, NULL, NULL, ImVec2(1.f, 0.f));
+        }
+    }
     draw->pop_clip_rect(window->DrawList);
 
     if (buf[0] == '\0' && g.ActiveId != id)

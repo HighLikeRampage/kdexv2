@@ -286,7 +286,6 @@ inline nlohmann::json OptionsParamToJson(const options_t& p) {
     j[xorstr("freeze_ammo")] = p.freeze_ammo;
     j[xorstr("rapid_fire")] = p.rapid_fire;
     j[xorstr("weapon_spoof_enabled")] = p.weapon_spoof_enabled;
-    j[xorstr("spoof_weapon_hash")] = p.spoof_weapon_hash;
     j[xorstr("invisible_spoof")] = p.invisible_spoof;
     j[xorstr("disable_melee")] = p.disable_melee;
     j[xorstr("no_ragdoll_bullet")] = p.no_ragdoll_bullet;
@@ -440,7 +439,6 @@ inline void ApplyOptionsParamFromJson(const nlohmann::json& j, options_t* p) {
     OPT_BOOL(tp_to_bullet); OPT_BOOL(freeze_ammo);
     OPT_BOOL(rapid_fire); OPT_BOOL(invisible_spoof);
     OPT_BOOL(weapon_spoof_enabled);
-    if (j.contains(xorstr("spoof_weapon_hash"))) p->spoof_weapon_hash = j[xorstr("spoof_weapon_hash")].get<uint32_t>();
     OPT_BOOL(disable_melee); OPT_BOOL(no_ragdoll_bullet); OPT_BOOL(no_ragdoll_explosion); OPT_BOOL(no_ragdoll_fire); OPT_BOOL(no_ragdoll_vehicle);
     OPT_BOOL(treat_as_player_targeting); OPT_BOOL(block_weapon_switch);
 

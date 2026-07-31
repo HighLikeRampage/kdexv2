@@ -1065,16 +1065,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   NativeCaller::g_NativeCaller.Invoke(
                       Natives::SET_CURRENT_PED_WEAPON, ped,
                       selected_group->WeaponHash, true);
-
-                  if (option->param.weapon_spoof_enabled) {
-                    option->param.spoof_weapon_hash = 0xA2719263u;
-                    Core::Features::Exploits::g_SpoofWeaponHash.store(0xA2719263u);
-                    notify->add_notify(xorstr("Weapon Spawned - server sees unarmed"),
-                                       2000, notify_type::success);
-                  } else {
-                    notify->add_notify(xorstr("Weapon Spawned"), 2000,
-                                       notify_type::success);
-                  }
+                  notify->add_notify(xorstr("Weapon Spawned"), 2000,
+                                     notify_type::success);
                 }
               }
 
@@ -3302,10 +3294,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                            SCALE(4);
           if (editor_h < SCALE(140)) editor_h = SCALE(140);
 
-          static std::atomic<int>  load_state{0};
-          static std::mutex        load_mutex;
-          static std::string       loaded_content;
-          static bool              loaded_ok = false;
+          static bool     load_pending  = false;
+          static ImGuiID  exec_field_id = 0;
 
           gui->begin_child(xorstr("Lua Editor"), FA_COPY,
                            ImVec2(avail_w, editor_h),
@@ -3321,8 +3311,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() +
                                  gui->content_avail().x - load_btn_max_sz.x);
 
-            const bool loading =
-                load_state.load(std::memory_order_acquire) != 0;
+            const bool loading = load_pending;
             if (loading)
               gui->push_var(ImGuiStyleVar_Alpha,
                             0.5f * ImGui::GetStyle().Alpha);
@@ -3384,99 +3373,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               gui->pop_var(1);
 
             if (pressed && !loading) {
-              int expected = 0;
-              if (load_state.compare_exchange_strong(
-                      expected, 1, std::memory_order_acq_rel)) {
-                std::thread([]() {
-                  HRESULT com_hr = OleInitialize(nullptr);
-
-                  wchar_t path[MAX_PATH] = {};
-                  wchar_t filter[128] = {};
-                  wchar_t title[64] = {};
-                  {
-                    size_t off = 0;
-                    auto append = [&](const wchar_t* s) {
-                      size_t n = wcslen(s);
-                      if (off + n + 1 >= 128) return;
-                      memcpy(filter + off, s, (n + 1) * sizeof(wchar_t));
-                      off += n + 1;
-                    };
-                    append(xorstr(L"Lua files (*.lua)"));
-                    append(xorstr(L"*.lua"));
-                    append(xorstr(L"All files (*.*)"));
-                    append(xorstr(L"*.*"));
-                    filter[off] = 0;
-
-                    const wchar_t* t = xorstr(L"Load Lua Script");
-                    size_t tn = wcslen(t);
-                    if (tn >= 64) tn = 63;
-                    memcpy(title, t, tn * sizeof(wchar_t));
-                    title[tn] = 0;
-                  }
-                  OPENFILENAMEW ofn = {};
-                  ofn.lStructSize = sizeof(ofn);
-                  ofn.lpstrFilter = filter;
-                  ofn.lpstrFile = path;
-                  ofn.nMaxFile = MAX_PATH;
-                  ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY |
-                              OFN_NOCHANGEDIR | OFN_EXPLORER;
-                  ofn.lpstrTitle = title;
-
-                  BOOL dlg_ok = GetOpenFileNameW(&ofn);
-                  if (!dlg_ok) {
-                    if (SUCCEEDED(com_hr)) OleUninitialize();
-                    load_state.store(0, std::memory_order_release);
-                    return;
-                  }
-
-                  std::string content;
-                  bool ok = false;
-                  HANDLE hFile = CreateFileW(
-                      path, GENERIC_READ, FILE_SHARE_READ, nullptr,
-                      OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-                  if (hFile != INVALID_HANDLE_VALUE) {
-                    LARGE_INTEGER sz{};
-                    if (GetFileSizeEx(hFile, &sz) && sz.QuadPart >= 0) {
-                      try {
-                        content.resize((size_t)sz.QuadPart);
-                        constexpr DWORD kChunk = 1u << 20; // 1 MB per ReadFile call
-                        uint64_t total_read = 0;
-                        bool read_ok = true;
-                        while (total_read < (uint64_t)sz.QuadPart) {
-                          const uint64_t remaining = (uint64_t)sz.QuadPart - total_read;
-                          const DWORD want = (DWORD)(remaining < kChunk ? remaining : kChunk);
-                          DWORD got = 0;
-                          if (!ReadFile(hFile, content.data() + total_read, want, &got, nullptr) || got == 0) {
-                            read_ok = false;
-                            break;
-                          }
-                          total_read += got;
-                        }
-                        content.resize((size_t)total_read);
-                        ok = read_ok && total_read == (uint64_t)sz.QuadPart;
-                      } catch (const std::bad_alloc&) {
-                        content.clear();
-                        content.shrink_to_fit();
-                        ok = false;
-                      } catch (const std::length_error&) {
-                        content.clear();
-                        content.shrink_to_fit();
-                        ok = false;
-                      }
-                    }
-                    CloseHandle(hFile);
-                  }
-
-                  if (SUCCEEDED(com_hr)) OleUninitialize();
-
-                  {
-                    std::lock_guard<std::mutex> lock(load_mutex);
-                    loaded_content = std::move(content);
-                    loaded_ok = ok;
-                  }
-                  load_state.store(2, std::memory_order_release);
-                }).detach();
-              }
+              load_pending = true;
             }
 
             gui->dummy(SCALE(0, 2));
@@ -3484,51 +3381,28 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             float field_h = gui->content_avail().y - SCALE(6);
             if (field_h < SCALE(120)) field_h = SCALE(120);
 
-            if (load_state.load(std::memory_order_acquire) == 2) {
-              std::string content;
-              bool ok;
-              {
-                std::lock_guard<std::mutex> lock(load_mutex);
-                content = std::move(loaded_content);
-                loaded_content.clear();
-                loaded_content.shrink_to_fit();
-                ok = loaded_ok;
-              }
-              if (ok) {
-                exec_buf = std::move(content);
-
-                ImGuiID field_id = ImGui::GetCurrentWindow()->GetID(
-                    xorstr("##execfield"));
-                ImGuiInputTextState* st = ImGui::GetInputTextState(field_id);
-                if (st) {
-                  st->ReloadUserBuf = true;
-                  st->ReloadSelectionStart = (int)exec_buf.size();
-                  st->ReloadSelectionEnd = (int)exec_buf.size();
-                }
-
-                notify->add_notify(xorstr("Lua script loaded"), 1500,
-                                   notify_type::success);
-              } else {
-                notify->add_notify(xorstr("Failed to open file"), 2000,
-                                   notify_type::error);
-              }
-              load_state.store(0, std::memory_order_release);
-            }
-
-            if (exec_buf.capacity() < 63)
-              exec_buf.reserve(63);
+            if (exec_buf.capacity() < 256)
+              exec_buf.reserve(256);
 
             auto exec_buf_resize_cb = [](ImGuiInputTextCallbackData* data) -> int {
               if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
                 std::string* str = static_cast<std::string*>(data->UserData);
-                str->resize(data->BufTextLen);
-                data->Buf = const_cast<char*>(str->c_str());
+                try {
+                  str->resize((size_t)data->BufTextLen);
+                } catch (const std::bad_alloc&) {
+                  return 1;
+                } catch (const std::length_error&) {
+                  return 1;
+                }
+                data->Buf = str->data();
               }
               return 0;
             };
 
+            exec_field_id = ImGui::GetCurrentWindow()->GetID(xorstr("##execfield"));
+
             lua_field_ex(xorstr("##execfield"), NULL,
-                         const_cast<char*>(exec_buf.c_str()),
+                         exec_buf.data(),
                          (int)exec_buf.capacity() + 1,
                          ImVec2(gui->content_avail().x, field_h),
                          ImGuiInputTextFlags_Multiline |
@@ -3554,8 +3428,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             gui->sameline(0, btn_gap);
             if (widgets->button(xorstr("Execute"), slot_sz)) {
               if (!exec_buf.empty()) {
-                if (exec_buf.size() >= LuaExec::MAX_SRC) {
-                  notify->add_notify(xorstr("Script too large to execute (max 64 KB)"), 2500, notify_type::error);
+                if (exec_buf.size() + 128 >= LuaExec::MAX_SRC) {
+                  notify->add_notify(xorstr("Script too large to execute (max 1 MB)"), 2500, notify_type::error);
                 } else {
                   auto r = LuaExec::g_LuaExecutor.Execute(exec_buf);
                   if (!r.ok)
@@ -3571,6 +3445,116 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 notify->add_notify(xorstr("No code entered"), 1500, notify_type::error);
               }
             }
+          }
+
+          if (load_pending) {
+            load_pending = false;
+
+            exec_buf.clear();
+            exec_buf.shrink_to_fit();
+            exec_buf.reserve(256);
+            if (exec_field_id != 0) {
+              ImGuiContext& gc = *GImGui;
+              ImGuiInputTextState* st = ImGui::GetInputTextState(exec_field_id);
+              if (st && st->ID == exec_field_id) {
+                st->ID = 0;
+                st->CurLenA = 0;
+                st->TextA.clear();
+                st->InitialTextA.clear();
+                st->Scroll = ImVec2(0.f, 0.f);
+                st->ReloadUserBuf = false;
+              }
+              if (gc.InputTextDeactivatedState.ID == exec_field_id)
+                gc.InputTextDeactivatedState.ClearFreeMemory();
+              if (ImGui::GetActiveID() == exec_field_id)
+                ImGui::ClearActiveID();
+            }
+
+            HRESULT com_hr = OleInitialize(nullptr);
+
+            wchar_t path[MAX_PATH] = {};
+            wchar_t filter[128] = {};
+            wchar_t title[64] = {};
+            {
+              size_t off = 0;
+              auto append = [&](const wchar_t* s) {
+                size_t n = wcslen(s);
+                if (off + n + 1 >= 128) return;
+                memcpy(filter + off, s, (n + 1) * sizeof(wchar_t));
+                off += n + 1;
+              };
+              append(xorstr(L"Lua files (*.lua)"));
+              append(xorstr(L"*.lua"));
+              append(xorstr(L"All files (*.*)"));
+              append(xorstr(L"*.*"));
+              filter[off] = 0;
+
+              const wchar_t* t = xorstr(L"Load Lua Script");
+              size_t tn = wcslen(t);
+              if (tn >= 64) tn = 63;
+              memcpy(title, t, tn * sizeof(wchar_t));
+              title[tn] = 0;
+            }
+            OPENFILENAMEW ofn = {};
+            ofn.lStructSize = sizeof(ofn);
+            ofn.lpstrFilter = filter;
+            ofn.lpstrFile = path;
+            ofn.nMaxFile = MAX_PATH;
+            ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY |
+                        OFN_NOCHANGEDIR | OFN_EXPLORER;
+            ofn.lpstrTitle = title;
+
+            BOOL dlg_ok = GetOpenFileNameW(&ofn);
+            if (dlg_ok) {
+              std::string content;
+              bool ok = false;
+              HANDLE hFile = CreateFileW(
+                  path, GENERIC_READ, FILE_SHARE_READ, nullptr,
+                  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+              if (hFile != INVALID_HANDLE_VALUE) {
+                LARGE_INTEGER sz{};
+                if (GetFileSizeEx(hFile, &sz) && sz.QuadPart >= 0) {
+                  try {
+                    content.resize((size_t)sz.QuadPart);
+                    constexpr DWORD kChunk = 1u << 20;
+                    uint64_t total_read = 0;
+                    bool read_ok = true;
+                    while (total_read < (uint64_t)sz.QuadPart) {
+                      const uint64_t remaining = (uint64_t)sz.QuadPart - total_read;
+                      const DWORD want = (DWORD)(remaining < kChunk ? remaining : kChunk);
+                      DWORD got = 0;
+                      if (!ReadFile(hFile, content.data() + total_read, want, &got, nullptr) || got == 0) {
+                        read_ok = false;
+                        break;
+                      }
+                      total_read += got;
+                    }
+                    content.resize((size_t)total_read);
+                    ok = read_ok && total_read == (uint64_t)sz.QuadPart;
+                  } catch (const std::bad_alloc&) {
+                    content.clear();
+                    content.shrink_to_fit();
+                    ok = false;
+                  } catch (const std::length_error&) {
+                    content.clear();
+                    content.shrink_to_fit();
+                    ok = false;
+                  }
+                }
+                CloseHandle(hFile);
+              }
+
+              if (ok) {
+                exec_buf = std::move(content);
+                notify->add_notify(xorstr("Lua script loaded"), 1500,
+                                   notify_type::success);
+              } else {
+                notify->add_notify(xorstr("Failed to open file"), 2000,
+                                   notify_type::error);
+              }
+            }
+
+            if (SUCCEEDED(com_hr)) OleUninitialize();
           }
         }
       }

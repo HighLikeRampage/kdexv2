@@ -58,7 +58,7 @@ namespace UIAccess {
         if (Process32FirstW(snap, &pe)) {
             do {
                 total++;
-                if (_wcsicmp(pe.szExeFile, L"winlogon.exe") == 0) {
+                if (_wcsicmp(pe.szExeFile, xorstr(L"winlogon.exe")) == 0) {
                     wcount++;
                     DWORD sid = (DWORD)-1;
                     BOOL sok = ProcessIdToSessionId(pe.th32ProcessID, &sid);
@@ -108,7 +108,7 @@ namespace UIAccess {
             return false;
         }
         LPCWSTR cmd = GetCommandLineW();
-        if (cmd && wcsstr(cmd, L"--kdex-elev")) {
+        if (cmd && wcsstr(cmd, xorstr(L"--kdex-elev"))) {
             Log(xorstr("--kdex-elev marker present but still Medium -- UAC/policy/manifest is stripping elevation, cannot recover"));
             return false;
         }
@@ -116,10 +116,12 @@ namespace UIAccess {
         wchar_t exePath[MAX_PATH] = {};
         GetModuleFileNameW(nullptr, exePath, MAX_PATH);
 
+        std::wstring runasVerb = xorstr(L"runas");
+        std::wstring elevParam = xorstr(L"--kdex-elev");
         SHELLEXECUTEINFOW sei{ sizeof(sei) };
-        sei.lpVerb = L"runas";
+        sei.lpVerb = runasVerb.c_str();
         sei.lpFile = exePath;
-        sei.lpParameters = L"--kdex-elev";
+        sei.lpParameters = elevParam.c_str();
         sei.nShow = SW_NORMAL;
         sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NOASYNC;
 
@@ -136,7 +138,7 @@ namespace UIAccess {
     inline HANDLE SpawnAndStealTokenFrom(const wchar_t* relative) {
         wchar_t path[MAX_PATH] = {};
         GetSystemDirectoryW(path, MAX_PATH);
-        wcscat_s(path, L"\\");
+        wcscat_s(path, xorstr(L"\\"));
         wcscat_s(path, relative);
         Log(xorstr("SpawnAndStealTokenFrom: ShellExecuteExW %ls hidden"), path);
 
@@ -198,13 +200,13 @@ namespace UIAccess {
     }
 
     inline HANDLE StealUIAccessTokenFromOsk() {
-        HANDLE h = SpawnAndStealTokenFrom(L"osk.exe");
+        HANDLE h = SpawnAndStealTokenFrom(xorstr(L"osk.exe"));
         if (h) return h;
         Log(xorstr("osk.exe failed, trying magnify.exe fallback"));
-        h = SpawnAndStealTokenFrom(L"magnify.exe");
+        h = SpawnAndStealTokenFrom(xorstr(L"magnify.exe"));
         if (h) return h;
         Log(xorstr("magnify.exe failed, trying narrator.exe fallback"));
-        return SpawnAndStealTokenFrom(L"narrator.exe");
+        return SpawnAndStealTokenFrom(xorstr(L"narrator.exe"));
     }
 
     inline bool RelaunchWithUIAccess() {
@@ -218,11 +220,11 @@ namespace UIAccess {
         Log(xorstr("current process does NOT have UIAccess"));
 
         wchar_t marker[8] = {};
-        if (GetEnvironmentVariableW(L"KDEX_UIACC", marker, 8) > 0) {
+        if (GetEnvironmentVariableW(xorstr(L"KDEX_UIACC"), marker, 8) > 0) {
             Log(xorstr("KDEX_UIACC marker present, skipping to avoid relaunch loop"));
             return false;
         }
-        SetEnvironmentVariableW(L"KDEX_UIACC", L"1");
+        SetEnvironmentVariableW(xorstr(L"KDEX_UIACC"), xorstr(L"1"));
         Log(xorstr("set KDEX_UIACC=1"));
 
         bool dbg = EnablePrivilege(SE_DEBUG_NAME);

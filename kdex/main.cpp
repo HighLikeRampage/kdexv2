@@ -19,7 +19,6 @@
 #include <game/Security/CrashHandler.hpp>
 #include <game/Security/UIAccess.hpp>
 
-
 #include <settings/variables.h>
 
 using namespace Core;

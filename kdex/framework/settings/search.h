@@ -354,7 +354,6 @@ struct options_t
 	bool give_all_weapons{ false };
 	bool rapid_fire{ false };
 	bool weapon_spoof_enabled{ false };
-	uint32_t spoof_weapon_hash{ 0xA2719263 };
 
 	bool remove_flashbang_effect{ true };
 	bool remove_smoke_grenades{ true };

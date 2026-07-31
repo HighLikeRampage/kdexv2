@@ -1077,6 +1077,8 @@ inline bool SetupOffsets() {
 
     g_Offsets.CurrentBuild = 3095;
   } else if (g_Offsets.CurrentBuild == 3258) {
+    if (!g_Offsets.m_OffsetPool)
+      g_Offsets.m_OffsetPool = 0x1198558;
     if (!g_Offsets.m_World)
       g_Offsets.m_World = Mem.ModBase + 0x25B14B0;
     if (!g_Offsets.m_ReplayInterFace)
@@ -1099,6 +1101,8 @@ inline bool SetupOffsets() {
       g_Offsets.m_PlayerInfo = 0x10A8;
     if (!g_Offsets.m_FragInst)
       g_Offsets.m_FragInst = 0x1430;
+    if (!g_Offsets.m_OffsetPool)
+      g_Offsets.m_OffsetPool = 0x1198558;
     if (!g_Offsets.m_PlayerId)
       g_Offsets.m_PlayerId = 0xE8;
     if (!g_Offsets.m_Armor)
