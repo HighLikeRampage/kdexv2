@@ -2,7 +2,7 @@
 #include "Esp.hpp"
 #include "HitboneList.hpp"
 #include "ObjectNames.hpp"
-#include "Exploits/Exploits.hpp"
+#include "Exploits/Core/Exploits.hpp"
 #include "../Threads/EntityList.hpp"
 #include "../Variables.hpp"
 #include "../../../framework/settings/search.h"

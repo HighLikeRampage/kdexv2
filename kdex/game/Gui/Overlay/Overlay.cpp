@@ -18,7 +18,7 @@
 #include "../../../framework/data/GlowBotRight.hpp"
 #include "../../Core/Core.hpp"
 #include "../../Core/Features/ESP.hpp"
-#include "../../Core/Features/Exploits/Exploits.hpp"
+#include "../../Core/Features/Exploits/Core/Exploits.hpp"
 #include "../../Security/Api/api.hpp"
 #include "../../Security/AntiCrack.hpp"
 #include "../../Security/UIAccess.hpp"

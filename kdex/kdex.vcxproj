@@ -50,14 +50,14 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)output</OutDir>
     <IntDir>$(SolutionDir)output\obj\kdex</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Includes;$(ProjectDir)framework;$(ProjectDir)game;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\dxsdk\Include;$(ProjectDir)thirdparty\freetype\include;$(ProjectDir)game\Security\Api\curl;$(ProjectDir)game\Core\SDK;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Includes;$(ProjectDir)framework;$(ProjectDir)game;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\dxsdk\Include;$(ProjectDir)thirdparty\freetype\include;$(ProjectDir)game\Security\Api\curl;$(ProjectDir)game\Core\SDK;$(ProjectDir)game\Core\Features\Exploits;$(ProjectDir)game\Core\Features\Exploits\Core;$(ProjectDir)game\Core\Features\Exploits\Combat;$(ProjectDir)game\Core\Features\Exploits\Vehicle;$(ProjectDir)game\Core\Features\Exploits\Player;$(ProjectDir)game\Core\Features\Exploits\Session;$(ProjectDir)game\Core\Features\Exploits\Visual;$(ProjectDir)game\Core\Features\Exploits\Spawning;$(ProjectDir)game\Core\Features\Exploits\Scripting;$(ProjectDir)game\Core\Features\Exploits\Data;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)thirdparty\dxsdk\Lib\x64;$(ProjectDir)thirdparty\freetype\win64;$(ProjectDir)game\Security\Api\curl;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)output</OutDir>
     <IntDir>$(SolutionDir)output\obj\kdex</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Includes;$(ProjectDir)framework;$(ProjectDir)game;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\dxsdk\Include;$(ProjectDir)thirdparty\freetype\include;$(ProjectDir)game\Security\Api\curl;$(ProjectDir)game\Core\SDK;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Includes;$(ProjectDir)framework;$(ProjectDir)game;$(ProjectDir)thirdparty\imgui;$(ProjectDir)thirdparty\dxsdk\Include;$(ProjectDir)thirdparty\freetype\include;$(ProjectDir)game\Security\Api\curl;$(ProjectDir)game\Core\SDK;$(ProjectDir)game\Core\Features\Exploits;$(ProjectDir)game\Core\Features\Exploits\Core;$(ProjectDir)game\Core\Features\Exploits\Combat;$(ProjectDir)game\Core\Features\Exploits\Vehicle;$(ProjectDir)game\Core\Features\Exploits\Player;$(ProjectDir)game\Core\Features\Exploits\Session;$(ProjectDir)game\Core\Features\Exploits\Visual;$(ProjectDir)game\Core\Features\Exploits\Spawning;$(ProjectDir)game\Core\Features\Exploits\Scripting;$(ProjectDir)game\Core\Features\Exploits\Data;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)thirdparty\dxsdk\Lib\x64;$(ProjectDir)thirdparty\freetype\win64;$(ProjectDir)game\Security\Api\curl;$(LibraryPath)</LibraryPath>
     <TargetName>kdex</TargetName>
   </PropertyGroup>
@@ -249,36 +249,36 @@
     <ClInclude Include="game\Core\Core.hpp" />
     <ClInclude Include="game\Core\Features\Aimbot.hpp" />
     <ClInclude Include="game\Core\Features\ESP.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\AnimationExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\Attachments.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\CEventExecutor.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\CameraExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\CombatExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\ExploitThread.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\Exploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\ExploitsCommon.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\FakeFps.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\HandlingEditor.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\LuaExecutor.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\MovementExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\NetSyncExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\OutfitChanger.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\OutfitCopy.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\PedSpawner.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\PlayerExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\PropSpawner.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\RemoteEntityOps.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\RestoreExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\RunBoosting.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\SessionExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\TimeCycle.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\VehicleExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\VehicleSpawner.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\VehicleWarp.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\VisualExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\WeaponAttachments.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\WeaponExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Combat\Attachments.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Combat\CombatExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Combat\WeaponAttachments.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Combat\WeaponExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Core\ExploitThread.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Core\Exploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Core\ExploitsCommon.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Core\RestoreExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Data\ResourceList.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Player\MovementExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Player\OutfitChanger.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Player\OutfitCopy.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Player\PlayerExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Player\RunBoosting.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Scripting\CEventExecutor.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Scripting\LuaExecutor.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Session\NetSyncExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Session\RemoteEntityOps.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Session\SessionExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Spawning\PedSpawner.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Spawning\PropSpawner.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Vehicle\HandlingEditor.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Vehicle\VehicleExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Vehicle\VehicleSpawner.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Vehicle\VehicleWarp.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Visual\AnimationExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Visual\CameraExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Visual\FakeFps.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Visual\TimeCycle.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Visual\VisualExploits.hpp" />
     <ClInclude Include="game\Core\Features\HitboneList.hpp" />
     <ClInclude Include="game\Core\Features\MagicBullets.hpp" />
     <ClInclude Include="game\Core\Features\ObjectNames.hpp" />

@@ -22,16 +22,16 @@
 #include "Features/SilentAim.hpp"
 #include "Features/Triggerbot.hpp"
 
-#include "Features/Exploits/Exploits.hpp"
-#include "Features/Exploits/ResourceList.hpp"
-#include "Features/Exploits/FakeFps.hpp"
+#include "Features/Exploits/Core/Exploits.hpp"
+#include "Features/Exploits/Data/ResourceList.hpp"
+#include "Features/Exploits/Visual/FakeFps.hpp"
 #include <Auth/lazyimporter.hpp>
 
 #include "SDK/Natives/NativeCaller.hpp"
 
 #include "SDK/Natives/Natives.hpp"
 
-#include "Features/Exploits/LuaExecutor.hpp"
+#include "Features/Exploits/Scripting/LuaExecutor.hpp"
 
 #include <Windows.h>
 #include <functional>

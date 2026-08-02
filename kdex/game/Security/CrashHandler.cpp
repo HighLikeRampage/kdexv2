@@ -4,7 +4,7 @@
 #include "../Gui/Overlay/Overlay.hpp"
 #include "../Core/Features/SilentAim.hpp"
 #include "../Core/Features/MagicBullets.hpp"
-#include "../Core/Features/Exploits/Exploits.hpp"
+#include "../Core/Features/Exploits/Core/Exploits.hpp"
 #include "../Core/Threads/AdhesiveBlocker.hpp"
 #include "../Core/Streamproof/Streamproof.h"
 #include "../../framework/settings/variables.h"
