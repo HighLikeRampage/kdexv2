@@ -143,13 +143,6 @@
     <ClCompile Include="Includes\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="game\Core\SDK\Natives\Invoker.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="framework\gui.cpp" />
-    <ClCompile Include="framework\gui\gui_auth.cpp" />
-    <ClCompile Include="framework\gui\gui_launch.cpp" />
-    <ClCompile Include="framework\gui\gui_menu.cpp" />
-    <ClCompile Include="framework\gui\gui_spinner.cpp" />
     <ClCompile Include="framework\elements\begin_child.cpp" />
     <ClCompile Include="framework\elements\button.cpp" />
     <ClCompile Include="framework\elements\checkbox.cpp" />
@@ -169,17 +162,44 @@
     <ClCompile Include="framework\elements\text_field.cpp" />
     <ClCompile Include="framework\elements\watermark.cpp" />
     <ClCompile Include="framework\elements\window.cpp" />
+    <ClCompile Include="framework\gui.cpp" />
+    <ClCompile Include="framework\gui\gui_auth.cpp" />
+    <ClCompile Include="framework\gui\gui_launch.cpp" />
+    <ClCompile Include="framework\gui\gui_menu.cpp" />
+    <ClCompile Include="framework\gui\gui_spinner.cpp" />
     <ClCompile Include="game\Core\Features\Aimbot.cpp" />
     <ClCompile Include="game\Core\Features\Esp.cpp" />
-    <ClCompile Include="game\Core\Features\ObjectNames.cpp" />
     <ClCompile Include="game\Core\Features\MagicBullets.cpp" />
+    <ClCompile Include="game\Core\Features\ObjectNames.cpp" />
     <ClCompile Include="game\Core\Features\SilentAim.cpp" />
     <ClCompile Include="game\Core\Features\Triggerbot.cpp" />
     <ClCompile Include="game\Core\SDK\Memory.cpp" />
+    <ClCompile Include="game\Core\SDK\Natives\Invoker.cpp" />
     <ClCompile Include="game\Core\SDK\d3dx_impl.cpp" />
     <ClCompile Include="game\Gui\Overlay\Overlay.cpp" />
     <ClCompile Include="game\Security\CrashHandler.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="thirdparty\dxsdk\Include\detours.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx10.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx11.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx12.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx9.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_win32.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
@@ -203,118 +223,93 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
     </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx9.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx10.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx11.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx12.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
-    </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_win32.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>Security/xorstr.hpp</ForcedIncludeFiles>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Globals.hpp" />
-    <ClInclude Include="game\Core\ProcessUtils.hpp" />
-    <ClInclude Include="game\Core\SetupOffsets.hpp" />
-    <ClInclude Include="game\Core\Attach.hpp" />
-    <ClInclude Include="framework\gui\gui_internal.hpp" />
     <ClInclude Include="Includes\Includes.hpp" />
     <ClInclude Include="Includes\Utils.hpp" />
-    <ClInclude Include="framework\settings\colors.h" />
-    <ClInclude Include="framework\settings\elements.h" />
-    <ClInclude Include="framework\settings\functions.h" />
-    <ClInclude Include="framework\settings\search.h" />
-    <ClInclude Include="framework\settings\variables.h" />
-    <ClInclude Include="framework\settings\options_config.h" />
-    <ClInclude Include="framework\settings\config_theme.h" />
-    <ClInclude Include="framework\settings\dashboard_sync.h" />
-    <ClInclude Include="framework\elements\text_editor.h" />
+    <ClInclude Include="Includes\pch.hpp" />
+    <ClInclude Include="framework\Globals.hpp" />
+    <ClInclude Include="framework\data\GlowBotRight.hpp" />
+    <ClInclude Include="framework\data\GlowTopLeft.hpp" />
     <ClInclude Include="framework\data\fonts.h" />
     <ClInclude Include="framework\data\images.h" />
+    <ClInclude Include="framework\elements\text_editor.h" />
+    <ClInclude Include="framework\gui\gui_internal.hpp" />
+    <ClInclude Include="framework\settings\colors.h" />
+    <ClInclude Include="framework\settings\config_theme.h" />
+    <ClInclude Include="framework\settings\dashboard_sync.h" />
+    <ClInclude Include="framework\settings\elements.h" />
+    <ClInclude Include="framework\settings\functions.h" />
+    <ClInclude Include="framework\settings\options_config.h" />
+    <ClInclude Include="framework\settings\search.h" />
+    <ClInclude Include="framework\settings\variables.h" />
     <ClInclude Include="game\Auth\lazyimporter.hpp" />
+    <ClInclude Include="game\Core\Attach.hpp" />
     <ClInclude Include="game\Core\Config.hpp" />
     <ClInclude Include="game\Core\Core.hpp" />
-    <ClInclude Include="game\Core\Offsets.hpp" />
-    <ClInclude Include="game\Core\Variables.hpp" />
     <ClInclude Include="game\Core\Features\Aimbot.hpp" />
     <ClInclude Include="game\Core\Features\ESP.hpp" />
-    <ClInclude Include="game\Core\Features\ObjectNames.hpp" />
-    <ClInclude Include="game\Core\Features\MagicBullets.hpp" />
-    <ClInclude Include="game\Core\Features\SilentAim.hpp" />
-    <ClInclude Include="game\Core\Features\Triggerbot.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\Exploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\ExploitsCommon.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\MovementExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\AnimationExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Attachments.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\CEventExecutor.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\CameraExploits.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\CombatExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\VehicleExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\PlayerExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\VisualExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\RestoreExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\RemoteEntityOps.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\AnimationExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\SessionExploits.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\NetSyncExploits.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\ExploitThread.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\Exploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\ExploitsCommon.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\FakeFps.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\HandlingEditor.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\LuaExecutor.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\MovementExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\NetSyncExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\OutfitChanger.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\OutfitCopy.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\PedSpawner.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\PlayerExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\PropSpawner.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\RemoteEntityOps.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\RestoreExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\RunBoosting.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\SessionExploits.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\TimeCycle.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\VehicleExploits.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\VehicleSpawner.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\VehicleWarp.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\TimeCycle.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\RunBoosting.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\OutfitChanger.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\Attachments.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\VisualExploits.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\WeaponAttachments.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\FakeFps.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\LuaExecutor.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\CEventExecutor.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\PedSpawner.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\PropSpawner.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\OutfitCopy.hpp" />
-    <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp" />
-    <ClInclude Include="game\Core\SDK\SDK.hpp" />
+    <ClInclude Include="game\Core\Features\Exploits\WeaponExploits.hpp" />
+    <ClInclude Include="game\Core\Features\HitboneList.hpp" />
+    <ClInclude Include="game\Core\Features\MagicBullets.hpp" />
+    <ClInclude Include="game\Core\Features\ObjectNames.hpp" />
+    <ClInclude Include="game\Core\Features\SilentAim.hpp" />
+    <ClInclude Include="game\Core\Features\Triggerbot.hpp" />
+    <ClInclude Include="game\Core\Offsets.hpp" />
+    <ClInclude Include="game\Core\ProcessUtils.hpp" />
+    <ClInclude Include="game\Core\SDK\DebugLog.hpp" />
     <ClInclude Include="game\Core\SDK\Memory.hpp" />
     <ClInclude Include="game\Core\SDK\Natives\Crossmap.hpp" />
     <ClInclude Include="game\Core\SDK\Natives\Invoker.hpp" />
     <ClInclude Include="game\Core\SDK\Natives\NativeCaller.hpp" />
     <ClInclude Include="game\Core\SDK\Natives\Natives.hpp" />
+    <ClInclude Include="game\Core\SDK\SDK.hpp" />
     <ClInclude Include="game\Core\SDK\Structs\GameClasses.hpp" />
     <ClInclude Include="game\Core\SDK\Structs\Structs.hpp" />
-    <ClInclude Include="game\Core\Threads\AdhesiveBlocker.hpp" />
-    <ClInclude Include="game\Core\Threads\EventScanner.hpp" />
+    <ClInclude Include="game\Core\SetupOffsets.hpp" />
     <ClInclude Include="game\Core\Streamproof\Streamproof.h" />
+    <ClInclude Include="game\Core\Threads\AdhesiveBlocker.hpp" />
     <ClInclude Include="game\Core\Threads\EntityList.hpp" />
+    <ClInclude Include="game\Core\Threads\EventScanner.hpp" />
     <ClInclude Include="game\Core\Threads\ObjectList.hpp" />
     <ClInclude Include="game\Core\Threads\ScreenResolution.hpp" />
     <ClInclude Include="game\Core\Threads\UpdateNames.hpp" />
     <ClInclude Include="game\Core\Threads\UpdatePointers.hpp" />
     <ClInclude Include="game\Core\Threads\VehicleList.hpp" />
-    <ClInclude Include="game\Gui\gui.hpp" />
+    <ClInclude Include="game\Core\Variables.hpp" />
     <ClInclude Include="game\Gui\Overlay\Overlay.hpp" />
+    <ClInclude Include="game\Gui\gui.hpp" />
     <ClInclude Include="game\Security\AntiCrack.hpp" />
-    <ClInclude Include="game\Security\CrashHandler.hpp" />
-    <ClInclude Include="game\Security\JunkCode.hpp" />
-    <ClInclude Include="game\Security\UIAccess.hpp" />
-    <ClInclude Include="game\Security\anticrack\AntiVM.hpp" />
-    <ClInclude Include="game\Security\anticrack\AntiTamper.hpp" />
-    <ClInclude Include="game\Security\anticrack\AntiDebug.hpp" />
-    <ClInclude Include="game\Security\anticrack\WindowCheck.hpp" />
-    <ClInclude Include="game\Security\LazyImporter.hpp" />
-    <ClInclude Include="game\Security\xorstr.hpp" />
     <ClInclude Include="game\Security\Api\api.hpp" />
-    <ClInclude Include="game\Security\Api\json.hpp" />
-    <ClInclude Include="game\Security\Api\structs\structs.hpp" />
     <ClInclude Include="game\Security\Api\curl\curl.h" />
     <ClInclude Include="game\Security\Api\curl\curlver.h" />
     <ClInclude Include="game\Security\Api\curl\easy.h" />
@@ -325,7 +320,165 @@
     <ClInclude Include="game\Security\Api\curl\system.h" />
     <ClInclude Include="game\Security\Api\curl\typecheck-gcc.h" />
     <ClInclude Include="game\Security\Api\curl\urlapi.h" />
+    <ClInclude Include="game\Security\Api\json.hpp" />
+    <ClInclude Include="game\Security\Api\structs\structs.hpp" />
+    <ClInclude Include="game\Security\CrashHandler.hpp" />
+    <ClInclude Include="game\Security\JunkCode.hpp" />
+    <ClInclude Include="game\Security\LazyImporter.hpp" />
+    <ClInclude Include="game\Security\LinkerFix.hpp" />
+    <ClInclude Include="game\Security\UIAccess.hpp" />
+    <ClInclude Include="game\Security\anticrack\AntiDebug.hpp" />
+    <ClInclude Include="game\Security\anticrack\AntiTamper.hpp" />
+    <ClInclude Include="game\Security\anticrack\AntiVM.hpp" />
+    <ClInclude Include="game\Security\anticrack\WindowCheck.hpp" />
+    <ClInclude Include="game\Security\xorstr.hpp" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D2D1.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D2D1Helper.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D2DBaseTypes.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D2Derr.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10_1.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10_1shader.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10effect.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10shader.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D11.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D11SDKLayers.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D11Shader.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DCSX.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10core.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10math.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10math.inl" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10mesh.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10tex.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX11.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX11async.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX11core.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX11tex.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX_DXGIFormatConvert.inl" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3Dcommon.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\D3Dcompiler.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\DWrite.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\DXGI.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\DXGIFormat.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\DXGIType.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\Dcommon.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\DxErr.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\PIXPlugin.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\X3DAudio.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\XAPO.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\XAPOBase.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\XAPOFX.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\XAudio2.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\XAudio2fx.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\XDSP.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\XInput.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\audiodefs.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\comdecl.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d10misc.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d10sdklayers.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d9.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d9caps.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d9types.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx10async.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9anim.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9core.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9effect.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9math.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9math.inl" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9mesh.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9shader.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9shape.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9tex.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9xof.h" />
     <ClInclude Include="thirdparty\dxsdk\Include\detours.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\dinput.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\dinputd.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\dsconf.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\dsetup.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\dsound.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\dxdiag.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\dxfile.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\dxsdkver.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\gameux.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\hde32.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\hde64.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\pstdint.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\rmxfguid.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\rmxftmpl.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\rpcsal.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\table32.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\table64.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\xact3.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\xact3d3.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\xact3wb.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\xma2defs.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamath.h" />
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamathconvert.inl" />
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamathmatrix.inl" />
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamathmisc.inl" />
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamathvector.inl" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftconfig.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftheader.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftmodule.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftoption.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftstdlib.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\integer-types.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\mac-support.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\public-macros.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\freetype.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftadvanc.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftbbox.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftbdf.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftbitmap.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftbzip2.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftcache.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftchapters.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftcid.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftcolor.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftdriver.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\fterrdef.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\fterrors.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftfntfmt.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftgasp.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftglyph.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftgxval.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftgzip.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftimage.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftincrem.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftlcdfil.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftlist.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftlogging.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftlzw.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftmac.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftmm.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftmodapi.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftmoderr.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftotval.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftoutln.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftparams.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftpfr.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftrender.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftsizes.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftsnames.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftstroke.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftsynth.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftsystem.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\fttrigon.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\fttypes.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftwinfnt.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\otsvg.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\t1tables.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\ttnameid.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\tttables.h" />
+    <ClInclude Include="thirdparty\freetype\include\freetype\tttags.h" />
+    <ClInclude Include="thirdparty\freetype\include\ft2build.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx10.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx12.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx9.h" />
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_win32.h" />
     <ClInclude Include="thirdparty\imgui\imconfig.h" />
     <ClInclude Include="thirdparty\imgui\imgui.h" />
     <ClInclude Include="thirdparty\imgui\imgui_freetype.h" />
@@ -333,16 +486,71 @@
     <ClInclude Include="thirdparty\imgui\imstb_rectpack.h" />
     <ClInclude Include="thirdparty\imgui\imstb_textedit.h" />
     <ClInclude Include="thirdparty\imgui\imstb_truetype.h" />
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx9.h" />
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx10.h" />
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx11.h" />
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx12.h" />
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_win32.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
-    <None Include="game\Core\SDK\Natives\NativesEmbedded.inc" />
     <None Include="game\Core\SDK\Natives\CrossmapEmbedded.inc" />
+    <None Include="game\Core\SDK\Natives\NativesEmbedded.inc" />
+    <None Include="game\Security\Api\curl\libcurl.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\D3DCSX.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\D3DCSXd.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\DxErr.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\X3DAudio.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\XAPOFX.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\XInput.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d2d1.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3d10.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3d10_1.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3d11.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3d9.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dcompiler.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx10.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx10d.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx11.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx11d.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx9.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx9d.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dxof.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\detours.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\dinput8.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\dsound.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\dwrite.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\dxgi.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\dxguid.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\xapobase.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x64\xapobased.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\D3DCSX.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\D3DCSXd.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\DxErr.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\X3DAudio.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\XAPOFX.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\XInput.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d2d1.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3d10.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3d10_1.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3d11.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3d9.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dcompiler.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx10.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx10d.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx11.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx11d.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx9.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx9d.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dxof.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\detours.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\dinput8.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\dsetup.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\dsound.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\dwrite.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\dxgi.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\dxguid.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\xapobase.lib" />
+    <None Include="thirdparty\dxsdk\Lib\x86\xapobased.lib" />
+    <None Include="thirdparty\freetype\win64\freetype.lib" />
+    <None Include="thirdparty\imgui\LICENSE.txt" />
+    <None Include="thirdparty\dxsdk\Include\hde32.c" />
+    <None Include="thirdparty\dxsdk\Include\hde64.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

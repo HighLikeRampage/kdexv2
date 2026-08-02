@@ -7,14 +7,14 @@
     <Filter Include="framework">
       <UniqueIdentifier>{2276949a-e89a-4712-8736-22485526019b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="framework\data">
+      <UniqueIdentifier>{89753174-88f2-4467-932b-31d044265462}</UniqueIdentifier>
+    </Filter>
     <Filter Include="framework\elements">
       <UniqueIdentifier>{95526f04-f58c-4a39-9d62-1200f68f5686}</UniqueIdentifier>
     </Filter>
     <Filter Include="framework\settings">
       <UniqueIdentifier>{f9f4b9f2-282c-473d-82d2-8877119e0721}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="framework\data">
-      <UniqueIdentifier>{89753174-88f2-4467-932b-31d044265462}</UniqueIdentifier>
     </Filter>
     <Filter Include="game">
       <UniqueIdentifier>{83072f8a-9a99-4720-96f3-424a9193630d}</UniqueIdentifier>
@@ -31,44 +31,104 @@
     <Filter Include="game\Core\Features\Exploits">
       <UniqueIdentifier>{53982467-3343-4250-891d-55734d318991}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\Core\Features\Exploits\Combat">
+      <UniqueIdentifier>{8f99d576-fe37-501c-a423-dcdec2245614}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features\Exploits\Core">
+      <UniqueIdentifier>{80699b4b-e4aa-5ffe-b596-d66ddb2ed5cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features\Exploits\Data">
+      <UniqueIdentifier>{b4696f30-5136-5acf-94cf-94cc8b04361c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features\Exploits\Player">
+      <UniqueIdentifier>{18e47a53-283e-5f25-98e9-b9982ed01632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features\Exploits\Scripting">
+      <UniqueIdentifier>{b5c0fc4c-e581-59a5-9eeb-2bacd9bca670}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features\Exploits\Session">
+      <UniqueIdentifier>{e6245f5b-e0a4-5bda-ae3a-2eece671f9c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features\Exploits\Spawning">
+      <UniqueIdentifier>{497a9733-2834-5327-a166-d532a668f1df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features\Exploits\Vehicle">
+      <UniqueIdentifier>{78a60410-31db-547b-9b6f-4c62a6f8fead}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Features\Exploits\Visual">
+      <UniqueIdentifier>{d98521ee-c601-5f8e-b5a7-cf3c934ce7e0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="game\Core\SDK">
       <UniqueIdentifier>{f410d556-9f1e-4509-906f-6c700388725a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\SDK\Natives">
+      <UniqueIdentifier>{9665d6c7-5a10-4262-a317-14155ad93fdd}</UniqueIdentifier>
     </Filter>
     <Filter Include="game\Core\SDK\Structs">
       <UniqueIdentifier>{f5947702-8350-4886-9f89-9a74288b2298}</UniqueIdentifier>
     </Filter>
-    <Filter Include="game\Core\Threads">
-      <UniqueIdentifier>{a983818e-6705-4f36-a67b-232187748834}</UniqueIdentifier>
-    </Filter>
     <Filter Include="game\Core\Streamproof">
       <UniqueIdentifier>{b7c3a1d4-5e92-4f18-ae6d-1c4f83b29e57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Core\Threads">
+      <UniqueIdentifier>{a983818e-6705-4f36-a67b-232187748834}</UniqueIdentifier>
     </Filter>
     <Filter Include="game\Gui">
       <UniqueIdentifier>{e6f0462e-3605-4f11-8848-18e001712a7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\Gui\Components">
+      <UniqueIdentifier>{eee5af60-b6d7-41f7-873b-df759fc1e8d9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="game\Gui\Overlay">
       <UniqueIdentifier>{82747169-77a8-444c-9a3d-426a87796033}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\nvidia">
-      <UniqueIdentifier>{9b3fa87c-4d1e-4b02-9d5a-1a6c3d9f8e77}</UniqueIdentifier>
     </Filter>
     <Filter Include="game\Security">
       <UniqueIdentifier>{45a40995-189d-4876-8051-7892706e2326}</UniqueIdentifier>
     </Filter>
-    <Filter Include="game\Security\anticrack">
-      <UniqueIdentifier>{014a4087-73d8-4d6d-898a-78809e6f3041}</UniqueIdentifier>
-    </Filter>
     <Filter Include="game\Security\Api">
       <UniqueIdentifier>{9530462f-0428-44f2-9860-84521404092d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\Security\Api\structs">
-      <UniqueIdentifier>{140f7f32-3f14-41d3-9828-56492982d645}</UniqueIdentifier>
     </Filter>
     <Filter Include="game\Security\Api\curl">
       <UniqueIdentifier>{3a93f77b-6893-4a0b-8898-323869279093}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\Security\Api\structs">
+      <UniqueIdentifier>{140f7f32-3f14-41d3-9828-56492982d645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game\Security\anticrack">
+      <UniqueIdentifier>{014a4087-73d8-4d6d-898a-78809e6f3041}</UniqueIdentifier>
+    </Filter>
     <Filter Include="thirdparty">
       <UniqueIdentifier>{9e03d35c-297c-474c-8f4b-70c80e90c410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\dxsdk">
+      <UniqueIdentifier>{7d49b5c3-305d-4536-a14a-73d611f75429}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\dxsdk\Include">
+      <UniqueIdentifier>{f6c5ad1a-599b-591f-aefb-b086854ede1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\dxsdk\Lib">
+      <UniqueIdentifier>{d9e09b05-0b5f-5982-af24-2bfa84668495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\dxsdk\Lib\x64">
+      <UniqueIdentifier>{cf522193-1384-5001-9681-8d7759cf476a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\dxsdk\Lib\x86">
+      <UniqueIdentifier>{ff967d7d-b09d-5afc-806b-f627df358aac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\freetype">
+      <UniqueIdentifier>{cec84a53-242b-5f62-ba55-525b672fc515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\freetype\include">
+      <UniqueIdentifier>{214438be-a63a-5921-8eb2-d5458034153a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\freetype\include\freetype">
+      <UniqueIdentifier>{dbf3f42f-e70d-5e72-ab2d-60d369858e7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\freetype\include\freetype\config">
+      <UniqueIdentifier>{abc46134-92ad-57ac-b62f-54cce9bb8fe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\freetype\win64">
+      <UniqueIdentifier>{75a51a50-cebf-54f2-8d84-c0c2bbb1d706}</UniqueIdentifier>
     </Filter>
     <Filter Include="thirdparty\imgui">
       <UniqueIdentifier>{54e7d530-977a-422f-870a-20d04690184c}</UniqueIdentifier>
@@ -76,23 +136,10 @@
     <Filter Include="thirdparty\imgui\backends">
       <UniqueIdentifier>{1864e43b-3130-4e58-9418-508006f89078}</UniqueIdentifier>
     </Filter>
-    <Filter Include="thirdparty\dxsdk">
-      <UniqueIdentifier>{7d49b5c3-305d-4536-a14a-73d611f75429}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\Core\SDK\Natives">
-      <UniqueIdentifier>{9665d6c7-5a10-4262-a317-14155ad93fdd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="game\Gui\Components">
-      <UniqueIdentifier>{eee5af60-b6d7-41f7-873b-df759fc1e8d9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="game\Core\SDK\Natives\Invoker.cpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="framework\gui.cpp">
-      <Filter>framework</Filter>
+    <ClCompile Include="Includes\pch.cpp">
+      <Filter>Includes</Filter>
     </ClCompile>
     <ClCompile Include="framework\elements\begin_child.cpp">
       <Filter>framework\elements</Filter>
@@ -151,16 +198,31 @@
     <ClCompile Include="framework\elements\window.cpp">
       <Filter>framework\elements</Filter>
     </ClCompile>
+    <ClCompile Include="framework\gui.cpp">
+      <Filter>framework</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\gui\gui_auth.cpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\gui\gui_launch.cpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\gui\gui_menu.cpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\gui\gui_spinner.cpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClCompile>
     <ClCompile Include="game\Core\Features\Aimbot.cpp">
       <Filter>game\Core\Features</Filter>
     </ClCompile>
     <ClCompile Include="game\Core\Features\Esp.cpp">
       <Filter>game\Core\Features</Filter>
     </ClCompile>
-    <ClCompile Include="game\Core\Features\ObjectNames.cpp">
+    <ClCompile Include="game\Core\Features\MagicBullets.cpp">
       <Filter>game\Core\Features</Filter>
     </ClCompile>
-    <ClCompile Include="game\Core\Features\MagicBullets.cpp">
+    <ClCompile Include="game\Core\Features\ObjectNames.cpp">
       <Filter>game\Core\Features</Filter>
     </ClCompile>
     <ClCompile Include="game\Core\Features\SilentAim.cpp">
@@ -172,14 +234,36 @@
     <ClCompile Include="game\Core\SDK\Memory.cpp">
       <Filter>game\Core\SDK</Filter>
     </ClCompile>
+    <ClCompile Include="game\Core\SDK\Natives\Invoker.cpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClCompile>
+    <ClCompile Include="game\Core\SDK\d3dx_impl.cpp">
+      <Filter>game\Core\SDK</Filter>
+    </ClCompile>
     <ClCompile Include="game\Gui\Overlay\Overlay.cpp">
       <Filter>game\Gui\Overlay</Filter>
     </ClCompile>
     <ClCompile Include="game\Security\CrashHandler.cpp">
       <Filter>game\Security</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="thirdparty\dxsdk\Include\detours.cpp">
-      <Filter>thirdparty\dxsdk</Filter>
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx10.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx12.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx9.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>thirdparty\imgui\backends</Filter>
     </ClCompile>
     <ClCompile Include="thirdparty\imgui\imgui.cpp">
       <Filter>thirdparty\imgui</Filter>
@@ -196,39 +280,6 @@
     <ClCompile Include="thirdparty\imgui\imgui_widgets.cpp">
       <Filter>thirdparty\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx9.cpp">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx10.cpp">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx11.cpp">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_dx12.cpp">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClCompile>
-    <ClCompile Include="thirdparty\imgui\backends\imgui_impl_win32.cpp">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClCompile>
-    <ClCompile Include="game\Core\SDK\d3dx_impl.cpp">
-      <Filter>game\Core\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="framework\gui\gui_auth.cpp">
-      <Filter>game\Gui\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="framework\gui\gui_launch.cpp">
-      <Filter>game\Gui\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="framework\gui\gui_menu.cpp">
-      <Filter>game\Gui\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="framework\gui\gui_spinner.cpp">
-      <Filter>game\Gui\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Includes\pch.cpp">
-      <Filter>Includes</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Includes\Includes.hpp">
@@ -237,22 +288,31 @@
     <ClInclude Include="Includes\Utils.hpp">
       <Filter>Includes</Filter>
     </ClInclude>
+    <ClInclude Include="Includes\pch.hpp">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\Globals.hpp">
+      <Filter>framework</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\data\GlowBotRight.hpp">
+      <Filter>framework\data</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\data\GlowTopLeft.hpp">
+      <Filter>framework\data</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\data\fonts.h">
+      <Filter>framework\data</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\data\images.h">
+      <Filter>framework\data</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\elements\text_editor.h">
+      <Filter>framework\elements</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\gui\gui_internal.hpp">
+      <Filter>game\Gui\Components</Filter>
+    </ClInclude>
     <ClInclude Include="framework\settings\colors.h">
-      <Filter>framework\settings</Filter>
-    </ClInclude>
-    <ClInclude Include="framework\settings\elements.h">
-      <Filter>framework\settings</Filter>
-    </ClInclude>
-    <ClInclude Include="framework\settings\functions.h">
-      <Filter>framework\settings</Filter>
-    </ClInclude>
-    <ClInclude Include="framework\settings\search.h">
-      <Filter>framework\settings</Filter>
-    </ClInclude>
-    <ClInclude Include="framework\settings\variables.h">
-      <Filter>framework\settings</Filter>
-    </ClInclude>
-    <ClInclude Include="framework\settings\options_config.h">
       <Filter>framework\settings</Filter>
     </ClInclude>
     <ClInclude Include="framework\settings\config_theme.h">
@@ -261,28 +321,31 @@
     <ClInclude Include="framework\settings\dashboard_sync.h">
       <Filter>framework\settings</Filter>
     </ClInclude>
-    <ClInclude Include="framework\elements\text_editor.h">
-      <Filter>framework\elements</Filter>
+    <ClInclude Include="framework\settings\elements.h">
+      <Filter>framework\settings</Filter>
     </ClInclude>
-    <ClInclude Include="framework\data\fonts.h">
-      <Filter>framework\data</Filter>
+    <ClInclude Include="framework\settings\functions.h">
+      <Filter>framework\settings</Filter>
     </ClInclude>
-    <ClInclude Include="framework\data\images.h">
-      <Filter>framework\data</Filter>
+    <ClInclude Include="framework\settings\options_config.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\search.h">
+      <Filter>framework\settings</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\settings\variables.h">
+      <Filter>framework\settings</Filter>
     </ClInclude>
     <ClInclude Include="game\Auth\lazyimporter.hpp">
       <Filter>game\Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Attach.hpp">
+      <Filter>game\Core</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Config.hpp">
       <Filter>game\Core</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Core.hpp">
-      <Filter>game\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Offsets.hpp">
-      <Filter>game\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Variables.hpp">
       <Filter>game\Core</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Features\Aimbot.hpp">
@@ -291,10 +354,103 @@
     <ClInclude Include="game\Core\Features\ESP.hpp">
       <Filter>game\Core\Features</Filter>
     </ClInclude>
-    <ClInclude Include="game\Core\Features\ObjectNames.hpp">
+    <ClInclude Include="game\Core\Features\Exploits\AnimationExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\Attachments.hpp">
+      <Filter>game\Core\Features\Exploits\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\CEventExecutor.hpp">
+      <Filter>game\Core\Features\Exploits\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\CameraExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\CombatExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\ExploitThread.hpp">
+      <Filter>game\Core\Features\Exploits\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\Exploits.hpp">
+      <Filter>game\Core\Features\Exploits\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\ExploitsCommon.hpp">
+      <Filter>game\Core\Features\Exploits\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\FakeFps.hpp">
+      <Filter>game\Core\Features\Exploits\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\HandlingEditor.hpp">
+      <Filter>game\Core\Features\Exploits\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\LuaExecutor.hpp">
+      <Filter>game\Core\Features\Exploits\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\MovementExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\NetSyncExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Session</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\OutfitChanger.hpp">
+      <Filter>game\Core\Features\Exploits\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\OutfitCopy.hpp">
+      <Filter>game\Core\Features\Exploits\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\PedSpawner.hpp">
+      <Filter>game\Core\Features\Exploits\Spawning</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\PlayerExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\PropSpawner.hpp">
+      <Filter>game\Core\Features\Exploits\Spawning</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\RemoteEntityOps.hpp">
+      <Filter>game\Core\Features\Exploits\Session</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp">
+      <Filter>game\Core\Features\Exploits\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\RestoreExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\RunBoosting.hpp">
+      <Filter>game\Core\Features\Exploits\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\SessionExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Session</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\TimeCycle.hpp">
+      <Filter>game\Core\Features\Exploits\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\VehicleExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\VehicleSpawner.hpp">
+      <Filter>game\Core\Features\Exploits\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\VehicleWarp.hpp">
+      <Filter>game\Core\Features\Exploits\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\VisualExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\WeaponAttachments.hpp">
+      <Filter>game\Core\Features\Exploits\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Exploits\WeaponExploits.hpp">
+      <Filter>game\Core\Features\Exploits\Combat</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\HitboneList.hpp">
       <Filter>game\Core\Features</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Features\MagicBullets.hpp">
+      <Filter>game\Core\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\ObjectNames.hpp">
       <Filter>game\Core\Features</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Features\SilentAim.hpp">
@@ -303,64 +459,31 @@
     <ClInclude Include="game\Core\Features\Triggerbot.hpp">
       <Filter>game\Core\Features</Filter>
     </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\Exploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
+    <ClInclude Include="game\Core\Offsets.hpp">
+      <Filter>game\Core</Filter>
     </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\ExploitsCommon.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
+    <ClInclude Include="game\Core\ProcessUtils.hpp">
+      <Filter>game\Core</Filter>
     </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\MovementExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\CameraExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\CombatExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\VehicleExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\PlayerExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\VisualExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\RestoreExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\RemoteEntityOps.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\AnimationExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\SessionExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\NetSyncExploits.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\ExploitThread.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\HandlingEditor.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\ResourceList.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\VehicleSpawner.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\VehicleWarp.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\SDK\SDK.hpp">
+    <ClInclude Include="game\Core\SDK\DebugLog.hpp">
       <Filter>game\Core\SDK</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\SDK\Memory.hpp">
+      <Filter>game\Core\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\Crossmap.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\Invoker.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\NativeCaller.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\Natives\Natives.hpp">
+      <Filter>game\Core\SDK\Natives</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\SDK\SDK.hpp">
       <Filter>game\Core\SDK</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\SDK\Structs\GameClasses.hpp">
@@ -369,16 +492,19 @@
     <ClInclude Include="game\Core\SDK\Structs\Structs.hpp">
       <Filter>game\Core\SDK\Structs</Filter>
     </ClInclude>
-    <ClInclude Include="game\Core\Threads\AdhesiveBlocker.hpp">
-      <Filter>game\Core\Threads</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Threads\EventScanner.hpp">
-      <Filter>game\Core\Threads</Filter>
+    <ClInclude Include="game\Core\SetupOffsets.hpp">
+      <Filter>game\Core</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Streamproof\Streamproof.h">
       <Filter>game\Core\Streamproof</Filter>
     </ClInclude>
+    <ClInclude Include="game\Core\Threads\AdhesiveBlocker.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
     <ClInclude Include="game\Core\Threads\EntityList.hpp">
+      <Filter>game\Core\Threads</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Threads\EventScanner.hpp">
       <Filter>game\Core\Threads</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Threads\ObjectList.hpp">
@@ -396,50 +522,20 @@
     <ClInclude Include="game\Core\Threads\VehicleList.hpp">
       <Filter>game\Core\Threads</Filter>
     </ClInclude>
-    <ClInclude Include="game\Gui\gui.hpp">
-      <Filter>game\Gui</Filter>
+    <ClInclude Include="game\Core\Variables.hpp">
+      <Filter>game\Core</Filter>
     </ClInclude>
     <ClInclude Include="game\Gui\Overlay\Overlay.hpp">
       <Filter>game\Gui\Overlay</Filter>
     </ClInclude>
+    <ClInclude Include="game\Gui\gui.hpp">
+      <Filter>game\Gui</Filter>
+    </ClInclude>
     <ClInclude Include="game\Security\AntiCrack.hpp">
-      <Filter>game\Security</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\CrashHandler.hpp">
-      <Filter>game\Security</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\JunkCode.hpp">
-      <Filter>game\Security</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\UIAccess.hpp">
-      <Filter>game\Security</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\anticrack\AntiVM.hpp">
-      <Filter>game\Security\anticrack</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\anticrack\AntiTamper.hpp">
-      <Filter>game\Security\anticrack</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\anticrack\AntiDebug.hpp">
-      <Filter>game\Security\anticrack</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\anticrack\WindowCheck.hpp">
-      <Filter>game\Security\anticrack</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\LazyImporter.hpp">
-      <Filter>game\Security</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\xorstr.hpp">
       <Filter>game\Security</Filter>
     </ClInclude>
     <ClInclude Include="game\Security\Api\api.hpp">
       <Filter>game\Security\Api</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\Api\json.hpp">
-      <Filter>game\Security\Api</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Security\Api\structs\structs.hpp">
-      <Filter>game\Security\Api\structs</Filter>
     </ClInclude>
     <ClInclude Include="game\Security\Api\curl\curl.h">
       <Filter>game\Security\Api\curl</Filter>
@@ -471,8 +567,482 @@
     <ClInclude Include="game\Security\Api\curl\urlapi.h">
       <Filter>game\Security\Api\curl</Filter>
     </ClInclude>
+    <ClInclude Include="game\Security\Api\json.hpp">
+      <Filter>game\Security\Api</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\Api\structs\structs.hpp">
+      <Filter>game\Security\Api\structs</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\CrashHandler.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\JunkCode.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\LazyImporter.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\LinkerFix.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\UIAccess.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\anticrack\AntiDebug.hpp">
+      <Filter>game\Security\anticrack</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\anticrack\AntiTamper.hpp">
+      <Filter>game\Security\anticrack</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\anticrack\AntiVM.hpp">
+      <Filter>game\Security\anticrack</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\anticrack\WindowCheck.hpp">
+      <Filter>game\Security\anticrack</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Security\xorstr.hpp">
+      <Filter>game\Security</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D2D1.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D2D1Helper.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D2DBaseTypes.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D2Derr.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10_1.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10_1shader.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10effect.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D10shader.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D11.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D11SDKLayers.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3D11Shader.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DCSX.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10core.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10math.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10math.inl">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10mesh.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX10tex.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX11.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX11async.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX11core.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX11tex.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3DX_DXGIFormatConvert.inl">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3Dcommon.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\D3Dcompiler.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\DWrite.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\DXGI.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\DXGIFormat.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\DXGIType.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\Dcommon.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\DxErr.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\PIXPlugin.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\X3DAudio.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\XAPO.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\XAPOBase.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\XAPOFX.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\XAudio2.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\XAudio2fx.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\XDSP.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\XInput.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\audiodefs.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\comdecl.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d10misc.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d10sdklayers.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d9.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d9caps.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3d9types.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx10async.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9anim.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9core.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9effect.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9math.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9math.inl">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9mesh.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9shader.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9shape.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9tex.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\d3dx9xof.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
     <ClInclude Include="thirdparty\dxsdk\Include\detours.h">
-      <Filter>thirdparty\dxsdk</Filter>
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\dinput.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\dinputd.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\dsconf.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\dsetup.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\dsound.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\dxdiag.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\dxfile.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\dxsdkver.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\gameux.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\hde32.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\hde64.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\pstdint.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\rmxfguid.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\rmxftmpl.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\rpcsal.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\table32.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\table64.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\xact3.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\xact3d3.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\xact3wb.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\xma2defs.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamath.h">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamathconvert.inl">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamathmatrix.inl">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamathmisc.inl">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\dxsdk\Include\xnamathvector.inl">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftconfig.h">
+      <Filter>thirdparty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftheader.h">
+      <Filter>thirdparty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftmodule.h">
+      <Filter>thirdparty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftoption.h">
+      <Filter>thirdparty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\ftstdlib.h">
+      <Filter>thirdparty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\integer-types.h">
+      <Filter>thirdparty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\mac-support.h">
+      <Filter>thirdparty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\config\public-macros.h">
+      <Filter>thirdparty\freetype\include\freetype\config</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\freetype.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftadvanc.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftbbox.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftbdf.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftbitmap.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftbzip2.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftcache.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftchapters.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftcid.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftcolor.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftdriver.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\fterrdef.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\fterrors.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftfntfmt.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftgasp.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftglyph.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftgxval.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftgzip.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftimage.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftincrem.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftlcdfil.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftlist.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftlogging.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftlzw.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftmac.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftmm.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftmodapi.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftmoderr.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftotval.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftoutln.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftparams.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftpfr.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftrender.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftsizes.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftsnames.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftstroke.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftsynth.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftsystem.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\fttrigon.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\fttypes.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ftwinfnt.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\otsvg.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\t1tables.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\ttnameid.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\tttables.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\freetype\tttags.h">
+      <Filter>thirdparty\freetype\include\freetype</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\freetype\include\ft2build.h">
+      <Filter>thirdparty\freetype\include</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx10.h">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx11.h">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx12.h">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx9.h">
+      <Filter>thirdparty\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_win32.h">
+      <Filter>thirdparty\imgui\backends</Filter>
     </ClInclude>
     <ClInclude Include="thirdparty\imgui\imconfig.h">
       <Filter>thirdparty\imgui</Filter>
@@ -495,91 +1065,194 @@
     <ClInclude Include="thirdparty\imgui\imstb_truetype.h">
       <Filter>thirdparty\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx9.h">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClInclude>
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx10.h">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClInclude>
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx11.h">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClInclude>
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_dx12.h">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClInclude>
-    <ClInclude Include="thirdparty\imgui\backends\imgui_impl_win32.h">
-      <Filter>thirdparty\imgui\backends</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\Invoker.hpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\NativeCaller.hpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\Natives.hpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClInclude>
-    <ClInclude Include="Globals.hpp">
-      <Filter>framework</Filter>
-    </ClInclude>
-    <ClInclude Include="framework\gui\gui_internal.hpp">
-      <Filter>game\Gui\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Attach.hpp">
-      <Filter>game\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\SetupOffsets.hpp">
-      <Filter>game\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\ProcessUtils.hpp">
-      <Filter>game\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\TimeCycle.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\RunBoosting.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\OutfitChanger.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\OutfitCopy.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\Attachments.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\WeaponAttachments.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\FakeFps.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\LuaExecutor.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\CEventExecutor.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\PedSpawner.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\Features\Exploits\PropSpawner.hpp">
-      <Filter>game\Core\Features\Exploits</Filter>
-    </ClInclude>
-    <ClInclude Include="game\Core\SDK\Natives\Crossmap.hpp">
-      <Filter>game\Core\SDK\Natives</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.manifest">
-      <Filter>thirdparty\dxsdk</Filter>
+    <None Include="app.manifest" />
+    <None Include="game\Core\SDK\Natives\CrossmapEmbedded.inc">
+      <Filter>game\Core\SDK\Natives</Filter>
     </None>
     <None Include="game\Core\SDK\Natives\NativesEmbedded.inc">
       <Filter>game\Core\SDK\Natives</Filter>
     </None>
-    <None Include="game\Core\SDK\Natives\CrossmapEmbedded.inc">
-      <Filter>game\Core\SDK\Natives</Filter>
+    <None Include="game\Security\Api\curl\libcurl.lib">
+      <Filter>game\Security\Api\curl</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\D3DCSX.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\D3DCSXd.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\DxErr.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\X3DAudio.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\XAPOFX.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\XInput.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d2d1.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3d10.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3d10_1.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3d11.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3d9.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dcompiler.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx10.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx10d.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx11.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx11d.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx9.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dx9d.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\d3dxof.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\detours.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\dinput8.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\dsound.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\dwrite.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\dxgi.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\dxguid.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\xapobase.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x64\xapobased.lib">
+      <Filter>thirdparty\dxsdk\Lib\x64</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\D3DCSX.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\D3DCSXd.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\DxErr.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\X3DAudio.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\XAPOFX.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\XInput.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d2d1.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3d10.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3d10_1.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3d11.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3d9.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dcompiler.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx10.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx10d.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx11.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx11d.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx9.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dx9d.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\d3dxof.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\detours.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\dinput8.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\dsetup.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\dsound.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\dwrite.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\dxgi.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\dxguid.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\xapobase.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Lib\x86\xapobased.lib">
+      <Filter>thirdparty\dxsdk\Lib\x86</Filter>
+    </None>
+    <None Include="thirdparty\freetype\win64\freetype.lib">
+      <Filter>thirdparty\freetype\win64</Filter>
+    </None>
+    <None Include="thirdparty\imgui\LICENSE.txt">
+      <Filter>thirdparty\imgui</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Include\hde32.c">
+      <Filter>thirdparty\dxsdk\Include</Filter>
+    </None>
+    <None Include="thirdparty\dxsdk\Include\hde64.c">
+      <Filter>thirdparty\dxsdk\Include</Filter>
     </None>
   </ItemGroup>
 </Project>
