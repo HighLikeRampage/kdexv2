@@ -73,11 +73,6 @@ inline nlohmann::json GetThemeConfigJson() {
     vars[xorstr("search")][xorstr("search_active")] = var->search.search_active;
 
     vars[xorstr("auth")][xorstr("remember_login")] = var->auth.remember_login;
-    if (var->auth.remember_login) {
-        vars[xorstr("auth")][xorstr("username")] = var->auth.username;
-        vars[xorstr("auth")][xorstr("access_token")] = var->auth.access_token;
-        vars[xorstr("auth")][xorstr("refresh_token")] = var->auth.refresh_token;
-    }
 
     auto& el = j[xorstr("Elements")];
     el[xorstr("section")][xorstr("rounding")] = elements->section.rounding;
@@ -187,17 +182,6 @@ inline void ApplyThemeFromConfigJson(const nlohmann::json& j) {
         if (v.contains(xorstr("auth"))) {
             const auto& a = v[xorstr("auth")];
             if (a.contains(xorstr("remember_login"))) var->auth.remember_login = a[xorstr("remember_login")];
-            if (var->auth.remember_login) {
-                if (a.contains(xorstr("username"))) {
-                    std::string username_str = a[xorstr("username")];
-                    strncpy_s(var->auth.username, username_str.c_str(), _TRUNCATE);
-                }
-                if (a.contains(xorstr("access_token"))) var->auth.access_token = a[xorstr("access_token")];
-                if (a.contains(xorstr("refresh_token"))) var->auth.refresh_token = a[xorstr("refresh_token")];
-                if (!var->auth.access_token.empty()) {
-                    var->auth.authenticated = true;
-                }
-            }
         }
     }
     if (j.contains(xorstr("Elements"))) {

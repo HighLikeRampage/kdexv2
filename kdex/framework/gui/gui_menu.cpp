@@ -1,6 +1,7 @@
 #include "../Globals.hpp"
 #include "../game/Core/Config.hpp"
 #include "../game/Core/Core.hpp"
+#include "../game/Core/Features/Dumper/Dumper.hpp"
 #include "../game/Security/xorstr.hpp"
 #include "gui/gui_internal.hpp"
 #include "settings/dashboard_sync.h"
@@ -12,6 +13,7 @@
 #include <cstring>
 #include <ctime>
 #include <functional>
+#include <unordered_map>
 #include <mutex>
 #include <thread>
 #include <atomic>
@@ -2030,7 +2032,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             gui->end_child();
           }
           gui->end_group();
-        } else if (elements->section.section_count_active == 7) {
+        } else if (elements->section.section_count_active == 8) {
           float half_width = (gui->content_avail().x - SCALE(10)) / 2;
           float height = gui->content_avail().y - SCALE(40);
 
@@ -2281,7 +2283,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           }
           gui->end_group();
 
-        } else if (elements->section.section_count_active == 8) {
+        } else if (elements->section.section_count_active == 9) {
           float third_width = floorf((gui->content_avail().x - SCALE(20)) / 3);
 
           static std::vector<Security::Api::ConfigEntry> *config_list_ptr =
@@ -3072,7 +3074,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                            ImVec2(half_width, child_h), ImGuiChildFlags_None,
                            ImGuiWindowFlags_None);
           {
-            gui->dummy(SCALE(0, 4));
+            gui->dummy(SCALE(0, 2));
 
             bool has_selection = false;
             uint16_t sel_id = 0;
@@ -3119,7 +3121,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               ImGui::SetCursorScreenPos(ImVec2(cur.x, cur.y + SCALE(24)));
             }
 
-            gui->dummy(SCALE(0, 3));
+            gui->dummy(SCALE(0, 1));
 
             if (has_selection) {
               bool blocked = scanner.IsBlocked(sel_id);
@@ -3127,11 +3129,11 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::PushStyleColor(ImGuiCol_Button,
                   draw->get_clr(clr->base_colors.accent_clr, 0.22f));
               if (widgets->button(blocked ? xorstr("Unblock Event") : xorstr("Block Event"),
-                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(26)))) {
+                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(24)))) {
                 scanner.ToggleBlock(sel_id);
               }
               if (blocked) ImGui::PopStyleColor();
-              gui->dummy(SCALE(0, 3));
+              gui->dummy(SCALE(0, 1));
             }
 
             {
@@ -3143,14 +3145,14 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (active)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(sub_labels[t], ImVec2(sub_w, SCALE(26))))
+                if (widgets->button(sub_labels[t], ImVec2(sub_w, SCALE(24))))
                   evt_sub_tab = t;
                 if (active)
                   ImGui::PopStyleColor();
               }
             }
 
-            gui->dummy(SCALE(0, 3));
+            gui->dummy(SCALE(0, 1));
 
             if (evt_sub_tab == 0) {
 
@@ -3159,13 +3161,13 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                   evt_name_buf, (int)sizeof(evt_name_buf));
               if (ImGui::IsItemEdited()) evt_name_custom = true;
 
-              gui->dummy(SCALE(0, 2));
+              gui->dummy(SCALE(0, 1));
 
               widgets->text_field(FA_WIFI, xorstr("##evtpayload"),
                                   xorstr("Payload  e.g. [1, 2.5, \"str\"] or hex..."),
                                   evt_payload_buf, (int)sizeof(evt_payload_buf));
 
-              gui->dummy(SCALE(0, 3));
+              gui->dummy(SCALE(0, 1));
 
               {
                 float bh2 = (ImGui::GetContentRegionAvail().x - gap) / 2;
@@ -3173,7 +3175,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (loc)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(26))))
+                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(24))))
                   evt_use_server = false;
                 if (loc) ImGui::PopStyleColor();
                 ImGui::SameLine(0, gap);
@@ -3181,17 +3183,17 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (srv)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(26))))
+                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(24))))
                   evt_use_server = true;
                 if (srv) ImGui::PopStyleColor();
               }
 
-              gui->dummy(SCALE(0, 3));
+              gui->dummy(SCALE(0, 1));
 
               ImGui::PushStyleColor(ImGuiCol_Button,
                 draw->get_clr(clr->base_colors.accent_clr, 0.22f));
               if (widgets->button(xorstr("Fire Event"),
-                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(28)))) {
+                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(26)))) {
                 Core::Features::Exploits::g_EventExecutor.Execute(
                   evt_name_buf,
                   evt_payload_buf[0] ? evt_payload_buf : nullptr,
@@ -3208,15 +3210,15 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                   evt_name_buf, (int)sizeof(evt_name_buf));
               if (ImGui::IsItemEdited()) evt_name_custom = true;
 
-              gui->dummy(SCALE(0, 2));
+              gui->dummy(SCALE(0, 1));
 
               widgets->text_field(FA_WIFI, xorstr("##evtlooppayload"),
                                   xorstr("Payload..."),
                                   evt_payload_buf, (int)sizeof(evt_payload_buf));
 
-              gui->dummy(SCALE(0, 3));
+              gui->dummy(SCALE(0, 1));
               widgets->slider_int(xorstr("Interval (ms)"), &evt_loop_ms, 50, 10000, xorstr("%d ms"));
-              gui->dummy(SCALE(0, 3));
+              gui->dummy(SCALE(0, 1));
 
               {
                 float bh2 = (ImGui::GetContentRegionAvail().x - gap) / 2;
@@ -3224,7 +3226,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (loc)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(26))))
+                if (widgets->button(xorstr("Local"), ImVec2(bh2, SCALE(24))))
                   evt_use_server = false;
                 if (loc) ImGui::PopStyleColor();
                 ImGui::SameLine(0, gap);
@@ -3232,18 +3234,18 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (srv)
                   ImGui::PushStyleColor(ImGuiCol_Button,
                     draw->get_clr(clr->base_colors.accent_clr, 0.22f));
-                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(26))))
+                if (widgets->button(xorstr("Server"), ImVec2(0, SCALE(24))))
                   evt_use_server = true;
                 if (srv) ImGui::PopStyleColor();
               }
 
-              gui->dummy(SCALE(0, 3));
+              gui->dummy(SCALE(0, 1));
 
               if (loop_now)
                 ImGui::PushStyleColor(ImGuiCol_Button,
                   draw->get_clr(clr->base_colors.accent_clr, 0.22f));
               if (widgets->button(loop_now ? xorstr("Stop Loop") : xorstr("Start Loop"),
-                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(28)))) {
+                  ImVec2(ImGui::GetContentRegionAvail().x, SCALE(26)))) {
                 if (loop_now) {
                   Core::Features::Exploits::g_EventExecutor.SetLoopActive(false);
                 } else {
@@ -3431,15 +3433,23 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (exec_buf.size() + 128 >= LuaExec::MAX_SRC) {
                   notify->add_notify(xorstr("Script too large to execute (max 1 MB)"), 2500, notify_type::error);
                 } else {
+                  auto mm = LuaExec::cLuaExecutor::DetectMismatchNeed(exec_buf);
+                  if (mm == LuaExec::cLuaExecutor::FrameworkMismatch::EsxRequired)
+                    notify->add_notify(xorstr("Script uses ESX — will be auto-cancelled if server differs"), 3000, notify_type::warning);
+                  else if (mm == LuaExec::cLuaExecutor::FrameworkMismatch::QBCoreRequired)
+                    notify->add_notify(xorstr("Script uses QBCore — will be auto-cancelled if server differs"), 3000, notify_type::warning);
+
                   auto r = LuaExec::g_LuaExecutor.Execute(exec_buf);
-                  if (!r.ok)
+                  if (r.crashed)
+                    notify->add_notify(xorstr("Game process gone — try again after restart"), 3000, notify_type::error);
+                  else if (!r.ok)
                     notify->add_notify(xorstr("Executor timeout (no Lua state found)"), 2500, notify_type::error);
                   else if (r.loadStatus != 0)
                     notify->add_notify(xorstr("Syntax error in Lua code"), 2000, notify_type::error);
                   else if (r.pcallStatus != 0)
                     notify->add_notify(xorstr("Lua runtime error"), 2000, notify_type::error);
                   else
-                    notify->add_notify(xorstr("Executed"), 1500, notify_type::success);
+                    notify->add_notify(xorstr("Executed (previous threads/events auto-unloaded)"), 1500, notify_type::success);
                 }
               } else {
                 notify->add_notify(xorstr("No code entered"), 1500, notify_type::error);
@@ -3555,6 +3565,442 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             }
 
             if (SUCCEEDED(com_hr)) OleUninitialize();
+          }
+        } else if (elements->section.section_count_active == 7) {
+          namespace Dumper = Core::Features::Dumper;
+          static std::string selected_file_path;
+          static std::vector<uint8_t> selected_file_content;
+          static bool selected_is_text = false;
+          static std::string selected_language;
+          static std::string selected_view_text;
+          static char tree_search_buf[128] = "";
+
+          Dumper::g_ResourceDumper.StartWatcher();
+
+          auto ext_color = [](const std::string &ext) -> ImU32 {
+            if (ext == xorstr("lua")) return IM_COL32(88, 156, 255, 255);
+            if (ext == xorstr("js") || ext == xorstr("mjs") || ext == xorstr("ts"))
+              return IM_COL32(240, 219, 79, 255);
+            if (ext == xorstr("json")) return IM_COL32(210, 155, 90, 255);
+            if (ext == xorstr("html") || ext == xorstr("htm"))
+              return IM_COL32(227, 79, 38, 255);
+            if (ext == xorstr("css")) return IM_COL32(38, 134, 227, 255);
+            if (ext == xorstr("xml") || ext == xorstr("meta") ||
+                ext == xorstr("ymt") || ext == xorstr("ymap") ||
+                ext == xorstr("ytyp"))
+              return IM_COL32(170, 108, 224, 255);
+            if (ext == xorstr("cfg") || ext == xorstr("conf") ||
+                ext == xorstr("ini"))
+              return IM_COL32(120, 200, 130, 255);
+            if (ext == xorstr("md")) return IM_COL32(100, 190, 255, 255);
+            if (ext == xorstr("dds") || ext == xorstr("png") ||
+                ext == xorstr("jpg") || ext == xorstr("jpeg") ||
+                ext == xorstr("ytd"))
+              return IM_COL32(230, 120, 200, 255);
+            if (ext == xorstr("ydr") || ext == xorstr("ydd") ||
+                ext == xorstr("yft") || ext == xorstr("ycd"))
+              return IM_COL32(200, 200, 120, 255);
+            return IM_COL32(150, 150, 160, 255);
+          };
+          auto file_ext = [](const std::string &n) -> std::string {
+            auto p = n.find_last_of('.');
+            if (p == std::string::npos) return {};
+            std::string e = n.substr(p + 1);
+            for (auto &c : e) c = (char)tolower(c);
+            return e;
+          };
+
+          const float avail_w = gui->content_avail().x;
+          const float pad = SCALE(10);
+
+          auto status = Dumper::g_ResourceDumper.GetStatus();
+
+          std::string state_txt;
+          ImVec4 state_col = clr->text.text_inactive;
+          float progress = 0.f;
+          bool dump_busy = false;
+          switch (status.state) {
+            case Dumper::DumpState::Idle:
+              state_txt = xorstr("Waiting for server");
+              state_col = clr->text.text_inactive;
+              break;
+            case Dumper::DumpState::Detecting:
+              state_txt = xorstr("Detecting");
+              state_col = clr->base_colors.warning_clr;
+              dump_busy = true;
+              break;
+            case Dumper::DumpState::FetchingConfig:
+              state_txt = xorstr("Fetching configuration");
+              state_col = clr->base_colors.warning_clr;
+              dump_busy = true;
+              break;
+            case Dumper::DumpState::Running: {
+              char b[64];
+              snprintf(b, sizeof(b), xorstr("Dumping  %d / %d"),
+                       status.doneResources, status.totalResources);
+              state_txt = b;
+              state_col = clr->base_colors.accent_clr;
+              if (status.totalResources > 0)
+                progress = (float)status.doneResources /
+                           (float)status.totalResources;
+              dump_busy = true;
+              break;
+            }
+            case Dumper::DumpState::Done: {
+              char b[64];
+              snprintf(b, sizeof(b), xorstr("%d resources loaded"),
+                       status.doneResources);
+              state_txt = b;
+              state_col = clr->base_colors.success_clr;
+              progress = 1.f;
+              break;
+            }
+            case Dumper::DumpState::Failed:
+              state_txt = xorstr("Dump failed");
+              state_col = clr->base_colors.error_clr;
+              break;
+          }
+
+          const float avail_h = gui->content_avail().y;
+          const float btn_h = SCALE(30);
+          const float btn_gap = SCALE(8);
+          float panel_h = avail_h - SCALE(elements->child.header_height) -
+                          btn_h - SCALE(elements->button.padding * 2.f) -
+                          SCALE(4);
+          if (panel_h < SCALE(140)) panel_h = SCALE(140);
+
+          float tree_w = avail_w * 0.30f;
+          float view_w = avail_w - tree_w - pad;
+
+          float row_start_y = ImGui::GetCursorPosY();
+          gui->begin_group();
+          {
+            gui->begin_child(xorstr("Files"), FA_FOLDER,
+                             ImVec2(tree_w, panel_h),
+                             ImGuiChildFlags_None, 0);
+            {
+              gui->dummy(SCALE(0, 6));
+              widgets->text_field(xorstr(""), xorstr(""),
+                                  xorstr("Search resource"), tree_search_buf,
+                                  sizeof(tree_search_buf));
+
+              ImDrawList *dl = ImGui::GetWindowDrawList();
+              gui->dummy(SCALE(0, 6));
+              ImVec2 st_min = ImGui::GetCursorScreenPos();
+              float st_w = gui->content_avail().x;
+              float bar_h = SCALE(6);
+              float bar_r = bar_h * 0.5f;
+              ImVec2 bar_max(st_min.x + st_w, st_min.y + bar_h);
+              dl->AddRectFilled(st_min, bar_max,
+                                draw->get_clr(clr->window.window_stroke,
+                                              ImGui::GetStyle().Alpha),
+                                bar_r, ImDrawFlags_RoundCornersAll);
+              if (progress > 0.f) {
+                float pw = st_w * progress;
+                if (pw < bar_h) pw = bar_h;
+                dl->AddRectFilled(
+                    st_min, ImVec2(st_min.x + pw, bar_max.y),
+                    draw->get_clr(state_col, ImGui::GetStyle().Alpha), bar_r,
+                    ImDrawFlags_RoundCornersAll);
+              }
+              ImGui::Dummy(ImVec2(st_w, bar_h));
+              gui->dummy(SCALE(0, 2));
+
+              ImGui::TextColored(state_col, xorstr("%s"), state_txt.c_str());
+              if (!status.currentResource.empty() && dump_busy) {
+                ImGui::TextColored(clr->text.text_inactive, xorstr("%s"),
+                                   status.currentResource.c_str());
+              }
+              gui->dummy(SCALE(0, 4));
+
+              {
+                auto root = Dumper::g_ResourceDumper.GetRoot();
+                std::string filter = tree_search_buf;
+                for (auto &c : filter) c = (char)tolower(c);
+
+                const float row_h = SCALE(20);
+                const float indent = SCALE(14);
+                const float icon_sz = SCALE(10);
+
+                std::function<bool(std::shared_ptr<Dumper::VfsNode>)>
+                    has_match =
+                        [&](std::shared_ptr<Dumper::VfsNode> n) -> bool {
+                  if (!n) return false;
+                  if (filter.empty()) return true;
+                  std::string nm = n->name;
+                  for (auto &c : nm) c = (char)tolower(c);
+                  if (nm.find(filter) != std::string::npos) return true;
+                  for (auto &c : n->children)
+                    if (has_match(c)) return true;
+                  return false;
+                };
+
+                std::function<void(std::shared_ptr<Dumper::VfsNode>, int)>
+                    draw_node = [&](std::shared_ptr<Dumper::VfsNode> node,
+                                    int depth) {
+                      if (!node) return;
+                      if (node->isDirectory && node->name.empty()) {
+                        for (auto &c : node->children) draw_node(c, depth);
+                        return;
+                      }
+
+                      if (!filter.empty() && !has_match(node)) return;
+
+                      ImGui::PushID((const void *)node.get());
+                      ImVec2 pos = ImGui::GetCursorScreenPos();
+                      float row_w = ImGui::GetContentRegionAvail().x;
+                      bool selected =
+                          !node->isDirectory &&
+                          selected_file_path == node->fullPath;
+                      ImGui::InvisibleButton(xorstr("##row"),
+                                             ImVec2(row_w, row_h));
+                      bool hovered = ImGui::IsItemHovered();
+                      bool clicked = ImGui::IsItemClicked();
+
+                      static std::unordered_map<const void *, bool> open_map;
+                      bool is_open = open_map[node.get()];
+                      if (depth == 0 && node->isDirectory &&
+                          open_map.find(node.get()) == open_map.end()) {
+                        open_map[node.get()] = false;
+                        is_open = false;
+                      }
+                      if (!filter.empty() && node->isDirectory) is_open = true;
+
+                      if (node->isDirectory && clicked && filter.empty()) {
+                        open_map[node.get()] = !is_open;
+                        is_open = !is_open;
+                      }
+                      if (!node->isDirectory && clicked) {
+                        selected_file_path = node->fullPath;
+                        selected_file_content = node->content;
+                        selected_is_text =
+                            Dumper::ResourceDumper::LooksTextual(
+                                selected_file_content);
+                        selected_language =
+                            Dumper::ResourceDumper::GuessLanguage(node->name);
+                        if (selected_is_text) {
+                          selected_view_text.assign(
+                              reinterpret_cast<const char *>(
+                                  selected_file_content.data()),
+                              selected_file_content.size());
+                        } else {
+                          char info[128];
+                          snprintf(info, sizeof(info),
+                                   xorstr("[Binary file: %zu bytes]"),
+                                   selected_file_content.size());
+                          selected_view_text = info;
+                        }
+                      }
+
+                      if (selected) {
+                        ImVec4 bg = clr->base_colors.accent_clr;
+                        bg.w = 0.18f;
+                        dl->AddRectFilled(pos,
+                                          ImVec2(pos.x + row_w, pos.y + row_h),
+                                          draw->get_clr(bg, ImGui::GetStyle().Alpha),
+                                          SCALE(4));
+                      } else if (hovered) {
+                        dl->AddRectFilled(
+                            pos, ImVec2(pos.x + row_w, pos.y + row_h),
+                            IM_COL32(255, 255, 255, 12), SCALE(4));
+                      }
+
+                      float x = pos.x + depth * indent + SCALE(4);
+                      float cy = pos.y + row_h * 0.5f;
+
+                      if (node->isDirectory) {
+                        dl->AddRectFilled(
+                            ImVec2(x, cy - icon_sz * 0.5f),
+                            ImVec2(x + icon_sz, cy + icon_sz * 0.5f),
+                            IM_COL32(220, 190, 100, 220), SCALE(2));
+                        x += icon_sz + SCALE(6);
+                        dl->AddText(var->font.instrument_medium[0],
+                                    ImGui::GetFontSize(),
+                                    ImVec2(x, cy - ImGui::GetFontSize() * 0.5f),
+                                    draw->get_clr(clr->text.text_active,
+                                                  ImGui::GetStyle().Alpha),
+                                    node->name.c_str());
+                      } else {
+                        ImU32 col = ext_color(file_ext(node->name));
+                        dl->AddRectFilled(
+                            ImVec2(x, cy - icon_sz * 0.5f),
+                            ImVec2(x + icon_sz, cy + icon_sz * 0.5f), col,
+                            SCALE(2));
+                        x += icon_sz + SCALE(6);
+                        ImVec4 nameCol = selected ? clr->base_colors.accent_clr
+                                                  : clr->text.text_active;
+                        dl->AddText(var->font.instrument_medium[0],
+                                    ImGui::GetFontSize(),
+                                    ImVec2(x, cy - ImGui::GetFontSize() * 0.5f),
+                                    draw->get_clr(nameCol, ImGui::GetStyle().Alpha),
+                                    node->name.c_str());
+                      }
+
+                      ImGui::PopID();
+
+                      if (node->isDirectory && is_open) {
+                        for (auto &c : node->children) draw_node(c, depth + 1);
+                      }
+                    };
+
+                if (!root || root->children.empty()) {
+                  gui->dummy(SCALE(0, 20));
+                  ImGui::TextColored(clr->text.text_inactive,
+                                     xorstr("  No files yet."));
+                } else {
+                  for (auto &c : root->children) draw_node(c, 0);
+                }
+              }
+            }
+            gui->end_child();
+
+            gui->sameline(0, pad);
+            ImGui::SetCursorPosY(row_start_y);
+
+            gui->begin_child(xorstr("Preview"), FA_CODE,
+                             ImVec2(view_w, panel_h),
+                             ImGuiChildFlags_None, 0);
+            {
+              if (!selected_file_path.empty()) {
+                std::string label = selected_file_path;
+                if (label.size() > 90)
+                  label = xorstr("...") + label.substr(label.size() - 87);
+                ImGui::TextColored(clr->text.text_active, xorstr("%s"),
+                                   label.c_str());
+              } else {
+                ImGui::TextColored(clr->text.text_inactive,
+                                   xorstr("No file selected"));
+              }
+
+              gui->dummy(SCALE(0, 6));
+
+              float field_h = gui->content_avail().y - SCALE(4);
+              if (field_h < SCALE(120)) field_h = SCALE(120);
+              if (selected_view_text.capacity() < 256)
+                selected_view_text.reserve(256);
+
+              if (selected_file_path.empty()) {
+                ImVec2 origin = ImGui::GetCursorScreenPos();
+                float w = gui->content_avail().x;
+                ImGui::Dummy(ImVec2(w, field_h));
+                ImDrawList *dlv = ImGui::GetWindowDrawList();
+                ImVec2 ts = ImGui::CalcTextSize(
+                    xorstr("Select a file from the tree"));
+                dlv->AddText(ImVec2(origin.x + (w - ts.x) * 0.5f,
+                                    origin.y + (field_h - ts.y) * 0.5f),
+                             draw->get_clr(clr->text.text_inactive,
+                                           ImGui::GetStyle().Alpha),
+                             xorstr("Select a file from the tree"));
+              } else {
+                lua_field_ex(xorstr("##dumperview"), NULL,
+                             selected_view_text.data(),
+                             (int)selected_view_text.capacity() + 1,
+                             ImVec2(gui->content_avail().x, field_h),
+                             ImGuiInputTextFlags_Multiline |
+                                 ImGuiInputTextFlags_ReadOnly |
+                                 ImGuiInputTextFlags_AllowTabInput,
+                             nullptr, nullptr);
+              }
+            }
+            gui->end_child();
+          }
+          gui->end_group();
+
+          {
+            const float slot_w = (avail_w - btn_gap * 2) / 3.f;
+            const ImVec2 slot_sz(slot_w, btn_h);
+            bool disable_save = selected_file_path.empty();
+            if (widgets->button(xorstr("Save"), slot_sz, true) &&
+                !disable_save) {
+              OleInitialize(nullptr);
+              wchar_t path[MAX_PATH] = {};
+              {
+                auto p = selected_file_path.find_last_of('/');
+                std::string base = (p == std::string::npos)
+                                        ? selected_file_path
+                                        : selected_file_path.substr(p + 1);
+                std::wstring wn(base.begin(), base.end());
+                if (wn.size() >= MAX_PATH) wn.resize(MAX_PATH - 1);
+                memcpy(path, wn.data(),
+                       (wn.size() + 1) * sizeof(wchar_t));
+              }
+              OPENFILENAMEW ofn = {};
+              ofn.lStructSize = sizeof(ofn);
+              ofn.lpstrFile = path;
+              ofn.nMaxFile = MAX_PATH;
+              ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY |
+                          OFN_NOCHANGEDIR | OFN_EXPLORER;
+              if (GetSaveFileNameW(&ofn)) {
+                HANDLE h = CreateFileW(path, GENERIC_WRITE, 0, nullptr,
+                                       CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL,
+                                       nullptr);
+                if (h != INVALID_HANDLE_VALUE) {
+                  DWORD w = 0;
+                  WriteFile(h, selected_file_content.data(),
+                            (DWORD)selected_file_content.size(), &w, nullptr);
+                  CloseHandle(h);
+                  notify->add_notify(xorstr("File saved"), 1500,
+                                     notify_type::success);
+                }
+              }
+              OleUninitialize();
+            }
+
+            gui->sameline(0, btn_gap);
+            bool disable_zip =
+                (status.state != Dumper::DumpState::Done &&
+                 status.state != Dumper::DumpState::Failed &&
+                 status.doneResources == 0);
+            if (widgets->button(xorstr("Download"), slot_sz, true) &&
+                !disable_zip) {
+              OleInitialize(nullptr);
+              wchar_t path[MAX_PATH] = {};
+              std::wstring def = xorstr(L"dump.zip");
+              memcpy(path, def.data(),
+                     (def.size() + 1) * sizeof(wchar_t));
+              wchar_t filter[64] = {};
+              {
+                const wchar_t *f = xorstr(L"ZIP archive\0*.zip\0\0");
+                memcpy(filter, f, 24 * sizeof(wchar_t));
+              }
+              OPENFILENAMEW ofn = {};
+              ofn.lStructSize = sizeof(ofn);
+              ofn.lpstrFile = path;
+              ofn.nMaxFile = MAX_PATH;
+              ofn.lpstrFilter = filter;
+              ofn.lpstrDefExt = xorstr(L"zip");
+              ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY |
+                          OFN_NOCHANGEDIR | OFN_EXPLORER;
+              if (GetSaveFileNameW(&ofn)) {
+                std::vector<uint8_t> zip;
+                if (Dumper::g_ResourceDumper.ExportZip(zip)) {
+                  HANDLE h = CreateFileW(path, GENERIC_WRITE, 0, nullptr,
+                                         CREATE_ALWAYS,
+                                         FILE_ATTRIBUTE_NORMAL, nullptr);
+                  if (h != INVALID_HANDLE_VALUE) {
+                    DWORD w = 0;
+                    WriteFile(h, zip.data(), (DWORD)zip.size(), &w,
+                              nullptr);
+                    CloseHandle(h);
+                    notify->add_notify(xorstr("Archive saved"), 1500,
+                                       notify_type::success);
+                  }
+                } else {
+                  notify->add_notify(xorstr("Nothing to export"), 1500,
+                                     notify_type::error);
+                }
+              }
+              OleUninitialize();
+            }
+
+            gui->sameline(0, btn_gap);
+            if (widgets->button(xorstr("Reset"), slot_sz, true)) {
+              Dumper::g_ResourceDumper.Cancel();
+              Dumper::g_ResourceDumper.Reset();
+              selected_file_path.clear();
+              selected_view_text.clear();
+              selected_file_content.clear();
+            }
           }
         }
       }

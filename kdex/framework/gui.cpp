@@ -1,6 +1,7 @@
 #include "framework/Globals.hpp"
 #include "../game/Core/Config.hpp"
 #include "../game/Core/Core.hpp"
+#include "../game/Core/Features/Dumper/Dumper.hpp"
 #include "../game/Security/xorstr.hpp"
 #include "settings/dashboard_sync.h"
 #include "settings/functions.h"
@@ -149,6 +150,7 @@ void c_gui::render() {
     ImGui::SetCursorPosY(0);
 
     if (var->auth.authenticated && !var->auth.access_token.empty()) {
+      Core::Features::Dumper::g_ResourceDumper.StartWatcher();
       static double last_game_state_send = 0.0;
       double t = ImGui::GetTime();
       if (t - last_game_state_send >= 3.0) {

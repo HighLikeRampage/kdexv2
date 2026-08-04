@@ -168,6 +168,7 @@
     <ClCompile Include="framework\gui\gui_menu.cpp" />
     <ClCompile Include="framework\gui\gui_spinner.cpp" />
     <ClCompile Include="game\Core\Features\Aimbot.cpp" />
+    <ClCompile Include="game\Core\Features\Dumper\Dumper.cpp" />
     <ClCompile Include="game\Core\Features\Esp.cpp" />
     <ClCompile Include="game\Core\Features\MagicBullets.cpp" />
     <ClCompile Include="game\Core\Features\ObjectNames.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="game\Core\Config.hpp" />
     <ClInclude Include="game\Core\Core.hpp" />
     <ClInclude Include="game\Core\Features\Aimbot.hpp" />
+    <ClInclude Include="game\Core\Features\Dumper\Dumper.hpp" />
     <ClInclude Include="game\Core\Features\ESP.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\Combat\Attachments.hpp" />
     <ClInclude Include="game\Core\Features\Exploits\Combat\CombatExploits.hpp" />

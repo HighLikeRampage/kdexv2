@@ -46,11 +46,12 @@ public:
             FA_HANDSHAKE,
             FA_COPY,
             FA_CODE,
+            FA_TERMINAL,
             FA_FOLDER,
             FA_GEAR
         },
         {std::string(xorstr("Aim")), std::string(xorstr("Visuals")), std::string(xorstr("Exploits")), std::string(xorstr("Players")), std::string(xorstr("Friends")),
-         std::string(xorstr("Events")), std::string(xorstr("Executor")), std::string(xorstr("Resources")), std::string(xorstr("Configs"))}};
+         std::string(xorstr("Events")), std::string(xorstr("Executor")), std::string(xorstr("Dumper")), std::string(xorstr("Resources")), std::string(xorstr("Configs"))}};
 
     std::vector<std::string> sub_section_list{};
 

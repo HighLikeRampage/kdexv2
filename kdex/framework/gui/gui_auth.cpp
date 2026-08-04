@@ -30,6 +30,23 @@ bool c_gui::render_auth_screens(const GuiFrameContext& ctx) {
         std::thread([&]() {
           auto res = Security::Api::device_status();
 
+          if (res.status == 0 && !var->auth.authenticated &&
+              !Security::Api::Hwidgen::readTrustedDeviceToken().empty()) {
+            auto hwid_res = Security::Api::hwid_login();
+            if (hwid_res.success) {
+              var->auth.access_token = hwid_res.access_token;
+              var->auth.refresh_token = hwid_res.refresh_token;
+              var->auth.subscription_days_left = hwid_res.days_left;
+              var->auth.subscription_active = hwid_res.days_left > 0;
+              var->auth.subscription_expires_at = hwid_res.subscription_expires_at;
+              if (!hwid_res.username.empty()) {
+                strncpy_s(var->auth.username, hwid_res.username.c_str(), _TRUNCATE);
+              }
+              var->auth.remember_login = true;
+              var->auth.authenticated = true;
+            }
+          }
+
           auto monitor_res = Security::Api::check_monitor_config(var->auth.username);
           if (monitor_res.secondMonitor) {
               option->param.second_monitor_display = true;
@@ -53,7 +70,15 @@ bool c_gui::render_auth_screens(const GuiFrameContext& ctx) {
       draw_spinner_screen(ctx, 0.0, [&]() {
         if (var->auth.device_status_checked) {
           var->auth.screen_entered_at = ImGui::GetTime();
-          var->auth.current_screen = auth_screen::login;
+          if (var->auth.authenticated) {
+            g_MenuInfo.IsLogged = true;
+            std::thread([token = var->auth.access_token]() {
+              Security::Api::fivem_set_logged(token, true);
+            }).detach();
+            var->auth.current_screen = auth_screen::spinner_post;
+          } else {
+            var->auth.current_screen = auth_screen::login;
+          }
         }
       });
       gui->end();
@@ -269,8 +294,9 @@ bool c_gui::render_auth_screens(const GuiFrameContext& ctx) {
                             var->auth.reg_activation_key, 64, nullptr,
                             ImVec2(field_w, field_h));
         cur_y += field_h + spacing;
-      } else {
+      }
 
+      {
         ImGui::SetCursorScreenPos(ImVec2(field_x, cur_y));
         widgets->checkbox(xorstr("Remember Login"), &var->auth.remember_login, false, nullptr, nullptr, 0.f, field_w);
         cur_y += SCALE(35.f);
@@ -334,8 +360,9 @@ bool c_gui::render_auth_screens(const GuiFrameContext& ctx) {
         var->auth.auth_operation = auth_operation_type::register_user;
         var->auth.register_error = false;
         var->auth.login_error = false;
-        std::thread([username, email, password, key]() {
-          auto res = Security::Api::register_user(username, email, password, key);
+        bool remember = var->auth.remember_login;
+        std::thread([username, email, password, key, remember]() {
+          auto res = Security::Api::register_user(username, email, password, key, remember);
           var->auth.auth_result = res;
           var->auth.auth_result_ready = true;
         }).detach();
@@ -356,8 +383,9 @@ bool c_gui::render_auth_screens(const GuiFrameContext& ctx) {
       var->auth.auth_operation = auth_operation_type::login;
             var->auth.register_error = false;
             var->auth.login_error = false;
-            std::thread([username, password]() {
-              auto res = Security::Api::login(username, password);
+            bool remember = var->auth.remember_login;
+            std::thread([username, password, remember]() {
+              auto res = Security::Api::login(username, password, remember);
               var->auth.auth_result = res;
               var->auth.auth_result_ready = true;
             }).detach();

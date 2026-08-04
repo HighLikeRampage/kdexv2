@@ -53,6 +53,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 static std::atomic<bool> g_dashboard_stop{ false };
 static std::atomic<int> g_dashboard_validate_result{ -1 };
+static std::atomic<int> g_live_config_version{ 0 };
 static std::mutex g_dashboard_mutex;
 static std::string g_dashboard_token;
 static std::vector<Security::Api::FivemCommandItem> g_dashboard_pending_commands;
@@ -453,57 +454,97 @@ namespace Gui {
             if (g_dashboard_thread_started) return;
             g_dashboard_thread_started = true;
             g_dashboard_stop = false;
+
             std::thread([]() {
-                int tick_count = 0;
+                using namespace std::chrono;
+                auto next_validate = steady_clock::now();
+                auto next_heartbeat = steady_clock::now();
+                auto next_gamestate = steady_clock::now();
+                const auto VALIDATE_EVERY = seconds(3);
+                const auto HEARTBEAT_EVERY = seconds(5);
+                const auto GAMESTATE_EVERY = seconds(3);
+
                 while (!g_dashboard_stop && !Core::g_Variables.g_Unload) {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                    std::this_thread::sleep_for(milliseconds(50));
                     if (g_dashboard_stop || Core::g_Variables.g_Unload) break;
+
                     std::string token;
                     std::string game_state_json;
                     std::string live_config_json;
                     {
                         std::lock_guard<std::mutex> lock(g_dashboard_mutex);
                         token = g_dashboard_token;
-                        if (tick_count % 6 == 0 && !g_pending_game_state_json.empty()) {
-                            game_state_json = std::move(g_pending_game_state_json);
-                            g_pending_game_state_json.clear();
-                        }
-                        if (tick_count % 10 == 0 && !g_pending_live_config_json.empty()) {
+                        if (!g_pending_live_config_json.empty()) {
                             live_config_json = std::move(g_pending_live_config_json);
                             g_pending_live_config_json.clear();
                         }
+                        auto now = steady_clock::now();
+                        if (!g_pending_game_state_json.empty() && now >= next_gamestate) {
+                            game_state_json = std::move(g_pending_game_state_json);
+                            g_pending_game_state_json.clear();
+                            next_gamestate = now + GAMESTATE_EVERY;
+                        }
                     }
-                    if (!token.empty()) {
-                        int r = Security::Api::validate_session(token);
-                        g_dashboard_validate_result.store(r);
-                        if (tick_count % 4 == 0) {
-                            auto cmds = Security::Api::fivem_fetch_commands(token);
-                            if (!cmds.empty()) {
-                                std::lock_guard<std::mutex> lock(g_dashboard_mutex);
-                                for (auto& c : cmds) {
-                                    if (c.type == std::string(xorstr("apply_live_config"))) {
-                                        std::string live_data = Security::Api::live_config_get(token);
-                                        if (!live_data.empty()) {
-                                            c.payload = nlohmann::json::parse(live_data);
-                                        }
-                                    }
-                                    g_dashboard_pending_commands.push_back(std::move(c));
-                                }
-                            }
-                        }
-                        if (tick_count % 8 == 0) {
-                            Security::Api::fivem_set_logged(token, true);
-                        }
-                        if (!game_state_json.empty()) {
-                            try {
-                                nlohmann::json arr = nlohmann::json::parse(game_state_json);
-                                Security::Api::game_state_update(token, arr);
-                            } catch (...) {}
-                        }
-                        if (!live_config_json.empty())
-                            Security::Api::live_config_update(token, live_config_json);
+
+                    if (token.empty()) continue;
+
+                    if (!live_config_json.empty()) {
+                        int probe = g_live_config_version.load();
+                        Security::Api::live_config_update(token, live_config_json, &probe);
+                        g_live_config_version.store(probe);
                     }
-                    if (++tick_count >= 30) tick_count = 0;
+
+                    auto now = steady_clock::now();
+                    if (now >= next_validate) {
+                        next_validate = now + VALIDATE_EVERY;
+                        g_dashboard_validate_result.store(
+                            Security::Api::validate_session(token));
+                    }
+                    if (now >= next_heartbeat) {
+                        next_heartbeat = now + HEARTBEAT_EVERY;
+                        Security::Api::fivem_set_logged(token, true);
+                    }
+                    if (!game_state_json.empty()) {
+                        try {
+                            nlohmann::json arr = nlohmann::json::parse(game_state_json);
+                            Security::Api::game_state_update(token, arr);
+                        } catch (...) {}
+                    }
+                }
+            }).detach();
+
+            std::thread([]() {
+                using namespace std::chrono;
+                while (!g_dashboard_stop && !Core::g_Variables.g_Unload) {
+                    std::string token;
+                    {
+                        std::lock_guard<std::mutex> lock(g_dashboard_mutex);
+                        token = g_dashboard_token;
+                    }
+                    if (token.empty()) {
+                        std::this_thread::sleep_for(milliseconds(150));
+                        continue;
+                    }
+                    int since = g_live_config_version.load();
+                    auto result = Security::Api::live_config_wait(token, since, 25000);
+                    if (g_dashboard_stop || Core::g_Variables.g_Unload) break;
+                    if (!result.ok) {
+                        std::this_thread::sleep_for(milliseconds(200));
+                        continue;
+                    }
+                    if (result.changed && !result.data.empty() && result.version > since) {
+                        g_live_config_version.store(result.version);
+                        std::lock_guard<std::mutex> lock(g_dashboard_mutex);
+                        Security::Api::FivemCommandItem synthetic;
+                        synthetic.id = 0;
+                        synthetic.type = std::string(xorstr("apply_live_config"));
+                        try {
+                            synthetic.payload = nlohmann::json::parse(result.data);
+                        } catch (...) {
+                            continue;
+                        }
+                        g_dashboard_pending_commands.push_back(std::move(synthetic));
+                    }
                 }
             }).detach();
         };
@@ -897,22 +938,12 @@ namespace Gui {
                 }
                 for (const auto& cmd : commands_local)
                 {
-                    if (cmd.type == std::string(xorstr("apply_config")) && !cmd.payload.is_null())
+                    if (cmd.type == std::string(xorstr("apply_live_config")) && !cmd.payload.is_null())
                     {
-                        int id = cmd.payload.value(xorstr("configId"), 0);
-                        if (id <= 0) id = cmd.payload.value(xorstr("config_id"), 0);
-                        if (id > 0)
-                            var->auth.pending_remote_config_id = id;
-                    }
-                    else if (cmd.type == std::string(xorstr("apply_live_config")))
-                    {
-                        if (!cmd.payload.is_null())
-                        {
-                            try {
-                                if (cmd.payload.contains(xorstr("Options")) && cmd.payload[xorstr("Options")].is_object())
-                                    OptionsConfig::ApplyOptionsParamFromJson(cmd.payload[xorstr("Options")], &option->param);
-                            } catch (...) {}
-                        }
+                        try {
+                            if (cmd.payload.contains(xorstr("Options")) && cmd.payload[xorstr("Options")].is_object())
+                                OptionsConfig::ApplyOptionsParamFromJson(cmd.payload[xorstr("Options")], &option->param);
+                        } catch (...) {}
                     }
                 }
 
@@ -920,7 +951,7 @@ namespace Gui {
                 static std::string last_pushed_config_json = "";
                 double t = ImGui::GetTime();
                 if (last_live_config_push == 0.0) last_live_config_push = t;
-                if (t - last_live_config_push >= 5.0)
+                if (t - last_live_config_push >= 0.1)
                 {
                     last_live_config_push = t;
                     nlohmann::json payload_obj;

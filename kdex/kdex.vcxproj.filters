@@ -28,6 +28,9 @@
     <Filter Include="game\Core\Features">
       <UniqueIdentifier>{18321287-6e47-4933-90d9-7e18105085e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="game\Core\Features\Dumper">
+      <UniqueIdentifier>{8f27a144-9b4d-4d84-9b48-7c8f0d3f5c11}</UniqueIdentifier>
+    </Filter>
     <Filter Include="game\Core\Features\Exploits">
       <UniqueIdentifier>{53982467-3343-4250-891d-55734d318991}</UniqueIdentifier>
     </Filter>
@@ -216,6 +219,9 @@
     <ClCompile Include="game\Core\Features\Aimbot.cpp">
       <Filter>game\Core\Features</Filter>
     </ClCompile>
+    <ClCompile Include="game\Core\Features\Dumper\Dumper.cpp">
+      <Filter>game\Core\Features\Dumper</Filter>
+    </ClCompile>
     <ClCompile Include="game\Core\Features\Esp.cpp">
       <Filter>game\Core\Features</Filter>
     </ClCompile>
@@ -350,6 +356,9 @@
     </ClInclude>
     <ClInclude Include="game\Core\Features\Aimbot.hpp">
       <Filter>game\Core\Features</Filter>
+    </ClInclude>
+    <ClInclude Include="game\Core\Features\Dumper\Dumper.hpp">
+      <Filter>game\Core\Features\Dumper</Filter>
     </ClInclude>
     <ClInclude Include="game\Core\Features\ESP.hpp">
       <Filter>game\Core\Features</Filter>

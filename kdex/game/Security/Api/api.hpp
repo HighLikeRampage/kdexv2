@@ -345,6 +345,46 @@ inline std::string getHwid() {
 
   return CalculateSHA256(rawHWID);
 }
+
+inline std::string getTrustedDeviceStorePath() {
+  wchar_t roaming[MAX_PATH] = {};
+  DWORD n = GetEnvironmentVariableW(L"APPDATA", roaming, MAX_PATH);
+  std::string base;
+  if (n > 0 && n < MAX_PATH) {
+    char narrow[MAX_PATH * 2] = {};
+    WideCharToMultiByte(CP_UTF8, 0, roaming, -1, narrow, sizeof(narrow), nullptr, nullptr);
+    base = narrow;
+  } else {
+    base = ".";
+  }
+  base += xorstr("\\discord");
+  CreateDirectoryA(base.c_str(), nullptr);
+  return base + xorstr("\\kdex_dev.bin");
+}
+
+inline std::string readTrustedDeviceToken() {
+  std::string path = getTrustedDeviceStorePath();
+  HANDLE h = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+  if (h == INVALID_HANDLE_VALUE) return {};
+  DWORD sz = GetFileSize(h, nullptr);
+  if (sz == 0 || sz > 4096) { CloseHandle(h); return {}; }
+  std::string buf; buf.resize(sz);
+  DWORD read = 0;
+  ReadFile(h, buf.data(), sz, &read, nullptr);
+  CloseHandle(h);
+  buf.resize(read);
+  return buf;
+}
+
+inline void writeTrustedDeviceToken(const std::string& token) {
+  std::string path = getTrustedDeviceStorePath();
+  if (token.empty()) { DeleteFileA(path.c_str()); return; }
+  HANDLE h = CreateFileA(path.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_HIDDEN, nullptr);
+  if (h == INVALID_HANDLE_VALUE) return;
+  DWORD w = 0;
+  WriteFile(h, token.data(), (DWORD)token.size(), &w, nullptr);
+  CloseHandle(h);
+}
 }
 
 namespace detail {
@@ -368,6 +408,15 @@ inline nlohmann::json build_device_info() {
   DWORD len = static_cast<DWORD>(std::size(hostname));
   if (GetComputerNameW(hostname, &len))
     info[xorstr("hostname")] = wide_to_utf8(hostname);
+  SYSTEM_INFO si = {};
+  GetNativeSystemInfo(&si);
+  switch (si.wProcessorArchitecture) {
+    case PROCESSOR_ARCHITECTURE_AMD64: info[xorstr("arch")] = xorstr("x64"); break;
+    case PROCESSOR_ARCHITECTURE_ARM64: info[xorstr("arch")] = xorstr("arm64"); break;
+    case PROCESSOR_ARCHITECTURE_INTEL: info[xorstr("arch")] = xorstr("x86"); break;
+    default: info[xorstr("arch")] = xorstr("unknown"); break;
+  }
+  info[xorstr("osType")] = xorstr("Windows_NT");
 #endif
   return info;
 }
@@ -491,8 +540,12 @@ inline std::string map_error_code(const std::string &code) {
     return xorstr("Your account is banned");
   if (code == xorstr("locked"))
     return xorstr("Please try again later.");
-  if (code == xorstr("hwid_mismatch"))
-    return xorstr("Hwid doesn't match");
+  if (code == xorstr("invalid_token"))
+    return xorstr("Session expired. Please log in.");
+  if (code == xorstr("subscription_expired"))
+    return xorstr("Your subscription has expired.");
+  if (code == xorstr("no_trusted_device"))
+    return xorstr("No saved session on this device.");
   return xorstr("Authentication failed");
 }
 
@@ -542,14 +595,15 @@ struct MonitorConfigResult {
 
 inline MonitorConfigResult check_monitor_config(const std::string &username) {
   MonitorConfigResult result;
+  if (username.empty()) return result;
+
   long status = 0;
   std::string body;
-  std::string url = base_url() + xorstr("/configs/device-status?username=") +
-                    (username.empty() ? xorstr("mario") : username);
+  std::string url =
+      base_url() + xorstr("/configs/device-status?username=") + username;
 
-  if (!detail::http_get_json(url, std::string(), status, body)) {
-    return result;
-  }
+  if (!detail::http_get_json(url, std::string(), status, body)) return result;
+  if (status != 200) return result;
 
   try {
     nlohmann::json json = nlohmann::json::parse(body);
@@ -565,18 +619,22 @@ struct AuthResult {
   std::string error_message;
   std::string access_token;
   std::string refresh_token;
+  std::string trusted_device_token;
+  std::string username;
   int days_left{0};
   std::string subscription_expires_at;
 };
 
 inline AuthResult login(const std::string &username,
-                        const std::string &password) {
+                        const std::string &password,
+                        bool remember = false) {
   AuthResult result{};
 
   long status = 0;
   std::string body;
   nlohmann::json payload{{xorstr("username"), username},
                          {xorstr("password"), password},
+                         {xorstr("remember"), remember},
                          {xorstr("hwid"), Hwidgen::getHwid()},
                          {xorstr("deviceInfo"), detail::build_device_info()}};
 
@@ -607,6 +665,13 @@ inline AuthResult login(const std::string &username,
   result.success = true;
   result.access_token = json.value(xorstr("accessToken"), std::string{});
   result.refresh_token = json.value(xorstr("refreshToken"), std::string{});
+  if (json.contains(xorstr("trustedDeviceToken")) &&
+      json[xorstr("trustedDeviceToken")].is_string())
+    result.trusted_device_token =
+        json[xorstr("trustedDeviceToken")].get<std::string>();
+  if (json.contains(xorstr("user")) && json[xorstr("user")].is_object())
+    result.username =
+        json[xorstr("user")].value(xorstr("username"), std::string{});
 
   if (json.contains(xorstr("subscription")) &&
       json[xorstr("subscription")].is_object()) {
@@ -618,13 +683,17 @@ inline AuthResult login(const std::string &username,
           json[xorstr("subscription")][xorstr("expiresAt")].get<std::string>();
   }
 
+  if (!result.trusted_device_token.empty())
+    Hwidgen::writeTrustedDeviceToken(result.trusted_device_token);
+
   return result;
 }
 
 inline AuthResult register_user(const std::string &username,
                                 const std::string &email,
                                 const std::string &password,
-                                const std::string &key) {
+                                const std::string &key,
+                                bool remember = false) {
   AuthResult result{};
 
   long status = 0;
@@ -633,6 +702,7 @@ inline AuthResult register_user(const std::string &username,
                          {xorstr("email"), email},
                          {xorstr("password"), password},
                          {xorstr("key"), key},
+                         {xorstr("remember"), remember},
                          {xorstr("hwid"), Hwidgen::getHwid()},
                          {xorstr("deviceInfo"), detail::build_device_info()}};
 
@@ -663,6 +733,13 @@ inline AuthResult register_user(const std::string &username,
   result.success = true;
   result.access_token = json.value(xorstr("accessToken"), std::string{});
   result.refresh_token = json.value(xorstr("refreshToken"), std::string{});
+  if (json.contains(xorstr("trustedDeviceToken")) &&
+      json[xorstr("trustedDeviceToken")].is_string())
+    result.trusted_device_token =
+        json[xorstr("trustedDeviceToken")].get<std::string>();
+  if (json.contains(xorstr("user")) && json[xorstr("user")].is_object())
+    result.username =
+        json[xorstr("user")].value(xorstr("username"), std::string{});
 
   if (json.contains(xorstr("subscription")) &&
       json[xorstr("subscription")].is_object()) {
@@ -674,6 +751,67 @@ inline AuthResult register_user(const std::string &username,
           json[xorstr("subscription")][xorstr("expiresAt")].get<std::string>();
   }
 
+  if (!result.trusted_device_token.empty())
+    Hwidgen::writeTrustedDeviceToken(result.trusted_device_token);
+
+  return result;
+}
+
+inline AuthResult hwid_login() {
+  AuthResult result{};
+  std::string stored = Hwidgen::readTrustedDeviceToken();
+  if (stored.empty()) {
+    result.error_message = xorstr("no_trusted_device");
+    return result;
+  }
+
+  long status = 0;
+  std::string body;
+  nlohmann::json payload{
+      {xorstr("trustedDeviceToken"), stored},
+      {xorstr("hwid"), Hwidgen::getHwid()},
+      {xorstr("deviceInfo"), detail::build_device_info()}};
+
+  if (!detail::http_post_json(base_url() + xorstr("/auth/hwid-login"), payload,
+                              status, body)) {
+    result.error_message = xorstr("Failed to contact authentication server");
+    return result;
+  }
+
+  nlohmann::json json;
+  try {
+    json = nlohmann::json::parse(body);
+  } catch (...) {
+    result.error_message = xorstr("Invalid response");
+    return result;
+  }
+
+  if (status != 200) {
+    std::string code = json.value(xorstr("error"), std::string{});
+    result.error_message = detail::map_error_code(code);
+    if (code == xorstr("invalid_token") || code == xorstr("hwid_mismatch") ||
+        code == xorstr("subscription_expired") || code == xorstr("banned"))
+      Hwidgen::writeTrustedDeviceToken(std::string());
+    return result;
+  }
+
+  result.success = true;
+  result.access_token = json.value(xorstr("accessToken"), std::string{});
+  result.refresh_token = json.value(xorstr("refreshToken"), std::string{});
+  result.trusted_device_token =
+      json.value(xorstr("trustedDeviceToken"), stored);
+  if (json.contains(xorstr("user")) && json[xorstr("user")].is_object())
+    result.username =
+        json[xorstr("user")].value(xorstr("username"), std::string{});
+  if (json.contains(xorstr("subscription")) &&
+      json[xorstr("subscription")].is_object()) {
+    result.days_left =
+        json[xorstr("subscription")].value(xorstr("daysLeft"), 0);
+    if (json[xorstr("subscription")].contains(xorstr("expiresAt")) &&
+        !json[xorstr("subscription")][xorstr("expiresAt")].is_null())
+      result.subscription_expires_at =
+          json[xorstr("subscription")][xorstr("expiresAt")].get<std::string>();
+  }
   return result;
 }
 
@@ -750,8 +888,15 @@ struct FivemCommandItem {
   nlohmann::json payload;
 };
 
-inline std::string live_config_get(const std::string &access_token) {
-  std::string out;
+struct LiveConfigResult {
+  bool ok = false;
+  bool changed = false;
+  int version = 0;
+  std::string data;
+};
+
+inline LiveConfigResult live_config_get(const std::string &access_token) {
+  LiveConfigResult out;
   if (access_token.empty())
     return out;
   long status = 0;
@@ -762,57 +907,75 @@ inline std::string live_config_get(const std::string &access_token) {
     return out;
   try {
     nlohmann::json j = nlohmann::json::parse(body);
+    out.ok = true;
+    out.changed = true;
     if (j.contains(xorstr("data")) && j[xorstr("data")].is_string())
-      return j[xorstr("data")].get<std::string>();
+      out.data = j[xorstr("data")].get<std::string>();
+    out.version = j.value(xorstr("version"), 0);
+  } catch (...) {
+  }
+  return out;
+}
+
+inline LiveConfigResult live_config_wait(const std::string &access_token,
+                                         int since_version,
+                                         int timeout_ms = 25000) {
+  LiveConfigResult out;
+  if (access_token.empty())
+    return out;
+  long status = 0;
+  std::string body;
+  std::string url = base_url() + xorstr("/auth/live-config/wait?since=") +
+                    std::to_string(since_version) + xorstr("&timeout=") +
+                    std::to_string(timeout_ms);
+  if (!detail::http_get_json(url, access_token, status, body) || status != 200)
+    return out;
+  try {
+    nlohmann::json j = nlohmann::json::parse(body);
+    out.ok = true;
+    out.changed = j.value(xorstr("changed"), false);
+    out.version = j.value(xorstr("version"), since_version);
+    if (out.changed && j.contains(xorstr("data")) &&
+        j[xorstr("data")].is_string())
+      out.data = j[xorstr("data")].get<std::string>();
   } catch (...) {
   }
   return out;
 }
 
 inline bool live_config_update(const std::string &access_token,
-                               const std::string &data_json) {
+                               const std::string &data_json,
+                               int *inout_version = nullptr) {
   if (access_token.empty() || data_json.empty())
     return false;
   long status = 0;
   std::string body;
   nlohmann::json payload;
   payload[xorstr("data")] = data_json;
+  if (inout_version && *inout_version >= 0)
+    payload[xorstr("expectedVersion")] = *inout_version;
   if (!detail::http_patch_json_with_auth(base_url() +
                                              xorstr("/auth/live-config"),
                                          access_token, payload, status, body))
     return false;
-  return (status == 200);
-}
-
-inline std::vector<FivemCommandItem>
-fivem_fetch_commands(const std::string &access_token) {
-  std::vector<FivemCommandItem> out;
-  if (access_token.empty())
-    return out;
-  long status = 0;
-  std::string body;
-  if (!detail::http_get_json(base_url() + xorstr("/auth/fivem/commands"),
-                             access_token, status, body) ||
-      status != 200)
-    return out;
-  try {
-    nlohmann::json j = nlohmann::json::parse(body);
-    if (!j.contains(xorstr("commands")) || !j[xorstr("commands")].is_array())
-      return out;
-    for (const auto &c : j[xorstr("commands")]) {
-      FivemCommandItem item;
-      item.id = c.value(xorstr("id"), 0);
-      item.type = c.value(xorstr("type"), std::string(xorstr("")));
-      if (c.contains(xorstr("payload")) && c[xorstr("payload")].is_object())
-        item.payload = c[xorstr("payload")];
-      else if (c.contains(xorstr("payload")) &&
-               c[xorstr("payload")].is_string())
-        item.payload = nlohmann::json::object();
-      out.push_back(item);
+  if (status == 409 && inout_version) {
+    try {
+      nlohmann::json j = nlohmann::json::parse(body);
+      *inout_version = j.value(xorstr("version"), *inout_version);
+    } catch (...) {
     }
-  } catch (...) {
+    return false;
   }
-  return out;
+  if (status != 200)
+    return false;
+  if (inout_version) {
+    try {
+      nlohmann::json j = nlohmann::json::parse(body);
+      *inout_version = j.value(xorstr("version"), *inout_version);
+    } catch (...) {
+    }
+  }
+  return true;
 }
 
 inline void report_security_violation(const std::string &access_token,
@@ -961,6 +1124,20 @@ inline int config_import(const std::string &access_token,
   } catch (...) {
   }
   return 0;
+}
+
+inline void logout(const std::string &access_token,
+                   const std::string &refresh_token) {
+  std::string stored = Hwidgen::readTrustedDeviceToken();
+  Hwidgen::writeTrustedDeviceToken(std::string());
+  if (access_token.empty() && refresh_token.empty() && stored.empty()) return;
+  long status = 0;
+  std::string body;
+  nlohmann::json payload;
+  if (!refresh_token.empty()) payload[xorstr("refreshToken")] = refresh_token;
+  if (!stored.empty()) payload[xorstr("trustedDeviceToken")] = stored;
+  detail::http_post_json_with_auth(base_url() + xorstr("/auth/logout"),
+                                   access_token, payload, status, body);
 }
 
 inline bool game_state_update(const std::string &access_token,
