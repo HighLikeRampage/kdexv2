@@ -1513,9 +1513,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   bool is_active = (entity.Ped == selected_ped);
                   bool is_friend =
                       entity.IsFriend ||
-                      (Core::SDK::Game::FriendMap.find(entity.Ped) !=
-                           Core::SDK::Game::FriendMap.end() &&
-                       Core::SDK::Game::FriendMap[entity.Ped]);
+                      Core::SDK::Game::IsFriendName(entity.NetworkInfo.UserName);
                   ImDrawFlags flags = (i == 0) ? ImDrawFlags_RoundCornersTop
                                       : (i == player_list_copy.size() - 1)
                                           ? ImDrawFlags_RoundCornersBottom
@@ -1729,14 +1727,12 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 }
 
                 bool is_friend = entity.IsFriend ||
-                                 (Core::SDK::Game::FriendMap.find(entity.Ped) !=
-                                      Core::SDK::Game::FriendMap.end() &&
-                                  Core::SDK::Game::FriendMap[entity.Ped]);
+                                 Core::SDK::Game::IsFriendName(entity.NetworkInfo.UserName);
                 if (widgets->button(is_friend ? xorstr("Remove Friend")
                                               : xorstr("Add Friend"),
                                     ImVec2(half_width, SCALE(30)))) {
                   bool newState = !is_friend;
-                  Core::SDK::Game::FriendMap[entity.Ped] = newState;
+                  Core::SDK::Game::SetFriendByName(entity.NetworkInfo.UserName, newState);
                   notify->add_notify(newState ? xorstr("Added to friends")
                                               : xorstr("Removed from friends"),
                                      2000, notify_type::success);
@@ -1888,9 +1884,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
 
                   bool is_friend =
                       entity.IsFriend ||
-                      (Core::SDK::Game::FriendMap.find(entity.Ped) !=
-                           Core::SDK::Game::FriendMap.end() &&
-                       Core::SDK::Game::FriendMap[entity.Ped]);
+                      Core::SDK::Game::IsFriendName(entity.NetworkInfo.UserName);
                   if (!is_friend)
                     continue;
 
@@ -1957,9 +1951,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           if (!sel && !friends_list_copy.empty()) {
             for (const auto &e : friends_list_copy) {
               bool is_friend =
-                  e.IsFriend || (Core::SDK::Game::FriendMap.find(e.Ped) !=
-                                     Core::SDK::Game::FriendMap.end() &&
-                                 Core::SDK::Game::FriendMap[e.Ped]);
+                  e.IsFriend ||
+                  Core::SDK::Game::IsFriendName(e.NetworkInfo.UserName);
               if (is_friend && e.Ped != Core::SDK::Pointers::pLocalPlayer) {
                 selected_friend_ped = e.Ped;
                 sel = &e;
@@ -2015,7 +2008,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 gui->sameline(0, gap_friends);
                 if (widgets->button(xorstr("Remove Friend"),
                                     ImVec2(half_width_friends, SCALE(30)))) {
-                  Core::SDK::Game::FriendMap[entity.Ped] = false;
+                  Core::SDK::Game::SetFriendByName(entity.NetworkInfo.UserName, false);
                   selected_friend_ped = nullptr;
                   notify->add_notify(xorstr("Removed from friends"), 2000,
                                      notify_type::success);

@@ -657,11 +657,7 @@ void Core::Features::cEsp::Draw()
                 {
                     bool newState = !IsFriend;
                     IsFriend = newState;
-
-                    {
-                        std::lock_guard<std::mutex> flock(Core::SDK::Game::FriendMapMutex);
-                        Core::SDK::Game::FriendMap[Ped] = newState;
-                    }
+                    Core::SDK::Game::SetFriendByName(Entity.NetworkInfo.UserName, newState);
                 }
             }
         }

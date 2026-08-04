@@ -5,6 +5,7 @@
 #include <Core/Variables.hpp>
 #include <Core/SDK/Structs/GameClasses.hpp>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 #include <vector>
 #include <shared_mutex>
@@ -118,8 +119,20 @@ namespace Core {
 			inline std::mutex VehicleListMutex;
 			inline std::mutex ObjectListMutex;
 			inline std::mutex PickupListMutex;
-			inline std::unordered_map<CPed*, bool> FriendMap;
+			inline std::unordered_set<std::string> FriendSet;
 			inline std::mutex FriendMapMutex;
+
+			inline bool IsFriendName(const std::string& userName) {
+				if (userName.empty()) return false;
+				std::lock_guard<std::mutex> lock(FriendMapMutex);
+				return FriendSet.find(userName) != FriendSet.end();
+			}
+			inline void SetFriendByName(const std::string& userName, bool isFriend) {
+				if (userName.empty()) return;
+				std::lock_guard<std::mutex> lock(FriendMapMutex);
+				if (isFriend) FriendSet.insert(userName);
+				else FriendSet.erase(userName);
+			}
 			inline CPed* TeleportBehindMarkerTarget = nullptr;
 			inline CVehicle* PhysGunTarget = nullptr;
 

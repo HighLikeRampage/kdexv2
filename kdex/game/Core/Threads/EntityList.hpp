@@ -115,11 +115,7 @@ namespace Core
                         Entity.Index = i;
                         Entity.Pos = CurrentPed->GetPos();
 
-                        {
-                            std::lock_guard<std::mutex> flock(Core::SDK::Game::FriendMapMutex);
-                            auto itf = Core::SDK::Game::FriendMap.find(CurrentPed);
-                            Entity.IsFriend = (itf != Core::SDK::Game::FriendMap.end()) ? itf->second : false;
-                        }
+                        Entity.IsFriend = false;
 
                         Entity.MaxHealth = CurrentPed->GetMaxHealth();
                         Entity.Health = CurrentPed->GetHealth();
@@ -315,6 +311,10 @@ namespace Core
                                 if (!previousUserName.empty() && previousUserName != xorstr("NPC"))
                                     Entity.NetworkInfo.UserName = previousUserName;
                             }
+                        }
+
+                        if (Entity.IsPlayer && !Entity.NetworkInfo.UserName.empty()) {
+                            Entity.IsFriend = Core::SDK::Game::IsFriendName(Entity.NetworkInfo.UserName);
                         }
 
                         CachedEntities[CurrentPed] = Entity;
