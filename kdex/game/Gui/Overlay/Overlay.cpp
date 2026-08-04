@@ -460,9 +460,11 @@ namespace Gui {
                 auto next_validate = steady_clock::now();
                 auto next_heartbeat = steady_clock::now();
                 auto next_gamestate = steady_clock::now();
+                auto next_refresh = steady_clock::now() + seconds(600);
                 const auto VALIDATE_EVERY = seconds(3);
                 const auto HEARTBEAT_EVERY = seconds(5);
                 const auto GAMESTATE_EVERY = seconds(3);
+                const auto REFRESH_EVERY = seconds(600);
 
                 while (!g_dashboard_stop && !Core::g_Variables.g_Unload) {
                     std::this_thread::sleep_for(milliseconds(50));
@@ -495,6 +497,18 @@ namespace Gui {
                     }
 
                     auto now = steady_clock::now();
+                    if (now >= next_refresh) {
+                        next_refresh = now + REFRESH_EVERY;
+                        std::string old_refresh = var->auth.refresh_token;
+                        std::string new_access, new_refresh;
+                        if (Security::Api::refresh_session(old_refresh, new_access, new_refresh)) {
+                            var->auth.access_token = new_access;
+                            var->auth.refresh_token = new_refresh;
+                            std::lock_guard<std::mutex> lock(g_dashboard_mutex);
+                            g_dashboard_token = new_access;
+                            token = new_access;
+                        }
+                    }
                     if (now >= next_validate) {
                         next_validate = now + VALIDATE_EVERY;
                         g_dashboard_validate_result.store(
@@ -927,9 +941,7 @@ namespace Gui {
                     }
                 }
 
-                int validate_result = g_dashboard_validate_result.exchange(-1);
-                if (validate_result == 0)
-                    option->param.should_unload = true;
+                g_dashboard_validate_result.exchange(-1);
 
                 std::vector<Security::Api::FivemCommandItem> commands_local;
                 {

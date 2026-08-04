@@ -3681,8 +3681,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               gui->dummy(SCALE(0, 6));
               ImVec2 st_min = ImGui::GetCursorScreenPos();
               float st_w = gui->content_avail().x;
-              float bar_h = SCALE(6);
-              float bar_r = bar_h * 0.5f;
+              float bar_h = SCALE(8);
+              float bar_r = bar_h;
               ImVec2 bar_max(st_min.x + st_w, st_min.y + bar_h);
               dl->AddRectFilled(st_min, bar_max,
                                 draw->get_clr(clr->window.window_stroke,

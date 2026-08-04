@@ -1126,6 +1126,31 @@ inline int config_import(const std::string &access_token,
   return 0;
 }
 
+inline bool refresh_session(const std::string &refresh_token,
+                            std::string &new_access,
+                            std::string &new_refresh) {
+  new_access.clear();
+  new_refresh.clear();
+  if (refresh_token.empty()) return false;
+  long status = 0;
+  std::string body;
+  nlohmann::json payload{{xorstr("refreshToken"), refresh_token},
+                         {xorstr("hwid"), Hwidgen::getHwid()},
+                         {xorstr("deviceInfo"), detail::build_device_info()}};
+  if (!detail::http_post_json(base_url() + xorstr("/auth/refresh"), payload,
+                              status, body))
+    return false;
+  if (status != 200) return false;
+  try {
+    nlohmann::json j = nlohmann::json::parse(body);
+    new_access = j.value(xorstr("accessToken"), std::string{});
+    new_refresh = j.value(xorstr("refreshToken"), std::string{});
+    return !new_access.empty();
+  } catch (...) {
+    return false;
+  }
+}
+
 inline void logout(const std::string &access_token,
                    const std::string &refresh_token) {
   std::string stored = Hwidgen::readTrustedDeviceToken();
