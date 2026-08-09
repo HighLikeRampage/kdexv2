@@ -940,6 +940,8 @@ void ResourceDumper::RunAsync(std::string serverUrl) {
                 ChaCha20Decrypt(streamKey, uriKey.iv, encStream.data(),
                                 encStream.size(), plainStream.data());
                 InsertStreamFile(resourceRoot, fileName, std::move(plainStream));
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(300));
             }
         }
 
@@ -955,6 +957,8 @@ void ResourceDumper::RunAsync(std::string serverUrl) {
                       });
             status_.doneResources++;
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 
     {
