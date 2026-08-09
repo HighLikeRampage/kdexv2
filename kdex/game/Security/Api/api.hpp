@@ -468,6 +468,9 @@ inline bool curl_request(const std::string &method, const std::string &url,
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, &out_body);
   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+  curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+  curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
+  curl_easy_setopt(curl, CURLOPT_TIMEOUT, 15L);
 
   CURLcode res = curl_easy_perform(curl);
   if (res == CURLE_OK) {
