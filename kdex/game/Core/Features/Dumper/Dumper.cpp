@@ -1,11 +1,13 @@
 #include "Dumper.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <cctype>
 #include <chrono>
 #include <cstdio>
 #include <cstring>
 #include <functional>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <unordered_map>
@@ -111,14 +113,18 @@ bool HttpFetch(const std::string &url, const std::string &postBody,
 }
 
 std::vector<uint8_t> B64Decode(const std::string &in) {
-    static bool inited = false;
+    static std::mutex b64_mu;
     static int tab[256];
-    if (!inited) {
-        for (int i = 0; i < 256; i++) tab[i] = -1;
-        std::string alphabet = xorstr(
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
-        for (int i = 0; i < 64; i++) tab[(uint8_t)alphabet[i]] = i;
-        inited = true;
+    static bool inited = false;
+    {
+        std::lock_guard<std::mutex> lock(b64_mu);
+        if (!inited) {
+            for (int i = 0; i < 256; i++) tab[i] = -1;
+            std::string alphabet = xorstr(
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
+            for (int i = 0; i < 64; i++) tab[(uint8_t)alphabet[i]] = i;
+            inited = true;
+        }
     }
     std::vector<uint8_t> out;
     int val = 0, valb = -8;
@@ -585,15 +591,18 @@ std::shared_ptr<VfsNode> ResourceDumper::GetRoot() {
 namespace {
 
 static uint32_t Crc32Table[256];
-static bool Crc32Inited = false;
+static std::atomic<bool> Crc32Inited{false};
+static std::mutex Crc32Mutex;
 static void InitCrc32() {
-    if (Crc32Inited) return;
+    if (Crc32Inited.load(std::memory_order_acquire)) return;
+    std::lock_guard<std::mutex> lock(Crc32Mutex);
+    if (Crc32Inited.load(std::memory_order_relaxed)) return;
     for (uint32_t i = 0; i < 256; i++) {
         uint32_t c = i;
         for (int k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320u ^ (c >> 1)) : (c >> 1);
         Crc32Table[i] = c;
     }
-    Crc32Inited = true;
+    Crc32Inited.store(true, std::memory_order_release);
 }
 static uint32_t Crc32(const uint8_t *data, size_t len) {
     InitCrc32();
@@ -781,10 +790,10 @@ void ResourceDumper::RunWatcher() {
 }
 
 void ResourceDumper::StartDumpAsync(std::string serverUrl) {
-    if (running_.load()) return;
+    bool expected = false;
+    if (!running_.compare_exchange_strong(expected, true)) return;
 
     stop_.store(false);
-    running_.store(true);
 
     {
         std::lock_guard<std::mutex> lock(mutex_);

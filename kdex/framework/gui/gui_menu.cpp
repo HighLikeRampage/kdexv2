@@ -17,6 +17,65 @@
 #include <mutex>
 #include <thread>
 #include <atomic>
+#include <vector>
+
+namespace {
+
+struct FileDialogOverlayHide {
+    bool prev_menu_open;
+    HWND prev_fg;
+    std::vector<HWND> topmost_hwnds;
+
+    static BOOL CALLBACK EnumTopmost(HWND hwnd, LPARAM lParam) {
+        auto *self = reinterpret_cast<FileDialogOverlayHide *>(lParam);
+        if (!IsWindowVisible(hwnd)) return TRUE;
+        LONG_PTR ex = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+        if (!(ex & WS_EX_TOPMOST)) return TRUE;
+        DWORD wpid = 0;
+        GetWindowThreadProcessId(hwnd, &wpid);
+        if (wpid != GetCurrentProcessId()) return TRUE;
+        self->topmost_hwnds.push_back(hwnd);
+        return TRUE;
+    }
+
+    FileDialogOverlayHide() {
+        prev_menu_open = g_MenuInfo.IsOpen;
+        g_MenuInfo.IsOpen = false;
+        prev_fg = GetForegroundWindow();
+
+        EnumWindows(&EnumTopmost, reinterpret_cast<LPARAM>(this));
+
+        HWND game_wnd = Core::g_Variables.g_hGameWindow;
+        HWND cheat_wnd = Core::g_Variables.g_hCheatWindow;
+        for (HWND h : topmost_hwnds) {
+            if (h == game_wnd || h == cheat_wnd) continue;
+            SetWindowPos(h, HWND_NOTOPMOST, 0, 0, 0, 0,
+                         SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        }
+
+        if (cheat_wnd && IsWindowVisible(cheat_wnd)) {
+            LONG_PTR ex = GetWindowLongPtrW(cheat_wnd, GWL_EXSTYLE);
+            if (ex & WS_EX_TOPMOST) {
+                topmost_hwnds.push_back(cheat_wnd);
+                SetWindowPos(cheat_wnd, HWND_NOTOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+            }
+        }
+    }
+
+    ~FileDialogOverlayHide() {
+        for (HWND h : topmost_hwnds) {
+            if (IsWindow(h)) {
+                SetWindowPos(h, HWND_TOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+            }
+        }
+        g_MenuInfo.IsOpen = prev_menu_open;
+        if (prev_fg && IsWindow(prev_fg)) SetForegroundWindow(prev_fg);
+    }
+};
+
+}
 
 void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
   bool is_menu = ctx.is_menu;
@@ -3473,7 +3532,10 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 ImGui::ClearActiveID();
             }
 
+            FileDialogOverlayHide overlay_guard;
+
             HRESULT com_hr = OleInitialize(nullptr);
+            bool com_needs_uninit = SUCCEEDED(com_hr) && com_hr != S_FALSE;
 
             wchar_t path[MAX_PATH] = {};
             wchar_t filter[128] = {};
@@ -3498,13 +3560,28 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               memcpy(title, t, tn * sizeof(wchar_t));
               title[tn] = 0;
             }
+            HWND owner_hwnd = Core::g_Variables.g_hCheatWindow;
+            if (!owner_hwnd) owner_hwnd = Core::g_Variables.g_hGameWindow;
+            if (!owner_hwnd) owner_hwnd = GetActiveWindow();
+            if (owner_hwnd && IsWindow(owner_hwnd)) {
+              AllowSetForegroundWindow(ASFW_ANY);
+              SwitchToThisWindow(owner_hwnd, FALSE);
+              SetWindowPos(owner_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                           SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+              SetWindowPos(owner_hwnd, HWND_NOTOPMOST, 0, 0, 0, 0,
+                           SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+              SetForegroundWindow(owner_hwnd);
+              BringWindowToTop(owner_hwnd);
+            }
+
             OPENFILENAMEW ofn = {};
             ofn.lStructSize = sizeof(ofn);
+            ofn.hwndOwner = (owner_hwnd && IsWindow(owner_hwnd)) ? owner_hwnd : nullptr;
             ofn.lpstrFilter = filter;
             ofn.lpstrFile = path;
             ofn.nMaxFile = MAX_PATH;
             ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY |
-                        OFN_NOCHANGEDIR | OFN_EXPLORER;
+                        OFN_NOCHANGEDIR | OFN_EXPLORER | OFN_ENABLESIZING;
             ofn.lpstrTitle = title;
 
             BOOL dlg_ok = GetOpenFileNameW(&ofn);
@@ -3557,7 +3634,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               }
             }
 
-            if (SUCCEEDED(com_hr)) OleUninitialize();
+            if (com_needs_uninit) OleUninitialize();
           }
         } else if (elements->section.section_count_active == 7) {
           namespace Dumper = Core::Features::Dumper;
@@ -3909,8 +3986,15 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
             bool disable_save = selected_file_path.empty();
             if (widgets->button(xorstr("Save"), slot_sz, true) &&
                 !disable_save) {
-              OleInitialize(nullptr);
+              FileDialogOverlayHide overlay_guard_save;
+              HRESULT com_hr_save = OleInitialize(nullptr);
+              bool com_needs_uninit_save = SUCCEEDED(com_hr_save) && com_hr_save != S_FALSE;
+
               wchar_t path[MAX_PATH] = {};
+              wchar_t filter[128] = {};
+              wchar_t title[64] = {};
+              wchar_t defext[16] = {};
+              std::string file_ext;
               {
                 auto p = selected_file_path.find_last_of('/');
                 std::string base = (p == std::string::npos)
@@ -3920,14 +4004,78 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                 if (wn.size() >= MAX_PATH) wn.resize(MAX_PATH - 1);
                 memcpy(path, wn.data(),
                        (wn.size() + 1) * sizeof(wchar_t));
+
+                auto dotp = base.find_last_of('.');
+                if (dotp != std::string::npos) file_ext = base.substr(dotp + 1);
+                for (auto &c : file_ext) c = (char)tolower((unsigned char)c);
+                if (!file_ext.empty() && file_ext.size() < 16) {
+                  std::wstring we(file_ext.begin(), file_ext.end());
+                  memcpy(defext, we.data(),
+                         (we.size() + 1) * sizeof(wchar_t));
+                }
               }
+              {
+                size_t off = 0;
+                auto append = [&](const wchar_t* s) {
+                  size_t n = wcslen(s);
+                  if (off + n + 1 >= 128) return;
+                  memcpy(filter + off, s, (n + 1) * sizeof(wchar_t));
+                  off += n + 1;
+                };
+
+                if (!file_ext.empty()) {
+                  std::wstring desc0;
+                  std::wstring mask0;
+                  {
+                    std::string cap = file_ext;
+                    for (auto &c : cap) c = (char)toupper((unsigned char)c);
+                    std::string s = cap + " files (*." + file_ext + ")";
+                    desc0.assign(s.begin(), s.end());
+                    std::string m = std::string("*.") + file_ext;
+                    mask0.assign(m.begin(), m.end());
+                  }
+                  if (desc0.size() < 60) append(desc0.c_str());
+                  if (mask0.size() < 30) append(mask0.c_str());
+                }
+                append(xorstr(L"All files (*.*)"));
+                append(xorstr(L"*.*"));
+                filter[off] = 0;
+
+                const wchar_t* t = xorstr(L"Save Dumper File");
+                size_t tn = wcslen(t);
+                if (tn >= 64) tn = 63;
+                memcpy(title, t, tn * sizeof(wchar_t));
+                title[tn] = 0;
+              }
+
+              HWND owner_hwnd = Core::g_Variables.g_hCheatWindow;
+              if (!owner_hwnd) owner_hwnd = Core::g_Variables.g_hGameWindow;
+              if (!owner_hwnd) owner_hwnd = GetActiveWindow();
+              if (owner_hwnd && IsWindow(owner_hwnd)) {
+                AllowSetForegroundWindow(ASFW_ANY);
+                SwitchToThisWindow(owner_hwnd, FALSE);
+                SetWindowPos(owner_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                SetWindowPos(owner_hwnd, HWND_NOTOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                SetForegroundWindow(owner_hwnd);
+                BringWindowToTop(owner_hwnd);
+              }
+
               OPENFILENAMEW ofn = {};
               ofn.lStructSize = sizeof(ofn);
+              ofn.hwndOwner = (owner_hwnd && IsWindow(owner_hwnd)) ? owner_hwnd : nullptr;
+              ofn.lpstrFilter = filter;
               ofn.lpstrFile = path;
               ofn.nMaxFile = MAX_PATH;
-              ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY |
-                          OFN_NOCHANGEDIR | OFN_EXPLORER;
-              if (GetSaveFileNameW(&ofn)) {
+              ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST |
+                          OFN_HIDEREADONLY | OFN_NOCHANGEDIR |
+                          OFN_EXPLORER | OFN_ENABLESIZING;
+              ofn.lpstrTitle = title;
+              if (defext[0] != 0) ofn.lpstrDefExt = defext;
+
+              BOOL save_ok = GetSaveFileNameW(&ofn);
+              if (save_ok) {
                 HANDLE h = CreateFileW(path, GENERIC_WRITE, 0, nullptr,
                                        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL,
                                        nullptr);
@@ -3940,7 +4088,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                      notify_type::success);
                 }
               }
-              OleUninitialize();
+              if (com_needs_uninit_save) OleUninitialize();
             }
 
             gui->sameline(0, btn_gap);
@@ -3950,25 +4098,68 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                  status.doneResources == 0);
             if (widgets->button(xorstr("Download"), slot_sz, true) &&
                 !disable_zip) {
-              OleInitialize(nullptr);
+              FileDialogOverlayHide overlay_guard_zip;
+              HRESULT com_hr_zip = OleInitialize(nullptr);
+              bool com_needs_uninit_zip = SUCCEEDED(com_hr_zip) && com_hr_zip != S_FALSE;
+
               wchar_t path[MAX_PATH] = {};
-              std::wstring def = xorstr(L"dump.zip");
-              memcpy(path, def.data(),
-                     (def.size() + 1) * sizeof(wchar_t));
-              wchar_t filter[64] = {};
+              wchar_t filter[128] = {};
+              wchar_t title[64] = {};
               {
-                const wchar_t *f = xorstr(L"ZIP archive\0*.zip\0\0");
-                memcpy(filter, f, 24 * sizeof(wchar_t));
+                std::wstring def = xorstr(L"dump.zip");
+                if (def.size() >= MAX_PATH) def.resize(MAX_PATH - 1);
+                memcpy(path, def.data(),
+                       (def.size() + 1) * sizeof(wchar_t));
               }
+              {
+                size_t off = 0;
+                auto append = [&](const wchar_t* s) {
+                  size_t n = wcslen(s);
+                  if (off + n + 1 >= 128) return;
+                  memcpy(filter + off, s, (n + 1) * sizeof(wchar_t));
+                  off += n + 1;
+                };
+                append(xorstr(L"ZIP Archive (*.zip)"));
+                append(xorstr(L"*.zip"));
+                append(xorstr(L"All files (*.*)"));
+                append(xorstr(L"*.*"));
+                filter[off] = 0;
+
+                const wchar_t* t = xorstr(L"Save Dump Archive");
+                size_t tn = wcslen(t);
+                if (tn >= 64) tn = 63;
+                memcpy(title, t, tn * sizeof(wchar_t));
+                title[tn] = 0;
+              }
+
+              HWND owner_hwnd = Core::g_Variables.g_hCheatWindow;
+              if (!owner_hwnd) owner_hwnd = Core::g_Variables.g_hGameWindow;
+              if (!owner_hwnd) owner_hwnd = GetActiveWindow();
+              if (owner_hwnd && IsWindow(owner_hwnd)) {
+                AllowSetForegroundWindow(ASFW_ANY);
+                SwitchToThisWindow(owner_hwnd, FALSE);
+                SetWindowPos(owner_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                SetWindowPos(owner_hwnd, HWND_NOTOPMOST, 0, 0, 0, 0,
+                             SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+                SetForegroundWindow(owner_hwnd);
+                BringWindowToTop(owner_hwnd);
+              }
+
               OPENFILENAMEW ofn = {};
               ofn.lStructSize = sizeof(ofn);
+              ofn.hwndOwner = (owner_hwnd && IsWindow(owner_hwnd)) ? owner_hwnd : nullptr;
+              ofn.lpstrFilter = filter;
               ofn.lpstrFile = path;
               ofn.nMaxFile = MAX_PATH;
-              ofn.lpstrFilter = filter;
+              ofn.Flags = OFN_OVERWRITEPROMPT | OFN_PATHMUSTEXIST |
+                          OFN_HIDEREADONLY | OFN_NOCHANGEDIR |
+                          OFN_EXPLORER | OFN_ENABLESIZING;
+              ofn.lpstrTitle = title;
               ofn.lpstrDefExt = xorstr(L"zip");
-              ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY |
-                          OFN_NOCHANGEDIR | OFN_EXPLORER;
-              if (GetSaveFileNameW(&ofn)) {
+
+              BOOL zip_ok = GetSaveFileNameW(&ofn);
+              if (zip_ok) {
                 std::vector<uint8_t> zip;
                 if (Dumper::g_ResourceDumper.ExportZip(zip)) {
                   HANDLE h = CreateFileW(path, GENERIC_WRITE, 0, nullptr,
@@ -3987,7 +4178,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                      notify_type::error);
                 }
               }
-              OleUninitialize();
+              if (com_needs_uninit_zip) OleUninitialize();
             }
 
             gui->sameline(0, btn_gap);
