@@ -149,8 +149,7 @@ void c_gui::render() {
 
     ImGui::SetCursorPosY(0);
 
-    if (var->auth.authenticated && !var->auth.access_token.empty()) {
-      Core::Features::Dumper::g_ResourceDumper.StartWatcher();
+    if (var->auth.authenticated && !var->auth.access_token.empty() && !g_IsInjectedDll) {
       static double last_game_state_send = 0.0;
       double t = ImGui::GetTime();
       if (t - last_game_state_send >= 3.0) {

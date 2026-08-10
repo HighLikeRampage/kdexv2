@@ -78,7 +78,8 @@ bool HttpFetch(const std::string &url, const std::string &postBody,
     if (!curl) return false;
 
     struct curl_slist *headers = nullptr;
-    headers = curl_slist_append(headers, xorstr("User-Agent: CitizenFX/1"));
+    headers = curl_slist_append(
+        headers, xorstr("User-Agent: CitizenFX/1"));
     if (!postBody.empty())
         headers = curl_slist_append(
             headers, xorstr("Content-Type: application/x-www-form-urlencoded"));
@@ -743,10 +744,27 @@ void ResourceDumper::RunWatcher() {
     while (!watcher_stop_.load()) {
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         if (watcher_stop_.load()) break;
-        if (running_.load()) continue;
+        if (running_.load()) {
+            std::string url = DetectServerUrl();
+            if (url.empty()) {
+                stop_.store(true);
+                std::lock_guard<std::mutex> lock(mutex_);
+                lastDumpedServer_.clear();
+            }
+            continue;
+        }
 
         std::string url = DetectServerUrl();
-        if (url.empty()) continue;
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            if (url.empty() && !manualServerUrl_.empty())
+                url = manualServerUrl_;
+        }
+        if (url.empty()) {
+            std::lock_guard<std::mutex> lock(mutex_);
+            lastDumpedServer_.clear();
+            continue;
+        }
 
         {
             std::lock_guard<std::mutex> lock(mutex_);
@@ -789,6 +807,12 @@ void ResourceDumper::RunAsync(std::string serverUrl) {
         ~Guard() { r.store(false); }
     } guard{running_};
 
+    DumperOptions opts;
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        opts = options_;
+    }
+
     auto setState = [&](DumpState s) {
         std::lock_guard<std::mutex> lock(mutex_);
         status_.state = s;
@@ -808,7 +832,7 @@ void ResourceDumper::RunAsync(std::string serverUrl) {
     std::vector<uint8_t> respBuf;
     long httpStatus = 0;
     if (!HttpFetch(serverUrl + xorstr("/client"),
-                   xorstr("method=getConfiguration"), respBuf, httpStatus) ||
+                   xorstr("method=getConfiguration"), respBuf, httpStatus, opts.timeoutSec) ||
         httpStatus != 200) {
         setError(xorstr("fetching /client failed (status ") +
                  std::to_string(httpStatus) + xorstr(")"));
@@ -868,84 +892,131 @@ void ResourceDumper::RunAsync(std::string serverUrl) {
             resource[xorstr("fileServer")].is_string())
             fileServer = resource[xorstr("fileServer")].get<std::string>();
 
+        std::shared_ptr<VfsNode> resourceRoot = nullptr;
+
+        bool hasResourceRpf = false;
         std::string hashRpf;
         if (resource.contains(xorstr("files")) &&
-            resource[xorstr("files")].contains(kResourceRpf))
+            resource[xorstr("files")].contains(kResourceRpf)) {
             hashRpf = resource[xorstr("files")][kResourceRpf].get<std::string>();
+            hasResourceRpf = !hashRpf.empty();
+        }
 
-        std::string rpfUrl;
-        if (!fileServer.empty())
-            rpfUrl = fileServer + xorstr("/") + name + xorstr("/resource.rpf?hash=") + hashRpf;
-        else
-            rpfUrl = serverUrl + xorstr("/files/") + name + xorstr("/resource.rpf?hash=") + hashRpf;
-
-        std::vector<uint8_t> encRpf;
-        if (!HttpFetch(rpfUrl, {}, encRpf, httpStatus, 120) || httpStatus != 200 ||
-            encRpf.empty()) {
+        if (!hasResourceRpf && !opts.downloadStreams) {
             std::lock_guard<std::mutex> lock(mutex_);
-            status_.failedResources++;
             status_.doneResources++;
             continue;
         }
 
-        uint8_t chachaKey[32];
-        if (!CalculateChaChaKey(uriKey.key, kResourceRpf, chachaKey)) {
-            std::lock_guard<std::mutex> lock(mutex_);
-            status_.failedResources++;
-            status_.doneResources++;
-            continue;
-        }
+        if (hasResourceRpf) {
+            std::string rpfUrl;
+            if (!fileServer.empty())
+                rpfUrl = fileServer + xorstr("/") + name + xorstr("/resource.rpf?hash=") + hashRpf;
+            else
+                rpfUrl = serverUrl + xorstr("/files/") + name + xorstr("/resource.rpf?hash=") + hashRpf;
 
-        std::vector<uint8_t> plainRpf(encRpf.size());
-        ChaCha20Decrypt(chachaKey, uriKey.iv, encRpf.data(), encRpf.size(),
-                        plainRpf.data());
+            std::string currentUrl = DetectServerUrl();
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                if (currentUrl.empty() && !manualServerUrl_.empty())
+                    currentUrl = manualServerUrl_;
+            }
+            if (currentUrl.empty() ||
+                (NormalizeServerUrl(currentUrl) != NormalizeServerUrl(serverUrl))) {
+                setError(xorstr("disconnected from server (connection lost)"));
+                stop_.store(true);
+                break;
+            }
 
-        Rpf2Archive archive;
-        if (!ParseRpf2(plainRpf, archive)) {
-            std::lock_guard<std::mutex> lock(mutex_);
-            status_.failedResources++;
-            status_.doneResources++;
-            continue;
-        }
+            std::vector<uint8_t> encRpf;
+            bool fetchOk = HttpFetch(rpfUrl, {}, encRpf, httpStatus, opts.timeoutSec) &&
+                           httpStatus == 200 && !encRpf.empty();
 
-        auto resourceRoot = BuildVfsFromRpf(archive, name);
+            if (!fetchOk) {
+                std::lock_guard<std::mutex> lock(mutex_);
+                status_.failedResources++;
+                std::this_thread::sleep_for(std::chrono::milliseconds(opts.requestDelayMs));
+            } else {
+                uint8_t chachaKey[32];
+                if (CalculateChaChaKey(uriKey.key, kResourceRpf, chachaKey)) {
+                    std::vector<uint8_t> plainRpf(encRpf.size());
+                    ChaCha20Decrypt(chachaKey, uriKey.iv, encRpf.data(), encRpf.size(),
+                                    plainRpf.data());
 
-        if (resource.contains(xorstr("streamFiles")) &&
-            resource[xorstr("streamFiles")].is_object()) {
-            for (auto it = resource[xorstr("streamFiles")].begin();
-                 it != resource[xorstr("streamFiles")].end(); ++it) {
-                if (stop_.load()) break;
-                const std::string &fileName = it.key();
-                std::string streamHash;
-                if (it.value().contains(xorstr("hash")) &&
-                    it.value()[xorstr("hash")].is_string())
-                    streamHash = it.value()[xorstr("hash")].get<std::string>();
-                std::string streamUrl;
-                if (!fileServer.empty())
-                    streamUrl = fileServer + xorstr("/") + name + xorstr("/") + fileName +
-                                xorstr("?hash=") + streamHash;
-                else
-                    streamUrl = serverUrl + xorstr("/files/") + name + xorstr("/") + fileName +
-                                xorstr("?hash=") + streamHash;
-
-                std::vector<uint8_t> encStream;
-                if (!HttpFetch(streamUrl, {}, encStream, httpStatus, 120) ||
-                    httpStatus != 200 || encStream.empty())
-                    continue;
-
-                uint8_t streamKey[32];
-                if (!CalculateChaChaKey(uriKey.key, fileName, streamKey)) continue;
-
-                std::vector<uint8_t> plainStream(encStream.size());
-                ChaCha20Decrypt(streamKey, uriKey.iv, encStream.data(),
-                                encStream.size(), plainStream.data());
-                InsertStreamFile(resourceRoot, fileName, std::move(plainStream));
-
-                std::this_thread::sleep_for(std::chrono::milliseconds(300));
+                    Rpf2Archive archive;
+                    if (ParseRpf2(plainRpf, archive)) {
+                        resourceRoot = BuildVfsFromRpf(archive, name);
+                        SortTreeRecursive(resourceRoot);
+                    }
+                }
             }
         }
 
-        SortTreeRecursive(resourceRoot);
+        if (!resourceRoot) {
+            resourceRoot = std::make_shared<VfsNode>();
+            resourceRoot->name = name;
+            resourceRoot->fullPath = xorstr("/") + name;
+            resourceRoot->isDirectory = true;
+        }
+
+        if (opts.downloadStreams && resource.contains(xorstr("streamFiles")) &&
+            resource[xorstr("streamFiles")].is_object()) {
+            auto &streamFiles = resource[xorstr("streamFiles")];
+            size_t maxStreamFiles = 64;
+            size_t processed = 0;
+            for (auto it = streamFiles.begin(); it != streamFiles.end(); ++it) {
+                if (stop_.load()) break;
+                if (processed >= maxStreamFiles) break;
+                std::string fileName = it.key();
+                if (fileName.empty()) continue;
+
+                std::string fe;
+                auto dotp = fileName.find_last_of('.');
+                if (dotp != std::string::npos) {
+                    fe = fileName.substr(dotp + 1);
+                    for (auto &c : fe) c = (char)tolower(c);
+                }
+                if (fe == xorstr("ytd") || fe == xorstr("ydr") || fe == xorstr("ydd") ||
+                    fe == xorstr("yft") || fe == xorstr("ycd") || fe == xorstr("ypv") ||
+                    fe == xorstr("awc") || fe == xorstr("wav") || fe == xorstr("ogg") ||
+                    fe == xorstr("dds") || fe == xorstr("png") || fe == xorstr("jpg") ||
+                    fe == xorstr("jpeg")) {
+                    processed++;
+                    continue;
+                }
+
+                std::string fileHash;
+                if (it.value().contains(xorstr("hash")) &&
+                    it.value()[xorstr("hash")].is_string())
+                    fileHash = it.value()[xorstr("hash")].get<std::string>();
+                if (fileHash.empty()) { processed++; continue; }
+
+                std::string streamUrl;
+                if (!fileServer.empty())
+                    streamUrl = fileServer + xorstr("/") + name + xorstr("/") + fileName + xorstr("?hash=") + fileHash;
+                else
+                    streamUrl = serverUrl + xorstr("/files/") + name + xorstr("/") + fileName + xorstr("?hash=") + fileHash;
+
+                std::vector<uint8_t> encStream;
+                long sHttpStatus = 0;
+                bool sOk = HttpFetch(streamUrl, {}, encStream, sHttpStatus, 15) &&
+                           sHttpStatus == 200 && !encStream.empty() &&
+                           encStream.size() < (2u * 1024u * 1024u);
+
+                if (sOk) {
+                    uint8_t sChaChaKey[32];
+                    if (CalculateChaChaKey(uriKey.key, fileName, sChaChaKey)) {
+                        std::vector<uint8_t> plainStream(encStream.size());
+                        ChaCha20Decrypt(sChaChaKey, uriKey.iv, encStream.data(),
+                                        encStream.size(), plainStream.data());
+                        InsertStreamFile(resourceRoot, fileName, std::move(plainStream));
+                    }
+                }
+
+                processed++;
+                std::this_thread::sleep_for(std::chrono::milliseconds(opts.requestDelayMs));
+            }
+        }
 
         {
             std::lock_guard<std::mutex> lock(mutex_);
@@ -958,7 +1029,7 @@ void ResourceDumper::RunAsync(std::string serverUrl) {
             status_.doneResources++;
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        std::this_thread::sleep_for(std::chrono::milliseconds(opts.perResourceDelayMs));
     }
 
     {

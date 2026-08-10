@@ -38,6 +38,13 @@ struct DumperStatus {
     uint64_t finishedAt = 0;
 };
 
+struct DumperOptions {
+    bool downloadStreams = false;
+    int requestDelayMs = 100;
+    int perResourceDelayMs = 100;
+    int timeoutSec = 30;
+};
+
 class ResourceDumper {
 public:
     void StartDumpAsync(std::string serverUrl);
@@ -59,8 +66,21 @@ public:
 
     bool ExportZip(std::vector<uint8_t> &out);
 
+    DumperOptions& Options() { return options_; }
+    const DumperOptions& Options() const { return options_; }
+
+    void SetManualServerUrl(const std::string& url) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        manualServerUrl_ = url;
+    }
+
+    std::string GetManualServerUrl() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return manualServerUrl_;
+    }
+
 private:
-    std::mutex mutex_;
+    mutable std::mutex mutex_;
     std::shared_ptr<VfsNode> root_;
     DumperStatus status_;
     std::atomic<bool> running_{false};
@@ -68,6 +88,8 @@ private:
     std::atomic<bool> watcher_started_{false};
     std::atomic<bool> watcher_stop_{false};
     std::string lastDumpedServer_;
+    DumperOptions options_;
+    std::string manualServerUrl_;
 
     void RunAsync(std::string serverUrl);
     void RunWatcher();

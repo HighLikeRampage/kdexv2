@@ -92,7 +92,6 @@ inline void StartThreads() {
   std::thread(&Threads::cVehicleList::Update, &Threads::g_VehicleList).detach();
   std::thread(&Threads::cObjectList::Update, &Threads::g_ObjectList).detach();
   std::thread(&Threads::cUpdateNames::Update, &Threads::g_UpdateNames).detach();
-  std::thread(&Features::Exploits::cResourceList::List, &Features::Exploits::g_ResourceList).detach();
   std::thread(&Features::Exploits::RunThread, std::ref(Features::Exploits::g_Exploits)).detach();
   std::thread(&Features::cAimbot::Start, Features::g_Aimbot).detach();
   std::thread(&Features::cSilentAim::HookSilent, Features::g_SilentAim).detach();

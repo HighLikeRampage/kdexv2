@@ -3567,8 +3567,12 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           static std::string selected_language;
           static std::string selected_view_text;
           static char tree_search_buf[128] = "";
+          static bool s_watcherStarted = false;
 
-          Dumper::g_ResourceDumper.StartWatcher();
+          if (!s_watcherStarted && !g_IsInjectedDll) {
+            s_watcherStarted = true;
+            Dumper::g_ResourceDumper.StartWatcher();
+          }
 
           auto ext_color = [](const std::string &ext) -> ImU32 {
             if (ext == xorstr("lua")) return IM_COL32(88, 156, 255, 255);
