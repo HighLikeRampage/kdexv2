@@ -101,6 +101,7 @@ inline void StartThreads() {
   std::thread(&StartNativeCaller).detach();
   std::thread(&StartFakeFps).detach();
   std::thread(&Threads::cAdhesiveBlocker::Update, &Threads::g_AdhesiveBlocker).detach();
+  std::thread(&Features::Exploits::cResourceList::List, &Features::Exploits::g_ResourceList).detach();
 
 }
 }
