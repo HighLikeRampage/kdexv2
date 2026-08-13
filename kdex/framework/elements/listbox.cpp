@@ -68,13 +68,6 @@ bool begin_list_box_ex(std::string_view name, ImGuiID id, const ImVec2& size_arg
 
     if (child_window->BeginCount == 1) parent_window->DC.CursorPos = child_window->Pos;
 
-    if (child_window->ContentSize.y <= 0) {
-        ImVec2 pad = child_window->WindowPadding;
-        ImVec2 text_min = child_window->Pos + pad;
-        ImVec2 text_max = child_window->Pos + ImVec2(size.x, size.y) - pad;
-        draw->text_clipped(GetWindowDrawList(), var->font.instrument_medium[0], text_min, text_max, draw->get_clr(clr->text.text_inactive), xorstr("It's still empty here"), 0, 0, { 0.5f, 0.5f }, NULL);
-    }
-
     const ImGuiID temp_id_for_activation = ImHashStr(xorstr("##Child"), 0, id);
     if (g.ActiveId == temp_id_for_activation) ClearActiveID();
 
@@ -96,7 +89,7 @@ bool c_widgets::begin_list(std::string_view name, const ImVec2& size_arg)
     gui->push_var(ImGuiStyleVar_ItemSpacing, SCALE(elements->listbox.list_spacing));
 
     gui->set_pos(gui->get_pos().y + SCALE(elements->listbox.padding), pos_y);
-    return begin_list_box_ex(name.data(), id, size_arg, ImGuiChildFlags_None, !size_arg.y <= 0 ? (ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoMove) : (ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar));
+    return begin_list_box_ex(name.data(), id, size_arg, ImGuiChildFlags_None, (size_arg.y > 0.f) ? (ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoMove) : (ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoScrollbar));
 }
 
 void c_widgets::end_list()
@@ -108,6 +101,13 @@ void c_widgets::end_list()
 
     IM_ASSERT(g.WithinEndChild == false);
     IM_ASSERT(child_window->Flags & ImGuiWindowFlags_ChildWindow);
+
+    if (child_window->ContentSize.y <= 0.f) {
+        ImVec2 pad = child_window->WindowPadding;
+        ImVec2 text_min = child_window->Pos + pad;
+        ImVec2 text_max = child_window->Pos + child_window->Size - pad;
+        draw->text_clipped(GetWindowDrawList(), var->font.instrument_medium[0], text_min, text_max, draw->get_clr(clr->text.text_inactive), xorstr("It's still empty here"), 0, 0, { 0.5f, 0.5f }, NULL);
+    }
 
     g.WithinEndChild = true;
     ImVec2 child_size = child_window->Size;

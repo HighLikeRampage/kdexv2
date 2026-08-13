@@ -3646,7 +3646,7 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
           static char tree_search_buf[128] = "";
           static bool s_watcherStarted = false;
 
-          if (!s_watcherStarted && !g_IsInjectedDll) {
+          if (!s_watcherStarted) {
             s_watcherStarted = true;
             Dumper::g_ResourceDumper.StartWatcher();
           }
