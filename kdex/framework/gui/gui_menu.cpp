@@ -2129,11 +2129,17 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                     std::string name_lower = res.Path;
                     std::transform(name_lower.begin(), name_lower.end(),
                                    name_lower.begin(), ::tolower);
-                    if (name_lower.find(filter) == std::string::npos)
-                      continue;
+                    if (name_lower.find(filter) == std::string::npos) {
+                      std::string disp_lower = res.DisplayName;
+                      std::transform(disp_lower.begin(), disp_lower.end(),
+                                     disp_lower.begin(), ::tolower);
+                      if (disp_lower.find(filter) == std::string::npos)
+                        continue;
+                    }
                   }
 
-                  std::string label = xorstr("    ") + res.Path + xorstr("##") +
+                  std::string disp = res.DisplayName.empty() ? res.Path : res.DisplayName;
+                  std::string label = xorstr("    ") + disp + xorstr("##") +
                                       std::to_string(i);
                   bool is_active = (selected_resource_ptr == res.Pointer);
 
@@ -2225,7 +2231,8 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                         ImGui::ColorConvertU32ToFloat4(value_col), value);
                 };
 
-                render_info(xorstr("Name: "), res.Path.c_str());
+                render_info(xorstr("Name: "),
+                            res.DisplayName.empty() ? res.Path.c_str() : res.DisplayName.c_str());
 
                 std::string state_name;
                 ImU32 state_col = IM_COL32(200, 200, 200, 255);
