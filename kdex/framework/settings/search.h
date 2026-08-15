@@ -797,6 +797,8 @@ struct keys_t
 	int horn_boost_key{ 0 }; int horn_boost_mode{ 1 };
 	int fake_lag_key{ 0 }; int fake_lag_mode{ 1 };
 	int anti_aim_block_key{ 0 }; int anti_aim_block_mode{ 1 };
+	int max_health_key{ 0 }; int max_health_mode{ 1 };
+	int max_armor_key{ 0 }; int max_armor_mode{ 1 };
 };
 
 struct items_t

@@ -1002,6 +1002,18 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   notify->add_notify(xorstr("Health Set"), 2000, notify_type::success);
                 }
               }
+              gui->dummy(SCALE(0, 4));
+              widgets->key_select(xorstr("Health Keybind##health_kb"),
+                                  &option->key.max_health_key);
+              gui->dummy(SCALE(0, 4));
+              {
+                std::vector<std::string> kb_modes{ std::string(xorstr("Toggle")), std::string(xorstr("Hold")) };
+                widgets->dropdown(xorstr("Health Mode##health_mode"),
+                                  &option->key.max_health_mode, kb_modes, 0,
+                                  ImVec2(gui->content_avail().x, SCALE(35)));
+              }
+              gui->dummy(SCALE(0, 8));
+
               widgets->slider_float(option->name.max_armor,
                                     &option->param.max_armor, 0.f, 1000.f,
                                     xorstr("%.0f"));
@@ -1013,6 +1025,17 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   notify->add_notify(xorstr("Armor Set"), 2000, notify_type::success);
                 }
               }
+              gui->dummy(SCALE(0, 4));
+              widgets->key_select(xorstr("Armor Keybind##armor_kb"),
+                                  &option->key.max_armor_key);
+              gui->dummy(SCALE(0, 4));
+              {
+                std::vector<std::string> kb_modes{ std::string(xorstr("Toggle")), std::string(xorstr("Hold")) };
+                widgets->dropdown(xorstr("Armor Mode##armor_mode"),
+                                  &option->key.max_armor_mode, kb_modes, 0,
+                                  ImVec2(gui->content_avail().x, SCALE(35)));
+              }
+              gui->dummy(SCALE(0, 8));
               widgets->checkbox(option->name.inf_combat_roll,
                                 &option->param.inf_combat_roll);
               widgets->checkbox(option->name.force_weapon_wheel,
