@@ -13,6 +13,15 @@
 #include <cstdio>
 #include <string_view>
 
+#ifndef _NTDEF_
+    typedef LONG NTSTATUS, *PNTSTATUS;
+    #define STATUS_SUCCESS 0
+#endif
+    typedef NTSTATUS(NTAPI* PFN_NT_QUERY_INFORMATION_THREAD)(
+        HANDLE ThreadHandle, LONG ThreadInformationClass,
+        PVOID ThreadInformation, ULONG ThreadInformationLength, PULONG ReturnLength);
+    typedef LONG(NTAPI* PFN_NT_ALERT_THREAD)(HANDLE ThreadHandle);
+
 namespace {
     struct NativeEntry { const char* name; uint64_t hash; };
     static const NativeEntry kNativeEntries[] = {
@@ -612,12 +621,21 @@ namespace Invoker {
 
     static uintptr_t s_citizenCoreBase = 0;
     static size_t    s_citizenCoreSize = 0;
-    static uintptr_t s_citizenTableVA = 0;
-    static uintptr_t s_citizenSlot = 0;
-    static uintptr_t s_citizenOrig = 0;
-    static uintptr_t s_citizenCaveVA = 0;
-    static uintptr_t s_citizenQueueVA = 0;
+    static std::unordered_map<uintptr_t, bool> s_caveUsed;
+    static std::vector<uintptr_t> s_caveFreelist;
+    static uintptr_t s_apcCaveVA = 0;
+    static uintptr_t s_apcDataVA = 0;
     static bool      s_citizenHookInstalled = false;
+
+#pragma pack(push, 1)
+    struct ApcNativeCall {
+        uint64_t       handler;
+        volatile LONG  done;
+        NativeContext  ctx;
+        uint64_t       args[32];
+        uint64_t       results[8];
+    };
+#pragma pack(pop)
 
     static uintptr_t ScanScrThreadInstance() {
         if (s_image.empty()) return 0;
@@ -651,6 +669,126 @@ namespace Invoker {
         if (bestCount < 5) return 0;
         return s_gameBase + bestRva;
     }
+
+    struct ModuleInfoEx { uintptr_t base; size_t size; std::string name; };
+
+    static bool EnumRemoteModules(std::vector<ModuleInfoEx>& out) {
+        if (!s_hProc) return false;
+        HMODULE mods[2048];
+        DWORD needed = 0;
+        if (!EnumProcessModulesEx(s_hProc, mods, sizeof(mods), &needed, LIST_MODULES_64BIT))
+            return false;
+        size_t count = needed / sizeof(HMODULE);
+        out.reserve(count);
+        for (size_t i = 0; i < count; ++i) {
+            char nm[MAX_PATH] = {};
+            GetModuleBaseNameA(s_hProc, mods[i], nm, sizeof(nm));
+            MODULEINFO mi = {};
+            if (!GetModuleInformation(s_hProc, mods[i], &mi, sizeof(mi))) continue;
+            ModuleInfoEx m;
+            m.base = (uintptr_t)mi.lpBaseOfDll;
+            m.size = mi.SizeOfImage;
+            m.name = nm;
+            out.push_back(m);
+        }
+        return !out.empty();
+    }
+
+    static bool IsPreferrredCaveModule(const std::string& n) {
+        std::string l = ToLower(n);
+        if (l.find(xorstr("citizen-scripting-lua")) != std::string::npos) return true;
+        if (l.find(xorstr("citizen-scripting-core")) != std::string::npos) return true;
+        if (l.find(xorstr("citizen")) != std::string::npos) return true;
+        if (l.find(xorstr("gtaprocess")) != std::string::npos) return true;
+        if (l.find(xorstr("gameprocess")) != std::string::npos) return true;
+        return false;
+    }
+
+    static uintptr_t HuntCodeCaveInModule(const ModuleInfoEx& mod, size_t minSize, size_t align = 16) {
+        if (!s_hProc) return 0;
+        std::vector<uint8_t> image(mod.size, 0);
+        SIZE_T got = 0;
+        if (!ReadProcessMemory(s_hProc, (LPCVOID)mod.base, image.data(), mod.size, &got) || got < 0x1000)
+            return 0;
+        auto dos = (IMAGE_DOS_HEADER*)image.data();
+        if (dos->e_magic != IMAGE_DOS_SIGNATURE) return 0;
+        auto nt = (IMAGE_NT_HEADERS64*)(image.data() + dos->e_lfanew);
+        if (nt->Signature != IMAGE_NT_SIGNATURE) return 0;
+        auto sec = IMAGE_FIRST_SECTION(nt);
+        for (int i = 0; i < nt->FileHeader.NumberOfSections; ++i, ++sec) {
+            if (!(sec->Characteristics & 0x20000000u)) continue;
+            uint32_t vsize = sec->Misc.VirtualSize;
+            uint32_t rsize = sec->SizeOfRawData;
+            uint32_t sz = vsize > rsize ? vsize : rsize;
+            uint32_t va = sec->VirtualAddress;
+            if (va + sz > image.size()) continue;
+            const uint8_t* p = image.data() + va;
+            size_t runStart = SIZE_MAX;
+            size_t runLen = 0;
+            for (uint32_t o = 0; o < sz; ++o) {
+                uint8_t b = p[o];
+                if (b == 0xCC || b == 0x00 || b == 0x90) {
+                    if (runStart == SIZE_MAX) runStart = o;
+                    ++runLen;
+                } else {
+                    if (runLen >= minSize) {
+                        uintptr_t abs = mod.base + va + runStart;
+                        if (align > 1) abs = (abs + align - 1) & ~(uintptr_t)(align - 1);
+                        if (!s_caveUsed.count(abs)) return abs;
+                    }
+                    runStart = SIZE_MAX;
+                    runLen = 0;
+                }
+            }
+            if (runLen >= minSize) {
+                uintptr_t abs = mod.base + va + runStart;
+                if (align > 1) abs = (abs + align - 1) & ~(uintptr_t)(align - 1);
+                if (!s_caveUsed.count(abs)) return abs;
+            }
+        }
+        return 0;
+    }
+
+    static uintptr_t AllocCodeCave(size_t size, size_t align = 16) {
+        if (!s_caveFreelist.empty()) {
+            for (auto it = s_caveFreelist.begin(); it != s_caveFreelist.end(); ++it) {
+                uintptr_t va = *it;
+                if (!s_caveUsed.count(va)) {
+                    s_caveUsed[va] = true;
+                    s_caveFreelist.erase(it);
+                    return va;
+                }
+            }
+        }
+        std::vector<ModuleInfoEx> mods;
+        if (!EnumRemoteModules(mods)) return 0;
+        std::stable_sort(mods.begin(), mods.end(), [](const ModuleInfoEx& a, const ModuleInfoEx& b) {
+            int wa = IsPreferrredCaveModule(a.name) ? 0 : 1;
+            int wb = IsPreferrredCaveModule(b.name) ? 0 : 1;
+            return wa < wb;
+        });
+        for (const auto& m : mods) {
+            uintptr_t va = HuntCodeCaveInModule(m, size, align);
+            if (va) {
+                s_caveUsed[va] = true;
+                return va;
+            }
+        }
+        for (const auto& m : mods) {
+            uintptr_t va = HuntCodeCaveInModule(m, size, align);
+            if (va) {
+                s_caveUsed[va] = true;
+                return va;
+            }
+        }
+        return 0;
+    }
+
+    static void FreeCodeCave(uintptr_t va) {
+        if (!va) return;
+        s_caveUsed.erase(va);
+        s_caveFreelist.push_back(va);
+    }
     static std::unordered_map<uint64_t, bool> s_blacklist;
 
     static const char* const kBuiltinBlacklist[] = {
@@ -661,23 +799,6 @@ namespace Invoker {
         xorstr("SET_CLOCK_TIME"),
         xorstr("GET_MINIMAP_FOW_DISCOVERY_RATIO"),
         nullptr,
-    };
-
-    struct CitizenEntry {
-        uint64_t h0;
-        uint64_t h1;
-        uint64_t fn;
-        uintptr_t slot;
-    };
-    static std::vector<CitizenEntry> s_citizenEntries;
-    static std::unordered_map<uint64_t, uintptr_t> s_citizenHandlers;
-    static std::vector<CitizenEntry> s_anchorCandidates;
-    static std::unordered_map<uintptr_t, bool> s_anchorExhausted;
-    static uint64_t s_ggtHandler = 0;
-
-    static const uintptr_t kCitizenTableOffsets[] = {
-        0x10BD58, 0x10BCE8, 0x10BC78, 0x10C2A8, 0x10C3A8,
-        0x10C4A8, 0x10C5A8, 0x10C6A8, 0x10C7A8
     };
 
     static bool WriteMem(uintptr_t va, const void* src, size_t len) {
@@ -692,260 +813,170 @@ namespace Invoker {
         return ReadProcessMemory(s_hProc, (LPCVOID)va, dst, len, &got) && got == len;
     }
 
-    static bool WriteProtected(uintptr_t va, const void* src, size_t len) {
-        DWORD oldProt = 0;
-        if (!VirtualProtectEx(s_hProc, (LPVOID)va, len, PAGE_EXECUTE_READWRITE, &oldProt)) return false;
-        bool ok = WriteMem(va, src, len);
-        DWORD tmp;
-        VirtualProtectEx(s_hProc, (LPVOID)va, len, oldProt, &tmp);
-        return ok;
-    }
-
-    static uintptr_t AllocRemote(size_t size, DWORD prot) {
+    static uintptr_t AllocRemoteData(size_t size, DWORD prot = PAGE_READWRITE) {
         return (uintptr_t)VirtualAllocEx(s_hProc, nullptr, size, MEM_COMMIT | MEM_RESERVE, prot);
     }
 
-    static bool GetModule(const std::string& nameHint, uintptr_t* outBase, size_t* outSize) {
-        HMODULE mods[1024];
-        DWORD needed = 0;
-        if (!EnumProcessModulesEx(s_hProc, mods, sizeof(mods), &needed, LIST_MODULES_64BIT)) return false;
-        size_t count = needed / sizeof(HMODULE);
-        std::string lowerHint = ToLower(nameHint);
-        for (size_t i = 0; i < count; ++i) {
-            char nm[MAX_PATH] = {};
-            GetModuleBaseNameA(s_hProc, mods[i], nm, sizeof(nm));
-            std::string lo = ToLower(nm);
-            if (lo.find(lowerHint) != std::string::npos) {
-                MODULEINFO mi = {};
-                if (!GetModuleInformation(s_hProc, mods[i], &mi, sizeof(mi))) return false;
-                *outBase = (uintptr_t)mods[i];
-                *outSize = mi.SizeOfImage;
-                return true;
-            }
-        }
-        return false;
+    static void FreeRemoteData(uintptr_t va) {
+        if (s_hProc && va) VirtualFreeEx(s_hProc, (LPVOID)va, 0, MEM_RELEASE);
     }
 
-    static std::vector<uint8_t> BuildCitizenShellcode(uintptr_t queueVA, uintptr_t origFn) {
-        std::vector<uint8_t> c = {
-            0x9C,
-            0x50, 0x51, 0x41, 0x50, 0x41, 0x51,
-            0x48, 0xBA, 0,0,0,0,0,0,0,0,
-            0x52,
-            0x48, 0x83, 0x82, 0xC0,0x00,0x00,0x00, 0x01,
-            0x4C, 0x8B, 0x8A, 0xE0,0x00,0x00,0x00,
-            0x4D, 0x85, 0xC9,
-            0x74, 0x0F,
-            0x4D, 0x8B, 0x01,
-            0x4D, 0x85, 0xC0,
-            0x74, 0x07,
-            0x4C, 0x89, 0x82, 0xE8,0x00,0x00,0x00,
-            0x0F, 0xB6, 0x02,
-            0x85, 0xC0,
-            0x0F, 0x84, 0x7B, 0x00, 0x00, 0x00,
-            0xC6, 0x02, 0x00,
-            0x4C, 0x8B, 0x8A, 0xE0,0x00,0x00,0x00,
-            0x4D, 0x85, 0xC9,
-            0x74, 0x19,
-            0x4D, 0x8B, 0x01,
-            0x4C, 0x89, 0x82, 0xF0,0x00,0x00,0x00,
-            0x4C, 0x8B, 0x82, 0xE8,0x00,0x00,0x00,
-            0x4D, 0x85, 0xC0,
-            0x74, 0x03,
-            0x4D, 0x89, 0x01,
-            0x4C, 0x8D, 0x92, 0xA0,0x00,0x00,0x00,
-            0x4C, 0x8D, 0x9A, 0xC8,0x00,0x00,0x00,
-            0x4D, 0x89, 0x1A,
-            0x8B, 0x4A, 0x18,
-            0x41, 0x89, 0x4A, 0x08,
-            0x48, 0x8D, 0x42, 0x20,
-            0x49, 0x89, 0x42, 0x10,
-            0x48, 0x8B, 0x42, 0x08,
-            0x48, 0x8D, 0x8A, 0xA0,0x00,0x00,0x00,
-            0x48, 0x83, 0xEC, 0x28,
-            0xFF, 0xD0,
-            0x48, 0x83, 0xC4, 0x28,
-            0x48, 0x8B, 0x14, 0x24,
-            0x4C, 0x8B, 0x8A, 0xE0,0x00,0x00,0x00,
-            0x4D, 0x85, 0xC9,
-            0x74, 0x0A,
-            0x4C, 0x8B, 0x82, 0xF0,0x00,0x00,0x00,
-            0x4D, 0x89, 0x01,
-            0xC6, 0x42, 0x01, 0x01,
-            0x5A, 0x41, 0x59, 0x41, 0x58, 0x59, 0x58, 0x9D,
-            0xFF, 0x25, 0x00, 0x00, 0x00, 0x00,
-            0,0,0,0,0,0,0,0,
-        };
-        std::memcpy(c.data() + 9, &queueVA, 8);
-        std::memcpy(c.data() + 201, &origFn, 8);
+    static std::vector<uint8_t> BuildApcStub() {
+        std::vector<uint8_t> c;
+        auto e = [&](std::initializer_list<uint8_t> bs) { for (auto b : bs) c.push_back(b); };
+        auto imm64 = [&](uint64_t v) { for (int i = 0; i < 8; ++i) c.push_back(uint8_t(v >> (i * 8))); };
+
+        e({0x50, 0x51, 0x52, 0x53, 0x55, 0x56, 0x57});
+        e({0x41, 0x50, 0x41, 0x51, 0x41, 0x52, 0x41, 0x53, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57});
+        e({0x48, 0x83, 0xEC, 0x20});
+
+        e({0x48, 0x89, 0xCB});
+        e({0x48, 0x81, 0xC3, 0x10, 0x00, 0x00, 0x00});
+        e({0x48, 0x8D, 0x93, 0x80, 0x00, 0x00, 0x00});
+        e({0x48, 0x89, 0x53, 0x08});
+        e({0x48, 0x8D, 0x93, 0x18, 0x01, 0x00, 0x00});
+        e({0x48, 0x89, 0x53, 0x00});
+        e({0xC7, 0x43, 0x04, 0x01, 0x00, 0x00, 0x00});
+        e({0x8B, 0x43, 0x00});
+        e({0x83, 0xE0, 0x1F});
+        e({0x89, 0x43, 0x00});
+        e({0x48, 0x8B, 0x03});
+        e({0xFF, 0xD0});
+        e({0x48, 0x8D, 0x93, 0x18, 0x01, 0x00, 0x00});
+        e({0x48, 0x8B, 0x03});
+        e({0x48, 0x89, 0x43, 0xA0});
+        e({0x48, 0x8B, 0x43, 0xA8});
+        e({0x48, 0x89, 0x43, 0xA8});
+        e({0x48, 0x8B, 0x43, 0xB0});
+        e({0x48, 0x89, 0x43, 0xB0});
+        e({0xB8, 0x01, 0x00, 0x00, 0x00});
+        e({0x48, 0x87, 0x03});
+        e({0x48, 0x83, 0xC4, 0x20});
+        e({0x41, 0x5F, 0x41, 0x5E, 0x41, 0x5D, 0x41, 0x5C, 0x41, 0x5B, 0x41, 0x5A, 0x41, 0x59, 0x41, 0x58});
+        e({0x5F, 0x5E, 0x5D, 0x5B, 0x5A, 0x59, 0x58});
+        e({0xC3});
         return c;
     }
 
-    static bool LoadCitizenNativeTable() {
-        s_citizenEntries.clear();
-        s_citizenHandlers.clear();
-        if (!GetModule(xorstr("citizen-scripting-core.dll"), &s_citizenCoreBase, &s_citizenCoreSize)) {
-            Log(xorstr("[citizen] core.dll not found\n")); return false;
-        }
-        Log(xorstr("[citizen] core base 0x%llx size %zu\n"), (unsigned long long)s_citizenCoreBase, s_citizenCoreSize);
-
-        s_citizenTableVA = 0;
-        size_t count = 0;
-        for (uintptr_t off : kCitizenTableOffsets) {
-            uintptr_t tva = s_citizenCoreBase + off;
-            uint64_t tBegin = 0, tEnd = 0;
-            if (!ReadMem(tva, &tBegin, 8) || !ReadMem(tva + 8, &tEnd, 8)) continue;
-            if (!tBegin || tEnd <= tBegin) continue;
-            size_t bytes = (size_t)(tEnd - tBegin);
-            if (bytes % sizeof(void*) != 0) continue;
-            size_t cnt = bytes / sizeof(void*);
-            if (cnt < 64 || cnt > 65536) continue;
-            uint32_t valid = 0;
-            for (size_t i = 0; i < 16 && i < cnt; ++i) {
-                uint64_t entPtr = 0;
-                if (!ReadMem(tBegin + i * 8, &entPtr, 8) || !entPtr) continue;
-                uint64_t fn = 0;
-                if (!ReadMem(entPtr + 0x18, &fn, 8)) continue;
-                if (fn > 0x10000) ++valid;
-            }
-            if (valid < 2) continue;
-            s_citizenTableVA = tva;
-            count = cnt;
-            Log(xorstr("[citizen] table @ +0x%llx  count=%zu\n"), (unsigned long long)off, cnt);
-            break;
-        }
-        if (!s_citizenTableVA) { Log(xorstr("[citizen] table not found\n")); return false; }
-
-        uint64_t tBegin = 0;
-        ReadMem(s_citizenTableVA, &tBegin, 8);
+    static uintptr_t GetScriptThreadStartHint() {
+        HMODULE mods[2048];
+        DWORD needed = 0;
+        if (!EnumProcessModulesEx(s_hProc, mods, sizeof(mods), &needed, LIST_MODULES_64BIT)) return 0;
+        size_t count = needed / sizeof(HMODULE);
         for (size_t i = 0; i < count; ++i) {
-            uint64_t entPtr = 0;
-            if (!ReadMem(tBegin + i * 8, &entPtr, 8) || !entPtr) continue;
-            CitizenEntry ce = {};
-            ReadMem(entPtr, &ce.h0, 8);
-            ReadMem(entPtr + 8, &ce.h1, 8);
-            ReadMem(entPtr + 0x18, &ce.fn, 8);
-            ce.slot = entPtr + 0x18;
-            if (!ce.fn) continue;
-            s_citizenEntries.push_back(ce);
-            if (ce.h0) s_citizenHandlers[ce.h0] = ce.fn;
-            if (ce.h1 && ce.h1 != ce.h0) s_citizenHandlers[ce.h1] = ce.fn;
+            char nm[MAX_PATH] = {};
+            GetModuleBaseNameA(s_hProc, mods[i], nm, sizeof(nm));
+            std::string l = ToLower(nm);
+            if (l.find(xorstr("citizen-scripting-lua")) != std::string::npos)
+                return (uintptr_t)mods[i];
         }
-        Log(xorstr("[citizen] loaded %zu entries\n"), s_citizenEntries.size());
-        return !s_citizenEntries.empty();
-    }
-
-    static uintptr_t CitizenLookup(uint64_t hash) {
-        auto it = s_citizenHandlers.find(hash);
-        if (it != s_citizenHandlers.end()) return it->second;
-        uint64_t low32 = hash & 0xFFFFFFFFull;
-        it = s_citizenHandlers.find(low32);
-        return it != s_citizenHandlers.end() ? it->second : 0;
-    }
-
-    static bool ProbeAnchor(uintptr_t slotVA, uintptr_t origFn, uintptr_t ggtHandler) {
-        std::vector<uint8_t> sc = BuildCitizenShellcode(s_citizenQueueVA, origFn);
-        WriteMem(s_citizenCaveVA, sc.data(), sc.size());
-
-        uint64_t caveVA = s_citizenCaveVA;
-        if (!WriteProtected(slotVA, &caveVA, 8)) return false;
-
-        uint8_t zeros[2] = {};
-        WriteMem(s_citizenQueueVA, zeros, 2);
-        WriteMem(s_citizenQueueVA + 0x08, &ggtHandler, 8);
-        uint32_t argCount = 0;
-        WriteMem(s_citizenQueueVA + 0x18, &argCount, 4);
-        uint8_t one = 1;
-        WriteMem(s_citizenQueueVA, &one, 1);
-
-        bool ok = false;
-        for (int i = 0; i < 10; ++i) {
-            Sleep(10);
-            uint8_t done = 0;
-            if (ReadMem(s_citizenQueueVA + 1, &done, 1) && done) {
-                uint64_t r = 0;
-                if (ReadMem(s_citizenQueueVA + 0xC8, &r, 8) && r != 0) ok = true;
-                break;
-            }
+        for (size_t i = 0; i < count; ++i) {
+            char nm[MAX_PATH] = {};
+            GetModuleBaseNameA(s_hProc, mods[i], nm, sizeof(nm));
+            std::string l = ToLower(nm);
+            if (l.find(xorstr("citizen-scripting-core")) != std::string::npos)
+                return (uintptr_t)mods[i];
         }
-
-        WriteProtected(slotVA, &origFn, 8);
-        return ok;
+        return 0;
     }
 
-    static bool TryInstallAnchor(const CitizenEntry& c) {
-        if (!ProbeAnchor(c.slot, c.fn, s_ggtHandler)) return false;
-        s_citizenSlot = c.slot;
-        s_citizenOrig = c.fn;
-        std::vector<uint8_t> sc = BuildCitizenShellcode(s_citizenQueueVA, s_citizenOrig);
-        WriteMem(s_citizenCaveVA, sc.data(), sc.size());
-        WriteProtected(s_citizenSlot, &s_citizenCaveVA, 8);
-        Log(xorstr("[citizen] anchor @ slot 0x%llx\n"), (unsigned long long)c.slot);
+    static HANDLE FindBestScriptThread(uintptr_t& outStart, size_t& outUserMs) {
+        if (!s_hProc) return nullptr;
+        uintptr_t prefBase = GetScriptThreadStartHint();
+        uintptr_t prefEnd = prefBase + (32 * 1024 * 1024);
+
+        auto ntqit = (PFN_NT_QUERY_INFORMATION_THREAD)GetProcAddress(
+            GetModuleHandleA(xorstr("ntdll.dll")), xorstr("NtQueryInformationThread"));
+        if (!ntqit) return nullptr;
+
+        HANDLE snap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+        if (snap == INVALID_HANDLE_VALUE) return nullptr;
+
+        HANDLE best = nullptr;
+        uintptr_t bestStart = 0;
+        size_t bestUs = 0;
+
+        THREADENTRY32 te; te.dwSize = sizeof(te);
+        if (Thread32First(snap, &te)) {
+            do {
+                if (te.th32OwnerProcessID != s_pid) continue;
+                HANDLE ht = OpenThread(THREAD_QUERY_INFORMATION | THREAD_SET_CONTEXT, FALSE, te.th32ThreadID);
+                if (!ht) continue;
+                uintptr_t start = 0;
+                FILETIME c, e, k, u;
+                bool okStart = (ntqit(ht, 9, &start, sizeof(start), nullptr) == 0);
+                bool okTimes = !!GetThreadTimes(ht, &c, &e, &k, &u);
+                ULARGE_INTEGER uli; uli.LowPart = u.dwLowDateTime; uli.HighPart = u.dwHighDateTime;
+                size_t us = (size_t)(uli.QuadPart / 10000);
+                if (okStart && okTimes) {
+                    bool pref = prefBase && start >= prefBase && start < prefEnd;
+                    bool better = (pref && !bestStart) ||
+                        (pref == (bestStart >= prefBase && bestStart < prefEnd) && us > bestUs);
+                    if (better) {
+                        if (best) CloseHandle(best);
+                        best = ht;
+                        bestStart = start;
+                        bestUs = us;
+                        continue;
+                    }
+                }
+                CloseHandle(ht);
+            } while (Thread32Next(snap, &te));
+        }
+        CloseHandle(snap);
+        outStart = bestStart;
+        outUserMs = bestUs;
+        return best;
+    }
+
+    static HANDLE s_apcThread = nullptr;
+    static uintptr_t s_apcThreadStart = 0;
+
+    static bool EnsureApcThread() {
+        if (s_apcThread) {
+            DWORD code = 0;
+            if (GetExitCodeProcess(s_hProc, &code) && code == STILL_ACTIVE) return true;
+            CloseHandle(s_apcThread); s_apcThread = nullptr;
+        }
+        size_t us = 0;
+        s_apcThread = FindBestScriptThread(s_apcThreadStart, us);
+        if (!s_apcThread) return false;
+        Log(xorstr("[apc] chosen thread start=0x%llx user=%zums\n"),
+            (unsigned long long)s_apcThreadStart, us);
         return true;
-    }
-
-    static bool RotateAnchor() {
-        if (s_citizenSlot && s_citizenOrig) {
-            WriteProtected(s_citizenSlot, &s_citizenOrig, 8);
-            s_anchorExhausted[s_citizenSlot] = true;
-        }
-        for (const auto& c : s_anchorCandidates) {
-            if (s_anchorExhausted.count(c.slot)) continue;
-            if (TryInstallAnchor(c)) return true;
-        }
-        return false;
     }
 
     bool InstallCitizenHook() {
         std::lock_guard<std::mutex> lock(s_mutex);
         if (s_citizenHookInstalled) return true;
-        if (!s_hProc) { Log(xorstr("[citizen] not attached\n")); return false; }
-        if (!LoadCitizenNativeTable()) return false;
+        if (!s_hProc) { Log(xorstr("[apc] not attached\n")); return false; }
 
-        uint64_t ggtHash = 0;
-        {
-            auto it = s_hashes.find(xorstr("GET_GAME_TIMER"));
-            if (it == s_hashes.end()) { Log(xorstr("[citizen] GET_GAME_TIMER not in Natives.hpp\n")); return false; }
-            ggtHash = it->second;
+        auto stub = BuildApcStub();
+        s_apcCaveVA = AllocCodeCave(stub.size() + 64, 16);
+        if (!s_apcCaveVA) {
+            Log(xorstr("[apc] code cave hunt failed (fallback alloc)\n"));
+            s_apcCaveVA = AllocRemoteData(stub.size() + 64, PAGE_EXECUTE_READ);
+            if (!s_apcCaveVA) return false;
         }
-        s_ggtHandler = CitizenLookup(ggtHash);
-        if (!s_ggtHandler) { Log(xorstr("[citizen] GET_GAME_TIMER not in citizen table\n")); return false; }
-        Log(xorstr("[citizen] GGT handler 0x%llx\n"), (unsigned long long)s_ggtHandler);
-
-        s_citizenQueueVA = AllocRemote(0x1000, PAGE_READWRITE);
-        s_citizenCaveVA = AllocRemote(0x1000, PAGE_EXECUTE_READWRITE);
-        if (!s_citizenQueueVA || !s_citizenCaveVA) { Log(xorstr("[citizen] alloc failed\n")); return false; }
-
-        {
-            uint64_t tlsCtl[3] = { (uint64_t)s_scrThreadInstVA, 0ull, 0ull };
-            WriteMem(s_citizenQueueVA + 0xE0, tlsCtl, sizeof(tlsCtl));
-            Log(xorstr("[citizen] scrThread::sm_Instance VA = 0x%llx (%s)\n"),
-                (unsigned long long)s_scrThreadInstVA,
-                s_scrThreadInstVA ? xorstr("TLS bridge enabled") : xorstr("TLS bridge OFF - scan didn't find it"));
-        }
-
-        s_anchorCandidates.clear();
-        s_anchorExhausted.clear();
-        for (const auto& e : s_citizenEntries) {
-            if (e.fn >= s_gameBase && e.fn < s_gameBase + s_gameSize)
-                s_anchorCandidates.push_back(e);
-        }
-        Log(xorstr("[citizen] %zu anchor candidates\n"), s_anchorCandidates.size());
-
-        bool found = false;
-        for (const auto& c : s_anchorCandidates) {
-            if (TryInstallAnchor(c)) { found = true; break; }
-            s_anchorExhausted[c.slot] = true;
-        }
-        if (!found) {
-            Log(xorstr("[citizen] no working anchor\n"));
-            VirtualFreeEx(s_hProc, (LPVOID)s_citizenQueueVA, 0, MEM_RELEASE);
-            VirtualFreeEx(s_hProc, (LPVOID)s_citizenCaveVA, 0, MEM_RELEASE);
-            s_citizenQueueVA = s_citizenCaveVA = 0;
+        if (!WriteMem(s_apcCaveVA, stub.data(), stub.size())) {
+            Log(xorstr("[apc] WPM stub failed gle=%lu\n"), GetLastError());
             return false;
         }
+
+        s_apcDataVA = AllocRemoteData(sizeof(ApcNativeCall) + 64, PAGE_READWRITE);
+        if (!s_apcDataVA) {
+            Log(xorstr("[apc] data alloc failed gle=%lu\n"), GetLastError());
+            return false;
+        }
+
+        if (!EnsureApcThread()) {
+            Log(xorstr("[apc] no alertable candidate thread\n"));
+            return false;
+        }
+
         s_citizenHookInstalled = true;
-        Log(xorstr("[citizen] hook installed\n"));
+        Log(xorstr("[apc] installed stub=0x%llx data=0x%llx\n"),
+            (unsigned long long)s_apcCaveVA, (unsigned long long)s_apcDataVA);
         return true;
     }
 
@@ -954,48 +985,56 @@ namespace Invoker {
     void UninstallCitizenHook() {
         std::lock_guard<std::mutex> lock(s_mutex);
         if (!s_citizenHookInstalled) return;
-        if (s_citizenSlot && s_citizenOrig) WriteProtected(s_citizenSlot, &s_citizenOrig, 8);
-        if (s_citizenQueueVA) VirtualFreeEx(s_hProc, (LPVOID)s_citizenQueueVA, 0, MEM_RELEASE);
-        if (s_citizenCaveVA)  VirtualFreeEx(s_hProc, (LPVOID)s_citizenCaveVA, 0, MEM_RELEASE);
-        s_citizenQueueVA = s_citizenCaveVA = s_citizenSlot = s_citizenOrig = 0;
+        if (s_apcThread) { CloseHandle(s_apcThread); s_apcThread = nullptr; }
+        FreeCodeCave(s_apcCaveVA);
+        FreeRemoteData(s_apcDataVA);
+        s_apcCaveVA = 0;
+        s_apcDataVA = 0;
         s_citizenHookInstalled = false;
     }
 
-    static bool CitizenRunOnce(uintptr_t handlerVA, const uint64_t* args, uint32_t argCount, uint64_t* outResult, uint32_t timeoutMs) {
-        if (!s_citizenHookInstalled) return false;
-        uint8_t zeros[2] = {};
-        WriteMem(s_citizenQueueVA, zeros, 2);
-        WriteMem(s_citizenQueueVA + 0x08, &handlerVA, 8);
-        uint64_t argBuf[8] = {};
-        for (uint32_t i = 0; i < argCount && i < 8; ++i) argBuf[i] = args[i];
-        WriteMem(s_citizenQueueVA + 0x20, argBuf, sizeof(argBuf));
-        uint32_t ac32 = argCount;
-        WriteMem(s_citizenQueueVA + 0x18, &ac32, 4);
-        uint64_t clearRes[3] = {};
-        WriteMem(s_citizenQueueVA + 0xC8, clearRes, sizeof(clearRes));
-        uint8_t one = 1;
-        WriteMem(s_citizenQueueVA, &one, 1);
+    static bool ApcRunOnce(uintptr_t handlerVA, const uint64_t* args, uint32_t argCount,
+                           uint64_t* outResult, uint32_t timeoutMs) {
+        if (!s_citizenHookInstalled || !s_apcCaveVA || !s_apcDataVA) return false;
 
-        auto start = GetTickCount64();
-        while (GetTickCount64() - start < timeoutMs) {
-            uint8_t done = 0;
-            if (ReadMem(s_citizenQueueVA + 1, &done, 1) && done) {
-                if (outResult) ReadMem(s_citizenQueueVA + 0xC8, outResult, sizeof(uint64_t) * 3);
-                return true;
+        uint8_t buf[sizeof(ApcNativeCall)];
+        std::memset(buf, 0, sizeof(buf));
+        ApcNativeCall* call = (ApcNativeCall*)buf;
+        call->handler = handlerVA;
+        call->done = 0;
+        call->ctx.NumArgs = argCount;
+        call->ctx.NumResults = 1;
+        call->ctx.Args = (void*)(s_apcDataVA + offsetof(ApcNativeCall, args));
+        call->ctx.Results = (void*)(s_apcDataVA + offsetof(ApcNativeCall, results));
+        call->ctx._reserved[0] = 0;
+        for (uint32_t i = 0; i < argCount && i < 32; ++i) call->args[i] = args ? args[i] : 0;
+
+        if (!WriteMem(s_apcDataVA, buf, sizeof(buf))) return false;
+
+        if (!EnsureApcThread()) return false;
+        auto ntAlert = (PFN_NT_ALERT_THREAD)GetProcAddress(
+            GetModuleHandleA(xorstr("ntdll.dll")), xorstr("NtAlertThread"));
+        for (int attempt = 0; attempt < 4; ++attempt) {
+            if (!QueueUserAPC((PAPCFUNC)s_apcCaveVA, s_apcThread, (ULONG_PTR)s_apcDataVA)) {
+                DWORD gle = GetLastError();
+                if (gle == 5) { CloseHandle(s_apcThread); s_apcThread = nullptr; EnsureApcThread(); continue; }
+                return false;
             }
-            Sleep(1);
-        }
-        uint8_t reset = 0;
-        WriteMem(s_citizenQueueVA, &reset, 1);
-        return false;
-    }
-
-    static bool CitizenRun(uintptr_t handlerVA, const uint64_t* args, uint32_t argCount, uint64_t* outResult, uint32_t timeoutMs) {
-        if (CitizenRunOnce(handlerVA, args, argCount, outResult, timeoutMs)) return true;
-        Log(xorstr("[citizen] anchor 0x%llx exhausted, rotating\n"), (unsigned long long)s_citizenSlot);
-        for (int tries = 0; tries < 8; ++tries) {
-            if (!RotateAnchor()) return false;
-            if (CitizenRunOnce(handlerVA, args, argCount, outResult, timeoutMs)) return true;
+            if (ntAlert) ntAlert(s_apcThread);
+            auto start = GetTickCount64();
+            while (GetTickCount64() - start < timeoutMs) {
+                LONG doneVal = 0;
+                if (!ReadMem(s_apcDataVA + offsetof(ApcNativeCall, done), &doneVal, sizeof(doneVal))) return false;
+                if (doneVal) {
+                    if (outResult) {
+                        uint64_t tmp[3] = {};
+                        ReadMem(s_apcDataVA + offsetof(ApcNativeCall, results), tmp, sizeof(tmp));
+                        std::memcpy(outResult, tmp, sizeof(uint64_t) * 3);
+                    }
+                    return true;
+                }
+                Sleep(1);
+            }
         }
         return false;
     }
@@ -1029,7 +1068,7 @@ namespace Invoker {
 
     uintptr_t AllocRemoteString(const std::string& s) {
         if (!s_hProc) return 0;
-        uintptr_t va = AllocRemote(s.size() + 1, PAGE_READWRITE);
+        uintptr_t va = AllocRemoteData(s.size() + 1, PAGE_READWRITE);
         if (!va) return 0;
         WriteMem(va, s.data(), s.size() + 1);
         return va;
@@ -1047,16 +1086,21 @@ namespace Invoker {
         if (s_hProc) {
             if (!s_citizenHookInstalled) return nullptr;
             if (IsBlacklisted(hash)) return nullptr;
-            uintptr_t handlerVA = CitizenLookup(hash);
+            uintptr_t handlerVA = 0;
+            const NativeInfo* ni = GetInfo(hash);
+            if (ni) handlerVA = (uintptr_t)ni->handler;
             if (!handlerVA) {
-                const NativeInfo* ni = GetInfo(hash);
-                if (ni) handlerVA = (uintptr_t)ni->handler;
+                uint64_t low32 = hash & 0xFFFFFFFFull;
+                if (low32 != hash) {
+                    ni = GetInfo(low32);
+                    if (ni) handlerVA = (uintptr_t)ni->handler;
+                }
             }
             if (!handlerVA) return nullptr;
             uint64_t r[3] = {};
             {
                 std::lock_guard<std::mutex> lock(s_invokeMutex);
-                if (!CitizenRun(handlerVA, args, argCount, r, 500)) return nullptr;
+                if (!ApcRunOnce(handlerVA, args, argCount, r, 500)) return nullptr;
             }
             std::memcpy(s_invoke.resBuf, r, sizeof(r));
             return s_invoke.resBuf;
@@ -1079,7 +1123,7 @@ namespace Invoker {
         return Invoke(NativeHashFromName(name), args, argCount);
     }
 
-    uintptr_t   CitizenQueueBase() { return s_citizenQueueVA; }
+    uintptr_t   CitizenQueueBase() { return s_apcDataVA; }
     uintptr_t   GameBase() { return s_gameBase; }
     size_t      GameSize() { return s_gameSize; }
     uint32_t    Pid() { return s_pid; }
