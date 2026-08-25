@@ -816,6 +816,10 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                 &option->param.vehicle_name);
               widgets->checkbox(option->name.vehicle_distance,
                                 &option->param.vehicle_distance);
+              widgets->checkbox_with_picker(
+                  option->name.vehicle_3d_box,
+                  &option->param.vehicle_3d_box,
+                  option->param.vehicle_3d_box_color, true, false);
             }
             gui->end_child();
 
@@ -830,6 +834,10 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   option->param.object_name_color, true, false);
               widgets->checkbox(option->name.object_distance,
                                 &option->param.object_distance);
+              widgets->checkbox_with_picker(
+                  option->name.object_3d_box,
+                  &option->param.object_3d_box,
+                  option->param.object_3d_box_color, true, false);
             }
             gui->end_child();
 
@@ -991,51 +999,21 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                 &option->param.infinite_stamina);
               widgets->checkbox(option->name.anti_headshot,
                                 &option->param.anti_headshot);
+              widgets->checkbox(option->name.set_health_enabled,
+                                &option->param.set_health_enabled, false,
+                                &option->key.max_health_key, nullptr);
               widgets->slider_float(option->name.max_health,
                                     &option->param.max_health, 0.f, 1000.f,
                                     xorstr("%.0f"));
-              if (widgets->button(xorstr("Set Health"),
-                                  ImVec2(gui->content_avail().x, SCALE(30)))) {
-                const uint64_t ped = NativeCaller::g_NativeCaller.Invoke(Natives::PLAYER_PED_ID);
-                if (ped) {
-                  NativeCaller::g_NativeCaller.Invoke(Natives::SET_ENTITY_HEALTH, ped, (int)option->param.max_health, 0);
-                  notify->add_notify(xorstr("Health Set"), 2000, notify_type::success);
-                }
-              }
-              gui->dummy(SCALE(0, 4));
-              widgets->key_select(xorstr("Health Keybind##health_kb"),
-                                  &option->key.max_health_key);
-              gui->dummy(SCALE(0, 4));
-              {
-                std::vector<std::string> kb_modes{ std::string(xorstr("Toggle")), std::string(xorstr("Hold")) };
-                widgets->dropdown(xorstr("Health Mode##health_mode"),
-                                  &option->key.max_health_mode, kb_modes, 0,
-                                  ImVec2(gui->content_avail().x, SCALE(35)));
-              }
-              gui->dummy(SCALE(0, 8));
+              gui->dummy(SCALE(0, 10));
 
+              widgets->checkbox(option->name.set_armor_enabled,
+                                &option->param.set_armor_enabled, false,
+                                &option->key.max_armor_key, nullptr);
               widgets->slider_float(option->name.max_armor,
                                     &option->param.max_armor, 0.f, 1000.f,
                                     xorstr("%.0f"));
-              if (widgets->button(xorstr("Set Armor"),
-                                  ImVec2(gui->content_avail().x, SCALE(30)))) {
-                const uint64_t ped = NativeCaller::g_NativeCaller.Invoke(Natives::PLAYER_PED_ID);
-                if (ped) {
-                  NativeCaller::g_NativeCaller.Invoke(Natives::SET_PED_ARMOUR, ped, (int)option->param.max_armor);
-                  notify->add_notify(xorstr("Armor Set"), 2000, notify_type::success);
-                }
-              }
-              gui->dummy(SCALE(0, 4));
-              widgets->key_select(xorstr("Armor Keybind##armor_kb"),
-                                  &option->key.max_armor_key);
-              gui->dummy(SCALE(0, 4));
-              {
-                std::vector<std::string> kb_modes{ std::string(xorstr("Toggle")), std::string(xorstr("Hold")) };
-                widgets->dropdown(xorstr("Armor Mode##armor_mode"),
-                                  &option->key.max_armor_mode, kb_modes, 0,
-                                  ImVec2(gui->content_avail().x, SCALE(35)));
-              }
-              gui->dummy(SCALE(0, 8));
+              gui->dummy(SCALE(0, 10));
               widgets->checkbox(option->name.inf_combat_roll,
                                 &option->param.inf_combat_roll);
               widgets->checkbox(option->name.force_weapon_wheel,
@@ -1294,11 +1272,14 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                                 &option->param.warp_into_vehicle, false,
                                 &option->key.warp_into_vehicle_key,
                                 &option->key.warp_into_vehicle_mode);
+              widgets->checkbox(option->name.explode_vehicle,
+                                &option->param.explode_vehicle, false,
+                                &option->key.explode_vehicle_key,
+                                &option->key.explode_vehicle_mode);
               widgets->checkbox(option->name.no_ragdoll_vehicle,
                                 &option->param.no_ragdoll_vehicle);
 
               gui->dummy(SCALE(0, 6));
-              ImGui::TextColored(clr->text.text_inactive, xorstr("Colors"));
               widgets->color_picker(option->name.primary_vehicle_color.c_str(),
                                     option->param.primary_vehicle_color, true);
               widgets->color_picker(
@@ -1321,6 +1302,16 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               widgets->text_field(ICON_WRENCH, xorstr(""),
                                   xorstr("Vehicle name"),
                                   option->param.vehicle_spawn_name, 64);
+              gui->dummy(SCALE(0, 4));
+              {
+                ImVec2 separator_min = gui->get_screen_pos();
+                float separator_width = gui->content_avail().x * 0.75f;
+                float separator_start_x = separator_min.x + (gui->content_avail().x - separator_width) * 0.5f;
+                draw->line(GetWindowDrawList(), ImVec2(separator_start_x, separator_min.y),
+                           ImVec2(separator_start_x + separator_width, separator_min.y),
+                           draw->get_clr(clr->window.separator), 1.f);
+              }
+              gui->dummy(SCALE(0, 4));
               widgets->checkbox(xorstr("Networked##veh"),
                                 &option->param.vehicle_spawn_networked);
               if (widgets->button(xorstr("Spawn Vehicle & Warp"),
@@ -1341,6 +1332,16 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               widgets->text_field(ICON_WRENCH, xorstr(""),
                                   xorstr("Ped model name"),
                                   option->param.ped_spawn_name, 64);
+              gui->dummy(SCALE(0, 4));
+              {
+                ImVec2 separator_min = gui->get_screen_pos();
+                float separator_width = gui->content_avail().x * 0.75f;
+                float separator_start_x = separator_min.x + (gui->content_avail().x - separator_width) * 0.5f;
+                draw->line(GetWindowDrawList(), ImVec2(separator_start_x, separator_min.y),
+                           ImVec2(separator_start_x + separator_width, separator_min.y),
+                           draw->get_clr(clr->window.separator), 1.f);
+              }
+              gui->dummy(SCALE(0, 4));
               widgets->checkbox(xorstr("Networked##ped"),
                                 &option->param.ped_spawn_networked);
               if (widgets->button(xorstr("Spawn Ped"),
@@ -1365,6 +1366,16 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
               widgets->text_field(ICON_WRENCH, xorstr(""),
                                   xorstr("Prop model name"),
                                   option->param.prop_spawn_name, 64);
+              gui->dummy(SCALE(0, 4));
+              {
+                ImVec2 separator_min = gui->get_screen_pos();
+                float separator_width = gui->content_avail().x * 0.75f;
+                float separator_start_x = separator_min.x + (gui->content_avail().x - separator_width) * 0.5f;
+                draw->line(GetWindowDrawList(), ImVec2(separator_start_x, separator_min.y),
+                           ImVec2(separator_start_x + separator_width, separator_min.y),
+                           draw->get_clr(clr->window.separator), 1.f);
+              }
+              gui->dummy(SCALE(0, 4));
               widgets->checkbox(xorstr("Networked##prop"),
                                 &option->param.prop_spawn_networked);
               if (widgets->button(xorstr("Spawn Prop"),
@@ -1458,6 +1469,32 @@ void c_gui::render_menu_screen(const GuiFrameContext &ctx) {
                   solo_session_busy.store(false);
                 }).detach();
               }
+
+              gui->dummy(SCALE(0, 6));
+              widgets->checkbox(xorstr("Freeze Players"),
+                                &option->param.force_freeze_players,
+                                false, &option->param.force_freeze_keybind);
+              gui->dummy(SCALE(0, 6));
+              widgets->checkbox(xorstr("Net-Sync"),
+                                &option->param.force_dsync_players,
+                                false, &option->param.force_dsync_keybind);
+
+              gui->dummy(SCALE(0, 6));
+              widgets->checkbox(option->name.auto_peek,
+                                &option->param.auto_peek, false,
+                                &option->key.auto_peek_key,
+                                &option->key.auto_peek_mode);
+              widgets->color_picker(option->name.auto_peek_color,
+                                    option->param.auto_peek_color, true);
+
+              gui->dummy(SCALE(0, 6));
+              widgets->checkbox(option->name.hitbox_expander,
+                                &option->param.hitbox_expander, false,
+                                &option->key.hitbox_expander_key,
+                                &option->key.hitbox_expander_mode);
+              widgets->slider_float(option->name.hitbox_expander_size,
+                                    &option->param.hitbox_expander_size, 0.0f,
+                                    3.0f, xorstr("%.2f"));
             }
             gui->end_child();
           }

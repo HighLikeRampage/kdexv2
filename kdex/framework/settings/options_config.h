@@ -194,11 +194,15 @@ inline nlohmann::json OptionsParamToJson(const options_t& p) {
     j[xorstr("vehicle_snaplines_color")] = nlohmann::json::array({p.vehicle_snaplines_color[0], p.vehicle_snaplines_color[1], p.vehicle_snaplines_color[2], p.vehicle_snaplines_color[3]});
     j[xorstr("vehicle_name")] = p.vehicle_name;
     j[xorstr("vehicle_distance")] = p.vehicle_distance;
+    j[xorstr("vehicle_3d_box")] = p.vehicle_3d_box;
+    j[xorstr("vehicle_3d_box_color")] = nlohmann::json::array({p.vehicle_3d_box_color[0], p.vehicle_3d_box_color[1], p.vehicle_3d_box_color[2], p.vehicle_3d_box_color[3]});
     j[xorstr("object_esp")] = p.object_esp;
     j[xorstr("object_name")] = p.object_name;
     j[xorstr("object_distance")] = p.object_distance;
     j[xorstr("object_max_distance")] = p.object_max_distance;
     j[xorstr("object_name_color")] = nlohmann::json::array({p.object_name_color[0], p.object_name_color[1], p.object_name_color[2], p.object_name_color[3]});
+    j[xorstr("object_3d_box")] = p.object_3d_box;
+    j[xorstr("object_3d_box_color")] = nlohmann::json::array({p.object_3d_box_color[0], p.object_3d_box_color[1], p.object_3d_box_color[2], p.object_3d_box_color[3]});
     j[xorstr("vehicle_lock")] = p.vehicle_lock;
     j[xorstr("vehicle_god_mode")] = p.vehicle_god_mode;
     j[xorstr("no_clip")] = p.no_clip;
@@ -232,7 +236,9 @@ inline nlohmann::json OptionsParamToJson(const options_t& p) {
     j[xorstr("teleport_behind_enemy_fov")] = p.teleport_behind_enemy_fov;
     j[xorstr("teleport_behind_enemy_range")] = p.teleport_behind_enemy_range;
     j[xorstr("noclip_speed")] = p.noclip_speed;
+    j[xorstr("set_health_enabled")] = p.set_health_enabled;
     j[xorstr("max_health")] = p.max_health;
+    j[xorstr("set_armor_enabled")] = p.set_armor_enabled;
     j[xorstr("max_armor")] = p.max_armor;
     j[xorstr("infinite_stamina")] = p.infinite_stamina;
     j[xorstr("seat_belt")] = p.seat_belt;
@@ -286,7 +292,19 @@ inline nlohmann::json OptionsParamToJson(const options_t& p) {
     j[xorstr("freeze_ammo")] = p.freeze_ammo;
     j[xorstr("rapid_fire")] = p.rapid_fire;
     j[xorstr("weapon_spoof_enabled")] = p.weapon_spoof_enabled;
+    j[xorstr("force_freeze_players")] = p.force_freeze_players;
+    j[xorstr("force_freeze_keybind")] = p.force_freeze_keybind;
+    j[xorstr("force_dsync_players")] = p.force_dsync_players;
+    j[xorstr("force_dsync_keybind")] = p.force_dsync_keybind;
     j[xorstr("invisible_spoof")] = p.invisible_spoof;
+
+    j[xorstr("auto_peek")] = p.auto_peek;
+    j[xorstr("auto_peek_color")] = nlohmann::json::array({p.auto_peek_color[0], p.auto_peek_color[1], p.auto_peek_color[2], p.auto_peek_color[3]});
+
+    j[xorstr("hitbox_expander")] = p.hitbox_expander;
+    j[xorstr("hitbox_magic_bullets")] = p.hitbox_magic_bullets;
+    j[xorstr("hitbox_expander_size")] = p.hitbox_expander_size;
+
     j[xorstr("disable_melee")] = p.disable_melee;
     j[xorstr("no_ragdoll_bullet")] = p.no_ragdoll_bullet;
     j[xorstr("no_ragdoll_explosion")] = p.no_ragdoll_explosion;
@@ -413,7 +431,9 @@ inline void ApplyOptionsParamFromJson(const nlohmann::json& j, options_t* p) {
 
     OPT_BOOL(vehicle_esp); OPT_FLOAT(vehicle_max_distance); OPT_BOOL(vehicle_snaplines); arr4(xorstr("vehicle_snaplines_color"), p->vehicle_snaplines_color);
     OPT_BOOL(vehicle_name); OPT_BOOL(vehicle_distance);
+    OPT_BOOL(vehicle_3d_box); arr4(xorstr("vehicle_3d_box_color"), p->vehicle_3d_box_color);
     OPT_BOOL(object_esp); OPT_BOOL(object_name); OPT_BOOL(object_distance); OPT_FLOAT(object_max_distance); arr4(xorstr("object_name_color"), p->object_name_color);
+    OPT_BOOL(object_3d_box); arr4(xorstr("object_3d_box_color"), p->object_3d_box_color);
     OPT_BOOL(vehicle_lock); OPT_BOOL(vehicle_god_mode);
     OPT_BOOL(no_clip); OPT_BOOL(spinbot); OPT_BOOL(strafe); OPT_INT(strafe_speed); OPT_BOOL(teleport_behind_enemy); OPT_BOOL(god_mode); OPT_BOOL(anti_afk); OPT_INT(anti_afk_speed); OPT_BOOL(fake_lag); OPT_INT(fake_lag_speed); OPT_BOOL(always_lag); OPT_BOOL(anti_aim_block);
     OPT_BOOL(teleport);
@@ -429,7 +449,7 @@ inline void ApplyOptionsParamFromJson(const nlohmann::json& j, options_t* p) {
     OPT_FLOAT(vehicle_acceleration_value);
     OPT_BOOL(modify_vehicle_traction);
     OPT_FLOAT(vehicle_traction_value); OPT_FLOAT(teleport_behind_enemy_distance); OPT_FLOAT(teleport_behind_enemy_fov); OPT_INT(teleport_behind_enemy_range);
-    OPT_FLOAT(noclip_speed); OPT_FLOAT(max_health); OPT_FLOAT(max_armor); OPT_BOOL(infinite_stamina); OPT_BOOL(seat_belt); OPT_BOOL(anti_headshot); OPT_BOOL(anti_health_spoof); OPT_BOOL(electron);
+    OPT_FLOAT(noclip_speed); OPT_BOOL(set_health_enabled); OPT_FLOAT(max_health); OPT_BOOL(set_armor_enabled); OPT_FLOAT(max_armor); OPT_BOOL(infinite_stamina); OPT_BOOL(seat_belt); OPT_BOOL(anti_headshot); OPT_BOOL(anti_health_spoof); OPT_BOOL(electron);
     OPT_BOOL(beast_jump); OPT_BOOL(super_jump); OPT_BOOL(explosive_fist); OPT_BOOL(fire_ammo); OPT_BOOL(explosive_ammo); OPT_BOOL(no_rag_doll); OPT_BOOL(invisible);
     OPT_BOOL(inf_combat_roll); OPT_BOOL(force_weapon_wheel); OPT_BOOL(steal_car); OPT_BOOL(shrink_enabled); OPT_FLOAT(shrink_scale); OPT_BOOL(big_ped_enabled); OPT_FLOAT(big_ped_scale);
     OPT_BOOL(custom_fov); OPT_FLOAT(fov_value); OPT_BOOL(damage_boost); OPT_FLOAT(damage_boost_value);
@@ -438,7 +458,11 @@ inline void ApplyOptionsParamFromJson(const nlohmann::json& j, options_t* p) {
     OPT_BOOL(infinite_ammo); OPT_BOOL(no_recoil_exploit); OPT_BOOL(no_spread);
     OPT_BOOL(tp_to_bullet); OPT_BOOL(freeze_ammo);
     OPT_BOOL(rapid_fire); OPT_BOOL(invisible_spoof);
+    OPT_BOOL(auto_peek); arr4(xorstr("auto_peek_color"), p->auto_peek_color);
+    OPT_BOOL(hitbox_expander); OPT_BOOL(hitbox_magic_bullets); OPT_FLOAT(hitbox_expander_size);
     OPT_BOOL(weapon_spoof_enabled);
+    OPT_BOOL(force_freeze_players); OPT_INT(force_freeze_keybind);
+    OPT_BOOL(force_dsync_players); OPT_INT(force_dsync_keybind);
     OPT_BOOL(disable_melee); OPT_BOOL(no_ragdoll_bullet); OPT_BOOL(no_ragdoll_explosion); OPT_BOOL(no_ragdoll_fire); OPT_BOOL(no_ragdoll_vehicle);
     OPT_BOOL(treat_as_player_targeting); OPT_BOOL(block_weapon_switch);
 

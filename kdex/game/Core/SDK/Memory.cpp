@@ -132,6 +132,66 @@ namespace Core {
 		}
 	}
 
+	std::vector<uintptr_t> MemoryClass::FindAllPatterns(std::vector<int> Pattern, uintptr_t ModuleBase, uintptr_t ModuleBaseSize)
+	{
+		std::vector<uintptr_t> results;
+		if (Pattern.empty())
+			return results;
+
+		const size_t blockSize = (4096 * 4);
+		std::unique_ptr<uint8_t[]> data = std::make_unique<uint8_t[]>(blockSize);
+
+		size_t signatureSize = Pattern.size();
+
+		uintptr_t ModulBase;
+		uintptr_t ModulBaseSize;
+
+		if (ModuleBase != 0 && ModuleBaseSize != 0) {
+			ModulBase = ModuleBase;
+			ModulBaseSize = ModuleBaseSize;
+		}
+		else {
+			ModulBase = ModBase;
+			ModulBaseSize = ModBaseSize;
+		}
+
+		for (uintptr_t address = ModulBase; address < ModulBase + ModulBaseSize; address += blockSize - signatureSize + 1)
+		{
+			SIZE_T bytesRead;
+			size_t readSize = blockSize;
+			if (address + readSize > ModulBase + ModulBaseSize)
+				readSize = (ModulBase + ModulBaseSize) - address;
+
+			if (!ReadProcessMemory(ProcHandle, (void*)address, data.get(), readSize, &bytesRead)) {
+				continue;
+			}
+
+			if (bytesRead < signatureSize)
+				continue;
+
+			for (uintptr_t i = 0; i + signatureSize <= bytesRead; i++)
+			{
+				bool match = true;
+				for (uintptr_t j = 0; j < signatureSize; j++)
+				{
+					if (Pattern[j] < 0)
+						continue;
+					if (data[i + j] != (uint8_t)Pattern[j])
+					{
+						match = false;
+						break;
+					}
+				}
+				if (match)
+				{
+					results.push_back(address + i);
+				}
+			}
+		}
+
+		return results;
+	}
+
 	std::vector<uint8_t> MemoryClass::ReadBytes(uintptr_t Addr, size_t Size) {
 		std::vector<uint8_t> bytes(Size);
 		size_t bytesRead = 0;

@@ -615,10 +615,7 @@ namespace Gui {
                 s_unload_started = true;
                 menu_open = false;
                 ShowWindow(hwnd, SW_HIDE);
-                std::thread([]() {
-                    Gui::PerformRestoreAll();
-                    Core::g_Variables.g_Unload = true;
-                }).detach();
+                Core::g_Variables.g_Unload = true;
             }
 
             double t_frame = ImGui::GetTime();
@@ -991,10 +988,7 @@ namespace Gui {
                 s_unload_started = true;
                 menu_open = false;
                 ShowWindow(hwnd, SW_HIDE);
-                std::thread([]() {
-                    Gui::PerformRestoreAll();
-                    Core::g_Variables.g_Unload = true;
-                }).detach();
+                Core::g_Variables.g_Unload = true;
             }
 
             if (is_auth_phase || is_launch_phase)
@@ -1240,6 +1234,7 @@ namespace Gui {
                 Core::Features::g_Esp.Draw();
                 Core::Features::g_Esp.DrawVehicle();
                 Core::Features::g_Esp.DrawObjects();
+                Core::Features::Exploits::AutoPeek::DrawAutoPeekMarker();
                 Core::Features::g_Esp.DrawRadar();
                 ImDrawList* bg = ImGui::GetBackgroundDrawList();
                 ImGuiIO& io2 = ImGui::GetIO();
@@ -1547,10 +1542,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         if (!s_unload_started) {
             s_unload_started = true;
             ShowWindow(hWnd, SW_HIDE);
-            std::thread([]() {
-                Gui::PerformRestoreAll();
-                Core::g_Variables.g_Unload = true;
-            }).detach();
+            Core::g_Variables.g_Unload = true;
         }
         return 0;
     case WM_SIZE:

@@ -42,7 +42,7 @@ bool c_widgets::button(std::string_view name, const ImVec2& size, bool separator
 
     draw->rounded_gradient_rect(window->DrawList, rect.Min, rect.Max, col_top, col_bot, border_col, SCALE(elements->button.rounding));
 
-    draw->text_clipped(window->DrawList, var->font.instrument_medium[1], rect.Min, rect.Max, draw->get_clr(state->text), name.data(), NULL, NULL, { 0.5, 0.5 });
+    draw->text_clipped(window->DrawList, var->font.instrument_medium[1], rect.Min, rect.Max, draw->get_clr(state->text), name.data(), gui->text_end(name.data()), NULL, { 0.5, 0.5 });
 
     if (separator) {
         float separator_y = rect.Min.y + (size.y <= 0.f ? SCALE(elements->button.button_size + elements->button.padding) : size.y + SCALE(elements->button.padding));

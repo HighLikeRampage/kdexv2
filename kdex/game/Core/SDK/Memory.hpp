@@ -50,6 +50,7 @@ namespace Core {
 		uintptr_t FindSignatureStr(std::string Pattern, uintptr_t ModuleBase = 0, uintptr_t ModuleBaseSize = 0);
 		uintptr_t PatternScan(std::vector<uint8_t> Pattern, int InstructionLength);
 		uintptr_t FindSignatureBypass(std::vector<uint8_t> Signature, uintptr_t ModuleBase, uintptr_t ModuleBaseSize);
+		std::vector<uintptr_t> FindAllPatterns(std::vector<int> Pattern, uintptr_t ModuleBase = 0, uintptr_t ModuleBaseSize = 0);
 
 		template <typename T>
 		T Read(uintptr_t Addr) {

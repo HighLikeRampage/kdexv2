@@ -617,6 +617,19 @@ inline bool SetupOffsets() {
     if (a)
       g_Offsets.m_ExplodeVehicle = a;
   }
+  if (!g_Offsets.m_GetHandleByPointer) {
+    uintptr_t a = Mem.FindSignature(p2v(
+        xorstr("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 8B 15 ? ? ? ? "
+               "48 8B F9 48 83 C1 10 33 DB")));
+    if (a)
+      g_Offsets.m_GetHandleByPointer = a;
+  }
+  if (!g_Offsets.m_ExplodeVehicleRemote) {
+    uintptr_t a = Mem.FindSignatureStr(xorstr(
+        "40 53 48 83 EC ? 8A DA E8 ? ? ? ? 48 85 C0 74 ? 0F BA B0 ? ? ? ? ? 8B 0D"));
+    if (a)
+      g_Offsets.m_ExplodeVehicleRemote = a;
+  }
   if (!g_Offsets.m_AddWeapon) {
     uintptr_t a = Mem.FindSignature(
         p2v(xorstr("48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ?")));

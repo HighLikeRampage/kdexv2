@@ -59,9 +59,6 @@ namespace Core
                     try {
                     std::this_thread::sleep_for(std::chrono::milliseconds(15));
 
-                    if (!g_MenuInfo.IsLogged && !g_Variables.g_bPassedByThisVerify)
-                        continue;
-
                     if (!Core::g_AttachedToGame)
                         continue;
 

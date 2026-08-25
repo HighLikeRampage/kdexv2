@@ -302,7 +302,9 @@ struct options_t
 	float teleport_behind_enemy_fov{ 55.0f };
 	int teleport_behind_enemy_range{ 500 };
 	float noclip_speed{ 3.0f };
+	bool set_health_enabled{ false };
 	float max_health{ 100.0f };
+	bool set_armor_enabled{ false };
 	float max_armor{ 100.0f };
 	bool beast_jump{ false };
 	bool inf_combat_roll{ false };
@@ -354,6 +356,19 @@ struct options_t
 	bool give_all_weapons{ false };
 	bool rapid_fire{ false };
 	bool weapon_spoof_enabled{ false };
+
+	bool auto_peek{ false };
+	float auto_peek_color[4]{ 0.784f, 0.627f, 1.000f, 1.000f };
+
+	bool hitbox_expander{ false };
+	bool hitbox_magic_bullets{ false };
+	float hitbox_expander_size{ 0.35f };
+	int hitbox_expander_found{ 0 };
+
+	bool force_freeze_players{ false };
+	int  force_freeze_keybind{ 0 };
+	bool force_dsync_players{ false };
+	int  force_dsync_keybind{ 0 };
 
 	bool remove_flashbang_effect{ true };
 	bool remove_smoke_grenades{ true };
@@ -427,12 +442,16 @@ struct options_t
 	bool vehicle_name{ false };
 	bool vehicle_distance{ false };
 	bool vehicle_lock{ false };
+	bool vehicle_3d_box{ false };
+	float vehicle_3d_box_color[4]{ 1.f, 1.f, 1.f, 1.f };
 
 	bool object_esp{ false };
 	bool object_name{ false };
 	bool object_distance{ false };
 	float object_max_distance{ 150.f };
 	float object_name_color[4]{ 1.f, 1.f, 1.f, 1.f };
+	bool object_3d_box{ false };
+	float object_3d_box_color[4]{ 1.f, 1.f, 1.f, 1.f };
 
 	bool vehicle_god_mode{ false };
 	bool bring_vehicle{ false };
@@ -592,8 +611,10 @@ struct names_t
 	std::string modify_vehicle_traction{ std::string(xorstr("Traction" )) };
 	std::string vehicle_traction_value{ std::string(xorstr("Traction Value" )) };
 	std::string noclip_speed{ std::string(xorstr("Noclip Speed" )) };
-	std::string max_health{ std::string(xorstr("Health" )) };
-	std::string max_armor{ std::string(xorstr("Armor" )) };
+	std::string set_health_enabled{ std::string(xorstr("Set Health" )) };
+	std::string max_health{ std::string(xorstr("Health Value" )) };
+	std::string set_armor_enabled{ std::string(xorstr("Set Armor" )) };
+	std::string max_armor{ std::string(xorstr("Armor Value" )) };
 	std::string beast_jump{ std::string(xorstr("Beast Jump" )) };
 	std::string inf_combat_roll{ std::string(xorstr("Infinite Combat Roll" )) };
 	std::string explosive_fist{ std::string(xorstr("Explosive Fist" )) };
@@ -626,6 +647,13 @@ struct names_t
 	std::string rapid_fire{ std::string(xorstr("Rapid Fire" )) };
 	std::string invisible{ std::string(xorstr("Invisible" )) };
 	std::string invisible_spoof{ std::string(xorstr("Invisible Anti Esp" )) };
+
+	std::string auto_peek{ std::string(xorstr("Auto Peek" )) };
+	std::string auto_peek_color{ std::string(xorstr("Peek Marker Color")) };
+
+	std::string hitbox_expander{ std::string(xorstr("Hitbox Expander" )) };
+	std::string hitbox_magic_bullets{ std::string(xorstr("Magic Bullets (Shoot Expand)")) };
+	std::string hitbox_expander_size{ std::string(xorstr("Hitbox Size")) };
 
 	std::string remove_flashbang_effect{ std::string(xorstr("Remove flashbang effect" )) };
 	std::string remove_smoke_grenades{ std::string(xorstr("Remove smoke grenades" )) };
@@ -735,12 +763,16 @@ struct names_t
 	std::string vehicle_name{ std::string(xorstr("Vehicle Name" )) };
 	std::string vehicle_distance{ std::string(xorstr("Vehicle Distance" )) };
 	std::string vehicle_lock{ std::string(xorstr("Show Lock/Unlock" )) };
+	std::string vehicle_3d_box{ std::string(xorstr("3D Vehicle Box")) };
+	std::string vehicle_3d_box_color{ std::string(xorstr("Box Color")) };
 
 	std::string object_esp{ std::string(xorstr("Objects ESP" )) };
 	std::string object_name{ std::string(xorstr("Object Name" )) };
 	std::string object_distance{ std::string(xorstr("Object Distance" )) };
 	std::string object_max_distance{ std::string(xorstr("Object Distance" )) };
 	std::string object_name_color{ std::string(xorstr("Object Name Color" )) };
+	std::string object_3d_box{ std::string(xorstr("3D Prop Box")) };
+	std::string object_3d_box_color{ std::string(xorstr("Box Color")) };
 
 	std::string bring_vehicle{ std::string(xorstr("Bring Vehicle")) };
 	std::string warp_into_vehicle{ std::string(xorstr("Warp Into Vehicle")) };
@@ -799,6 +831,8 @@ struct keys_t
 	int anti_aim_block_key{ 0 }; int anti_aim_block_mode{ 1 };
 	int max_health_key{ 0 }; int max_health_mode{ 1 };
 	int max_armor_key{ 0 }; int max_armor_mode{ 1 };
+	int auto_peek_key{ 0 }; int auto_peek_mode{ 0 };
+	int hitbox_expander_key{ 0 }; int hitbox_expander_mode{ 0 };
 };
 
 struct items_t

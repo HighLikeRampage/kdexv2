@@ -85,34 +85,27 @@ static void ManualMapInit(HMODULE hModule)
 static void SafeCleanupWork()
 {
 	__try {
-		LuaExec::g_LuaExecutor.Cleanup();
-		Core::Features::Exploits::RestoreAllVehicles();
-		Gui::PerformRestoreAll();
-
 		if (var && var->auth.authenticated && !var->auth.access_token.empty())
 			Security::Api::fivem_set_logged(var->auth.access_token, false);
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {}
 }
 
-static void DoRestoreAll()
-{
-	__try {
-		Core::Features::Exploits::RestoreAll();
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER) {}
-}
-
 static void ClearLoggedState()
 {
-	DoRestoreAll();
-
-	std::this_thread::sleep_for(std::chrono::milliseconds(150));
-
 	Core::g_Variables.g_Unload = true;
 
-	std::thread([]() {
-		SafeCleanupWork();
+	const auto stop_deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+	while (!Core::Features::Exploits::g_exploit_thread_stopped.load(std::memory_order_acquire) &&
+		   std::chrono::steady_clock::now() < stop_deadline) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
+
+	const bool exploit_thread_stopped =
+		Core::Features::Exploits::g_exploit_thread_stopped.load(std::memory_order_acquire);
+	std::thread([exploit_thread_stopped]() {
+		if (exploit_thread_stopped)
+			SafeCleanupWork();
 		if (!g_IsInjectedDll)
 			LI_FN(TerminateProcess)(LI_FN(GetCurrentProcess)(), 0);
 	}).detach();

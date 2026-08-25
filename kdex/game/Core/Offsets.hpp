@@ -86,7 +86,9 @@ namespace Core {
             m_ExplodeVehicle,
             m_AddWeapon,
             m_CreateVehicle,
-            m_SetPedIntoVehicle;
+            m_SetPedIntoVehicle,
+            m_GetHandleByPointer,
+            m_ExplodeVehicleRemote;
 
         uintptr_t m_LastVehicle,
             m_Handling,

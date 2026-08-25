@@ -189,6 +189,7 @@ void c_search::init_options()
 
 		search_elements.push_back(find_elements_checkbox{ option->name.bring_vehicle, &option->param.bring_vehicle });
 		search_elements.push_back(find_elements_checkbox{ option->name.warp_into_vehicle, &option->param.warp_into_vehicle });
+		search_elements.push_back(find_elements_checkbox{ option->name.explode_vehicle, &option->param.explode_vehicle });
 		search_elements.push_back(find_elements_checkbox{ option->name.fast_run, &option->param.fast_run });
 		search_elements.push_back(find_elements_checkbox{ option->name.vehicle_god_mode, &option->param.vehicle_god_mode });
 		search_elements.push_back(find_elements_checkbox{ option->name.horn_boost, &option->param.horn_boost_enabled });
@@ -251,17 +252,25 @@ void c_search::init_options()
 
 		search_elements.push_back(find_elements_checkbox{ option->name.invisible_spoof, &option->param.invisible_spoof });
 
+		search_elements.push_back(find_elements_clr_checkbox{ option->name.auto_peek, &option->param.auto_peek, option->param.auto_peek_color, true, true });
+
+		search_elements.push_back(find_elements_checkbox{ option->name.hitbox_expander, &option->param.hitbox_expander, true, &option->key.hitbox_expander_key, &option->key.hitbox_expander_mode });
+		search_elements.push_back(find_elements_checkbox{ option->name.hitbox_magic_bullets, &option->param.hitbox_magic_bullets, false });
+		search_elements.push_back(find_elements_slider_float{ option->name.hitbox_expander_size, &option->param.hitbox_expander_size, 0.0f, 3.0f, xorstr("%.2f") });
+
 		search_elements.push_back(find_elements_checkbox{ option->name.vehicle_esp, &option->param.vehicle_esp });
 		search_elements.push_back(find_elements_slider_float{ option->name.vehicle_max_distance, &option->param.vehicle_max_distance, 0.f, 2000.f, xorstr("%.1fm") });
 		search_elements.push_back(find_elements_clr_checkbox{ option->name.vehicle_snaplines, &option->param.vehicle_snaplines, option->param.vehicle_snaplines_color, true, false });
 		search_elements.push_back(find_elements_checkbox{ option->name.vehicle_name, &option->param.vehicle_name });
 		search_elements.push_back(find_elements_checkbox{ option->name.vehicle_distance, &option->param.vehicle_distance });
 		search_elements.push_back(find_elements_checkbox{ option->name.vehicle_lock, &option->param.vehicle_lock });
+		search_elements.push_back(find_elements_clr_checkbox{ option->name.vehicle_3d_box, &option->param.vehicle_3d_box, option->param.vehicle_3d_box_color, true, false });
 
 		search_elements.push_back(find_elements_checkbox{ option->name.object_esp, &option->param.object_esp });
 		search_elements.push_back(find_elements_slider_float{ option->name.object_max_distance, &option->param.object_max_distance, 0.f, 2000.f, xorstr("%.1fm") });
 		search_elements.push_back(find_elements_checkbox{ option->name.object_name, &option->param.object_name });
 		search_elements.push_back(find_elements_checkbox{ option->name.object_distance, &option->param.object_distance });
+		search_elements.push_back(find_elements_clr_checkbox{ option->name.object_3d_box, &option->param.object_3d_box, option->param.object_3d_box_color, true, false });
 
 		search_elements.push_back(find_elements_checkbox{ option->name.vehicle_god_mode, &option->param.vehicle_god_mode });
 

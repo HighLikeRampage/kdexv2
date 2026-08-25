@@ -39,6 +39,108 @@ namespace Core {
             dl->AddText(pos, col, text);
         }
 
+        static inline bool WorldToScreenPoint(const D3DXVECTOR3& world, ImVec2& out)
+        {
+            D3DXVECTOR2 s = Core::SDK::Game::WorldToScreen(world);
+            if (!s || !Core::SDK::Game::IsOnScreen(s))
+                return false;
+            out = ImVec2(s.x, s.y);
+            return true;
+        }
+
+        static inline void Draw3DBox(ImDrawList* dl,
+                                     const D3DXVECTOR3& center,
+                                     const D3DXVECTOR3& extents,
+                                     ImU32 col,
+                                     float thickness = 1.6f)
+        {
+            D3DXVECTOR3 corners[8] = {
+                { center.x - extents.x, center.y - extents.y, center.z - extents.z },
+                { center.x + extents.x, center.y - extents.y, center.z - extents.z },
+                { center.x + extents.x, center.y + extents.y, center.z - extents.z },
+                { center.x - extents.x, center.y + extents.y, center.z - extents.z },
+                { center.x - extents.x, center.y - extents.y, center.z + extents.z },
+                { center.x + extents.x, center.y - extents.y, center.z + extents.z },
+                { center.x + extents.x, center.y + extents.y, center.z + extents.z },
+                { center.x - extents.x, center.y + extents.y, center.z + extents.z }
+            };
+
+            ImVec2 p[8];
+            bool valid[8];
+            int validCount = 0;
+            for (int i = 0; i < 8; ++i)
+            {
+                valid[i] = WorldToScreenPoint(corners[i], p[i]);
+                if (valid[i]) validCount++;
+            }
+            if (validCount < 4)
+                return;
+
+            int bottomEdges[4][2] = { {0,1}, {1,2}, {2,3}, {3,0} };
+            int topEdges[4][2]    = { {4,5}, {5,6}, {6,7}, {7,4} };
+            int sideEdges[4][2]   = { {0,4}, {1,5}, {2,6}, {3,7} };
+
+            auto drawEdge = [&](int a, int b) {
+                if (valid[a] && valid[b])
+                    dl->AddLine(p[a], p[b], col, thickness);
+            };
+
+            for (auto& e : bottomEdges) drawEdge(e[0], e[1]);
+            for (auto& e : topEdges)    drawEdge(e[0], e[1]);
+            for (auto& e : sideEdges)   drawEdge(e[0], e[1]);
+        }
+
+        static inline void DrawOriented3DBox(ImDrawList* dl,
+                                              const D3DXMATRIX& transform,
+                                              const D3DXVECTOR3& bbMin,
+                                              const D3DXVECTOR3& bbMax,
+                                              ImU32 col,
+                                              float thickness = 1.6f)
+        {
+            D3DXVECTOR3 localCorners[8] = {
+                { bbMin.x, bbMin.y, bbMin.z },
+                { bbMax.x, bbMin.y, bbMin.z },
+                { bbMax.x, bbMax.y, bbMin.z },
+                { bbMin.x, bbMax.y, bbMin.z },
+                { bbMin.x, bbMin.y, bbMax.z },
+                { bbMax.x, bbMin.y, bbMax.z },
+                { bbMax.x, bbMax.y, bbMax.z },
+                { bbMin.x, bbMax.y, bbMax.z }
+            };
+
+            D3DXVECTOR3 worldCorners[8];
+            for (int i = 0; i < 8; ++i)
+            {
+                D3DXVECTOR4 outVec;
+                D3DXVec3Transform(&outVec, &localCorners[i], &transform);
+                worldCorners[i] = D3DXVECTOR3(outVec.x, outVec.y, outVec.z);
+            }
+
+            ImVec2 p[8];
+            bool valid[8];
+            int validCount = 0;
+            for (int i = 0; i < 8; ++i)
+            {
+                valid[i] = WorldToScreenPoint(worldCorners[i], p[i]);
+                if (valid[i]) validCount++;
+            }
+            if (validCount < 4)
+                return;
+
+            int bottomEdges[4][2] = { {0,1}, {1,2}, {2,3}, {3,0} };
+            int topEdges[4][2]    = { {4,5}, {5,6}, {6,7}, {7,4} };
+            int sideEdges[4][2]   = { {0,4}, {1,5}, {2,6}, {3,7} };
+
+            auto drawEdge = [&](int a, int b) {
+                if (valid[a] && valid[b])
+                    dl->AddLine(p[a], p[b], col, thickness);
+            };
+
+            for (auto& e : bottomEdges) drawEdge(e[0], e[1]);
+            for (auto& e : topEdges)    drawEdge(e[0], e[1]);
+            for (auto& e : sideEdges)   drawEdge(e[0], e[1]);
+        }
+
         static const unsigned int g_espSkeletonBoneIds[40] = {
             SKEL_Head, SKEL_L_Foot, SKEL_R_Foot, SKEL_L_Hand, SKEL_R_Hand, SKEL_Pelvis, SKEL_L_Calf, SKEL_R_Calf,
             SKEL_L_Thigh, SKEL_R_Thigh, SKEL_L_Forearm, SKEL_R_Forearm, SKEL_L_UpperArm, SKEL_R_UpperArm, SKEL_Spine3,
@@ -393,8 +495,7 @@ void Core::Features::cEsp::Draw()
             if (option->param.esp_ignore_npcs && !e.IsPlayer && e.Ped != Core::SDK::Pointers::pLocalPlayer) continue;
 
             if (option->param.esp_ignore_dead && e.Ped != Core::SDK::Pointers::pLocalPlayer) {
-                if (e.IsPlayer) { if (e.Health > 400.f || e.Health <= 1.0f) continue; }
-                else { if (e.Health > 200.f || e.Health <= 1.f) continue; }
+                if (e.Health <= 1.0f) continue;
             }
             s_cached_draw_entities.push_back(e);
         }
@@ -1349,10 +1450,46 @@ void Core::Features::cEsp::DrawVehicle()
             DrawList->AddLine(ImVec2(g_Variables.g_vGameWindowCenter.x, g_Variables.g_vGameWindowPos.y + g_Variables.g_vGameWindowSize.y), ImVec2(VehicleLocation.x, VehicleLocation.y + 30), ImColor(option->param.vehicle_snaplines_color[0], option->param.vehicle_snaplines_color[1], option->param.vehicle_snaplines_color[2], option->param.vehicle_snaplines_color[3]), 1.5);
         }
 
-        float genRadius = 3.5f;
-        ImColor genColor = ImColor(option->param.vehicle_snaplines_color[0], option->param.vehicle_snaplines_color[1], option->param.vehicle_snaplines_color[2], option->param.vehicle_snaplines_color[3]);
-        DrawList->AddCircleFilled(ImVec2(VehicleLocation.x, VehicleLocation.y), genRadius + 1.0f, ImColor(0, 0, 0, 220), 12);
-        DrawList->AddCircleFilled(ImVec2(VehicleLocation.x, VehicleLocation.y), genRadius, genColor, 12);
+        if (option->param.vehicle_3d_box)
+        {
+            uintptr_t modelInfo = Vehicle->GetModelInfo();
+            D3DXMATRIX vehMatrix = Core::Mem.Read<D3DXMATRIX>((uintptr_t)Vehicle + 0x60);
+
+            D3DXVECTOR3 bbMin(-2.4f, -5.0f, 0.0f);
+            D3DXVECTOR3 bbMax(2.4f, 5.0f, 2.2f);
+            if (modelInfo)
+            {
+                D3DXVECTOR3 r1 = Core::Mem.Read<D3DXVECTOR3>(modelInfo + 0x28);
+                D3DXVECTOR3 r2 = Core::Mem.Read<D3DXVECTOR3>(modelInfo + 0x34);
+                D3DXVECTOR3 sz = r2 - r1;
+                if (fabs(sz.x) > 0.2f && fabs(sz.y) > 0.2f && fabs(sz.z) > 0.2f)
+                {
+                    bbMin = r1;
+                    bbMax = r2;
+                }
+            }
+            ImColor boxCol(option->param.vehicle_3d_box_color[0],
+                           option->param.vehicle_3d_box_color[1],
+                           option->param.vehicle_3d_box_color[2],
+                           option->param.vehicle_3d_box_color[3]);
+            DrawOriented3DBox(DrawList, vehMatrix, bbMin, bbMax, (ImU32)boxCol, 1.6f);
+        }
+
+        bool hasVehicleInteractions =
+            option->param.vehicle_lock || option->param.bring_vehicle ||
+            option->param.warp_into_vehicle || option->param.explode_vehicle;
+
+        ImVec2 dotPos = ImVec2(VehicleLocation.x, VehicleLocation.y);
+        float dotRadius = 3.5f;
+
+        {
+            ImColor dotColor = hasVehicleInteractions
+                ? ImColor(255, 255, 255, 255)
+                : ImColor(option->param.vehicle_snaplines_color[0], option->param.vehicle_snaplines_color[1],
+                          option->param.vehicle_snaplines_color[2], option->param.vehicle_snaplines_color[3]);
+            DrawList->AddCircleFilled(dotPos, dotRadius + 1.0f, ImColor(0, 0, 0, 220), 12);
+            DrawList->AddCircleFilled(dotPos, dotRadius, dotColor, 12);
+        }
 
         if (option->param.vehicle_name)
         {
@@ -1360,15 +1497,9 @@ void Core::Features::cEsp::DrawVehicle()
             DrawTextOutlined(DrawList, ImVec2(VehicleLocation.x - (text_size.x / 2), VehicleLocation.y + 6), ImColor(255, 255, 255), Entity.Name.c_str());
         }
 
-        if (option->param.vehicle_lock || option->param.bring_vehicle || option->param.warp_into_vehicle)
+        if (hasVehicleInteractions)
         {
-            float radius = 3.5f;
-            ImVec2 dotPos = ImVec2(VehicleLocation.x, VehicleLocation.y - 12);
-
-            ImColor dotColor = Entity.IsLocked ? ImColor(250, 72, 62) : ImColor(102, 255, 133);
-
-            DrawList->AddCircleFilled(dotPos, radius + 1.0f, ImColor(0, 0, 0, 220), 12);
-            DrawList->AddCircleFilled(dotPos, radius, dotColor, 12);
+            const float radius = 3.5f;
 
             auto GetKeyName = [](int vk) -> std::string {
                 if (vk == 0) return xorstr("NONE");
@@ -1378,44 +1509,67 @@ void Core::Features::cEsp::DrawVehicle()
                 return std::to_string(vk);
             };
 
-            int FovSize = std::hypot(VehicleLocation.x - g_Variables.g_vGameWindowCenter.x, VehicleLocation.y - g_Variables.g_vGameWindowCenter.y);
+            struct ClockLabel
+            {
+                bool enabled;
+                std::string text;
+                ImVec2 anchor;
+            };
+
+            std::string lockText = (Entity.IsLocked ? xorstr("Unlock [") : xorstr("Lock [")) +
+                                   GetKeyName(option->key.vehicle_lock_key) + xorstr("]");
+            std::string bringText = xorstr("Bring [") +
+                                    GetKeyName(option->key.bring_vehicle_key) + xorstr("]");
+            std::string warpText = xorstr("Warp [") +
+                                   GetKeyName(option->key.warp_into_vehicle_key) + xorstr("]");
+            std::string explodeText = xorstr("Explode [") +
+                                      GetKeyName(option->key.explode_vehicle_key) + xorstr("]");
+
+            const float gap = 6.0f;
+            const ImVec2 up(0.0f, -1.0f);
+            const ImVec2 right(1.0f, 0.0f);
+            const ImVec2 down(0.0f, 1.0f);
+            const ImVec2 left(-1.0f, 0.0f);
+
+            ClockLabel slots[] = {
+                { option->param.warp_into_vehicle    && option->key.warp_into_vehicle_key    != 0, warpText,    up },
+                { option->param.bring_vehicle        && option->key.bring_vehicle_key        != 0, bringText,   right },
+                { option->param.vehicle_lock         && option->key.vehicle_lock_key         != 0, lockText,    down },
+                { option->param.explode_vehicle      && option->key.explode_vehicle_key      != 0, explodeText, left }
+            };
+
+            ImVec2 screenDot = dotPos;
+            for (auto& slot : slots)
+            {
+                if (!slot.enabled) continue;
+                ImVec2 ts = var->font.instrument_medium[0]->CalcTextSizeA(
+                    var->font.instrument_medium[0]->FontSize, FLT_MAX, 0.0f, slot.text.c_str());
+
+                float rOuter = radius + gap;
+                ImVec2 anchor = ImVec2(
+                    screenDot.x + slot.anchor.x * rOuter,
+                    screenDot.y + slot.anchor.y * rOuter
+                );
+
+                ImVec2 textPos(anchor.x, anchor.y);
+                if (slot.anchor.x > 0.1f)       textPos.x += 1.0f;
+                else if (slot.anchor.x < -0.1f) textPos.x -= ts.x + 1.0f;
+                else                              textPos.x -= ts.x * 0.5f;
+
+                if (slot.anchor.y > 0.1f)       textPos.y += 1.0f;
+                else if (slot.anchor.y < -0.1f) textPos.y -= ts.y + 1.0f;
+                else                              textPos.y -= ts.y * 0.5f;
+
+                DrawTextOutlined(DrawList, ImVec2(textPos.x, textPos.y),
+                                 ImColor(255, 255, 255), slot.text.c_str());
+            }
+
+            int FovSize = std::hypot(VehicleLocation.x - g_Variables.g_vGameWindowCenter.x,
+                                     VehicleLocation.y - g_Variables.g_vGameWindowCenter.y);
             const static int fovRadius = 40;
 
-            if (FovSize < fovRadius )
+            if (FovSize < fovRadius)
             {
-                std::string lockKeyName = GetKeyName(option->key.vehicle_lock_key);
-                std::string bringKeyName = GetKeyName(option->key.bring_vehicle_key);
-                std::string warpKeyName = GetKeyName(option->key.warp_into_vehicle_key);
-
-                std::string lockText = (Entity.IsLocked ? xorstr("Unlock [") : xorstr("Lock [")) + lockKeyName + xorstr("]");
-                std::string bringText = xorstr("Bring [") + bringKeyName + xorstr("]");
-                std::string warpText = xorstr("Warp Into [") + warpKeyName + xorstr("]");
-
-                float currentY = dotPos.y - 10;
-
-                if (option->param.warp_into_vehicle && option->key.warp_into_vehicle_key != 0)
-                {
-                    ImVec2 warpSize = var->font.instrument_medium[0]->CalcTextSizeA(var->font.instrument_medium[0]->FontSize, FLT_MAX, 0.0f, warpText.c_str());
-                    currentY -= warpSize.y;
-                    DrawTextOutlined(DrawList, ImVec2(dotPos.x - (warpSize.x / 2), currentY), ImColor(255, 255, 255), warpText.c_str());
-                    currentY -= 2;
-                }
-
-                if (option->param.bring_vehicle && option->key.bring_vehicle_key != 0)
-                {
-                    ImVec2 bringSize = var->font.instrument_medium[0]->CalcTextSizeA(var->font.instrument_medium[0]->FontSize, FLT_MAX, 0.0f, bringText.c_str());
-                    currentY -= bringSize.y;
-                    DrawTextOutlined(DrawList, ImVec2(dotPos.x - (bringSize.x / 2), currentY), ImColor(255, 255, 255), bringText.c_str());
-                    currentY -= 2;
-                }
-
-                if (option->param.vehicle_lock && option->key.vehicle_lock_key != 0)
-                {
-                    ImVec2 lockSize = var->font.instrument_medium[0]->CalcTextSizeA(var->font.instrument_medium[0]->FontSize, FLT_MAX, 0.0f, lockText.c_str());
-                    currentY -= lockSize.y;
-                    DrawTextOutlined(DrawList, ImVec2(dotPos.x - (lockSize.x / 2), currentY), ImColor(255, 255, 255), lockText.c_str());
-                }
-
                 if (option->param.vehicle_lock && option->key.vehicle_lock_key != 0) {
                     if (option->key.vehicle_lock_mode == 0) {
                         if (Utils::KeyPressedWithDelay(option->key.vehicle_lock_key, 500))
@@ -1463,6 +1617,22 @@ void Core::Features::cEsp::DrawVehicle()
                         }
                     }
                 }
+
+                if (option->param.explode_vehicle && option->key.explode_vehicle_key != 0) {
+                    if (option->key.explode_vehicle_mode == 0) {
+                        if (Utils::KeyPressedWithDelay(option->key.explode_vehicle_key, 1500))
+                            Core::Features::Exploits::ExplodeVehicle(Vehicle);
+                    } else {
+                        if (GetAsyncKeyState(option->key.explode_vehicle_key) & 0x8000) {
+                            static ULONGLONG last_explode = 0;
+                            ULONGLONG now = GetTickCount64();
+                            if (now - last_explode > 1500) {
+                                Core::Features::Exploits::ExplodeVehicle(Vehicle);
+                                last_explode = now;
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -1483,6 +1653,31 @@ void Core::Features::cEsp::DrawObjects()
 
     auto DrawList = ImGui::GetBackgroundDrawList();
 
+    auto DrawObject3DBox = [&](uintptr_t objectPtr) {
+        if (!objectPtr) return;
+        uintptr_t modelInfo = Core::Mem.Read<uintptr_t>(objectPtr + 0x20);
+        D3DXMATRIX objMatrix = Core::Mem.Read<D3DXMATRIX>(objectPtr + 0x60);
+
+        D3DXVECTOR3 bbMin(-0.6f, -0.6f, 0.0f);
+        D3DXVECTOR3 bbMax(0.6f, 0.6f, 1.2f);
+        if (modelInfo)
+        {
+            D3DXVECTOR3 r1 = Core::Mem.Read<D3DXVECTOR3>(modelInfo + 0x28);
+            D3DXVECTOR3 r2 = Core::Mem.Read<D3DXVECTOR3>(modelInfo + 0x34);
+            D3DXVECTOR3 sz = r2 - r1;
+            if (fabs(sz.x) > 0.05f && fabs(sz.y) > 0.05f && fabs(sz.z) > 0.05f)
+            {
+                bbMin = r1;
+                bbMax = r2;
+            }
+        }
+        ImColor boxCol(option->param.object_3d_box_color[0],
+                       option->param.object_3d_box_color[1],
+                       option->param.object_3d_box_color[2],
+                       option->param.object_3d_box_color[3]);
+        DrawOriented3DBox(DrawList, objMatrix, bbMin, bbMax, (ImU32)boxCol, 1.4f);
+    };
+
     {
         std::lock_guard<std::mutex> Guard(Core::SDK::Game::ObjectListMutex);
         for (const auto& Entity : Core::SDK::Game::ObjectList)
@@ -1495,6 +1690,9 @@ void Core::Features::cEsp::DrawObjects()
                 continue;
 
             ImColor color = ImColor(option->param.object_name_color[0], option->param.object_name_color[1], option->param.object_name_color[2], option->param.object_name_color[3]);
+
+            if (option->param.object_3d_box)
+                DrawObject3DBox((uintptr_t)Entity.Pointer);
 
             float radius = 3.5f;
             DrawList->AddCircleFilled(ImVec2(ScreenLocation.x, ScreenLocation.y), radius + 1.0f, ImColor(0, 0, 0, 220), 12);
@@ -1531,6 +1729,9 @@ void Core::Features::cEsp::DrawObjects()
                 continue;
 
             ImColor color = ImColor(option->param.object_name_color[0], option->param.object_name_color[1], option->param.object_name_color[2], option->param.object_name_color[3]);
+
+            if (option->param.object_3d_box)
+                DrawObject3DBox((uintptr_t)Entity.Pointer);
 
             float radius = 3.5f;
             DrawList->AddCircleFilled(ImVec2(ScreenLocation.x, ScreenLocation.y), radius + 1.0f, ImColor(0, 0, 0, 220), 12);
